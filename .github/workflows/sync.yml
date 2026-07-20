@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -20,6 +22,11 @@ jobs:
         run: |
           git config user.name "notion-sync-bot"
           git config user.email "notion-sync-bot@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
           git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "sync: notion docs update"
-          git push
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "没有变更，跳过提交"
+          else
+            git commit -m "sync: notion docs update"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
