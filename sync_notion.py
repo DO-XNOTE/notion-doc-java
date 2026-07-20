@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Notion → GitHub Markdown 同步脚本 (GitHub Actions 版)"""
 import requests, os, sys, re, time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import deque
 
 NOTION_TOKEN = os.environ.get("NOTION_TOKEN", "")
@@ -9,24 +8,29 @@ ROOT_PAGE_ID = "27475a81-2613-4b92-9415-50ae53b714c9"
 OUTPUT_DIR = os.environ.get("OUTPUT_DIR", "技术学习")
 HEADERS = {"Authorization": f"Bearer {NOTION_TOKEN}", "Content-Type": "application/json", "Notion-Version": "2022-06-28"}
 API_COUNT = 0
-API_LOCK = __import__("threading").Lock()
 RATE_LIMITER = deque()
+_BLOCK_CACHE = {}  # block_id -> list[block]
 
 def api_get(path, params=None):
     global API_COUNT
-    with API_LOCK:
+    now = time.time()
+    # sliding window: max 3 req/s
+    while RATE_LIMITER and now - RATE_LIMITER[0] >= 1.0:
+        RATE_LIMITER.popleft()
+    if len(RATE_LIMITER) >= 3:
+        t = 1.0 - (now - RATE_LIMITER[0])
+        if t > 0: time.sleep(t)
         now = time.time()
-        while RATE_LIMITER and now - RATE_LIMITER[0] > 1.0:
+        while RATE_LIMITER and now - RATE_LIMITER[0] >= 1.0:
             RATE_LIMITER.popleft()
-        if len(RATE_LIMITER) >= 3:
-            t = 1.0 - (now - RATE_LIMITER[0])
-            if t > 0: time.sleep(t)
-        RATE_LIMITER.append(time.time())
-        API_COUNT += 1
+    RATE_LIMITER.append(time.time())
+    API_COUNT += 1
     r = requests.get(f"https://api.notion.com/v1/{path}", headers=HEADERS, params=params, timeout=30)
     return r.json() if r.status_code == 200 else None
 
 def get_children(block_id):
+    if block_id in _BLOCK_CACHE:
+        return _BLOCK_CACHE[block_id]
     items, cursor = [], None
     while True:
         p = {"page_size": 100}
@@ -36,7 +40,12 @@ def get_children(block_id):
         items.extend(data.get("results", []))
         if not data.get("has_more"): break
         cursor = data.get("next_cursor")
+    _BLOCK_CACHE[block_id] = items
     return items or []
+
+def get_page_children(block_id):
+    """只取 child_page 类型的 block（从缓存读取）"""
+    return [b for b in get_children(block_id) if b["type"] == "child_page"]
 
 def fmt(rich):
     out = ""
@@ -66,7 +75,9 @@ def block_md(block, depth=0):
         chk = "[x]" if block["to_do"].get("checked") else "[ ]"
         md = f"{pfx}- {chk} {fmt(rt)}\n"
     elif t == "code":
-        md = f"{pfx}```{block['code'].get('language','')}\n{fmt(rt)}\n```\n\n"
+        lang = block['code'].get('language', '')
+        text = ''.join(x.get('plain_text', '') for x in rt)
+        md = f"{pfx}```{lang}\n{text}\n```\n\n"
     elif t == "quote": md = f"{pfx}> {fmt(rt)}\n"
     elif t == "callout":
         icon = block["callout"].get("icon", {})
@@ -110,15 +121,12 @@ def build_tree(page_id, depth=0, visited=None):
     if visited is None: visited = set()
     if page_id in visited: return None
     visited.add(page_id)
-    blocks = get_children(page_id)
-    if blocks is None: return None
     title = get_page_title(page_id)
     print(f"{'  ' * depth}{title}", flush=True)
     children = []
-    for b in blocks:
-        if b["type"] == "child_page":
-            child = build_tree(b["id"], depth + 1, visited)
-            if child: children.append(child)
+    for b in get_page_children(page_id):
+        child = build_tree(b["id"], depth + 1, visited)
+        if child: children.append(child)
     return {"id": page_id, "title": title, "children": children}
 
 def export_page(page_id, title, filepath, visited=None):
@@ -137,6 +145,7 @@ def export_tree(node, parent_dir, visited=None):
     visited.add(node["id"])
     safe = sanitize(node["title"])
     node_dir = os.path.join(parent_dir, safe)
+    print(f"  {safe}", flush=True)
     export_page(node["id"], node["title"], os.path.join(node_dir, "README.md"), visited)
     for child in node.get("children", []):
         export_tree(child, parent_dir, visited)
