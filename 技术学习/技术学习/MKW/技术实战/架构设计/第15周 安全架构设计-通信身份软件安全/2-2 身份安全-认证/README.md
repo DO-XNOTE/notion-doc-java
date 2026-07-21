@@ -1,0 +1,64 @@
+---
+title: 2-2 身份安全-认证
+---
+
+# 2-2 身份安全-认证
+
+价值需求到落地的桥梁，构建 it 新蓝图。我是张飞扬。好，前面看了看身份安全的总数，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d099e3f7-0a18-452e-83fc-4f8ea8b4ffc2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667WA2YZTH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231035Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDRc7qH9nC1gdt6uly3tiTRvjh%2F99pBpp1rLNAYLgeBoAIgYkhFmc8Bm9pws%2FaYAIau5cKYLg1i5mC9lkt0OqUggSIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNnd60nqVKWBk%2BHTjircA1TPnAbAFKlfgY53Aef%2Bx%2Bv8A1obwgCWobmJX4ta5KrlZ079WR0BgBmS9G9LzP5H7OuyKk6LMtYm60K7MmwTghHVTKxSdrlntgsDVQo9NmIXL94w7yuEmSTSlyA%2FAv940ya9K2%2FKX91cMCSh5y9kNcUfVyN39KKHasfo05KQP2mwYIrbODNfAf86ZvTPlaE2KNm2mUr9worSnQZWnRTKTzhTKYc%2FIoMh0tSqZTMzSwYQeC438a2YD1tdLsoZ1ODz1D4FgQGAD3FuMdQEzJJ%2B5Q%2B5%2FJmXeQsJ8G7tfK3t13Y3SZs0zUCSjRFPyrTDMmJVHLVPZelsHCMXz7P%2BSzXrX9DeHqdlOjl4eMMWz24fSu2W6Tmiy5Cv7AEXFrLFTwJo6efYfWHHGFd3OuzHSiQsumkDVxADY8fGLQ9FM062hflrev8xDfGdKoDxTUl0B02HFNBU8fIakXOqFYcr5YlhluD8DjlpfQWS7dYuamJ4DMfEbrgLTeXQZwDXoFuuukCTNX2uWKraDncm8cn%2BGwEH2oge1tLfFrtnG%2BENTIa1pA3aG%2FM0%2F%2FW5nZI3kR6ciZ65nbD33HrlHk9JLEFbyB9SKbohINyHAPbFSnIKl8n5xY7RhT5P4QOLRKfU9UBhMPC4%2F9IGOqUBnMdNe9M%2F7sqtPFocYB7a1h47BJKgNERuxoxjqwj9giC5sWLF0yhNVDjLAwXJKnD8TYm3jpUwKLIEqm120j7RWV8XdZ8b9iymiNoVtOufZbj63Gbmxj%2BWc3ycpQLp7QgtvW46vzGYH%2F4KHnobz%2F2MnscFpaOuWaLUHGTLwMjC4HGrBTnrF81nEu4UcIrMLkBNgmZCK%2F7Zbj74qSAezjwMf1z4Sw%2F2&X-Amz-Signature=84473db0e5a2e9312812fdca0da17f720ee8644cc189356e74be7129d80b41d5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这一章节我们就来聊一聊第一个 a 认证，那 a 有两种方法，一种是传统的目录管理系统，还有一种是身份认证系统，我们来看看目录管理是怎么来做的呢。首先要了解一下基本的目录服务这样一个概念，
+
+
+那这个概念是怎么样理解呢？我们看一看通常一个什么网站，是吧？对外提供的都会挂在哪里，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9a0423e1-eb2b-4298-b9e8-9f4747ce6172/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667WA2YZTH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231035Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDRc7qH9nC1gdt6uly3tiTRvjh%2F99pBpp1rLNAYLgeBoAIgYkhFmc8Bm9pws%2FaYAIau5cKYLg1i5mC9lkt0OqUggSIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNnd60nqVKWBk%2BHTjircA1TPnAbAFKlfgY53Aef%2Bx%2Bv8A1obwgCWobmJX4ta5KrlZ079WR0BgBmS9G9LzP5H7OuyKk6LMtYm60K7MmwTghHVTKxSdrlntgsDVQo9NmIXL94w7yuEmSTSlyA%2FAv940ya9K2%2FKX91cMCSh5y9kNcUfVyN39KKHasfo05KQP2mwYIrbODNfAf86ZvTPlaE2KNm2mUr9worSnQZWnRTKTzhTKYc%2FIoMh0tSqZTMzSwYQeC438a2YD1tdLsoZ1ODz1D4FgQGAD3FuMdQEzJJ%2B5Q%2B5%2FJmXeQsJ8G7tfK3t13Y3SZs0zUCSjRFPyrTDMmJVHLVPZelsHCMXz7P%2BSzXrX9DeHqdlOjl4eMMWz24fSu2W6Tmiy5Cv7AEXFrLFTwJo6efYfWHHGFd3OuzHSiQsumkDVxADY8fGLQ9FM062hflrev8xDfGdKoDxTUl0B02HFNBU8fIakXOqFYcr5YlhluD8DjlpfQWS7dYuamJ4DMfEbrgLTeXQZwDXoFuuukCTNX2uWKraDncm8cn%2BGwEH2oge1tLfFrtnG%2BENTIa1pA3aG%2FM0%2F%2FW5nZI3kR6ciZ65nbD33HrlHk9JLEFbyB9SKbohINyHAPbFSnIKl8n5xY7RhT5P4QOLRKfU9UBhMPC4%2F9IGOqUBnMdNe9M%2F7sqtPFocYB7a1h47BJKgNERuxoxjqwj9giC5sWLF0yhNVDjLAwXJKnD8TYm3jpUwKLIEqm120j7RWV8XdZ8b9iymiNoVtOufZbj63Gbmxj%2BWc3ycpQLp7QgtvW46vzGYH%2F4KHnobz%2F2MnscFpaOuWaLUHGTLwMjC4HGrBTnrF81nEu4UcIrMLkBNgmZCK%2F7Zbj74qSAezjwMf1z4Sw%2F2&X-Amz-Signature=1585e61a11783effa8d6b8fc01e1094491c85cd85ce015ea5e94f436456b12c9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+或挂在 Docom 底下，这 Docom 可以认为是一个预组件的根组件根预。如果我是慕课网，我会有个什么？我会有一个叫 i mock . com 这样一个域，那这个域是什么？它的子域是什么？ i mock，那它的根域是到com，这样的域可以不停的延展出来，最后就成为一个企业的主域，对不对？那这个企业里面也有很多不同的部门，比如说什么有一个部门叫做teacher，是吧？这就是管理老师的部门，那这个由 OU 是什么意思？ OU 就是 organization unit 的组织单元，上面的 DC 就是domain。什么 domain 的 component 域的组件。
+
+
+好，这个 OU 底下有很多人，其中也有谁，也有飞扬老师，所以飞扬老师他们作为一个 CN 什么意思？ CN 就是我们的这个 common name 标准名称，我的 common name 是谁？是飞扬，所以我在这个 IM 库底下就叫做什么飞扬？那这样一条线就是什么？表示一个人在一个组织底下的完全的附属关系。那么飞扬老师在 IM 课底下是teacher，我在其他的域底下可能是架构师。所以我可以跨多个不同域，也可以跨多个不同的组织。那同样呢？一个域下有多个组织，一个组织以下也有多个不同的 common name，不同的常用名，所以这就形成了一个交叉的拓扑结构，那这样拓扑结构看上去有点空洞噢，那如果实现呢？一说到实现，大家熟很熟悉了，什么实现？我们的理论实现叫 X. 500，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a93ec2ba-5055-4828-aa60-82f0de1d3b0f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667WA2YZTH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231035Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDRc7qH9nC1gdt6uly3tiTRvjh%2F99pBpp1rLNAYLgeBoAIgYkhFmc8Bm9pws%2FaYAIau5cKYLg1i5mC9lkt0OqUggSIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNnd60nqVKWBk%2BHTjircA1TPnAbAFKlfgY53Aef%2Bx%2Bv8A1obwgCWobmJX4ta5KrlZ079WR0BgBmS9G9LzP5H7OuyKk6LMtYm60K7MmwTghHVTKxSdrlntgsDVQo9NmIXL94w7yuEmSTSlyA%2FAv940ya9K2%2FKX91cMCSh5y9kNcUfVyN39KKHasfo05KQP2mwYIrbODNfAf86ZvTPlaE2KNm2mUr9worSnQZWnRTKTzhTKYc%2FIoMh0tSqZTMzSwYQeC438a2YD1tdLsoZ1ODz1D4FgQGAD3FuMdQEzJJ%2B5Q%2B5%2FJmXeQsJ8G7tfK3t13Y3SZs0zUCSjRFPyrTDMmJVHLVPZelsHCMXz7P%2BSzXrX9DeHqdlOjl4eMMWz24fSu2W6Tmiy5Cv7AEXFrLFTwJo6efYfWHHGFd3OuzHSiQsumkDVxADY8fGLQ9FM062hflrev8xDfGdKoDxTUl0B02HFNBU8fIakXOqFYcr5YlhluD8DjlpfQWS7dYuamJ4DMfEbrgLTeXQZwDXoFuuukCTNX2uWKraDncm8cn%2BGwEH2oge1tLfFrtnG%2BENTIa1pA3aG%2FM0%2F%2FW5nZI3kR6ciZ65nbD33HrlHk9JLEFbyB9SKbohINyHAPbFSnIKl8n5xY7RhT5P4QOLRKfU9UBhMPC4%2F9IGOqUBnMdNe9M%2F7sqtPFocYB7a1h47BJKgNERuxoxjqwj9giC5sWLF0yhNVDjLAwXJKnD8TYm3jpUwKLIEqm120j7RWV8XdZ8b9iymiNoVtOufZbj63Gbmxj%2BWc3ycpQLp7QgtvW46vzGYH%2F4KHnobz%2F2MnscFpaOuWaLUHGTLwMjC4HGrBTnrF81nEu4UcIrMLkBNgmZCK%2F7Zbj74qSAezjwMf1z4Sw%2F2&X-Amz-Signature=71f9f38095a64dd2c80b160b2045fc9a726e57b30596e0859ae896aee4eab7b7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那真正实现在 Windows 上叫 ad active 德曼域控。而在 Linux 里面是不是大家非常熟悉的 LLAVA 了？就是LLAVA，不管是 ADR 还是LLAP，它的理论基石都是 X. 500 目录辅目录管理系统。那他怎么样去真正去管理一个数据中心呢？下面是一张网上截来的图，这张图很好的说明了问题，蓝颜色，比如说是我们的什么主中心，绿颜色是我们的灾备中心。
+
+
+如果你是学了前面单元化的章节，你可以理解为什么蓝颜色是单元化a，对吧？那绿颜色是单元化b，那这两个中心各自形成一个什么独立的树？这个树就是目录管理树，也就是我们的 ad 里面的这个一个是 domain 或者是 LDAP 里面的一个域，那这个 ad 的这个 domain 跟另外一个 domain 之间是采用森林，所谓森林就是信任你这个树和我这个树是好朋友，我们互相信任，但每棵树独立运行在这个生产中心 a 或者单元 a 里面，它的数字结构是这样，它有树根，对吧？树根下面有不同的树枝，在这个树枝展开来就是整个公共公司的这个组织结构，那其中有很多的部门，比如说研发部、运维部、架构部、业务部等等，这部门里面价格部里面恰恰又有了飞扬老师作为一个 common name，一个人员，所以你在里面就会具有架构部所授权的所有的职责，同时你也要承担相应的什么能力，对吧？那这些能力，这些职责都跟你的个人有关，而你如果你想去接另外一件事情，你只要把你什么挂在另外一个 OU 底下就可以了。
+
+
+就通过 ad 和 LF 可以很方便的实现一个组织内部的什么权责的管理，那同时这个权责也可以通过信任关系很方便的发到其他的单元，或者发到其他的数据中心，形成一个森林。所以在目录管理里面是有目录、有树、有森林，这就是我们的数据中心的实际的成员管理和人员管理了。
+
+
+那如果抛弃数据中心，我们讲互联网上很多时候是对外的一个应用，对外的一个网站，或者是我们公司内部还有一些人员额外的管理，它不是采用目录管理系统，那该怎么管理呢？那我们来聊一聊另外一种更先进的方法，用户认证系统通常以三个维度来认证，一个用户怎么来认证啊？首先看一看你知道什么？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b3839d02-eb6c-4a32-a5a6-db05a01a28fc/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667WA2YZTH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231035Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDRc7qH9nC1gdt6uly3tiTRvjh%2F99pBpp1rLNAYLgeBoAIgYkhFmc8Bm9pws%2FaYAIau5cKYLg1i5mC9lkt0OqUggSIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNnd60nqVKWBk%2BHTjircA1TPnAbAFKlfgY53Aef%2Bx%2Bv8A1obwgCWobmJX4ta5KrlZ079WR0BgBmS9G9LzP5H7OuyKk6LMtYm60K7MmwTghHVTKxSdrlntgsDVQo9NmIXL94w7yuEmSTSlyA%2FAv940ya9K2%2FKX91cMCSh5y9kNcUfVyN39KKHasfo05KQP2mwYIrbODNfAf86ZvTPlaE2KNm2mUr9worSnQZWnRTKTzhTKYc%2FIoMh0tSqZTMzSwYQeC438a2YD1tdLsoZ1ODz1D4FgQGAD3FuMdQEzJJ%2B5Q%2B5%2FJmXeQsJ8G7tfK3t13Y3SZs0zUCSjRFPyrTDMmJVHLVPZelsHCMXz7P%2BSzXrX9DeHqdlOjl4eMMWz24fSu2W6Tmiy5Cv7AEXFrLFTwJo6efYfWHHGFd3OuzHSiQsumkDVxADY8fGLQ9FM062hflrev8xDfGdKoDxTUl0B02HFNBU8fIakXOqFYcr5YlhluD8DjlpfQWS7dYuamJ4DMfEbrgLTeXQZwDXoFuuukCTNX2uWKraDncm8cn%2BGwEH2oge1tLfFrtnG%2BENTIa1pA3aG%2FM0%2F%2FW5nZI3kR6ciZ65nbD33HrlHk9JLEFbyB9SKbohINyHAPbFSnIKl8n5xY7RhT5P4QOLRKfU9UBhMPC4%2F9IGOqUBnMdNe9M%2F7sqtPFocYB7a1h47BJKgNERuxoxjqwj9giC5sWLF0yhNVDjLAwXJKnD8TYm3jpUwKLIEqm120j7RWV8XdZ8b9iymiNoVtOufZbj63Gbmxj%2BWc3ycpQLp7QgtvW46vzGYH%2F4KHnobz%2F2MnscFpaOuWaLUHGTLwMjC4HGrBTnrF81nEu4UcIrMLkBNgmZCK%2F7Zbj74qSAezjwMf1z4Sw%2F2&X-Amz-Signature=07bd5a08e9e4dd548bd2da7731ffa421417ba1b315d6060bb788a308070a2ccd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+比如说我要登录我们的数据库，也许我要知道一个登录密码，那这个登录密码就可以让我去登录数据库做很多坏事哦。那如果我要登录我的邮箱服务器，我也要知道我的什么账号以及我的密码，所以密码是很常见的。
+
+
+pin 大家熟悉吗？ PIN 就是个人身份标识，比如飞扬老师所在的企业，新员工注册第一天，他会给你一个什么工牌，这工牌后面藏着一个小密码，这个密码短短的一段就表示你的个人特殊码。拿这个特殊码我就可以注册我的邮箱，可以注册我的这个内部登录系统，也可以注册我的什么很多的这个公司的内部账号，然后又通过这些账号可以登录开发系统、生产系统，甚至于是一些特殊的数据库，那这些所有的内容都来自一个 PIN 码，这个 PIN 码标识我的个人的身份，那这是也是企业里面内部经常使用的。
+
+
+那除此以外，飞扬老师更推荐采用密码短语，假设你是一个密码系统，我不建议说是有很多系统采用那种弱密码，就是什么8位 6 位，这不合适我们企业里我采用的密码怎么样？ 26 位以上，请输入一个 26 位以上的密码，大家记得住这种密码吗？记不住，是不是？那怎么办呢？写一段话，这段话就是飞扬老师经常用的，就是什么慕课，是什么程序员的什么梦想开启的地方，是吧？你把它翻成英文就是木克 is Developer stream maker。
+好，你把这段密码作为什么密文，然后用它来登录木克，就能登录阜阳老师的系统。不好意思，口误，把我飞扬老师的这个登录慕课的密码给告诉大家了，呵呵，好，这是一个什么小幽默啊？那除此以外，你知道什么以外，你还应该什么？你还应该拥有一些东西。你拥有什么呢？阴令牌，大家有没有印令牌？全球最知名的印令牌就是这家，就是 RSA 协议的开发的，或者说是设计的。三位大牛开了那家公司叫 RSI 公司，它提供了一个叫 CQID 的阴令牌，那这个阴令牌会有一个 6 位的什么数字？是根据格林位置时间精确到秒会创建一个数字，然后它会不停的滚动。那我们现在各个银行它如果给你一张应令牌都类似，都仿照 RSA 公司这应令牌，你拿这个数字登录银行系统，然后输入这个值。只要你这个值输入时间跟实际的这个令牌值差距在两三秒之内，它就会认可你，然后你就可以通过验证这是应令牌。那除此以外，智能卡。
+
+
+什么？智能卡？是一个嵌入式系统或者单片机做更加强大的交互式的验证。那 USB k 大家用有没有用过啊？这也是一家经典的 USBK 公式，叫UBK。那这家公司什么？就是在里面储存了一个内部信息，这个内部信息是美卡独立的，当你把这张内部信息的这个 USB key 插到你的笔记本或者你一台式机的时候，你要去点一下中间那个 y 按钮，这是一个触摸按钮，点一下以后就触发一次校验，它会把本地这个 key 里面内部的值去跟什么平台里面的那个值进行校验。它其中其实也存了一套私钥信息在里面，通过校验以后就知道你到底是不是你，这也是一种什么校验身份的方法？叫 USB 卡，一些银行系统也会采用这种方法。这方法什么好处啊？你不用看数字是吧？不用输数字，就叉一个key，嵌一下按钮就可以了。
+
+
+好，除此以外，手机是不是也是一个你拥有的特殊产品啊？通过什么对你手机发什么短信，或者是像你手机上的某一个APP，比如像 Google Auth 这种 APP 发一个动态的令牌，那这个令牌是个软令牌，也许也是 6 位或者是8位。发完以后你拿这个数字去登录网上的谷歌，就能访问谷歌的云平台了。
+
+
+所以这些都是什么常用的？你拥有什么？还有什么方法来验证你是不是现在更流行的是指纹、声纹、脸纹、虹膜，所谓脸纹就是这样，是吧？我们像这个什么支付宝，我们的微信里面让你什么摇一摇、点一点、笑一笑，是不是都是理由啊？那哪一种我们的身份认证方法最好是知道什么好？还是拥有什么好？还是你是什么好？哪种认证方法最强？哪种最弱？大家知道吗？答案会令你非常惊讶，答案是都非常弱。
+
+
+任何一种方法它的安全认证系数都非常弱，比如说我们说嗯，指纹声纹，它的识别率可能只有百分之九十几，对于你来说已经不错，但是对于黑客来说，它可以通过几百次、几千次、几万次的认证来实现，是吧？最终那个几来打开你的这个系统。一样的道理，硬令牌看上去很精准，但是如果你丢失了密码，如果被别人破解了，被别人猜出来了，都会存在安全问题，那怎么来实现更高的认证啊？大家想到没有？很简单，交叉认证，我要取三大元素，你知道你拥有和你是中间的两大元素以上，然后每个元素挑一种方法，比如我用什么密码短语加上应令牌才允许你登陆我的生产系统，通过这种方式基本上可以杜绝黑客的攻击。黑客要攻击一条途径比较简单，要攻击两到三条途径以上就非常困难。
+
+
+所以这就是身份认证新时代，身份认证不管是数据中心，不管是应用，身份认证的主要特点就是采用一些新式的方法，而后台你还是可以采用目录系统的管理来进行什么权限的收集以及用户的实际的储存，但是对外你不能暴露一个用户系统，而应该暴露像这种身份认证，比较新时代的用户认证方法。
+
+
+好，这里面聊的都是一些什么理论化比较轻松的话题，那这个第一个 a 就聊完了，那第二个 a 就不是这么简单了，第二个 a 我们会聊一些更多的授权，甚至于前面没有提的像SSO、 Oauth 这种既处理认证又处理授权的内容，我们都会放在后面两节单独去讲授权，我们会花 12345 好几个篇章好好的来讲一讲授权。大家敬请期待。
+

@@ -1,0 +1,72 @@
+---
+title: 2-8 基于数据库的分布式锁
+---
+
+# 2-8 基于数据库的分布式锁
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d062bc47-8a9f-40e9-821c-75d2c0ef14a5/SCR-20240807-jmoq.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RHDV5GA4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225343Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIQCiQYN9lPHTK2ZJXjgIHoY5IJeDP3EEpE0cAuaRU7ISKgIfdDQqECkUUtAOpF2XynZXPIBqzOqapwcLSccc28dPfyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMpO2Da%2FDtCsGyzgkTKtwDS5UC8IgNAah19J0mpFQnmVfvskdKXKf%2BBpbud0DBfvZTYaG6KeODUCzri82zVvnzdhVQOLTF3OF%2Fmj4S%2Bkvzz%2FQepf5%2Bua5ONk9gtVa0AWaUsFVkMYknN%2Fd1cQLi1ctdH20PXanMXCtXwM3UNIQugc0QfYNurjZ9PiaWjV0Ntrw%2BLwq%2BB8DGpTyCUS%2FXH0WMIUch5M0F6nL7UmAGpWNGwBEhbtvyAOy1mD1h33y0%2BvkUGq8F54uMottMRQMfte3tQGiHNIkIm9qRRtVzoCeKntAfcwoWwNHDpnJrXRtwScGjYLir27w3Kx%2B53ECnptbBxntO1JbMXBnIdMsVzquo%2B9TtG%2FCTk3r6ixMZakp3tslSpAS6dk73CIc5%2BEwK%2BhKKkWAhfERXtCSrKWuAyI0MppfFjfFHWToYPMyAjYbqzc5n1EfW%2BcCcYPcRvWOayGO93XUu4redrlOIbi4vpGT%2BJq8FK%2F6qlzEwluKpYf98IRz8OaTgAmI8Y0KqYC%2FHDslrUDiDh5CmW%2FfZCoA5oYZJJo1dDFnF9JH6%2FmAXw1ZSgEDmCOeknfcp9MwG53mmBNz4xWCiW%2FWMHHTkYjrgnMnom8dS9MsnDhygP%2F2uCF5QmhD0V5qNNZoRrVLmqJMwobr%2F0gY6pgF9%2BBJWqBV1g%2FkEoKKv43UigxdnUQi6uaaeei%2BLuF7rPl0JHLcPPb6KdUGdliVsziLRghV6v4qCmQ%2BOQviJKFekG9vCxuC5%2FS1b85d%2BuXDcOOCk5X8Ntrh5bOAyZuK%2B5rZteaVUU0GgRI9M8iY4iOlD7noGp%2BxcG6S8Pm2P%2B6yGcJCNTBstc4SU4utJx1ZrmmwvCRmwY%2B91ynYBx4pW09ax4wqv%2B9Vk&X-Amz-Signature=c09a3e910f1d874c95893d7d07ed8b4f89d25ba7353f47c47f685828e7edd3c0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9fba557f-e7e7-4a5f-bcd2-4b5b162b2293/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RHDV5GA4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225343Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIQCiQYN9lPHTK2ZJXjgIHoY5IJeDP3EEpE0cAuaRU7ISKgIfdDQqECkUUtAOpF2XynZXPIBqzOqapwcLSccc28dPfyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMpO2Da%2FDtCsGyzgkTKtwDS5UC8IgNAah19J0mpFQnmVfvskdKXKf%2BBpbud0DBfvZTYaG6KeODUCzri82zVvnzdhVQOLTF3OF%2Fmj4S%2Bkvzz%2FQepf5%2Bua5ONk9gtVa0AWaUsFVkMYknN%2Fd1cQLi1ctdH20PXanMXCtXwM3UNIQugc0QfYNurjZ9PiaWjV0Ntrw%2BLwq%2BB8DGpTyCUS%2FXH0WMIUch5M0F6nL7UmAGpWNGwBEhbtvyAOy1mD1h33y0%2BvkUGq8F54uMottMRQMfte3tQGiHNIkIm9qRRtVzoCeKntAfcwoWwNHDpnJrXRtwScGjYLir27w3Kx%2B53ECnptbBxntO1JbMXBnIdMsVzquo%2B9TtG%2FCTk3r6ixMZakp3tslSpAS6dk73CIc5%2BEwK%2BhKKkWAhfERXtCSrKWuAyI0MppfFjfFHWToYPMyAjYbqzc5n1EfW%2BcCcYPcRvWOayGO93XUu4redrlOIbi4vpGT%2BJq8FK%2F6qlzEwluKpYf98IRz8OaTgAmI8Y0KqYC%2FHDslrUDiDh5CmW%2FfZCoA5oYZJJo1dDFnF9JH6%2FmAXw1ZSgEDmCOeknfcp9MwG53mmBNz4xWCiW%2FWMHHTkYjrgnMnom8dS9MsnDhygP%2F2uCF5QmhD0V5qNNZoRrVLmqJMwobr%2F0gY6pgF9%2BBJWqBV1g%2FkEoKKv43UigxdnUQi6uaaeei%2BLuF7rPl0JHLcPPb6KdUGdliVsziLRghV6v4qCmQ%2BOQviJKFekG9vCxuC5%2FS1b85d%2BuXDcOOCk5X8Ntrh5bOAyZuK%2B5rZteaVUU0GgRI9M8iY4iOlD7noGp%2BxcG6S8Pm2P%2B6yGcJCNTBstc4SU4utJx1ZrmmwvCRmwY%2B91ynYBx4pW09ax4wqv%2B9Vk&X-Amz-Signature=b79a190a9450950908f603ff70ac4987baa507ad069aefd2d402cdb4f051ed52&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/fc2fc7cf-b1e2-43c9-ab89-6b6ecacf9d78/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RHDV5GA4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225343Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIQCiQYN9lPHTK2ZJXjgIHoY5IJeDP3EEpE0cAuaRU7ISKgIfdDQqECkUUtAOpF2XynZXPIBqzOqapwcLSccc28dPfyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMpO2Da%2FDtCsGyzgkTKtwDS5UC8IgNAah19J0mpFQnmVfvskdKXKf%2BBpbud0DBfvZTYaG6KeODUCzri82zVvnzdhVQOLTF3OF%2Fmj4S%2Bkvzz%2FQepf5%2Bua5ONk9gtVa0AWaUsFVkMYknN%2Fd1cQLi1ctdH20PXanMXCtXwM3UNIQugc0QfYNurjZ9PiaWjV0Ntrw%2BLwq%2BB8DGpTyCUS%2FXH0WMIUch5M0F6nL7UmAGpWNGwBEhbtvyAOy1mD1h33y0%2BvkUGq8F54uMottMRQMfte3tQGiHNIkIm9qRRtVzoCeKntAfcwoWwNHDpnJrXRtwScGjYLir27w3Kx%2B53ECnptbBxntO1JbMXBnIdMsVzquo%2B9TtG%2FCTk3r6ixMZakp3tslSpAS6dk73CIc5%2BEwK%2BhKKkWAhfERXtCSrKWuAyI0MppfFjfFHWToYPMyAjYbqzc5n1EfW%2BcCcYPcRvWOayGO93XUu4redrlOIbi4vpGT%2BJq8FK%2F6qlzEwluKpYf98IRz8OaTgAmI8Y0KqYC%2FHDslrUDiDh5CmW%2FfZCoA5oYZJJo1dDFnF9JH6%2FmAXw1ZSgEDmCOeknfcp9MwG53mmBNz4xWCiW%2FWMHHTkYjrgnMnom8dS9MsnDhygP%2F2uCF5QmhD0V5qNNZoRrVLmqJMwobr%2F0gY6pgF9%2BBJWqBV1g%2FkEoKKv43UigxdnUQi6uaaeei%2BLuF7rPl0JHLcPPb6KdUGdliVsziLRghV6v4qCmQ%2BOQviJKFekG9vCxuC5%2FS1b85d%2BuXDcOOCk5X8Ntrh5bOAyZuK%2B5rZteaVUU0GgRI9M8iY4iOlD7noGp%2BxcG6S8Pm2P%2B6yGcJCNTBstc4SU4utJx1ZrmmwvCRmwY%2B91ynYBx4pW09ax4wqv%2B9Vk&X-Amz-Signature=7e3aef79ec3553515509d5671951231699599f53f750652147d15d3ffc4d78e1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello 大家好，咱们已经通过一个 demo 体验到了这个单体应用锁的局限性。那么接下来咱们就看看分布式锁第一种实现方式，基于数据库的悲观锁去实现分布式锁，咱们看一下具体的实施的步骤。在前面的图文教程当中，咱们已经了解了这个 Java 给咱们提供的这个锁是不能够跨 gvm 的，不能够跨进程。那么如果实现这种分布式锁跨进程的锁我们要怎么做呢？我们要找到一个所有的 J VM 都可以访问的第三方的公共组件。那么这个组件是什么呢？在咱们这一节的内容当中，这个组件就是数据库，我们要借助于数据库去实现多个进程之间这种分布式锁。咱们看看具体怎么去操作。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/643c5094-1c81-47af-b881-483ae3d9ddd4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RHDV5GA4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225343Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIQCiQYN9lPHTK2ZJXjgIHoY5IJeDP3EEpE0cAuaRU7ISKgIfdDQqECkUUtAOpF2XynZXPIBqzOqapwcLSccc28dPfyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMpO2Da%2FDtCsGyzgkTKtwDS5UC8IgNAah19J0mpFQnmVfvskdKXKf%2BBpbud0DBfvZTYaG6KeODUCzri82zVvnzdhVQOLTF3OF%2Fmj4S%2Bkvzz%2FQepf5%2Bua5ONk9gtVa0AWaUsFVkMYknN%2Fd1cQLi1ctdH20PXanMXCtXwM3UNIQugc0QfYNurjZ9PiaWjV0Ntrw%2BLwq%2BB8DGpTyCUS%2FXH0WMIUch5M0F6nL7UmAGpWNGwBEhbtvyAOy1mD1h33y0%2BvkUGq8F54uMottMRQMfte3tQGiHNIkIm9qRRtVzoCeKntAfcwoWwNHDpnJrXRtwScGjYLir27w3Kx%2B53ECnptbBxntO1JbMXBnIdMsVzquo%2B9TtG%2FCTk3r6ixMZakp3tslSpAS6dk73CIc5%2BEwK%2BhKKkWAhfERXtCSrKWuAyI0MppfFjfFHWToYPMyAjYbqzc5n1EfW%2BcCcYPcRvWOayGO93XUu4redrlOIbi4vpGT%2BJq8FK%2F6qlzEwluKpYf98IRz8OaTgAmI8Y0KqYC%2FHDslrUDiDh5CmW%2FfZCoA5oYZJJo1dDFnF9JH6%2FmAXw1ZSgEDmCOeknfcp9MwG53mmBNz4xWCiW%2FWMHHTkYjrgnMnom8dS9MsnDhygP%2F2uCF5QmhD0V5qNNZoRrVLmqJMwobr%2F0gY6pgF9%2BBJWqBV1g%2FkEoKKv43UigxdnUQi6uaaeei%2BLuF7rPl0JHLcPPb6KdUGdliVsziLRghV6v4qCmQ%2BOQviJKFekG9vCxuC5%2FS1b85d%2BuXDcOOCk5X8Ntrh5bOAyZuK%2B5rZteaVUU0GgRI9M8iY4iOlD7noGp%2BxcG6S8Pm2P%2B6yGcJCNTBstc4SU4utJx1ZrmmwvCRmwY%2B91ynYBx4pW09ax4wqv%2B9Vk&X-Amz-Signature=5dce772848b3f13ae98b6ed6711057ad8203cd23e6e9c2dbac1da906ef99b41a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/da75409e-a658-45fc-b41b-c2ad591ccdbd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RHDV5GA4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225343Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIQCiQYN9lPHTK2ZJXjgIHoY5IJeDP3EEpE0cAuaRU7ISKgIfdDQqECkUUtAOpF2XynZXPIBqzOqapwcLSccc28dPfyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMpO2Da%2FDtCsGyzgkTKtwDS5UC8IgNAah19J0mpFQnmVfvskdKXKf%2BBpbud0DBfvZTYaG6KeODUCzri82zVvnzdhVQOLTF3OF%2Fmj4S%2Bkvzz%2FQepf5%2Bua5ONk9gtVa0AWaUsFVkMYknN%2Fd1cQLi1ctdH20PXanMXCtXwM3UNIQugc0QfYNurjZ9PiaWjV0Ntrw%2BLwq%2BB8DGpTyCUS%2FXH0WMIUch5M0F6nL7UmAGpWNGwBEhbtvyAOy1mD1h33y0%2BvkUGq8F54uMottMRQMfte3tQGiHNIkIm9qRRtVzoCeKntAfcwoWwNHDpnJrXRtwScGjYLir27w3Kx%2B53ECnptbBxntO1JbMXBnIdMsVzquo%2B9TtG%2FCTk3r6ixMZakp3tslSpAS6dk73CIc5%2BEwK%2BhKKkWAhfERXtCSrKWuAyI0MppfFjfFHWToYPMyAjYbqzc5n1EfW%2BcCcYPcRvWOayGO93XUu4redrlOIbi4vpGT%2BJq8FK%2F6qlzEwluKpYf98IRz8OaTgAmI8Y0KqYC%2FHDslrUDiDh5CmW%2FfZCoA5oYZJJo1dDFnF9JH6%2FmAXw1ZSgEDmCOeknfcp9MwG53mmBNz4xWCiW%2FWMHHTkYjrgnMnom8dS9MsnDhygP%2F2uCF5QmhD0V5qNNZoRrVLmqJMwobr%2F0gY6pgF9%2BBJWqBV1g%2FkEoKKv43UigxdnUQi6uaaeei%2BLuF7rPl0JHLcPPb6KdUGdliVsziLRghV6v4qCmQ%2BOQviJKFekG9vCxuC5%2FS1b85d%2BuXDcOOCk5X8Ntrh5bOAyZuK%2B5rZteaVUU0GgRI9M8iY4iOlD7noGp%2BxcG6S8Pm2P%2B6yGcJCNTBstc4SU4utJx1ZrmmwvCRmwY%2B91ynYBx4pW09ax4wqv%2B9Vk&X-Amz-Signature=9b374db2a6375549a8761df6f56bfb356a610731850effe188eee6d87330c3a5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+咱们是通过 select for update 通过这种方式去实现分布式锁。那么 select for update 是什么意思呢？它是你 select 检索出的数据， for update 就是加上了一把锁，我检索出的这些数据就是给它加了一把锁。那么其他的人是不能修改这条数据的，也不能再给这条数据加锁，我可以检索出来。但是我再用锁 update 再给这些数据加锁是加不上，因为这个锁被前一个线程给锁住了，其他人是不能给它加锁的。在加锁的期间，其他的人也不可以修改这些数据。因为 update 的更新数据是要获取这些数据的锁的，但是这些锁都被这个 select for update 给锁住了。咱们看一下，for update 锁定数据，其他的线程只能等待。
+
+
+在这里，咱们可以直接通过内 wikit 咱们就是访问一下数据库，看看是不是这个样子。咱们先打开内微 Kate 在这里咱们还是要新建一张表，这张表也是给后面的这个实战的案例使用。咱们填张表，这张表当然要有 ID 了，11位主键自动递增，然后再添加一个叫做业务名称 business code 业务代码。这个是什么意思呢？这个主要是区分你不同业务使用的锁，比如说我订单使用一把锁，我其他的比如说我商品的某些步骤还要防止并发，还要加一把锁。那么我们这两个不可能使用同一把锁，你如果使用了同一把锁，我订单这边加了锁了，那我商品这边也被锁住了，也不能用了。所以咱们要根据这个业务的代码去区分不同的业务，使用不同的锁。所以加了一个 business code 然后再添加一个 business name 这个主要就是写一些注释标志。这个 code 到底是什么意思？实际的用途应该是没有什么用途，咱们保存一下表名，咱们就叫做 distribute lock 分布式锁。
+
+
+好，这张表已经创建完成了，然后里边咱们给他加一个数据，这个 business code 咱们叫什么叫个demo ，名称叫做 demo 演示。有了这么一条数据，然后咱们要看看这个 select for update 咱们这里边新开两个窗口，每一个窗口都去检索这条数据。第一个窗口检索完成以后，咱们再看看第二个窗口，第二个窗口能不能检索出来。在检索之前，咱们要把这个数据库的会话，自动提交给它关掉。
+
+
+咱们先看一下目前的自动提交的这种状态是多少？ O to commit 咱们运行一下是为什么要给它设置成 0 呢？如果你不设置成0，你现在检索出来以后或 update 加到锁。加到锁以后，它马上这个事物就自动去提交了，等于是事物提交以后，那你这锁也就释放了，其他的这种绘画还会检索出这一条数据来。所以在这之前咱们要把这两个绘画这个凹凸可 meet 设置成0，这样它的事务就不会自动提交。好，这个绘画已经设置成 0 了，再把第二个窗口的这个绘画同样设置成0。
+
+
+好，现在咱们写一套思考语句，select星号 from distribute lock where business code 等于 demo 然后 for update 咱们运行一下。好，这条数据已经加锁了，检索出来了。然后我们同样执行这条语句，在第二个窗口里边去执行运行。大家看到现在是检索不出来的。为什么呢？因为你前一个窗口把这条语句给锁住了，然后这个会话并没有结束，事务并没有提交。那么你另外一个会话检索的时候是锁不住这条记录的，咱们再去执行一个 commit 操作。
+
+
+好，执行完了，咱们再看第二个窗口。第二个窗口现在给这条语句加到锁，并且也已经检索出数据来。这个时候咱们再回到第一个窗口，咱们看看。如果我不加 for update 它能不能检索出数据来呢？大家可以想一下，猜猜能不能检索出来运行一下。答案当然是可以检索出来，因为你加锁只是锁定了这条数据，其他的会话是不可以更改这条记录，也不可以再给这条语句加锁，但是我检索是不影响的。这边咱们也 commit 一下。
+
+
+咱们现在就是运用这个特性，你检索出一条记录以后给这条记录加锁，其他的会话再加锁是加不上，就是运用了这条特性去实现咱们的分布式锁。下面咱们就通过程序给大家演示一下还是前面咱们用到的这个 demo 这个 demo 咱们用了可重误锁，现在咱们要写 SQL 语句，在写 SQL 语句之前咱们要把这个连接数据库的这些依赖给它打开。然后刷新一下 Maven 这里边咱们要加个 my badis 的这个插件生成的这个插件 dependence 这个咱们从之前的项目给它复制过来就可以了，具体的我就不带领大家去网上去查了。这个可以通过 mybetis 生成器的这个官网可以查到具体的配置这块。咱们为了简便，就直接把前一个项目的这个 plug in 这一块给它复制过来，然后粘贴到这个插件当中刷新一下麦文这个已经刷新完了。然后咱们还要把这个生成的买卖意思的这个生成器的配置文件给它复制过来。然后咱们修改一下前面数据库的链接，这一块都没有问题。然后包名包名咱们这个项目叫做 distribute lock 后边这一块也要改一下，其他的目录不用变。然后咱们要生成这个分布式锁这张表这个叫做 distribute lock 生成拾起类的名字 distribute lock 然后咱们运行一下这个插件，好应该是创建成功了，咱们看一下没有问题， mapper mode 都已经生成了，最后这个叉 ML 文件也已经生成了。
+好，接下来咱们就要写这个获取锁的这个搜索语句，咱们要在这个 mapper 当中去新写一个方法，这个方法叫做 select distribute lock 传入一个参数。这个参数是 business code。
+
+
+然后咱们前面加一个参数的注解叫做比斯尼斯 code 然后生成这个叉 mar 文件，生成一个 select 的方法。里边咱们 select 星号 from distribute lock where business is code 那么看看前面有没有咱们复制一个 is in the code 等于 business code 然后 for update 这个就是一个加锁的 SQL 语句。然后咱们要在这个程序当中使用这个 SQL 完成分布式锁。那么这一块咱们就要改一下之前那个可宠物锁，咱们不用了给它删掉。然后咱们把 map 给它输入进来， distribute lock mapper 咱们用resource ， resource 是不会报这个错。然后 distribute lock mapper.select distribute lock 传入一个参数。这个锁咱们叫做 demo 已经在数据库里边配置好了。
+
+
+检索这个数据。如果你这个锁检索不到，有可能我们这个参数写错了，没有这把锁，那怎么办呢？咱们就直接抛出一个异常 new exception 分布式锁找不到。
+好，这样就没有问题了。但是咱们要考虑一点就是这个方法咱们要给它加一个事物，因为你检索出来以后可能检索出来以后，这个事务马上就提交了。其他的这个检索依据，还可以对 demo 这条数据进行加锁，这块咱们先验证一下，看看不加这个事物这块能不能实现这个分布式锁。好，咱们现在启动两个服务，先启动 8081 这个服务，然后再启动8080。
+大家看又报错了，咱们这个数据库没有配置，咱们进入到这个 properties 文件，然后把这个 did the source 给它配置一下。 username 就是 root 密码是123456，然后再配置 urlurl 咱们还是从前一个项目给它复制过来，这块这个 URL 咱们就不给大家做详细的介绍了，这个也简单的说一下。
+
+
+前面 gdbc circle 这个协议就是这么写，然后地址加端口，这个是你数据库的名称，后边这两个是必须要配的，在这个 MySQL 8.0 以后，这个是必须要这么写的。要写它的时区。如果你不配时区的话，你在检索的时候这个数据库它会报错。然后 SSL 咱们不使用，这个也是必须明确的要在这里写出来的。然后咱们这个 mybetis 也没有配置 my betis mapper locations 这个应该是 mabetis 星点叉 ML 然后在启动类当中要加一个 mapper scan 扫描咱们的这个接口，咱们接口看看在哪个目录下，咱们 do 这个目录，咱们给它复制一下，然后粘贴到这里边来。好，这样应该就没有问题了，咱们再启动一下，把这两个服务都给它启动。好没有问题。
+
+
+8081 端口已经启动成功了，再看看 8080 也已经启动成功了，然后咱们看一下，咱们还是打开这个 demo controller 看看这个日志都在什么地方写的。咱们打开这个 postman 再去访问不同端口的这个 single lock 这个 single lock 这个名称，咱们也应该给它改一下了，咱们先这样，先看一下。第一个请求发送，第二个请求发送，咱们来看看后台的日志。
+
+
+8080 已经进入了锁，看看 8081 也进入了锁，看来这块事物应该是检索完以后就直接提交了，并没有等到方法结束以后再去提交。咱们把这个服务都给它停一下，然后在这个方法上给它加个 transactional 这个注解。然后里边 rollback rollback for exception.class spring 默认的这个回滚的异常是 one time exception 就是运行时的异常它才会回滚。如果你强行抛出了这么一个exception ，它是不会回滚的。所以这块咱们要指定一下，它回滚时监听了异常，咱们再启动。
+
+
+看看这回分布式锁是不是能够生效还是进入到 post man 第一个请求发送，然后 8081 这个请求也发送，看看后台的日志，8080进入了锁。刚才 8081 我进入了方法，锁并没有进入，看来咱们的分布式锁也已经成功了。 8081 这个服务它在检索分布式锁这条记录的时候，由于 8080 这个服务给他上了锁了，所以他在执行 for update 的时候是执行不了的，只能在这里进行等待，等待前面的 8080 这个服务把锁释放。释放以后，8081才能够去进行加锁。咱们看后边这是抛了异常了，lock weight time out 这块是说明他什么，说明锁等待超时了，咱们前面休眠了一分钟。好，咱们这块给它休眠的时间，咱们给它调短一点，调成 20 秒，咱们再看一下效果，两个服务再给它重新启动一下。都已经起来了。
+
+
+咱们这次第一次先访问808e ，发送请求，然后再访问8080，再看看后台的日志。先看1，8081进入了方法，进入了锁，8080只进入了方法，咱们等待，看看 20 秒以后，这个 8080 这个服务好，现在看到也已经进入了锁，看来咱们的分布式锁是没有问题的。
+
+
+好咱们再来快速的回顾一下，回顾一下这个分布式锁，分布式锁定义咱们要清楚要跨进程，咱们因为有了两个端口号，明显的就是两个进程。在两个进程之间要使用锁的话，咱们 JVM 里边的锁就不生效，咱们要借助于第三方。在咱们这个例子当中，第三方的这个组件咱们使用的是数据库。在数据库当中咱们使用了 select for update select for update 这个加锁的语句使得只有一个进程能够获取到这条数据，其他的进程检索到这条数据的时候只能等待，等待前一个进程把这个锁给它释放掉，就是用了这个特性咱们才实现了这个分布式锁。
+
+
+最后咱们看一下基于数据库这种分布式锁它有哪些优缺点。首先就是简单方便，易于理解。基于数据库咱们都比较常用，而且它的一些思考语句咱们也使用得非常的熟练，理解起来也比较好理解。然后缺点缺点就是并发量大的时候对数据库的压力比较大。因为这个 for update 这个锁对数据库这个性能要求就比较高。当你并发量特别大的时候，所有的这种 select for update 的请求都会堆积在数据库当中，对数据库的压力比较大。
+
+
+所以如果你非要使用数据库这种方式的分布式锁，建议这个锁的数据库与业务的数据库分开，你压力大，你对数据库影响比较大，但是你不要影响我的业务，所的这个数据库与业务的数据库进行分开。好了，这一节的内容就先给大家介绍到这下一节，咱们要给大家介绍如何使用 Redis 去实现分布式锁。
+
+

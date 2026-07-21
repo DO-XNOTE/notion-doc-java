@@ -1,0 +1,160 @@
+---
+title: 2-6 多快好省 - 扩展性实现方案
+---
+
+# 2-6 多快好省 - 扩展性实现方案
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b40f5104-6c49-4342-9f2e-d9cc3690be6f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=e47590816138ea4eaabd880d109c0a84534404ef0ecd6b70fbfd322e0fd02995&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+假期需求到落地的桥梁，构建 it 新蓝图，我是张飞扬。上一节我们聊了聊流程的扩展性，那之前我们已经阐述完了架构扩展性和组织扩展性，大家想一想这些是不是都有点理论化？到底怎么样才能落地？什么样的方案才是可实现的？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4989744d-3154-4008-ab46-b5394c7a7b12/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=97a60dc184d6b9fa70105969dbaa33da32f6a8c64687fa8f0abf397ce566ff4d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那我们就来看看怎么真正落地，总结成四个字叫多快好，省的实现扩展性。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2a20ebee-a9da-4616-99fe-82409ab7ed19/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=651017cb247fb64f9b92817535202fc7ec440c017e43da777eae1f075084ce58&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们回顾一下，我们在 10 年以前要起一个电商平台，我们怎么样？我们去找一家大型的这种设备供应商，买它一个这种小型机，然后在里面买一些CPU、内存，先把应用跑起来，随着业务的增长，我们就会去买一些扩展柜，买一些license，把 CPU 给扩升，把内存给延展。但是一台机器什么终归是有限，再强的这种高性能机器，它的上限也是存在的，我们很快我们的业务涨了几个月，或者涨了一两年以后了，就达到了整个系统的上限。
+
+
+那这个时候怎么办？必须采用什么我们的互联网思维？那什么是互联网思维？它是这样的，所有的能力要扩展都要靠多来实现，不能纵向扩展，必须横向的采用更多的服务器，更多的设备来实现。谁是这个思想的经典的代表？那就是西游记里的孙悟空了。孙悟空的金箍棒固然厉害，那更厉害的就是什么拔一撮河毛，吹一口气，孩儿们，让我们为师傅报仇，三拳都能打死个老师傅是吧？那我们孙悟空吹出的可是 300 多个拳头， 3000 多个棍子，对吧？那什么妖怪能扛得住，就是这个思想是吧？使得我们整个扩展性是吧？不停的向上延伸，真正的互联网是能支撑起来，也就是靠这个思想。那到底怎么样才能实现多呢？那我必须强调另外一个单词叫多快好省，只有快好省结合起来，我们才能实现扩展性的多。而这三个字快好省恰恰给我们什么前面说的扩展性立方体就是一一相关的。
+
+
+好，我们首先看快快，这里描述的就是最快的方式实现横向扩展，那自然就是 x 轴无脑克隆和数据复制了。那说到这个无脑克隆，大家应该结合前面的架构的课程，已经很了解了，在应用上是很容易实现无脑克隆和复制的，只要让这个应用无状态，我们可以采用一下容器化的技术，快速的起码成千上万个容器。
+
+
+而在我们的实际的这种云环境当中更加夸张了，它可以什么？在没有业务压力的时候，一个容器都不起。通过一种感知机制，一旦你的需求，你的业务压力要来了，我就起一两个容器，但你业务压力稍微大点，我觉得起几十个，再大点、几百个，再大一点数千个，那压力到高峰的时候出现这种热卖或者说畅销的时候，我其成千上万个容器都在一瞬间。
+
+
+那这样的方法具体怎么样实现？我们这个二期课程里面会有单独的一个章节，云架构设计章节，给大家感知一下我们主要的那些互联网公司，那些真正的大厂，他们的公有云平台是如何实现应用无状态的、无服务化，快速扩展的？这是应用的什么？应用的快？应用的 x 轴。
+
+
+我们如果是数据怎么办？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3b4e3951-f9fb-42f9-be25-71ad67cc279e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=b4b156e1cf7a543007ac44f332bfcc789ebfbba802e53d1380eca8d1619dd1e3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+数据很有很多种解决方法，如果是 no SQL 很简单，是不是采用多副本？几乎所有的 no SQL 都支持多副本，如果是 CQ 怎么办？ CQ 也有一些好的方法，我们可以采用读写分离，一写多读。我们也可以采用冷热分离，把那些真正需要扩展的热的内容分离到内存里面，分离到一些这种缓存的中间件里。那这个呢？很巧，我们在后续的分布式架构章节，也会详细聊所有的可实现的技术，以及这些技术的制约性。那除此以外，大家想一想还有什么样的部件是需要扩展的？不要忘了中间件包含我们的缓存系统，包含我们的那些业务的发现，业务的仲裁等等这些系统，这些系统也是什么，也是符合 c a p 理论的。当你需要什么很快的扩展的时候，当你需要有高可用的时候，你有时候得牺牲一些一致性。所以在这种环节里面我们可以采用一些，比如像数据库跟缓存之间数据不一致，但是大部分的读请求我们那么从缓存去获取，虽然这种短时的不一致，但是它提高了整个系统的扩展性能使我们的系统能够变成更多、更分布式。
+
+
+好，除了聊了应用数据和中间件的扩展性以外，有很多的工具其实是也是在帮助我们来实现扩展性。那最经典的就是什么传统SQL？当你传统 SQL 是，其实是以实现读写方言是略有难度的，但是很幸运的是，所有的 SQL 厂商都提供了他们一套工具，至少是一套工具来实现它的数据读跟写之间的一种传输，然后能实现变化的数据叫 change data 的capture，全自动的追取或者抽取。那我们举一个例子，我们还是以阿里系为例，看看阿里怎么做。
+
+
+阿里有个经典的，对于这种 MySQL 的抽取引擎叫什么？叫Canal，那这个 Canal 就是翻成中文可以叫运河，它像一条小运河，什么跑我们的，什么我们的这个长江里面的河水，是吧？向北面进行灌溉，它可以灌溉到MySQL，也可以灌溉到像 Kafka 这种消息队列，Rocket， MQ 这些消息队列，那甚至于可以灌到我们的搜索的引擎Electrtch，灌到我们大数据平台 Hbase 通过这种读写的分离，通过这种热数据的剥离出去，利用更强的分布式 no CQ 来进行什么用户的查询的展现，这很快的速度就能实现我们应用的扩展了。所以 x 轴是相对简单的，只要你熟悉一些简单工具，你几乎不需要有什么应用代码的开发，你也不用关心业务，你很方便的就能实现我们在平台里面快速的进行扩展。
+
+
+聊完了多和快，下一个内容就是好了，好就是什么，一般做的好了就没那么容易，那什么才能做得更好呢？那当然是 y 轴的风格，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0baad5b2-831e-432c-ae8a-0039d66f9eff/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=7813a34883092dae9c5f641cf8bcc73e0eb53f9a493761028c45405293316b46&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+ y 轴是符合我们什么微服务分割理论的，通过 y 轴的分割，你能解耦服务和服务，那这当然是最好的一种情况，使得你的服务之间没有干扰，但是它的什么复杂度也是最大的？x、y、 z 三轴里面， y 轴的复杂度是最大的。
+
+
+如何才能实现一个很好的分割？如何才能保证业务是漂亮进行衍生？我们也有对应的章节，微服务架构章节会跟大家详细聊 y 轴上面我们的服务的应用和数据是怎么样进行合理的切分？我们的一些核心的思想是什么样？当切分完以后，数据和数据之间应该如何来进行沟通？服务和服务之间应该如何来进行发现？聊到这个，嗯， y 我们要重点聊一下，其实 y 里面有两个主要的难点，这两个难点我们也有一些具体的内容来一一阐述。
+
+
+所以这个章节大家可以看到我是什么，是个打 call 章节，我为后续各个章节做了一个引子，有做了一个伏笔。为什么为包括像半仙老师和我飞扬老师的后续章节来打call？我们其中一个难点是什么？是什么进行服务怎么样才能拆分原来那个大泥团？ monolistic 这种大泥团很简单，你应用之间调用是不是调用什么？我的这个系统里面其他的类的这个接口，或者是其他类的这个方法就可以了，很简单的。
+
+
+但是当你应用被拆分成一个一个的小业务，发布在不同的服务器上的时候，你引入了网络，你也引入了什么？服务和服务之间互联，服务和服务之间发现就非常之复杂，到底怎么样拆分才合适？多大多小更方便？他们之间应该怎么样来进行沟通？当你这个业务崩溃的时候，我这个业务应该怎么样去响应呢？这是什么？在哪个章节会聊？我们在 DDD 领域驱动设计，飞扬老师的领域驱动设计会重点跟大家聊，也会通过实际的案例给大家看一下，在应用和应用，子系统和子系统，边界和边界之间怎么样进行沟通，怎么样进行拆分更合适？除了这个拆分难以外，拆完以后的运维其实也很难。
+
+
+在这里面包含什么？我这个服务我提供哪些API？我要是不是要发布出去另外其他的服务，要发现我这个服务，那同时我们还有很多的服务治理，包含像熔断出错了以后怎么样熔断，包含像限流，也包含像当服务下线以后，我们怎么样把这个服务进行删除？怎么样终结这个服务的生命周期管理？那除此以外有很大的难点就是负载均衡。
+
+
+不管你采用哪种方式，你最后什么，你的一个服务必然是发布到什么后台很多个不同的节点上，让更多的去节点去承载这个服务的需求，那这个时候如何实现负载均衡也是一个难点。那除此以外，大家想一想服务和服务之间是不是要追踪我这个服务靠了哪一个服务，调用了哪一个服务必须有追踪，而这个追踪有时候我们还要跨越，是吧？跨越千山万水。比如我们服务 a 调用了服务 b 把数据发到了我们的 Kafka 的消息队列里面，而服务 c 去消费了这个消息队列。
+
+
+当我们去追踪为什么 a 会报 403 的时候，其实你要一路看下去，你不光是看到 a 知道了，靠了 b 就结束了，你还要穿过卡夫卡的这个消息队列去追踪到 seed 状态，那这样才能追踪一个服务为什么失败？为什么成功？这种能穿越千山万水进行服务追踪的能力是不是很难让大家不要担心？因为什么我们spring、Claude，还有像包含阿里的一些基本框架都能够实现这些什么服务？发现，治理数据的追踪，然后负载了均衡这些功能。
+那我们会在 spring cloud 服务治理章节来给大家详细聊，半星老师有很大的一个。嗯，章节可能有好几周的时间来跟大家的互动来讲这一块的内容。好，这里呢？聊完了，好的，好是最难的，但是你能做出来也是最漂亮的。那我们必须聊到最后一个内容了，就是什么多块好省里面的省，省就是。嗯，又省时间，我又省力，我又省数据，我又省钱。怎么省？怎么才能做到省？自然是 z 轴的，什么哈希取模特征分割。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ece534f6-39d7-4cfc-a44a-3f5febc77588/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=c03c1243f9f8874953a3f76f0073d8c8bdcd6f5500051c44168e1fdf9fb960c5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+(    概念：Spanner数据库
+
+数据库Spanner是Google Cloud Spanner的一部分，它是一种全球分布式数据库服务。Spanner旨在提供高度可扩展、强一致性、高可用性和全球分布的数据库服务。它结合了传统的关系数据库（如SQL）和NoSQL数据库的特性，支持ACID事务和全球分布式数据访问。
+
+Spanner的运用场景非常广泛，包括：
+
+- **全球分布式应用**：由于Spanner支持全球分布式数据访问，它非常适合于需要在全球范围内提供服务的应用，如电子商务、在线游戏、社交网络等。
+- **高可用性和强一致性需求**：对于需要高可用性和强一致性的应用，如金融交易、在线支付系统等，Spanner提供了强大的支持。
+- **大规模数据处理**：对于需要处理大量数据的应用，如日志分析、数据分析、大数据应用等，Spanner的分布式架构可以提供高效的数据处理能力。
+- **实时数据分析**：Spanner的强一致性和实时数据复制特性使其适合于实时数据分析和报告应用。
+总的来说，Spanner是一种适用于全球分布式应用、需要高可用性和强一致性的应用、大规模数据处理以及实时数据分析的数据库服务。
+
+
+Aurora数据库:
+
+Amazon Aurora是一种高度可扩展、高性能、MySQL和PostgreSQL兼容的数据库服务，由Amazon Web Services (AWS)提供。它旨在提供高可用性、高性能、安全性和易于管理的数据库服务。Aurora的主要特点包括自动故障恢复、高可用性、快速恢复、跨区域复制以及与AWS机器学习服务的集成，以支持复杂的数据处理和分析任务。
+
+Aurora的运用场景包括：
+
+- **客户服务应用程序**：通过机器学习集成，Aurora可以增强客户服务应用程序，如呼叫中心分析和客户支持服务工单处理，提供情绪分析和改善客户关系[1]。
+- **产品推荐系统**：利用Aurora的机器学习集成，可以构建产品推荐系统，根据客户的资料、购物历史和点击流数据提供个性化的产品购买推荐[1]。
+- **欺诈检测**：Aurora可以帮助检测和预防信用卡和保险索赔处理等应用程序中的欺诈，通过调用机器学习模型分析客户资料、交易等数据[1]。
+学习曲线方面，Aurora的设计使得它与标准SQL编程语言紧密集成，允许开发者使用熟悉的SQL语言来构建应用程序，调用机器学习模型，并将预测或文本作为查询结果返回。这意味着开发者不需要学习新的编程语言或工具，也不存在开发复杂性，从而降低了学习曲线[1]。
+
+部署成本方面，Aurora与AWS机器学习服务之间的集成不收取额外费用。开发者只需为基础的SageMaker、Amazon Bedrock或Amazon Comprehend服务付费。Amazon Comprehend的定价是根据处理的文本量来计算的，因此为了尽量减少费用，建议注意数据库查询的大小[1]。
+
+总的来说，Aurora是一种强大的数据库服务，适用于需要高可用性、高性能、安全性和易于管理的应用场景，同时提供了与AWS机器学习服务的集成，支持复杂的数据处理和分析任务。其学习曲线低，部署成本相对较低，使其成为一个吸引人的选择。
+
+)
+
+
+为什么 z 轴很省？你想想，如果是 x 轴，虽然我省时间。是啊，我开发都不用开发了，我是拿工具或者拿一些这个。嗯， no SQL 的嗯功能，然后写一些这个配置文件就可以了。但是你的数据是不是浪费了很多？你原来 1T 数据可能一个月要花掉你 1000 块钱，你现在呢？我要做 10 个副本，那你一个月就要花1万块，如果是我 100 个副本每个月就要花 10 万块，这个价格是一个大意问题。而 5 I轴看上去好像 5 I 轴每个数据只有一份，是吧？好像没有浪费钱。
+
+
+开发是不是很麻烦？你的架构设计是不是很麻烦？你经常要做什么？架构的拆分？要做架构的重组。你在我们的整个 it 投入里面花费的钱可能比 x 轴花的更多。只有Z9，它对什么应用开发无感知，不需要我们做特别多的这个代码的迭代和开发对系统的这个要求也很低，不需要有大量的数据的额外的复制，没有大量的额外的空间的占据，没有大量的额外的服务器的占据，那它怎么来实现呢？说白了就是什么把数据或者是应用服务器以一种形式进行切割，把他这个需求切割到某一台服务器上。当你一旦切割到这台服务器上的时候，这个需求以及它相关的所有 session 里面的剩余需求一直都找你这个服务器来处理。怎么样才能找到合适的服务器？这就是什么哈希取模特征分割的难点。
+
+
+那通常我们看应用服务器怎么办？我怎么样才能找到一套合适的服务器来承载我的业务呢？然后我一直找他，让我让一直到他整个 session 完成任务。一个思路是什么？是负载均衡，负载均衡里面有三大套路，我们来聊一聊负载均衡三大套路里面第一个套路就是什么客户端负载均衡，比较经典的例子就是 spring cloud ribbon，就是当我要把我的压力压到我后台的服务器的时候，我的当前这个小的这个业务的客户端，我是自己上面有一套代码，我能知道有多少节点能承载我的压力？他们的大概的这个压力情况是如何，我也清楚这个时候有什么有应用代码的客户端，本身这台服务器来决定怎么样发送到后台。所以大家可以想象这种思路使得什么？使得我们的应用本身是有一些这种决策的方便是很方便，但是也消耗了你很多的决策空间，就这对什么服务器本身的要求提升了。
+
+
+那有没有一种相对来说透传的方式？有，比如像说很流行的 nginx，也还有比如像容器世界里面 Kubernetes 的 service，还有当前很火的什么 service Mesh，服务网格就是在服务端、服务器端来实现，是吧？负载均衡，还有没有其他的思路？当然也有，假设服务器本身不具备负载均衡的能力，你客户端也不想让我们的 Java 代码还去管理一些这种负载均衡的事情，那就采用一些传统的，比如像 ESB，
+
+
+（企业服务总线（ESB）是一种软件架构模式，主要用于支持不同应用程序之间的实时数据交换。在大型组织中，由于应用程序使用不同的数据模型、协议和安全限制来执行各种功能，ESB通过执行数据转换、协议转换、消息路由等操作，简化了应用程序集成。应用程序将相关数据传递给ESB，然后ESB将数据转换并转发给需要它的其他应用程序[1]。
+
+ESB的优势主要体现在以下几个方面：
+
+- **适配器**：ESB工具中的适配器组件可以在不同的格式和协议之间转换消息，确保接收方软件应用程序可以正确使用它们。此外，它还可以提供消息记录、监控、身份验证和错误处理等功能[1]。
+然而，ESB也存在一些挑战：
+
+- **复杂性**：实施和维护ESB需要专业的技术知识，因此复杂且昂贵。供应商锁定使得切换到其他ESB解决方案变得困难，并限制了数据集成的选项。由于只有ESB的中央管理团队可以集成新的企业应用程序，因此团队会经历漫长的等待时间[1]。
+- **可扩展性**：由于ESB软件增加了抽象和处理层，因此会在通信中引入额外的延迟。随着端点和通信服务映射数量的增加，ESB将成为瓶颈并影响性能。为ESB服务器实现高可用性和灾难恢复的成本也随之增加[1]。
+总的来说，ESB作为一种软件架构模式，提供了在不同应用程序之间实现实时数据交换的能力，尤其是在需要数据转换、协议转换和消息路由的场景中。尽管存在一些挑战，如复杂性和可扩展性问题，但其适配器功能和集成能力使其在某些应用场景中具有显著的优势。）
+
+
+对吧？企业服务总线这种中间件也可以，像现在比较火的像 API Gateway 就大概至少有十几种常见的开源的 API Gateway 和我们企业级的 API Gateway。所以大家可以随意挑选一个Gateway，那 Gateway 就会把所有的数据流收集过来，然后发送到目标的服务提供方。
+
+
+它是一个代内的管理节点，你不再需要管理负载均衡，因为 Kata 会帮你管理。同时你的服务器端也不需要做反向代理的，也不需要做嗯，服务的这种总体的把控简化了很多流程。那除了应用的负载均衡，我们还有什么？我们还有数据的负载均衡，还有数据的分片的压力。当你在 z 轴就是根据不同的这个特征值进行哈希曲膜分片的时候，我们比如像MongoDB，比如像我们的这种非关系型数据库，默认都是支持这种，采用一个方式进行sharding，进行分片，它可以是什么？可以是一个key，比如说我 user ID，比如说 product ID 等等，都很方便。但一旦你碰到传统数据库就麻烦。
+
+
+比如像MySQL，当你碰到 MySQL 的时候，你怎么样在 z 轴上无脑的进行快速的这种横向的扩展？同时你还是什么？还是保持你的数据值保留一份？那这种情况下沙井是很困难的，那我们有什么解决方法？我们通常也有三个解决思路，一个是客户端，比如像 shutting JD BC，就是一种方法，它能够支撑后面不管你是MySQL、 postgrade SQL，它可以什么，它可以在客户端来掌控你后台有哪几个数据库。然后我用采用什么样的 key 值的分配方式把我的业务的压力、数据的压力压在你某台数据库上。
+
+
+当下次再要去读这个是内容的时候，我也得准确命中具有这个数据的那个分片的那个节点，那这就是分库分表里面什么客户端思路，那有没有服务器端的思路？当然有，那就是数据库思路。比如像谷歌的Spanner，它也是一个关系型数据库，但是这个关系数据库天生它自然而然就支持多副本，那通常就是三副本，那它同时它支持什么？多副分片？它的分片根据你的数据库量，比如你 1T 数据库，它可能是什么？它可能是 100 多个分片，如果你实际它就是 1000 多个分片，根据你数据量的不同，它的分片的数量会天然不同，它会把数据分成一个一个的check，一个个的快，那这种思路其实在我们的什么 no SQL 里很常见，但是在部分新的型的那种分布式的SQL、纯的 SQL 里面也出现了。
+
+
+那如果我服务器端也不支持，客户端也不想开发这种功能，也不想调用这种模块，有没有偷懒的方法？那也很简单，我们可以让什么，比如让 SRE 他们去帮我们搭一个中间件，比如像阿里系的就是搭一个 my cat，比如像亚马逊讯系的，你可以搭一个Aurora，那通过这种中间件它能实现自动的根据你的这个压力的要求，根据你后台的数据库的数量进行跨多个数据库的什么分库操作，实现分库分表，实现多库多表的联合使用。
+
+
+通过这种方式其实大家可以想象，基本上你的应用开发的复杂度是相对较低的，那同时它的数据是没有很多的浪费，不会浪费你大量的这个存储资源，不会浪费你大量资金，所以这才是最省钱的一种方式。好聊歪了，多快好省。有没有例子？那我举一个简单例子，
+
+
+用应用数据中间件相对来说例子很多，我举一个最简单的，就是只以数据库为例，我们看一看阿里是怎么样在数据库上实现多快好省。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a2ff4e1b-b87b-4386-a33d-472be3cd80b6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZU6MO2SO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230423Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDDi6qOwBnYxuveJtetKUggxpdWDEyvEN5qFIGYh6NpwgIgH%2FNHFC9VATxIbosYplDFOofesVM5hu39nJ5zuOnvOYsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOL6%2FM6MtLgtJR%2F4LSrcA%2Fa7uw1o%2B%2F7%2BRPAr%2B4mzVNKqblChr8DD4LHcF1sb%2FDa2YtdDCM%2B0%2BLYmqJO9yFAbOLhQNeqoUbT95oBoLcBt1dUtkjhnnDHXh%2F0hcU0mDeiG7FuXZJLfO7lq%2BAQxVrKN4lBPJC7n9OHwHSPdDnuHF1t0A%2Btoo%2BbXj3ZUewugdoY%2Bz5YrJ5JnTpKcVjLUia2PQGhqhb0VFdwrNjv0%2FJPN%2FQiwL1pIiuD01gbOW8TaI9iENPyQikwQ0DOhUxDpNviCk0gTfH1cqK425%2BmoyqdkFbOUQIpEePgZ%2BL14lbfkPti2HbDvAPCz4%2FUsj0AReY8gXI6zeZhinD4nzlClPK0UbfkWrBufBaXie%2FxiLx3VTYkcH3mzcjfKHAyLls%2FkBszJZxbKaey%2BeGG2YV9ECDtPVaj9lrA1%2BkE3SFYMy3dDtcjXDVCT8v5JeX4Y9tcR3bj6wnNL%2B56XkFwHtb4uqG5vb3W6%2BZsAKqONwwvme6%2ByvE9aCD%2FPGN0%2BHwwcxN62p%2BIGendewzxUFkmOyt%2FP8%2Fou69Guryli7upHWisZsP8PzRA2w0aBSARwdsq93x4uILsamN2ihknLUC3ZWlnLmJeQ56U4D6FQ1QT%2B9ifcsZk50GBAZvX5gaN9hdfe5s2sMIS3%2F9IGOqUBixgo1lPHcCzS9AYBjBLLHbNdLeGFSUxZ3MhO%2BS6hBWD5mTr9ESCeTtF2SKKcx6hu%2FcdHhUd8LfafSWk2a2szuPQhxFL2hexpCuv2aHECkDZ%2Bvmfa6ynmaw8phurLt7oN5u0zfogIhnMI39rKO0XsFPURlGy0l5buc2K5aAMHlCGK%2BRLQRPbYEUvoSgGOH3vESvkT3xp%2BSwT5gsbDrOAHLIzeA%2BUT&X-Amz-Signature=6fbe42668a032dd0d414e102052ee30d484464b510f442750d673bf536bb04b8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先看这张图的左下角是什么？ OLTP 是吧？是在线的关系型交易的数据库，在其中最左边那个方块蓝颜色是一个数据库，它在一个数据库后台实现什么？实现了数据的横向分片，这就是 z 轴，根据键值的不同进行什么？进行了那个我们的 z 轴分片，它就是属于什么多快好省里面省的要求很省，空间也很省。开发你不需要具体去了解后面是怎么分片，你也没有浪费额外的数据的存储资源，你把你的所有的数据库的内容按照一些建制分布到了不同的库的不同表里。
+
+
+那除此以外，大家有没有注意到这个 OLTP 数据库里面画了两个蓝颜色，在什么 DRDS 分布式 RDS 数据库，这就意味着什么？通常你的一个应用会进行拆分了好几个子域，每个子域我建议你用不同的 RDS 集群，你不要用一个，不要共享每个子域，每一个我们的什么子系统，独立的有一套 RD DS 集群，通过这种方式就是好合理的微服务的拆分，拆分完以后你有独立的数据库来支撑你拥有独立的数据库服务器来承载所有的业务和压力。
+
+
+还有没有什么？看右边，看最右边，看到什么数据迁移同步工具。是不是我们想到了快，通过这种很快的方式，它能够把数据抽取到 galaxy storm 这种大数据平台，这些大数据平台是能够很好地支撑业务的需求的，同时它的查询能力是非常强大的。那我们只主要做的什么？我们不要，也不需要代码开发，只需要一个快速的集成就能实现应用的读写的分娩，然后通过我们的像 tablet 这种什么 AI 的工具来实现很强大的这种，嗯，读的查询的这种策略的制定。那除此以外还有什么快？有没有看到这里有什么缓存键值？对的，快速读取也是一个读写分离的典型例子。我们把大量的读数据分片在很多的 Redis KV store 上，通过什么通过缓存的高速读取来实现业务的 QPS 的支撑？实现这些快好审以后本质上是什么？就是为了能够让我们的后台的数据库能够用更多的节点来承载我们的整个需求，包含像海珠湖节点，包含像 storm 节点，包含我们的 DR DS 节点，也包含像 Redis Cavey store 节点。更多不同种类的节点对应用相对来说影响最小的情况下实现了多快好，省的扩容。
+
+
+聊完了扩容的技术，我们后面要来聊一聊什么我们真正扩展性是怎样？错，一个单体应用上能够实现从百节点到万节点进行提升的，有没有实际案例？下一节就来看一个实际案例，大家敬请期待。
+
+

@@ -1,0 +1,51 @@
+---
+title: 2-08 Redis 购物车 - 清理已结算商品
+---
+
+# 2-08 Redis 购物车 - 清理已结算商品
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/75f08293-1cf8-4a26-a099-55e1f24e6ce1/SCR-20240805-ihxn.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665VUCXX3Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224945Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCI3yMjmJJFAcuIk2LxNq1aW6Jsu59EXzSA7EoKwjMn2AIgHy69okTyL8ndv8x3ys4gg7kTfWTx3FzU2LfgarntkMEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDJfJMK8rUlqhP5dRfyrcA7s%2BhZlGeWtQ2QIydw%2BxjV1C7nCLNq8GPruZECfeXNU8qLVbIjhUzOS9fo3ikQ2ckqj9g2i9ww59sujOdVsw88guxKsizkfFn9RKztILATxrpGOsM6dqraAbVRjycFXrq9wcO0oUhtwhqvKMJUDj%2B72eKnYVvojGb50DPY5u%2FdfrdEepU2KWHp9nn2sM7By5ve2AP53jopYyoMHQbyK0NephiQspBxRjAztehDCbB51OZGsejgEVe5kAE83i3hAfNuqI%2FeQdTwnVchnqSvTv7pTv5BCHxHJeROPIY4E9EeI8iX5SliivVOcnmQjci151OXjJoUmANBwISWZrswlCwkYH1JiJ1IWhoo0I9IOAGdX8AEFg6UaAkUODNWLVrXUnU5PozzCxdeWqRAqcf9%2FGsqNmeRFzxVvs7Ewk2QDYiusT9xrKVLGhf%2Btlb3taqi6Bkjmzc076DAxQMIck9ARI3L954yi4pRZhcZN7sQdoZ1pfi5kEG8su0A%2BSXsDcrKKsFHJc8Fb4pTmVF7Fhxn%2Fi5rRtPJx31mPVvolkE70YZJRFm2YA%2BEFIwibV8LQ23WBUgUy8NNq1plqHGsENataqGHcaValN6dC5NMqa7eNQt5eo8sfmqwUC9R7wDLt%2FMMa6%2F9IGOqUB6mdi%2FF2KpS2BFOkWi5uREznAEehUKtUXwDzEkCALv8U3J3tdwSqLGBJJubTHOiSyyepD4VhojEJg8d97W2jCS3bKu08qf6YRun9YZ1%2BS77oSpH2c3HSZQ9YKsRB54wHKuRMJp20Pxw9EA%2BdmAc9t%2FXZVkjCJLoXxGSSeEPwTeMnbfGtzXurgr2F6LqRwEyWgenG%2FmVaaQFi8OcQyLHzyLlMqMnx1&X-Amz-Signature=9078c24cc1b152b3484f380d45a18f3f89ec907c19178ee7eb328193da530c2e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5841efd5-8a7e-412d-b749-f4f0ec1750cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665VUCXX3Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224945Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCI3yMjmJJFAcuIk2LxNq1aW6Jsu59EXzSA7EoKwjMn2AIgHy69okTyL8ndv8x3ys4gg7kTfWTx3FzU2LfgarntkMEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDJfJMK8rUlqhP5dRfyrcA7s%2BhZlGeWtQ2QIydw%2BxjV1C7nCLNq8GPruZECfeXNU8qLVbIjhUzOS9fo3ikQ2ckqj9g2i9ww59sujOdVsw88guxKsizkfFn9RKztILATxrpGOsM6dqraAbVRjycFXrq9wcO0oUhtwhqvKMJUDj%2B72eKnYVvojGb50DPY5u%2FdfrdEepU2KWHp9nn2sM7By5ve2AP53jopYyoMHQbyK0NephiQspBxRjAztehDCbB51OZGsejgEVe5kAE83i3hAfNuqI%2FeQdTwnVchnqSvTv7pTv5BCHxHJeROPIY4E9EeI8iX5SliivVOcnmQjci151OXjJoUmANBwISWZrswlCwkYH1JiJ1IWhoo0I9IOAGdX8AEFg6UaAkUODNWLVrXUnU5PozzCxdeWqRAqcf9%2FGsqNmeRFzxVvs7Ewk2QDYiusT9xrKVLGhf%2Btlb3taqi6Bkjmzc076DAxQMIck9ARI3L954yi4pRZhcZN7sQdoZ1pfi5kEG8su0A%2BSXsDcrKKsFHJc8Fb4pTmVF7Fhxn%2Fi5rRtPJx31mPVvolkE70YZJRFm2YA%2BEFIwibV8LQ23WBUgUy8NNq1plqHGsENataqGHcaValN6dC5NMqa7eNQt5eo8sfmqwUC9R7wDLt%2FMMa6%2F9IGOqUB6mdi%2FF2KpS2BFOkWi5uREznAEehUKtUXwDzEkCALv8U3J3tdwSqLGBJJubTHOiSyyepD4VhojEJg8d97W2jCS3bKu08qf6YRun9YZ1%2BS77oSpH2c3HSZQ9YKsRB54wHKuRMJp20Pxw9EA%2BdmAc9t%2FXZVkjCJLoXxGSSeEPwTeMnbfGtzXurgr2F6LqRwEyWgenG%2FmVaaQFi8OcQyLHzyLlMqMnx1&X-Amz-Signature=6fb3ae83a29aa01aa297538a96852bf2a976958b7cf71dcca623b4fd37c76b0e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3feab942-fe41-491c-a0bd-a5453f2da333/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665VUCXX3Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224945Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCI3yMjmJJFAcuIk2LxNq1aW6Jsu59EXzSA7EoKwjMn2AIgHy69okTyL8ndv8x3ys4gg7kTfWTx3FzU2LfgarntkMEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDJfJMK8rUlqhP5dRfyrcA7s%2BhZlGeWtQ2QIydw%2BxjV1C7nCLNq8GPruZECfeXNU8qLVbIjhUzOS9fo3ikQ2ckqj9g2i9ww59sujOdVsw88guxKsizkfFn9RKztILATxrpGOsM6dqraAbVRjycFXrq9wcO0oUhtwhqvKMJUDj%2B72eKnYVvojGb50DPY5u%2FdfrdEepU2KWHp9nn2sM7By5ve2AP53jopYyoMHQbyK0NephiQspBxRjAztehDCbB51OZGsejgEVe5kAE83i3hAfNuqI%2FeQdTwnVchnqSvTv7pTv5BCHxHJeROPIY4E9EeI8iX5SliivVOcnmQjci151OXjJoUmANBwISWZrswlCwkYH1JiJ1IWhoo0I9IOAGdX8AEFg6UaAkUODNWLVrXUnU5PozzCxdeWqRAqcf9%2FGsqNmeRFzxVvs7Ewk2QDYiusT9xrKVLGhf%2Btlb3taqi6Bkjmzc076DAxQMIck9ARI3L954yi4pRZhcZN7sQdoZ1pfi5kEG8su0A%2BSXsDcrKKsFHJc8Fb4pTmVF7Fhxn%2Fi5rRtPJx31mPVvolkE70YZJRFm2YA%2BEFIwibV8LQ23WBUgUy8NNq1plqHGsENataqGHcaValN6dC5NMqa7eNQt5eo8sfmqwUC9R7wDLt%2FMMa6%2F9IGOqUB6mdi%2FF2KpS2BFOkWi5uREznAEehUKtUXwDzEkCALv8U3J3tdwSqLGBJJubTHOiSyyepD4VhojEJg8d97W2jCS3bKu08qf6YRun9YZ1%2BS77oSpH2c3HSZQ9YKsRB54wHKuRMJp20Pxw9EA%2BdmAc9t%2FXZVkjCJLoXxGSSeEPwTeMnbfGtzXurgr2F6LqRwEyWgenG%2FmVaaQFi8OcQyLHzyLlMqMnx1&X-Amz-Signature=518817991dc3e060c88bb94f1a43907a849a06c0772ceed03348420f36443c8b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么上节我们是完善了一下这个商品，从购物车中删除，另外一个就是我们的 by Com s，这个 by Cos 也是使用 Redis 中的一个真实的一个购买数。那么随后的话，在我们的一个用户订单创建以后，咱们可以来看一下，我们到购物车里面去，你会发现这个购物车我们现在已经是购买过了，购买过创建订单以后，其实这里面的数据应该要从我们这个购物车中消失，所以我们应该要去做一个更新。包括我们的一个 Redis 其实也是一样， Redis 我们也是一样去做一个刷新，刷新一下以后你会发现这里面有数据，其实我们都应该要去清空一下。说那我们怎么做？我们来到咱们的代码，那么在我们代码的这一块，内容这一块，其实是我们是在创建我们的一个订单对吧，那么在创建订单的时候，其实就是和我们的一个 cut item 是和这个东西是关联在一起的。那么既然如此的话，我们能不能在他去做创建订单的时候，把每一项 cut item 都可以放到一个等待被移除的一个列表里面去，当我们这个列表里面有了数据以后，那么这个当前的 service 也执行完毕以后，那么我们再去做一个清除缓存的操作就可以了。
+
+
+所以我们在这个地方我们都可以去写上一个list，这个 list 其实也是一样，是和我们购物车相关的，把这个写进去，然后我们写一个 to be removed shop cut list 等于 you are released，那么这是一个空的，那么随后在循环的时候，那么在这个地方我们就直接可以向这个里面去添加一个 cut item 就可以了，把它给放进去。
+
+
+放进去以后，那么这个时候当我们这个 service 全部都执行完毕以后，那么我们再把这个 cookie 一个是 cookie 的信息，一个是我们的 Redis 信息去做一个清理就行了，所以迁移的动作我们会放到 Ctrl 里面去做。所以在我们当前的这个方法里面，我们来看一下。
+
+
+在我们当前这个方法里面的话，会有一个 order VO，这个 order VO 是用于去返回的，那么在这里面的话，其实目前是有一个 order ID 以及是一个 Macant order，那么对于这个的话，其实我们可以在这里面能不能去做一个扩展。
+
+
+其实可以，我们在这里面去扩展一下product，这里我们的 list 也要去加一下 list shop， cut bo，然后挡一下，生成一下 get set 好。OK，那么这样子我们再返回到 Ctrl 里面去的时候，就可以把这个 list 给设进来，所以我们在这里面再可以去加一下 order vo，点 set ToB，再来一个土地。那么这样子其实我们就可以在 Ctrl 里面去获得了 Ctrl 了。
+
+
+找一下在这个地方，这里是创建订单，然后创建订单以后在这里会有一个Todo，这是我们家的整合 Redis 以后完善购物车中已经结算的商品，做一个清除，并且要同步到前端的cookie，前端的 cookie 我们只需要把这段代码把它给开放就可以了。因为我们之前是做了一个测试，为了方便，所以我们购物车中的数据是一直会有的。那么随后的话，那么我们就应该还要去做一个操作，就是要把我们的缓存做一个清理。
+
+
+那么缓存清理来找一下我们的 shop cut list，这是我们目前现有的一个缓存，在这里写一下，这是清理覆盖现有的 Redis 中的购物车数据。那么这个 shop cut 它其实是一个list， list 里面它会有一个 remove all，那么这个 remove all 就是把一些相应的数据给清掉，然后我们在这边找一下，有一个拿取出来的是一个 o w o，在这个 o w o 里面点 get to be moved，那么这样子他就可以通过 remove all 把我们的这里面的一个等待被删除的一个数据给清理掉。
+
+
+那么清理掉以后，那么这个就是最新的一个 list 吧。既然是最新的一个list，那么我们就可以做一个更新了，通过 Redis operator 点 set p，那么这个写一下应该是一个共用的 food cut，然后 value 在这里也要去做一个转换。 Jason utils 点 object to Jason，好，OK，那么这样子其实我们就可以完善这一部分的代码，可以去把我们的一个数据去做一个对应的清理了。好，然后我们在这边还是一样，我们要去 install 一下。
+
+
+好，然后我们再去点错了不应该是肯定了以后，那么还是要重新的去，因素这边是我的误操作。没有关系。 in store 以后之后我们再来做一个重启。好，OK，现在是启动成功，然后我们呢回到咱们的一个页面，那么现在是页面里面是有两条数据对吧，到首页再去听一下。贴一个商场加入进去，然后再来加一个这个笋干加进去，这个时候我们购物车里面有四件，随后我们要去做一个结算，那么这个时候我要去做结算的话，先来看一下我们的缓存，我们的 Redis 里面先来做一个刷新，那么 Redis 里面是有 4 条数据，那么现在我们来做一个结算的话，我们是一个是香肠一个是凤梨苏。针对这两个去做一个结算，点击结算提交一下订单，那么这个时候我们的订单已经是生成了。
+
+
+生成以后现在我们要做的一个操作是要去观察一下咱们的Redis，去刷新，然后再进来，你会发现这里面的数据暂时没有清理，那么肯定是我们的代码出了一个问题，那么没关系，我们回到代码我们可以再去检查一下，在这个地方你会发现这边我们在做一个清理。再做一个覆盖的时候，就是我们应该要根据一个用户，所以我们这边漏掉了一个用户的一个名字ID，所以我们应该要去加一下，那么这个一定要去注意的，如果说你漏写的话，那么肯定会出这样的一个问题，把这个重新给加过来，加到这个位置，那么这样子才能够去做到一个对应的根据用户的一个 ID 去做的一个覆盖。
+
+
+另外的话，对于我们的一个购物车，购物车它在这个地方其实我们也其实做的并不是很对，这边是直接把前端的整个购物车的信息全部都清空了，那么这样子肯定是不对的，所以在这个地方我们也应该要去把对应的这一段内容，把最新的一个购物车数据去贴到这里，那么这样子就 OK 了。
+
+
+好，所以我们来重启一下充气以后我们再来做一个对应的测试，那么这样子对于我们的一个后端的 Redis 里面，现在 Redis 里面是有一部分的数据，其实我们的前端 cookie 肯定是没有数据的，因为是被我们全部都清空了，但是没有关系，我们重新再来做一个测试，那么这样子就 OK 了。那么这里面有一部分的数据，我们把这个 shop cut 在这里面，我们去删一下，删掉，删掉以后我们再来一个eload，那么这个 shop cut 其实就已经是没有了，这个 shop cut 是错误的，我们也直接删掉。好，OK。
+
+
+随后我们到前端重新再来一下，我们来添加一个商品，然后再来添加一个商品，再来添加一个商品。那么现在我们购物车里面总共是有三个数据，我们保留商场，把另外两个去做一个结算。好，点击微信提交订单。好，OK。现在的话其实我们就应该可以来看一下了，当我们在刷新以后，点击进来，这个里面就只会保留一个腊肠，这个商城是会有的。因为另外两项的话，其实已经是被我们清理了，清理之后那么购物车里面就只剩下一项了，然后我们再回到前端，回到咱们的购物车里面，点击进去，那么现在就只有一项了。那么很明显现在我们这一块业务就已经是完善了，做到了一个在提交订单以后的一个数字的清理。
+
+

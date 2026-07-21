@@ -1,0 +1,56 @@
+---
+title: 2-25 详解事务的传播-2
+---
+
+# 2-25 详解事务的传播-2
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a2f7592c-2257-4495-955d-aba02ab5a056/SCR-20240816-qorp.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UHQ7LQF6%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224617Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBXp%2BnnK0Puob2Jfa9MS09gNYsNXUXAFt7NJdxz7oyltAiBK3LvB0sCu473ljSkzTcYcfqH3mbDPT2Q1qaHX6HACKiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMXzD94sKWB4PQvw24KtwDiMvR4vzE5Z8hJwqs9Di67KYOvMp8CyCJSDOg8Uo79jlJlrq8Lkj4Y51KWQos%2FCndaQc06KHGHTCvYbj3vhj8xkVe%2BMZ5NppZQILfpm9DbAVDZdQi9vSsf7I7j21Syo0j2VNa7CHnCclmBRu986qR0dlUbrDIYVMs3rHuDozVkTTPu4cwVyNadHI8v2QITgzynNaex10r02rpKZ8KfNtzXk1xMPS4HtLvo22KejrpqeEzprnLkkB%2FhfWQ6jRjoLxZWT0RAsraubGeJAjw701YNG8JvBxdYenyk0NENhi61oWVDmZooI6A41D0dUV6QN55bH20KNYLGz1yB2XFCcmLwa0D4uJvOJOU8A8y%2Ba%2BhJD85Yk89H2bJ9YebpIL16pWUI83FPX2tMFem4NqD7GwAdE3G%2B3MsuiytwYxOyd%2BgaWJXtSXYoz4z0LhpzMPhJXj%2BWf4tpEoNJVrsAa6t6CRtRKnMFgqGz256V1It%2BEN0vGDnQh91vzzoTdxW78tzdiTnUmfSBunkIVJKDpJcJL2jA5K%2BkeZE1qz8l539MJeKhcEglGtd3igHEBXeNDMnKUsZa6dx%2FyP9otk%2FNnPYg0RI%2BLEBuRXjVUNc53qAZ9O8RLMnVExEP%2Bv%2B6wFX%2B4cw6bn%2F0gY6pgEWq%2FwR9QIqScAMwHq%2BbqdmFQLmrobR6TD%2B2RmFA%2BLaVBuNxFlDr6fxMRZQxuA%2BoG01D8wnDOuRQHldoXJKpdi4hz3mCmuD4sqoceft520tfMvlcGo8DqXEudcv0lR4ZFxTaP9z419mAkWaz8pY1lsWB2Q4%2FFD7WcwwH7ITZHFoi3s771W03PZHrDaBiDQ%2Fu9HKpEYg96o4lo1bv76solLufc%2Fx18tU&X-Amz-Signature=a0522cf739ec32b96fc0669dfa450756db64f05e08c1d26d36855776df4b2ad9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/790fda28-8f49-42e9-aab7-e81cb2661392/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UHQ7LQF6%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224617Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBXp%2BnnK0Puob2Jfa9MS09gNYsNXUXAFt7NJdxz7oyltAiBK3LvB0sCu473ljSkzTcYcfqH3mbDPT2Q1qaHX6HACKiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMXzD94sKWB4PQvw24KtwDiMvR4vzE5Z8hJwqs9Di67KYOvMp8CyCJSDOg8Uo79jlJlrq8Lkj4Y51KWQos%2FCndaQc06KHGHTCvYbj3vhj8xkVe%2BMZ5NppZQILfpm9DbAVDZdQi9vSsf7I7j21Syo0j2VNa7CHnCclmBRu986qR0dlUbrDIYVMs3rHuDozVkTTPu4cwVyNadHI8v2QITgzynNaex10r02rpKZ8KfNtzXk1xMPS4HtLvo22KejrpqeEzprnLkkB%2FhfWQ6jRjoLxZWT0RAsraubGeJAjw701YNG8JvBxdYenyk0NENhi61oWVDmZooI6A41D0dUV6QN55bH20KNYLGz1yB2XFCcmLwa0D4uJvOJOU8A8y%2Ba%2BhJD85Yk89H2bJ9YebpIL16pWUI83FPX2tMFem4NqD7GwAdE3G%2B3MsuiytwYxOyd%2BgaWJXtSXYoz4z0LhpzMPhJXj%2BWf4tpEoNJVrsAa6t6CRtRKnMFgqGz256V1It%2BEN0vGDnQh91vzzoTdxW78tzdiTnUmfSBunkIVJKDpJcJL2jA5K%2BkeZE1qz8l539MJeKhcEglGtd3igHEBXeNDMnKUsZa6dx%2FyP9otk%2FNnPYg0RI%2BLEBuRXjVUNc53qAZ9O8RLMnVExEP%2Bv%2B6wFX%2B4cw6bn%2F0gY6pgEWq%2FwR9QIqScAMwHq%2BbqdmFQLmrobR6TD%2B2RmFA%2BLaVBuNxFlDr6fxMRZQxuA%2BoG01D8wnDOuRQHldoXJKpdi4hz3mCmuD4sqoceft520tfMvlcGo8DqXEudcv0lR4ZFxTaP9z419mAkWaz8pY1lsWB2Q4%2FFD7WcwwH7ITZHFoi3s771W03PZHrDaBiDQ%2Fu9HKpEYg96o4lo1bv76solLufc%2Fx18tU&X-Amz-Signature=2aa2f23d10bfa9811f74a46a2af1a28ffa297e6314d177203429bcab64ced6b1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/213a5024-cad0-4aba-812a-c17b1d4a61c3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UHQ7LQF6%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224617Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBXp%2BnnK0Puob2Jfa9MS09gNYsNXUXAFt7NJdxz7oyltAiBK3LvB0sCu473ljSkzTcYcfqH3mbDPT2Q1qaHX6HACKiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMXzD94sKWB4PQvw24KtwDiMvR4vzE5Z8hJwqs9Di67KYOvMp8CyCJSDOg8Uo79jlJlrq8Lkj4Y51KWQos%2FCndaQc06KHGHTCvYbj3vhj8xkVe%2BMZ5NppZQILfpm9DbAVDZdQi9vSsf7I7j21Syo0j2VNa7CHnCclmBRu986qR0dlUbrDIYVMs3rHuDozVkTTPu4cwVyNadHI8v2QITgzynNaex10r02rpKZ8KfNtzXk1xMPS4HtLvo22KejrpqeEzprnLkkB%2FhfWQ6jRjoLxZWT0RAsraubGeJAjw701YNG8JvBxdYenyk0NENhi61oWVDmZooI6A41D0dUV6QN55bH20KNYLGz1yB2XFCcmLwa0D4uJvOJOU8A8y%2Ba%2BhJD85Yk89H2bJ9YebpIL16pWUI83FPX2tMFem4NqD7GwAdE3G%2B3MsuiytwYxOyd%2BgaWJXtSXYoz4z0LhpzMPhJXj%2BWf4tpEoNJVrsAa6t6CRtRKnMFgqGz256V1It%2BEN0vGDnQh91vzzoTdxW78tzdiTnUmfSBunkIVJKDpJcJL2jA5K%2BkeZE1qz8l539MJeKhcEglGtd3igHEBXeNDMnKUsZa6dx%2FyP9otk%2FNnPYg0RI%2BLEBuRXjVUNc53qAZ9O8RLMnVExEP%2Bv%2B6wFX%2B4cw6bn%2F0gY6pgEWq%2FwR9QIqScAMwHq%2BbqdmFQLmrobR6TD%2B2RmFA%2BLaVBuNxFlDr6fxMRZQxuA%2BoG01D8wnDOuRQHldoXJKpdi4hz3mCmuD4sqoceft520tfMvlcGo8DqXEudcv0lR4ZFxTaP9z419mAkWaz8pY1lsWB2Q4%2FFD7WcwwH7ITZHFoi3s771W03PZHrDaBiDQ%2Fu9HKpEYg96o4lo1bv76solLufc%2Fx18tU&X-Amz-Signature=5d2be0fdb561e54d0efe55edc1b4cb4d263d907c03b306fe0cd8c18e2b6ad5e2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，我们来讲第四个，也就是 requires new。其实讲到这里，我们已经是演示了三个。下面其实大家可以根据我们之前的操作看一下它的一个源码的解释，自己可以先去操作一下。操作完了之后，我们可以跟着视频再来操作一下，这也是一种学习方式。好，我们继续我们来看一下。
+
+
+下一个是 request new，来看一下它的源码里面的注释是这样子的，它是会创建一个新的事物，并且它会挂起当前的事物。OK，如果当前存在，它是会挂起的。如果我当前有一个事物，我会独立的再去创建一个新的事物。也有两个事物，我们来演示一下。首先我们先把我们的负方法它的一个数先去掉，在子方法里面，我们可以直接把先写上，使用 request new。
+
+
+随后我们来看一下咱们的效果，数据库里面没有任何的内容，来跑一下我们的test。好，这个时候报了一个异常，我们到数据库看一下，你会发现数据库这个时候它会有一条值。这一条记录是什么？这一条记录其实就是在我们的调用方在调用 save parent 的时候，在这个地方它所保存的一条记录，它自己本身是什么，它自己本身报了异常，它会自动去进行回滚的。也就是其实它两个事物是分开的。虽然我当前它的副方法没有事物，所以它副方法里面所调用的第一个 save parent 会直接更新到数据库里面去。而我当前这个方法，它自己本身又有一个事务，它是会和上面操作是区分开来的，所以他自己进行了一个回滚。OK，好。随后我们在这里我们再来一个，我们把这个事物给加上去，事物加上了以后，其实它会有两个事物。我们把数据库这条记录，我们可以先删除，来运行一下。好，报错了我们到数据库刷新一下。
+
+
+在数据库刷新以后，你会发现数据库里面并没有任何内容，其实主要是因为我们在这里，我们在这个地方，我们是回滚了对吧？但是回滚了以后，其实它本身会有一个 by CO 这样的一异常，这个异常其实会被这个地方所拿到，拿到了以后就会影响到他当前 save parent 方法的保存，所以它也会被回滚，这一点是需要去注意的。其实看上去就像是两个都使用request，看似都是这样子。所以我们现在可以把， by zero，我们把异常我们先去掉。我们可以把放到哪里，放到这个位置。我们再来看一下它的一个效果。现在我 save 秋雪里面是没有任何异常的，但是在它的负极里面，负极方法里面会有一个异常。所以我们会来看一下使用 request new 的时候会发生一个怎样的效果。我们来跑一下。我们先看数据库，没有数据好运行一下。好了，报错了，我们到数据库看一下，这个时候你会发现数据库里面保存了两条数据叉的2。
+
+
+终于是我们看到了，来看一下在我们的代码里面，其实在这个地方它没有任何的异常，它是使用了 request new，所以由于我们当前的负极方法里面有一个事物，所以它会额外的再新建一个事物，去进行一个相应的操作。在它的调用方，也就是负极的方法里面，在这里得到了一个异常。得到了异常以后，由于这个事物是被挂起的，所以它发生异常以后是不会影响它的子方法的。
+
+
+OK，子方法不会被影响，因为子方法里面它使用了一个新的事物，所以 save parent，这里面的 parent 其实会被回滚。我们的 save 丘菌这两个方法所保存的值会直接入库到咱们的数据库里面，这一点是需要去注意的。OK，我们再来看一下，如果我们把这个地方改为required，也就是我们的两个方法都使用required。required，我们之前也说了，如果当前的调用方，它本身带有一个事物，它是会加入到这个事物里面的。也就是两个方法共用同一个事物。现在我们在它的负极方法抛出一个异常，我们这里面的值会保存到数据库里面去吗？我们来测试一下。把数据库的值我们先删除好，随后我们来运行一下。好，OK，报错了，我们来看一下。
+
+
+咱们的一个数据，在数据库里面，我们刷新一下，没有任何的值，一片空白。这个是因为我们现在的两个方法都共用了同一个事物。异常不管在哪个方法里面抛出，其实我们的数据都会进行回滚。OK，这个就是我们所演示的一个 request new，使用 request new 需要和 request 分开来就可以了。好，我们来到这里可以去写一下。如果当前有事物，则挂起该事物，并且自己创建一个新的事物给自己使用。OK，如果当前没有事物，则同 request 和 request 可以说是一样的，我们刚刚也演示过了。好，我们在这里可以也是举一个例子，领导管饭了，对你好了，分点给你，但是我偏偏不要，我要自己去买了吃。就这意思，我偏不要，我自己买了自己吃，我嫌弃你的饭不好吃。所以这个就是一个 request new，不管怎样，它是会使用一个新的食物，和 required 区分开来就 OK 了。
+
+
+好，随后我们来看一下接下面的两个，一个是 not supported，也就是never。这两个我们可以放在一起看。我们可以先从字面意思上先来看一下。这个是 not supported，也是不支持。其实我们在之前讲了 supports 以后，其实我们应该要形成一种鲜明的对比。其实从它的文字上看得出来，它是一种互斥的意思。我们可以到它的源码里面去看一下。
+
+
+not supported 它是当我们要去运行一个方法的时候，我们是会以一种没有事物的形式去运行。如果它当前存在一个事物，它就会进行一个挂起。OK，也就是不管我当前有没有事物，我自己，我特立独行，我仅仅只使用一个没有事物的形式去执行我的相应的一些语句。所以我们可以到代码里面去演示一下。我们可以先把它的副方法，我们先给注释掉。副方法我没有任何的事物，把异常给注释掉。随后在我的自己的方法里面把异常开启。在这个地方我们使用一个 not supported。好，现在我们就可以来进行一个测试复方法。没有事物的自己，它是不使用事物。也就是现在当我们去进行一个数据库操作执行的时候，其实会和我们在最一开始运行的时候是一样的，两边都没有事物，它的结果应该是一致的。好，刷新一下数据库，没有任何的数据，我们来跑一下。好，现在我们运行成功爆一场了。
+
+
+看一下数据库，在数据库里面看得出来， parent 和 child 1 现在是成功的保存到咱们的数据库里面去了，主要是因为我智力虽然是抛了一个异常，但是其实我是不会去回滚的，因为我外层它的一个调用方，它是没有事物的。另外它自己它也是不使用事物，所以它在这里它没有回滚，在这里会有一个 child 1 的保存。随后我们在这里面我们再来把这个事物给进行一个开启，我们可以保存。再来我们再运行一下。好，OK，现在我们报一场了。我们到数据库里面，我们来看一下，刷新一下。数据库里面刚刚我们没有清掉，我们重新再来试一下。为了演示的更加清楚，我们把数据库的数据删掉，我们重新再来运行。好， OK 了。打开数据库看一下，刷新。现在在我们数据库里面会有一个 child 1 回到咱们的代码。 child 1 主要是因为在我们的子方法里面，其实发了一个，抛出了一个异常。 chart 1 会保存到数据库里面，它没有被回滚发生异常。 chart 2 它没有执行到。下面再看它的一个调用方，它自己本身是一个required，它是需要有事务的。所以虽然我的子方法它抛了一个异常对，他自己没有去回滚，但是我自己的 parent 方法它去进行了一个回滚。
+
+
+OK，这个我们需要去注意的，它是不使用事物去执行它的相应的数据库脚本的方法。到这里写一下。如果当前有事物，则把事物挂起，自己不使用事物去运行。数据库操作是这个意思。这个事物的类型，传播类型。它其实也是主要用于去做一些查询的操作。当然一般来说使用 support 也就可以了。好。举例领导有饭吃，领导也管饭了，领导他也会分一点给你。但是这个时候我吃吗？我不吃，对吧？因为这个时候可能你正在996，你在加班，我太忙了，放一边，我不吃。我们就是这个意思。 not sport。好。
+
+
+再来看下一个是一个never， never 是从不的意思，相信其实应该也可以从意思上看出来是从不使用的意思。来看一下它的一个事故类型。在这里它的一个头半句和我们上面是一样，和 not support 是一样的。它也是以一个没有事物的形式去进行执行，只不过它们之间有一个小区别，一旦它发现调用方，它有一个事物存在，它会干嘛？它会抛出一个异常。
+
+
+OK，我们来看一下咱们的一个代码，也就是在这个地方。在这个地方它是不允许你有任何的一个事物的。如果我们在这里使用了never，它肯定会包一个异常的。在这个地方是不可以有一块的。OK，我们直接可以来跑一下我们的test。好，现在我们已经是报了异常。报了异常以后，先来看数据库。数据库你会发现数据库其实现在有一条数据，数据我们还是清掉，容易引起混淆。我们先来运行一下。现在是报了一个异常。先看数据库。没有任何的记录。来看一下我们的 my test 异常。异常报了一个 illegal transcation，也就是它是一个非法的事物状态。为什么？这是因为我们现在标记的一个事物的传播是什么？是 never 对吧？所以他找到了一个存在的事物，所以它会报了一个这样的异常，也就是它不允许你使用事物的OK，所以它在执行相应的方法之前就已经是报了一个错了。随后我们把 transcation 给注释掉，随后我们再来看一下他会不会再报这样的一个错误的来运行一下。
+
+
+好，这个时候我们的 my test 报的是一个 by seal，无法被零整除。看一下我们的数据库，这个时候数据库其实这两个，一个是parent，一个是child，就已经是入库了。这个其实也就相当于是在我们之前所讲的上一个 not support。其实是一样，我现在两边都没有事物，很显然，我是没有事物的机制在里面的。我自己本身是不会有事物的回滚。当然它的调用方这里，它也不会有任何的事物，所以两边都会有相应的数据入库的。
+
+
+OK，这一点注意一下。我们在这里加一下。如果当前有事物存在，则抛出异常。这个是比较好理解的。举个例子，领导有饭给你吃，这个时候我不干了，我不想吃药，我热爱工作，我抛出异常，你不要管我，不要打扰我工作，你有饭也不要给我。这意思好。我们这一节所讲的 not support 以及是never，大家可以课后再去试一试。
+

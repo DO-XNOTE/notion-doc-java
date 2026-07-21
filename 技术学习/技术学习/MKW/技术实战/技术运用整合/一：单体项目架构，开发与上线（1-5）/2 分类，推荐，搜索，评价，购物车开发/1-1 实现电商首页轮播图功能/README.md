@@ -1,0 +1,80 @@
+---
+title: 1-1 实现电商首页轮播图功能
+---
+
+# 1-1 实现电商首页轮播图功能
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1b68a099-5309-4680-911b-5847f67798b0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662JWUJAQ2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224637Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD3KwSxpDy8Jf3WAuy%2FnjAI1NTmrqfptKth9raWALpKzwIgcybMYwJ5Qdiu1yGKBq7gHQqwhZRJP0jFnjjSfBZWnakqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOSlPAxQDGglZu%2B1UCrcA0Jr0mAKs2DTfgSNBTXg7hUcSdZJALqz8Vfi%2BYuZx%2FV95iBqGESy%2BXZar2R24H%2FZAYirGu70rC%2FVIKtROlilJJGPc9aHGBjZXT%2FymdlB52jLHOhrjdH4YDuGuoo%2FjPXnitgSZ%2BFL7oAAYn5sf9X4%2FOngjo1mP4ZxQvmhf2s2ebOkVS6qdN1iV%2B7IT%2FrNfF4kgxgz0S7g%2FyGMoJ3HlFomp8OePahywf%2FS3GjYX%2FUOcM3TqV4LkCNDAMcsuPg0f2DlBiMeYBLQAy5n5jcsuGQCs44HElw2IIPXRm%2Fj15WdtkmXsONhyOKC%2FvcmqOP77A40DOkWZGZ0d9q9mp5Ho0cVvzikTl7ccDC5lcmTFsEljldzcoSVx9Yx5YZqS7yUZhI5hAJ%2FE05yZh3OVLKTvdFA%2BnqImbBHx%2FhLjkBqNVGFRNF4tQnh6k50GYeOXgi3aw2woUl%2BrReSXkXaZkcrIyUDoVloMfKnL%2BaSjbnRlKU%2FSK4r7USglAlxwZy1icki6RjOftJ3B81MvSs1Vck3UZIN5s8XGmvKGy%2BO1eu5I5n8LQ%2FvrkZ%2FQ8HWLTUc0Mbtl%2Fa8FtS92G6%2FQtVtKtU%2Ffye0qYF%2B0Z39JT%2Fo44Zwn%2F8S8yJcy%2Fc4BYpBFelQBhynMKi3%2F9IGOqUBjSuSFZkzZ2FnsmqwPYTidCQDs4FbR3htpZ2FlDuTrRJ5hJdu91PR%2FJbKXtEyuj4UMIJ6zXaGlXl7P9OhYSJZ%2BtMoRxkJXHV84JttGQej19ccsaeM2ql2tt9doEMsjmM45qxYAW9qKjvNtSJLn6bIZTFrOFabipBu2uPhZRFiVY1yavz%2BqlX6GZvA1sLmK0spL3NJbBBB8En5ZqrVv7yGlIF9hpRr&X-Amz-Signature=12c49e455a8b02b550ccff8cb447a186aa8336cf239ff1d9daa8de8b76854bb5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+到这里，本阶段的用户登录注册和退出登录我们都已经是完成了。接下来我们所要去做的应该是从首页一步一步往下面去做。在首页我们最一开始所涉及到的应该就是中间，现在所显示的是一个绿色背景。这个其实应该是我们的轮播图。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c08bd778-2723-4ab3-8f2f-5c32cd8ba292/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662JWUJAQ2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224637Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD3KwSxpDy8Jf3WAuy%2FnjAI1NTmrqfptKth9raWALpKzwIgcybMYwJ5Qdiu1yGKBq7gHQqwhZRJP0jFnjjSfBZWnakqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOSlPAxQDGglZu%2B1UCrcA0Jr0mAKs2DTfgSNBTXg7hUcSdZJALqz8Vfi%2BYuZx%2FV95iBqGESy%2BXZar2R24H%2FZAYirGu70rC%2FVIKtROlilJJGPc9aHGBjZXT%2FymdlB52jLHOhrjdH4YDuGuoo%2FjPXnitgSZ%2BFL7oAAYn5sf9X4%2FOngjo1mP4ZxQvmhf2s2ebOkVS6qdN1iV%2B7IT%2FrNfF4kgxgz0S7g%2FyGMoJ3HlFomp8OePahywf%2FS3GjYX%2FUOcM3TqV4LkCNDAMcsuPg0f2DlBiMeYBLQAy5n5jcsuGQCs44HElw2IIPXRm%2Fj15WdtkmXsONhyOKC%2FvcmqOP77A40DOkWZGZ0d9q9mp5Ho0cVvzikTl7ccDC5lcmTFsEljldzcoSVx9Yx5YZqS7yUZhI5hAJ%2FE05yZh3OVLKTvdFA%2BnqImbBHx%2FhLjkBqNVGFRNF4tQnh6k50GYeOXgi3aw2woUl%2BrReSXkXaZkcrIyUDoVloMfKnL%2BaSjbnRlKU%2FSK4r7USglAlxwZy1icki6RjOftJ3B81MvSs1Vck3UZIN5s8XGmvKGy%2BO1eu5I5n8LQ%2FvrkZ%2FQ8HWLTUc0Mbtl%2Fa8FtS92G6%2FQtVtKtU%2Ffye0qYF%2B0Z39JT%2Fo44Zwn%2F8S8yJcy%2Fc4BYpBFelQBhynMKi3%2F9IGOqUBjSuSFZkzZ2FnsmqwPYTidCQDs4FbR3htpZ2FlDuTrRJ5hJdu91PR%2FJbKXtEyuj4UMIJ6zXaGlXl7P9OhYSJZ%2BtMoRxkJXHV84JttGQej19ccsaeM2ql2tt9doEMsjmM45qxYAW9qKjvNtSJLn6bIZTFrOFabipBu2uPhZRFiVY1yavz%2BqlX6GZvA1sLmK0spL3NJbBBB8En5ZqrVv7yGlIF9hpRr&X-Amz-Signature=418612c369e3802368a6e8c1729f8b6952228767957a01c03f8b93483ea89ce4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+轮播图它其实不仅仅是在电商，在各个不同的领域里面，只要是做网站的，在首页肯定是会有。所以我们这一节先来把轮播图来实现一下。要说到轮播图，其实它就是一个由几张图片所组成的。在首页是可以轮播进行滚动，当用户进行点击的时候，可以去跳转到不同的页面。我们可以先来看一下轮播图的这张表。这张表首先来看一下第一个是组件，每一个表其实它都会有。最后第二个是它所显示的一张图片所在的一个地址。随后下一个应该是背景色，因为我们的图片其实每一张图片它都会有一个背景色，和当前这一行是相互对应的。
+
+
+我们可以来看一下咱们在生产环境的一个轮播图。可以看到首先第一张图是粉色的，随后它是有一个青色，再往下是橙色以及是绿色。其实颜色是和图片要相互对应的，因为中间这张图片它显示只会在中间两边可以看到最左边以及是最右边。它的颜色必须要和我们中间所对应，如果你没有颜色显得可能就没有那么大气了。
+
+
+OK 好，下一个是商品 ID 和商品分类ID，这两个有什么用？这两个其实第一个商品ID，它是代表有些轮播服。用户点击是直接可以跳转到某一个对应的详情的，详情所展示的内容就是商品的详情。下一个是商品分类，这个点击就相当于是用户点击了某一个分类，会显示这个分类下所有的一些商品列表。其实是这样的一个意思，目前所涉及到用户的一个跳转主要就是这两个。随后下一个是一个轮播图的类型。轮播图的类型在这里是一个菜谱，双击一下可以来看一下。在这里边菜谱其实在我们这里面也可以看得出来，我在这里可以展开。点击一下可以看到轮播图的类型是用于去做判断的，可以根据商品 ID 或者分类进行页面的跳转。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bcdaf051-f503-444b-a7aa-bb14c077b34d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662JWUJAQ2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224637Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD3KwSxpDy8Jf3WAuy%2FnjAI1NTmrqfptKth9raWALpKzwIgcybMYwJ5Qdiu1yGKBq7gHQqwhZRJP0jFnjjSfBZWnakqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOSlPAxQDGglZu%2B1UCrcA0Jr0mAKs2DTfgSNBTXg7hUcSdZJALqz8Vfi%2BYuZx%2FV95iBqGESy%2BXZar2R24H%2FZAYirGu70rC%2FVIKtROlilJJGPc9aHGBjZXT%2FymdlB52jLHOhrjdH4YDuGuoo%2FjPXnitgSZ%2BFL7oAAYn5sf9X4%2FOngjo1mP4ZxQvmhf2s2ebOkVS6qdN1iV%2B7IT%2FrNfF4kgxgz0S7g%2FyGMoJ3HlFomp8OePahywf%2FS3GjYX%2FUOcM3TqV4LkCNDAMcsuPg0f2DlBiMeYBLQAy5n5jcsuGQCs44HElw2IIPXRm%2Fj15WdtkmXsONhyOKC%2FvcmqOP77A40DOkWZGZ0d9q9mp5Ho0cVvzikTl7ccDC5lcmTFsEljldzcoSVx9Yx5YZqS7yUZhI5hAJ%2FE05yZh3OVLKTvdFA%2BnqImbBHx%2FhLjkBqNVGFRNF4tQnh6k50GYeOXgi3aw2woUl%2BrReSXkXaZkcrIyUDoVloMfKnL%2BaSjbnRlKU%2FSK4r7USglAlxwZy1icki6RjOftJ3B81MvSs1Vck3UZIN5s8XGmvKGy%2BO1eu5I5n8LQ%2FvrkZ%2FQ8HWLTUc0Mbtl%2Fa8FtS92G6%2FQtVtKtU%2Ffye0qYF%2B0Z39JT%2Fo44Zwn%2F8S8yJcy%2Fc4BYpBFelQBhynMKi3%2F9IGOqUBjSuSFZkzZ2FnsmqwPYTidCQDs4FbR3htpZ2FlDuTrRJ5hJdu91PR%2FJbKXtEyuj4UMIJ6zXaGlXl7P9OhYSJZ%2BtMoRxkJXHV84JttGQej19ccsaeM2ql2tt9doEMsjmM45qxYAW9qKjvNtSJLn6bIZTFrOFabipBu2uPhZRFiVY1yavz%2BqlX6GZvA1sLmK0spL3NJbBBB8En5ZqrVv7yGlIF9hpRr&X-Amz-Signature=0d5a40e87fd5d9d9d69c1a6b38f30012070d50b1415ad1c8e0bf9f5fc8250efa&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+一个如果是 1 代表是商品， 2 就代表是分类。OK，好，我们再看下一个。下一个是sort，这个是轮播图的一个展示的顺序，它是一个整数，整数它是可以人为的去进行调整的，不管是从大到小还是从小到大。我们有了一定的顺序以后，就可以在首页按照自己所想要去设置的顺序去进行一个显示了。随后是一个是否展示。椅子秀是代表我们有些图片一开始可能是需要去展示的，但是到后续可能不想要了，我们不会去删除，我们可以直接去把它隐藏掉，可以通过椅子秀去进行展示或者不显示。当然最后两个是创建时间和更新时间，这两个我们就不去多说了，几乎每一张表都会有。
+
+
+好，我们可以随后打开数据库。在之前其实我们已经是统一的，把所有的一些数据全部都导入到我们的一个数据库里面来了。可以先来看一下。 Chaos 代表是轮播图的意思，双击一下，目前在这里面已经是包含了很多的数据了。首先这个是ID，是它的组件。随后是它的一个图片的地址，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/debc5a48-e924-4b6d-82fd-d0e421c29550/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662JWUJAQ2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224637Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD3KwSxpDy8Jf3WAuy%2FnjAI1NTmrqfptKth9raWALpKzwIgcybMYwJ5Qdiu1yGKBq7gHQqwhZRJP0jFnjjSfBZWnakqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOSlPAxQDGglZu%2B1UCrcA0Jr0mAKs2DTfgSNBTXg7hUcSdZJALqz8Vfi%2BYuZx%2FV95iBqGESy%2BXZar2R24H%2FZAYirGu70rC%2FVIKtROlilJJGPc9aHGBjZXT%2FymdlB52jLHOhrjdH4YDuGuoo%2FjPXnitgSZ%2BFL7oAAYn5sf9X4%2FOngjo1mP4ZxQvmhf2s2ebOkVS6qdN1iV%2B7IT%2FrNfF4kgxgz0S7g%2FyGMoJ3HlFomp8OePahywf%2FS3GjYX%2FUOcM3TqV4LkCNDAMcsuPg0f2DlBiMeYBLQAy5n5jcsuGQCs44HElw2IIPXRm%2Fj15WdtkmXsONhyOKC%2FvcmqOP77A40DOkWZGZ0d9q9mp5Ho0cVvzikTl7ccDC5lcmTFsEljldzcoSVx9Yx5YZqS7yUZhI5hAJ%2FE05yZh3OVLKTvdFA%2BnqImbBHx%2FhLjkBqNVGFRNF4tQnh6k50GYeOXgi3aw2woUl%2BrReSXkXaZkcrIyUDoVloMfKnL%2BaSjbnRlKU%2FSK4r7USglAlxwZy1icki6RjOftJ3B81MvSs1Vck3UZIN5s8XGmvKGy%2BO1eu5I5n8LQ%2FvrkZ%2FQ8HWLTUc0Mbtl%2Fa8FtS92G6%2FQtVtKtU%2Ffye0qYF%2B0Z39JT%2Fo44Zwn%2F8S8yJcy%2Fc4BYpBFelQBhynMKi3%2F9IGOqUBjSuSFZkzZ2FnsmqwPYTidCQDs4FbR3htpZ2FlDuTrRJ5hJdu91PR%2FJbKXtEyuj4UMIJ6zXaGlXl7P9OhYSJZ%2BtMoRxkJXHV84JttGQej19ccsaeM2ql2tt9doEMsjmM45qxYAW9qKjvNtSJLn6bIZTFrOFabipBu2uPhZRFiVY1yavz%2BqlX6GZvA1sLmK0spL3NJbBBB8En5ZqrVv7yGlIF9hpRr&X-Amz-Signature=56a3a8009b5908b5c4e5c2c38add193dc1113d537f07bb7b5401e6e8f17413bd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这个图片地址目前是在生产环境上是有的，大家可以打开是可以去访问到的。随后下方下一个 background color，每一张图片都会有它对应的一个背景颜色。再往下就是一个 item ID 和 cat ID，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/46e125ba-7b7d-4d36-82d7-16f18bc4877f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662JWUJAQ2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224637Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD3KwSxpDy8Jf3WAuy%2FnjAI1NTmrqfptKth9raWALpKzwIgcybMYwJ5Qdiu1yGKBq7gHQqwhZRJP0jFnjjSfBZWnakqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOSlPAxQDGglZu%2B1UCrcA0Jr0mAKs2DTfgSNBTXg7hUcSdZJALqz8Vfi%2BYuZx%2FV95iBqGESy%2BXZar2R24H%2FZAYirGu70rC%2FVIKtROlilJJGPc9aHGBjZXT%2FymdlB52jLHOhrjdH4YDuGuoo%2FjPXnitgSZ%2BFL7oAAYn5sf9X4%2FOngjo1mP4ZxQvmhf2s2ebOkVS6qdN1iV%2B7IT%2FrNfF4kgxgz0S7g%2FyGMoJ3HlFomp8OePahywf%2FS3GjYX%2FUOcM3TqV4LkCNDAMcsuPg0f2DlBiMeYBLQAy5n5jcsuGQCs44HElw2IIPXRm%2Fj15WdtkmXsONhyOKC%2FvcmqOP77A40DOkWZGZ0d9q9mp5Ho0cVvzikTl7ccDC5lcmTFsEljldzcoSVx9Yx5YZqS7yUZhI5hAJ%2FE05yZh3OVLKTvdFA%2BnqImbBHx%2FhLjkBqNVGFRNF4tQnh6k50GYeOXgi3aw2woUl%2BrReSXkXaZkcrIyUDoVloMfKnL%2BaSjbnRlKU%2FSK4r7USglAlxwZy1icki6RjOftJ3B81MvSs1Vck3UZIN5s8XGmvKGy%2BO1eu5I5n8LQ%2FvrkZ%2FQ8HWLTUc0Mbtl%2Fa8FtS92G6%2FQtVtKtU%2Ffye0qYF%2B0Z39JT%2Fo44Zwn%2F8S8yJcy%2Fc4BYpBFelQBhynMKi3%2F9IGOqUBjSuSFZkzZ2FnsmqwPYTidCQDs4FbR3htpZ2FlDuTrRJ5hJdu91PR%2FJbKXtEyuj4UMIJ6zXaGlXl7P9OhYSJZ%2BtMoRxkJXHV84JttGQej19ccsaeM2ql2tt9doEMsjmM45qxYAW9qKjvNtSJLn6bIZTFrOFabipBu2uPhZRFiVY1yavz%2BqlX6GZvA1sLmK0spL3NJbBBB8En5ZqrVv7yGlIF9hpRr&X-Amz-Signature=3f12a3a895ed1ce1c94d2c31d35c247d0258ea2bf90afe1c850b711c615be387&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这个是商品ID，这个是商品分类ID，它们是所对应的。这两个我们暂时还用不到，等到我们去做查询的时候，我们可以再回过头来可以说一下，因为这个是一个参数所带过去的。下一个就是type，根据它的显示方式，是定义为商品还是分类，这是一个 sort 排序规则是椅子秀是否要进行显示。
+
+
+cry time 和 up 的 time 这两个不多说了。好，接下来我们就应该要去编写相应的代码了。写代码还是一样，我们会从 service 层往上去写。好，我们把 service 展开一下。首先一个我们可以在这里去，你有一个 Java class 在，我们先把拖过来，我们定义为 tell 晓，service。好，现在它是一个class，我们把它定义为 interface 就可以了。
+
+
+好，我们就编写咱们第一个方法，直接写上public。我们先写 void query 或查询所有的轮播图。查询的时候我们要带上一个参数。我们可以把椅子秀给带进去。这椅子秀是可带可不带。但是为了我们的一个查询方法的通用性，往往我们可以把参数给写进去。查询出来图片是有多个，所以它可能是一个list。所以在这里先写好一个list。随后再把 carousel Polo 给写过来。这是抽象方法，我们就已经是第一好了。随后我们可以加上一个注释，查询所有轮播图列表。好，OK，接口写完了。写完之后我们要去写一个实现。好，这个实现是我们把拷贝一下，又一个 Java class，在加一个 i n t l 好。
+
+
+首先第一步在这个后方我们要去实现接口，使用 implements 把 carousel service 给写过来，千万不要忘记，由于它是service，需要加上注解艾特 service 好。随后通过 command 再加一个i，可以把抽象方法给加进来。好，加进来以后我们只需要去完善这个方法就可以了。
+
+
+在这个方法要完善之前，首先我们要把通用 map 给注进来，所以我们要去写上一个 private carousel map 写进来。好，快速写一下，使用 auto word 好，这样子科就可以住进来。注进来以后，在这里就可以写好。通过 carry cell map 点就可以做一个select，就可以去做查询。先把注释掉。在这里我们就使用 example 来做，两种方式都可以。 example 和通过他自己本身的 polo 去查询，都是没有问题的。 example 等于 new example。随后再把 carousel 点 class 作为参数放进去，我们就可以去创建条件了。 create 一个科学院条件，随后这个条件我们在前方进行一个声明。通过这个时候我们就可以去加上一个参数了，对吧？它的参数是一个 and equal to。
+
+
+第一个是 in show，来看一下。把椅子秀直接可以拷贝过来，拷贝一下，贴到这个部位后方，把 Excel 参数给传进去就可以了。好，传进去以后，我们就可以做一个查询。通过select，我们就可以来一个 select by example 给传进去，这样子就可以做查询了。当然它返回的是一个 list 类型的，跳下 results 写一下。最后在这里我们就直接把 list 给探出去就可以了。
+
+
+在这里我们传入的一个参数是Excel。在我们的数据库设计里面，其实我们会有一个排序sort，这个排序如何去写到这里面去，我们来看一下。在这里会有一个 example 点，我们来搜一下。它有一个 order by， order by 传入于一个参数是property。这个 property 和下方 equal to 里面是一样的。所以我们只要到凯尔斯要里面去把 sort 找到，把属性拷贝放到这里面就可以了。OK。随后它后面还有一个正序，或者是一个倒序，有a，s， c 或者d，s， c 都行。如果使用默认的a，s， c 不写也可以。我们来个IC，我们来倒叙，使用倒叙来演示一下。好，OK。
+
+
+现在其实基本的一个条件我们都已经是设置好了， service 也已经是写好了。接下来我们所需要去做的就应该要完善一下咱们的 control 了。在这里我直接拷贝一下。我拷贝一个 hello control 了，贴到这里面，把它取名为首页index。 Ctrl 了好，双击。在这里面很简单，有一部分的内容我们是需要去清理一下的。 API 有个东西要拿掉。
+
+
+在这里面会有一个日志，日志我们就不去写了，因为其实我们已经讲了如何去使用，大家在每一个方法里面都去，可以加上相应的日志就行了。我们就在这里就不加了，不去使用了。好，我们来开始写。首先它是一个 rest control 了，既然是一个index，它肯定也是需要有一个相应的路由的。在这里我们可以来给它加一个 request mapping。我们说指为index。我们是需要把接口开放出来给其他人员看，所以我们会使用到 swag to。所以在这里头部的 API 我们是需要去加上的。
+
+
+我们拷贝一下。我们在之前写的拷贝过来会更加的方便一些。说这个东西直接可以拷贝，推到这里。在这边很显然直接写上一个首页就可以了。它的tags。这就是首页展示的相关接口。好，OK，下一个。我们在这里面要去使用到service，也就是 tell cell service，我们写一下给把它住进来。好，写完了以后再去定义一下咱们的方法。现在我们要去做一个查询轮播图。很简单，我们使用 get mapping 就可以了。在这里我们就直接可以写一个 tell 小好。在这边我们要写上相应的方法。返回出去是一个 Imock Jason result。在这里边我们不需要传入任何的参数。在这边些内容全部都删掉。只要有用户的请求进来。其实我们就直接去调用 service 就可以了。我们没有必要去做一些额外的请求的验证。通过 carry cell service 点 query all。
+
+在这里我们会写上一个 is show，这个 is show 是 yes or no？来看一下我们现在是否有这样的枚举，如果写的不太规范，在这里可以直接写死唯一就可以了。但是我们为了做得更加的通用化，所以往往我们会使用枚举。来看一下。枚举目前还没有，所以我们创建一个直接复制一下。
+
+
+sex like yes or no 像这种写死的数据，我们尽量要做到通用化。这个是否枚举来一个 1 和 00 就代表是no，否不是的意思。 yes 就是1。我们确定的意思，就是否和是分别对应是 0 和1。下方这些内容我们是不需要去做修改的。随后 yes or no 枚举，我们就可以直接在这个地方使用了。
+
+
+yes or no 点使用yes，再拉一个点type，这样子其实就OK，它会返回一个list，把这个 list 我们再拷贝过来，这边是一个results，写一个list，最后我们就可以 return 出去。之前我们也说了，在 m 杰森 result 里面，它可以通过 OK 去返回内容。如果在 OK 里面，我们把 list 传出去，在前端接收list，它就是一个杰森的数组，会由前端去进行解析，并且把相应的内容展现到首页的OK，它是这样的一个处理逻辑。好，现在来看一下。把空行我们可以去掉这样子。其实在 Ctrl 里面，我们就可以通过这两行代码。其实主要是一行就可以把 list 拿到，并且给传出去。我们再加上一个swag，我们没有加对吧？没有关系，我们拷贝一下，这样子可以更加的规范一些，显示的内容会更加的丰富一些。这个方法是用于去干嘛的。
+
+
+写上获取首页轮播图列表，拷贝一下。贴到这里。它所调用的 h t t p method 是 get 好。OK，现在我们就可以来进行一个测试了。现在我们先 install 一下，因为我们已经是涉及到了 common 包以及是 service 包，所以我们全局install。安装一下。好，启动一下我们的服务器。好，现在是启动我们成功了。我们可以打开页面。我们可以来刷新一下看一下。在这里我们来刷新。刷新以后，这个时候可以看到我们轮播图已经在这里展示了。第一张是绿色，第二张是橙色。我们点中间几个圈，可以发现页面都是可以进行一个变化的。当然我们点击是没有任何效果的，因为点击其实我们现在查询详情还没有做，所以大家可以去点，但是没有任何的内容可以看到，都属于空的。OK，好，我们可以到前端来看一下。
+
+
+打开 VS code 我们来看一下。来看一下它的一个前端是如何去渲染的一个过程。首先在它的一个created，也就是在生命周期这一开始的时候，会调用一个方法用于去渲染轮播图，也就是render。往下面去找一下，找到这里。在这个方法里面主要就是用去获得轮播图列表并且渲染的。首先第一步我们是通过 get 方式去请求，在这里发起了一个请求，它是没有带上任何的参数，拿到结果以后我们要判断一下它的状态是不是200，如果是200，我们就可以去继续下面的业务。在这里通过 r e s 点 data 就可以获得到一个 JSON list，它是一个 Jason 的数组形式。拿到了以后我们就可以去做一个的渲染了。在这里渲染的方式可以看到，它其实是通过 jquery 的方式去做的。前端模板里面在这一块罗伯图组件适用的query。所以我们配合它的一个渲染形式，其实就是因 HTML 的形式一个一个的去加载进去，用于去做一个渲染。渲染完毕之后，前端就可以去显示了。OK，好。这一节就是我们所讲的轮播图，目前我们就已经是实现了OK。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/220936d0-53f7-4f0f-98a6-524c59226d9d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662JWUJAQ2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224637Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD3KwSxpDy8Jf3WAuy%2FnjAI1NTmrqfptKth9raWALpKzwIgcybMYwJ5Qdiu1yGKBq7gHQqwhZRJP0jFnjjSfBZWnakqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOSlPAxQDGglZu%2B1UCrcA0Jr0mAKs2DTfgSNBTXg7hUcSdZJALqz8Vfi%2BYuZx%2FV95iBqGESy%2BXZar2R24H%2FZAYirGu70rC%2FVIKtROlilJJGPc9aHGBjZXT%2FymdlB52jLHOhrjdH4YDuGuoo%2FjPXnitgSZ%2BFL7oAAYn5sf9X4%2FOngjo1mP4ZxQvmhf2s2ebOkVS6qdN1iV%2B7IT%2FrNfF4kgxgz0S7g%2FyGMoJ3HlFomp8OePahywf%2FS3GjYX%2FUOcM3TqV4LkCNDAMcsuPg0f2DlBiMeYBLQAy5n5jcsuGQCs44HElw2IIPXRm%2Fj15WdtkmXsONhyOKC%2FvcmqOP77A40DOkWZGZ0d9q9mp5Ho0cVvzikTl7ccDC5lcmTFsEljldzcoSVx9Yx5YZqS7yUZhI5hAJ%2FE05yZh3OVLKTvdFA%2BnqImbBHx%2FhLjkBqNVGFRNF4tQnh6k50GYeOXgi3aw2woUl%2BrReSXkXaZkcrIyUDoVloMfKnL%2BaSjbnRlKU%2FSK4r7USglAlxwZy1icki6RjOftJ3B81MvSs1Vck3UZIN5s8XGmvKGy%2BO1eu5I5n8LQ%2FvrkZ%2FQ8HWLTUc0Mbtl%2Fa8FtS92G6%2FQtVtKtU%2Ffye0qYF%2B0Z39JT%2Fo44Zwn%2F8S8yJcy%2Fc4BYpBFelQBhynMKi3%2F9IGOqUBjSuSFZkzZ2FnsmqwPYTidCQDs4FbR3htpZ2FlDuTrRJ5hJdu91PR%2FJbKXtEyuj4UMIJ6zXaGlXl7P9OhYSJZ%2BtMoRxkJXHV84JttGQej19ccsaeM2ql2tt9doEMsjmM45qxYAW9qKjvNtSJLn6bIZTFrOFabipBu2uPhZRFiVY1yavz%2BqlX6GZvA1sLmK0spL3NJbBBB8En5ZqrVv7yGlIF9hpRr&X-Amz-Signature=7be5af8228f33d5552687f2ae562c5414af89bb8f90ed186ddccb4bac0468e49&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

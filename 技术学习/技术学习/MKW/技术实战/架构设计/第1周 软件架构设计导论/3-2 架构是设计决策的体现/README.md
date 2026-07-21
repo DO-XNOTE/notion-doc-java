@@ -1,0 +1,52 @@
+---
+title: 3-2 架构是设计决策的体现
+---
+
+# 3-2 架构是设计决策的体现
+
+架起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/962fda44-0eeb-4676-ab20-915041bda4d5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663NWLFPSY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230302Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDF78779zIVhg2kXJWh4OAlU6gVFv%2Bdoh44029YMjBNIAIhAN7NBpwspFhUQhAgeO7uvR29jNMNHyzEADxbMILeohFYKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyeaTc7JebzIQRFJnIq3AMOh0DyK3q0j788IiMyLDx%2FnmGY3ha14VldE0LVAHs9S%2FiGEKx7f1N5z2lJey3mIgGUcYHiLW4hloHRZYPn6vNlmt7HpDglfNxLARXr4e239vI1Mge1tYH2%2BJJ3sg%2FMZEBUUuq59R6LW1dY51VNcrSKz0ssAaeljNOrEiAHecYZtvWTcWL%2BZMJaJyKnEAfqAxTmvgV9K1yNgVvbBgnIwoHXm0yBZBz9frweCOoN571LDV6%2FK4H0F%2FjRKeaZ2EgXZk%2BRGPDuc4YKrZRmMwqqDAMtjjx%2FeBjcOSAYJgYTF4IdO%2BhImDUqu3a6KCeCu3sNocQtru5dnE6%2BlpTze3io0VJSCtIQ7CrZzDs%2FcRYD9YrXx6D6F6HgjKrr225zUa3rIgNw7hvvUaXuwcfpePm1%2Bqp5FsLRYe%2F5o7reCi%2FdaVVVDoX7E1Bj3lxsvH6GXLjxE48K8e9xZS4vPN%2FLd0hyteu%2BXfqKDo%2BdP1JZnTvsDwhcVpmP3zXGWxnlnyVG7gNs59t4%2Fcfi2%2BCp7y%2FHtxYNEke4hJubJ4KFKCMswM%2F6TFGX9R7IWH0hTaDpgujIjXi1oBUPlmSxjFLuvvFgUaZAzHWFYOu2OVLhdyYy7dKAjr2lwcxvD0%2Ft1n9E51AwqDDAuf%2FSBjqkAUotaIoBEgggtNm4s7%2FEliJFNAkCAqU5hhmmZbQKeI5QL9aPKVMACcr3gl6%2B1u91ownmPnHcPk2irQTwsoNdJUIwBPMVPy7zw75WgVd2jschPxZzNQTPt69kzlchh0X7O7foSNDnNFV%2BbfG2OMBbXTH0C%2FHFhkWrNKd40wRKdYloN3tKvzxDXPtXd0Kkcu5HvpBJu8jfs5055HLrfAeFczL9iMJN&X-Amz-Signature=796a2790a3d66c1b2a39d7a5ec330e4d2f60c892dee7cc54994d6bac47ac9f4b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那前一节我们聊了一下架构对于沟通和交流的作用。那这一节我们重点聊一聊架构是早期设计决策的体现。这段话怎么理解呢？其实就是什么架构对于决策的作用？我们来看一下，还是以上一节的 SWOT 分析为例，我们来举两个实际的例子，
+
+因为上一节是一个比较偏搞笑的，我们来看看真实环境当中怎么做 SWOT 分析。我们还是一切以精简为准，我们把复杂的话用简短的话来抽象来写出来。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b05fd06e-898f-43e8-8e30-2ff75bb6302a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663NWLFPSY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230302Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDF78779zIVhg2kXJWh4OAlU6gVFv%2Bdoh44029YMjBNIAIhAN7NBpwspFhUQhAgeO7uvR29jNMNHyzEADxbMILeohFYKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyeaTc7JebzIQRFJnIq3AMOh0DyK3q0j788IiMyLDx%2FnmGY3ha14VldE0LVAHs9S%2FiGEKx7f1N5z2lJey3mIgGUcYHiLW4hloHRZYPn6vNlmt7HpDglfNxLARXr4e239vI1Mge1tYH2%2BJJ3sg%2FMZEBUUuq59R6LW1dY51VNcrSKz0ssAaeljNOrEiAHecYZtvWTcWL%2BZMJaJyKnEAfqAxTmvgV9K1yNgVvbBgnIwoHXm0yBZBz9frweCOoN571LDV6%2FK4H0F%2FjRKeaZ2EgXZk%2BRGPDuc4YKrZRmMwqqDAMtjjx%2FeBjcOSAYJgYTF4IdO%2BhImDUqu3a6KCeCu3sNocQtru5dnE6%2BlpTze3io0VJSCtIQ7CrZzDs%2FcRYD9YrXx6D6F6HgjKrr225zUa3rIgNw7hvvUaXuwcfpePm1%2Bqp5FsLRYe%2F5o7reCi%2FdaVVVDoX7E1Bj3lxsvH6GXLjxE48K8e9xZS4vPN%2FLd0hyteu%2BXfqKDo%2BdP1JZnTvsDwhcVpmP3zXGWxnlnyVG7gNs59t4%2Fcfi2%2BCp7y%2FHtxYNEke4hJubJ4KFKCMswM%2F6TFGX9R7IWH0hTaDpgujIjXi1oBUPlmSxjFLuvvFgUaZAzHWFYOu2OVLhdyYy7dKAjr2lwcxvD0%2Ft1n9E51AwqDDAuf%2FSBjqkAUotaIoBEgggtNm4s7%2FEliJFNAkCAqU5hhmmZbQKeI5QL9aPKVMACcr3gl6%2B1u91ownmPnHcPk2irQTwsoNdJUIwBPMVPy7zw75WgVd2jschPxZzNQTPt69kzlchh0X7O7foSNDnNFV%2BbfG2OMBbXTH0C%2FHFhkWrNKd40wRKdYloN3tKvzxDXPtXd0Kkcu5HvpBJu8jfs5055HLrfAeFczL9iMJN&X-Amz-Signature=5cf0aa32512de863f026d2b8c107f1a2fb39d196243204b0709e41ea6b06499f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那我们这次重点比较两个容器编排引擎，一个是 Mrs 马拉松，另外一个是Kubernetes，看一看如何用 SWOT 分析来选择一个容器并盘引擎，为我们的业务上容器上云来服务。先看一看 Mrs 跟马拉松， mates 跟马拉松相对于其他的变盘引擎有这样的一个优势，它的优势在于什么？资源统一管理，那它既能管理容器，也能管理大数据，也能管理有数据中心的服务器。它相当于把整个数据中心当一个操作系统在管，当成一个力量，它可以支持很多个框架，它可以支持大数据，可以支持高性能计算，可以支持杰克斯那种 CRCD 发布都可以，它上手非常快，步数非常简单，这是它的优势。
+
+
+那右上角就是它的劣势，为什么它不支持大部分的混合云？也就是说它的生态圈不够好，它的文档还相对较少，尤其是中文文档相对较少，而功能覆盖也不是很全，那它有什么样的机会呢？它有可能未来语音和大数据融合了，也许 mess 跟马拉松在未来 3- 5 年会蓬勃发展。同时，如果有新的调度框架在 Mesters 上跑起来可以和马拉松一样，马拉松作为一个长跑运动员，那么其他的这个调度框架也许是短跑，也许是跳跃，那这样就形成一个恬静大杂烩，那也许 masses 也可以一飞冲天，但是也有威胁啊。威胁在哪里啊？风口一直在变化，很多地方都是不做老大就会消亡。现在 Kubernetes 是江山一统，是事实上的容器编排的老大，那你作为老二老三是不是不信心很大啊？那我们来聊一聊 Kubernetes 这个方案在容器选择上又有怎样的优势劣势呢？那左上角是它的优势，混合云部署非常方便。为什么？因为不管是 BAT 还是什么亚马逊、谷歌和这个微软，它都支持库布内提斯作为嗯公有云的这个容器平台，同时我们也可以用库布内提斯搭私有云，并且两者可以很方便的混合起来。
+
+
+做成什么跨了公有云和私有云的混合云弹性伸缩，所以非常方便，是吧？在混合云环境进行部署，而且技术普及性非常高，不管是文档培训都非常多。同时它也很好的支持，像存储，支持弹性伸缩，支持有状态，这些都是它的优势。那劣势意思是什么？库布内克斯其实说白了还是个容器编排，它没法和大数据，没法和其他的服务器、虚拟机的编排进行统一管理。而且如果要实现高可用，你本身 Kubernetes 的 master 节点就够复杂了，还加上很多 NODE 节点，还有很多的概念，那同时像大数据环境很少有看到跟 Kubernetes 进行对接的。
+
+
+所以说 Kubernetes 还只是容器云，那机会是什么？机会有可能就在容器云这个垂直领域，我江山一统，我称为业界标准，我把老二老三都剔除了，完全有这个可能性。但也有一些威胁，比如说风口变了，又有新的这种开源技术起来了，然后我们的 GitHub 上的热度非常高，超越了Kubernetes，或者是另外一种情况，所有的这个 it 技术全部公有化，那容器也被 serverless 这种无服务器或者是完全从 0 到有的申诉的那种弹性扩缩容的业务所取代，那都是有可能的。那这只是举个例子，就是拿容器的一个例子来给大家分享一下实战过程当中怎么做 SWOT 分析。
+
+
+那真正的操作过程当中应该什么？还把我们什么业务方拉过来，把我们的什么研发方案拉过来，看看研发我们自身的能力在哪里？我们技术的栈在哪里？看看我们的业务需求是不是要做混合云？是不是要有很强弹性扩缩容，那同时你要把运维方把我们测试方案拿过来看一看，在这种不同两个平台中间测试会有什么样的障碍？监控会有什么样的问题？那这个时候我们再什么再做一个决策？
+
+
+而作为这个决策过程当中这么多的不同的人要把他的这个行为或者把他的这个意见记录下来，这个时候我们光拿这个 SWOT 分析是不够的，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/33a23cd8-d99f-4b9c-a3c2-23d86637bd1e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663NWLFPSY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230302Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDF78779zIVhg2kXJWh4OAlU6gVFv%2Bdoh44029YMjBNIAIhAN7NBpwspFhUQhAgeO7uvR29jNMNHyzEADxbMILeohFYKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyeaTc7JebzIQRFJnIq3AMOh0DyK3q0j788IiMyLDx%2FnmGY3ha14VldE0LVAHs9S%2FiGEKx7f1N5z2lJey3mIgGUcYHiLW4hloHRZYPn6vNlmt7HpDglfNxLARXr4e239vI1Mge1tYH2%2BJJ3sg%2FMZEBUUuq59R6LW1dY51VNcrSKz0ssAaeljNOrEiAHecYZtvWTcWL%2BZMJaJyKnEAfqAxTmvgV9K1yNgVvbBgnIwoHXm0yBZBz9frweCOoN571LDV6%2FK4H0F%2FjRKeaZ2EgXZk%2BRGPDuc4YKrZRmMwqqDAMtjjx%2FeBjcOSAYJgYTF4IdO%2BhImDUqu3a6KCeCu3sNocQtru5dnE6%2BlpTze3io0VJSCtIQ7CrZzDs%2FcRYD9YrXx6D6F6HgjKrr225zUa3rIgNw7hvvUaXuwcfpePm1%2Bqp5FsLRYe%2F5o7reCi%2FdaVVVDoX7E1Bj3lxsvH6GXLjxE48K8e9xZS4vPN%2FLd0hyteu%2BXfqKDo%2BdP1JZnTvsDwhcVpmP3zXGWxnlnyVG7gNs59t4%2Fcfi2%2BCp7y%2FHtxYNEke4hJubJ4KFKCMswM%2F6TFGX9R7IWH0hTaDpgujIjXi1oBUPlmSxjFLuvvFgUaZAzHWFYOu2OVLhdyYy7dKAjr2lwcxvD0%2Ft1n9E51AwqDDAuf%2FSBjqkAUotaIoBEgggtNm4s7%2FEliJFNAkCAqU5hhmmZbQKeI5QL9aPKVMACcr3gl6%2B1u91ownmPnHcPk2irQTwsoNdJUIwBPMVPy7zw75WgVd2jschPxZzNQTPt69kzlchh0X7O7foSNDnNFV%2BbfG2OMBbXTH0C%2FHFhkWrNKd40wRKdYloN3tKvzxDXPtXd0Kkcu5HvpBJu8jfs5055HLrfAeFczL9iMJN&X-Amz-Signature=994a0b059ac58addf1932b20c397c557e06acf950eae92dccb4b0b3c078e5906&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那只是一个最终分析，对吧？相当于是一个最终的文档，那过程其实也要记录决策派不是记录最终的决策，而是这个决策以及它的原因，还有形成这个原因过程当中的所有讨论都要记录下来，那怎么样真正的去拍板做这个决策，同时把所有的内容记录下来呢？我这里推荐一个决策矩阵，叫做 Resky rescue 矩阵，长这个样子也是一张很小的表，但这张表下面会有很多文字描述实际的讨论过程，或者说实际每一个任务之间的决策，就拿刚刚的整个 it 上云为例，有一个任务就是拍板，到底选什么？ task 一拍板到底选哪一个容器编排环境， task 2 可能就是选哪一个容器环境。
+
+
+task 3 有可能是选哪一个网络负载均衡工序等等，因为很多的不同的task，这些不同的决策项或者不同的执行项，那会把所有相关人用按照数列，这样就这里是 sponsor project，就是相当于是，嗯，大老板们、项目经理、业务分析员、评委会、工程师，其他人都列出来，那正式情况其实最好是甚至于列到人或者列到一个小组，列的可能不止 5 个、 6 个可能是 7 个、 8 个、 10 个、 20 个都有可能，没有关系，我们可以用一种文档或者一种文档换了方法把整个表格记下来。
+中间那些 AR s 什么 CI 到底是什么？来看一个，下面就是它的解释， are 就是responsible，实际上应该是一个负责人的感觉，但是我们中文不这样翻成执行人，因为他实际上他确实也不是负责任，他是干活的人，也就是苦活累活就是个 r 来干，那扛责任呢？是a， a 就accountable，就是一旦这个项目成功了，就a。
+嗯，这是a，做得好，就通常 a 是什么？是我们的研发经理，是我们的大老板，是总监级别的。那 r 呢？可能是架构师，是吧？因为架构师经常是带着兄弟们一起做。可能是什么研发的，这个组的组长也有可能是一个产品的产品经理，都有可能。r，其实就是干苦活累活的人，那他也是通常就是提出来说我们要做一次容器编排决策，那我认为怎么做一些这种分析意见的人？然后 a 是最后拍板，通常 a 在拍板之前会咨询下面三个人，就上面两个是核心的， r 和 a 是核心的，下面是可选的， s 叫支持者。
+
+
+这个支持者不是最终支持你的人，是这个人可能支持你，也可能反对你，这就是支持者。他通常什么，他通常是会给出一些实际的这个意见，同时会给出执行的。比如说我说这个人说，嗯，我对 Kubernetes 很熟，我是主力研发工程师，所以我就支持Kubernetes，但是这个方案最后选了Mrs，没关系，还是把这个人写在 s 里面。因为他最后落地的时候你还是需要他的支持，虽然他当时在决策时候没支持你，但是落地的时候他还是一个主力的帮助你的人，所以这就是s，那 c 就是顾问。
+通常架构师不是执行者就是顾问，当你是这个项目的负责人的时候，你就是执行者，就是r，当你呢？不是这个项目的负责人，但你是什么架构师？评委会，然后你去评很多的架构，所以你对这个架构会提出一些这个挑战。嗯，这里有问题，你这设计很有问题，唉，那个地方很不错，对吧？决策论的那个套路又出来了。这时候你就是顾问，所以顾问很长，通常要么是架构师，要么是项目经理等等一些，就是比较资深，会提一些这个建议的。
+
+
+那 i 是informative，就是知情人，那知情人包括很多各种各样的 stay 和包括测试、研发、运维，甚至于说是什么，我们的这个业务人员也都会是知情者。你要告知他我做了怎么样决定，有可能对你有什么样影响。那受到这个决定以后，他有可能会通过他的渠道去引入其他人，这些人说不定就是一个顾问或者是一个支持者，甚至于有可能他会去影响到你，那就是a，你的这个大老板的决策就这样一条线影响下来呢。
+
+
+最后什么是通常是就是我们说的在沟通里面要很多方一起汇聚，共同做决策。那真正的这个整个决策的这个记录者通常就是这个r，所以我希望大家在这个作为架构师在项目里面多承担 r 的责任，也就是说多做实战的决策，而同时多领导一些项目，那这个时候你会逐渐的让培养出自己向 c 或者向 a 靠拢的机会。我们聊完了什么架构师对决策的帮助，或者说架构过程对于决策的帮助。那后面一节我们会去聊一聊什么在实际的过程当中有很多的约束条件，架构怎么样来明确这个约束条件，相信那段内容会让大家更加感兴趣，敬请期待。
+

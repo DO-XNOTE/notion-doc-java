@@ -1,0 +1,74 @@
+---
+title: 4-10 案例实战-容灾演练和切换规划
+---
+
+# 4-10 案例实战-容灾演练和切换规划
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/376aa45d-6039-430d-9c95-f456cb0ef916/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RCC5OZST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC7qpvc4mLyXao4NduRnfyiiWsftnZiGk5OP%2Fm%2FlEMz5wIgbBtR3guCuetgDAIoxk1R%2FpbY1kVu%2FvZHlENjYTSSimYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFfHCpY1IFGnmEkPkSrcA6pRqkP%2F6vqucwkasuBrphSSnDbmcngPJBQuaI%2BbcmfZ8DMDBNZF3wHZGEmH9hm%2BPsi9O13bbcWOgt%2FoDH1mIae%2BbUo6mibeuUI6m8PKqBbuw6kRgis5g5wu7%2BxULPRwtgc96D55lNZ%2B0UJwsajpwlMojcKj9iOdbJ%2BzG70NRQPG10nbW14Bx4j73reE3Y5rpvLAw%2FpaW%2BD3MieYPdWJjZbzJAvGHzRoKUkrQmqYfe5IYOrhz%2B6HkfJmbQeJWH0vGloDQhI1pg58Pq12vgClqH8ScP%2Bc%2FO0YEmgZxDI2G1CdaHAWSOagr%2FwtwrTegRcyrkLW65EFtjDMUoMNozMbL3b5l8DRhEAw09Cg0UoiQ0b3t5abk%2BjADo1cFaQ%2BuFO2AEju0mXlgAyZpQrwrw1Q8jRi9UCxY4yPYXYRSgjwqPuyOOFXYcyHsxl3fhFD4W8NaQN3R%2FxlKjW5AZ2KuU6d8JqptD8rY5soHczJmOqV1PzIbCn5quvYhkcSeKsC6TMHa9E7lGRDTD%2FcwNDNQvTHUZTTInh4VSMQ%2BBNAOvFvERnOq39C4fDGV3Yv%2FCHmMybpH9PPwLdXkDUGblPanL%2BHyov77zlHhxm3YvLeXqfw1q%2FdHSMXAbXZw%2BSRk0tGMJO3%2F9IGOqUBRr0Q7n6bLdfBEgNMaZPFKRNreDCdpBkG9xaxJgzGOQ9mM%2FG9GSp5wkMX2VXiRIXaQz7OZYEdNoqL%2FYUsssuzdzo1%2BQ9J6YmEKDJy5n9DYaMrHabcLnoTd5FVYq7zz1QYIs1ZXbHcjriuFe2HiWk9lkD2X3DjZFmFPn%2FUhkntjJsYjac1w%2FnwHIChQYtDy2jll0E0cemcvvwpmfAna1u41VKqcK46&X-Amz-Signature=0f53ab10a89ce1c19b831bc98cb2154d6605c7e90f798420e58f7ca799f3e34f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+加起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，上一章节我们聊一聊数据的可用性，看看磁盘阵列的可用性以及容灾的可用。这个章节我们挑一个容灾的案例，那飞扬老师要挑就要挑最酷炫的 7 级架构容灾的案例，来跟大家分享一下。不管是什么架构，什么样的容灾，都是从什么起步啊？从 DRP 起步？ DRP 里面，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/401d32d1-8562-403b-8232-c1081e1df2c3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RCC5OZST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC7qpvc4mLyXao4NduRnfyiiWsftnZiGk5OP%2Fm%2FlEMz5wIgbBtR3guCuetgDAIoxk1R%2FpbY1kVu%2FvZHlENjYTSSimYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFfHCpY1IFGnmEkPkSrcA6pRqkP%2F6vqucwkasuBrphSSnDbmcngPJBQuaI%2BbcmfZ8DMDBNZF3wHZGEmH9hm%2BPsi9O13bbcWOgt%2FoDH1mIae%2BbUo6mibeuUI6m8PKqBbuw6kRgis5g5wu7%2BxULPRwtgc96D55lNZ%2B0UJwsajpwlMojcKj9iOdbJ%2BzG70NRQPG10nbW14Bx4j73reE3Y5rpvLAw%2FpaW%2BD3MieYPdWJjZbzJAvGHzRoKUkrQmqYfe5IYOrhz%2B6HkfJmbQeJWH0vGloDQhI1pg58Pq12vgClqH8ScP%2Bc%2FO0YEmgZxDI2G1CdaHAWSOagr%2FwtwrTegRcyrkLW65EFtjDMUoMNozMbL3b5l8DRhEAw09Cg0UoiQ0b3t5abk%2BjADo1cFaQ%2BuFO2AEju0mXlgAyZpQrwrw1Q8jRi9UCxY4yPYXYRSgjwqPuyOOFXYcyHsxl3fhFD4W8NaQN3R%2FxlKjW5AZ2KuU6d8JqptD8rY5soHczJmOqV1PzIbCn5quvYhkcSeKsC6TMHa9E7lGRDTD%2FcwNDNQvTHUZTTInh4VSMQ%2BBNAOvFvERnOq39C4fDGV3Yv%2FCHmMybpH9PPwLdXkDUGblPanL%2BHyov77zlHhxm3YvLeXqfw1q%2FdHSMXAbXZw%2BSRk0tGMJO3%2F9IGOqUBRr0Q7n6bLdfBEgNMaZPFKRNreDCdpBkG9xaxJgzGOQ9mM%2FG9GSp5wkMX2VXiRIXaQz7OZYEdNoqL%2FYUsssuzdzo1%2BQ9J6YmEKDJy5n9DYaMrHabcLnoTd5FVYq7zz1QYIs1ZXbHcjriuFe2HiWk9lkD2X3DjZFmFPn%2FUhkntjJsYjac1w%2FnwHIChQYtDy2jll0E0cemcvvwpmfAna1u41VKqcK46&X-Amz-Signature=c11f966f4dca425cf8c62406656062777af159d111b34d4d47694eaae8fa9100&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面大家应该熟悉业务的风险分析、恢复分析以及业务关键性分析。那这些分析我们就是从左边往右边，通过底层的系统，通过我们的基础架构，通过网络，通过各个业务的影响分析，层层叠叠关联起来。
+
+
+综合来看我们到底有多少的应用组？可不是一个应用，是应用组哦。应用组和应用组之间或应用群和应用群之间有什么样的耦合度？比如一定要你先起我才能起之类的，除此以外，谁优先级更高，谁更重要？谁的影响面更大？谁对什么整个业务，对整个这个经济回报的收益率更大。
+
+
+通过这样的分析，我们基本上就能画出右边这张图，也就是外面有多少系统，我里面有多少系统，然后里面每个系统其实还可以标不同的颜色、不同的重要性，同时它们之间还有一个启动的先后顺序，然后我们可以把这些内部系统就是 internal 系统 i 和外部系统 e 分别用一个什么表格的一行一行的详细内容展现出这个系统到底是做什么，它被哪些系统所影响？它是怎么样去跟外部连接的？它使用什么样的数据库系统？它的核心数据在哪里？它的重要性有多大？它的业务的恢复时间大概能支撑多长？超过一定的时间可能我们就会要什么必须向银监会报备喽。
+
+
+那这样是一个大型银行系统的什么？一个核心的模块，或者说是一个核心的子域，我们对子域里面还划分了应用群，应用群里面还再看每个应用之间该怎么样梳理，有点像什么？有点像我们领域驱动里面的边界上下文，在一个边界上下文里面我们又划分了很多个模块，模块里面还有聚合，通过这样的一套梳理方法，我们把整个这一套就是银行卡系统这样一内容搞清楚，梳理清楚。
+
+
+我们了解这样的一套卡系统做整体容灾应该如何来做？它们是什么样的优先级？多少时间的等待时间？能丢多少数据？那通过这样一套风险分析和架构的咨询调度以后，我们就进入了实际的架构设计环节。好架构设计环节非常冗大，对吧？我们要考虑复制技术，我们要考虑追平技术，我们要考虑网络切换。那富阳老师呢？一带而过，我们来看一看亮点好不好？亮点其实通常就是那么几个，那这次亮点来自于银行的这个分管的这个副行长，这副行长说得很好啊。你们的价格其实我看过，感觉上属于一种业界的高标准，比如像五级、六级，但是我用一个词来形容就是少小离家老大会，也就是我很少有机会什么切换到灾备中心，我也要等很长的时间才能够再切回主中心，就这样的概率很低，这样的这个整个的场景的切换感觉什么很复杂，有没有一种方法变成更亲民的？叫常回家看看呢？
+
+
+这句话说得很亲切，实际上就是对我们提出什么要实现类似于阿里的那种单元化，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/158d6bc4-8a9c-4018-85f7-39f0e8716295/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RCC5OZST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC7qpvc4mLyXao4NduRnfyiiWsftnZiGk5OP%2Fm%2FlEMz5wIgbBtR3guCuetgDAIoxk1R%2FpbY1kVu%2FvZHlENjYTSSimYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFfHCpY1IFGnmEkPkSrcA6pRqkP%2F6vqucwkasuBrphSSnDbmcngPJBQuaI%2BbcmfZ8DMDBNZF3wHZGEmH9hm%2BPsi9O13bbcWOgt%2FoDH1mIae%2BbUo6mibeuUI6m8PKqBbuw6kRgis5g5wu7%2BxULPRwtgc96D55lNZ%2B0UJwsajpwlMojcKj9iOdbJ%2BzG70NRQPG10nbW14Bx4j73reE3Y5rpvLAw%2FpaW%2BD3MieYPdWJjZbzJAvGHzRoKUkrQmqYfe5IYOrhz%2B6HkfJmbQeJWH0vGloDQhI1pg58Pq12vgClqH8ScP%2Bc%2FO0YEmgZxDI2G1CdaHAWSOagr%2FwtwrTegRcyrkLW65EFtjDMUoMNozMbL3b5l8DRhEAw09Cg0UoiQ0b3t5abk%2BjADo1cFaQ%2BuFO2AEju0mXlgAyZpQrwrw1Q8jRi9UCxY4yPYXYRSgjwqPuyOOFXYcyHsxl3fhFD4W8NaQN3R%2FxlKjW5AZ2KuU6d8JqptD8rY5soHczJmOqV1PzIbCn5quvYhkcSeKsC6TMHa9E7lGRDTD%2FcwNDNQvTHUZTTInh4VSMQ%2BBNAOvFvERnOq39C4fDGV3Yv%2FCHmMybpH9PPwLdXkDUGblPanL%2BHyov77zlHhxm3YvLeXqfw1q%2FdHSMXAbXZw%2BSRk0tGMJO3%2F9IGOqUBRr0Q7n6bLdfBEgNMaZPFKRNreDCdpBkG9xaxJgzGOQ9mM%2FG9GSp5wkMX2VXiRIXaQz7OZYEdNoqL%2FYUsssuzdzo1%2BQ9J6YmEKDJy5n9DYaMrHabcLnoTd5FVYq7zz1QYIs1ZXbHcjriuFe2HiWk9lkD2X3DjZFmFPn%2FUhkntjJsYjac1w%2FnwHIChQYtDy2jll0E0cemcvvwpmfAna1u41VKqcK46&X-Amz-Signature=9fad78a4ba1f0c3f1f4a49246b2ea65b9376e418b33086be3a95281ecb11da5f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+每个中心都能承载实际的所有压力，同时要实现我们前面架构设计里面的七级架构，一剑容灾的，说白了就是要随时随地去离家，随时随地回家。
+
+
+好，飞扬老师和我们的架构师团队怎么样来实现这个目标呢？我们想一想一个数据中心通常是不是两地三中心，两地就是 a 地和 BD 之间是同步的数据复制，c、 d 是异步的数据赋值，a、b、 c 两地三中心。当我们要离家的时候，我们有好几个方案，通常我们是先会停止 a 上的业务压力，也就是发一个邮件，我们卡中心升级，不好意思， 12 点开始停业务半小时，那这个半小时就是等所有的业务压力全部在 a 上消失，然后数据在 c 上追平，那这个时候银行的行长按一个键叫什么？ CAB 离家键就实现一键切换数据主中心自动切换到CC，复制到AA，复制到同城的b。
+
+
+好，我们完成了这个以后复盘很高兴说，嗯，我希望我的台面上有好几个这种舰，就像核弹头的控制舰一样。你们完成了第一个舰不错，好，现在我给你们布置第二、第三个、第四个键的要求了。哇，这么多按键，还有什么按键啊？来想想看有没有叫 CBA 按键。我还是希望我的主中心切换到c，但是我希望我的被动性能在b，然后 a 是同程中，在 a 我们通过存储计数复制，通过数据库追平，通过中间件追平，终于实现了CBA。
+
+
+这是什么？第二个案件？好，那这其实只是离家，是不是也就是经常说的要常回家看看？一旦离家以后又能快速地返回，回家怎么回家呢？我们还是把 c 上的业务暂时暂停，通过一些银行的告知系统暂停，然后进行一个业务的总的流量的切换，把所有流量打到 a 上。也就是在 a 那么追平以后，我们把网络切换到a，然后 a 和 b 之间磁盘复制， b 和 c 之间异地容灾。
+
+
+最后实现了什么？最火原始的 a b c 结构，也就是 a b c 回家。这不管是 cab 离家还是 ABC 回家，只要两个按键按下去，等个十来分钟就能完成，好酷炫啊是不是？那后台其实就是数据库存储中间件以及应用网络的那些切换技术实现。这个以后银行行长说还不够，其实我 c 这个 ED 用的不多，哎，能不能先让我来个 a b 切换，经常给我切来切去啊。可以，我们做个 b c 离家操作，所谓 b c 离家就是假设 a 坏了，我不要 a 了，我就把 BC 座作为一体，对外提供业务压力，这就是 BC 离家。
+
+
+那 b z 离家完了以后是不是又要回家呢？怎么回返？假设 a 又恢复了，我应该怎么回呢？所以老师说我给你两个方案好不好？好像说我就是需要两个按键来帮我把这两个按键设计出来， ABC 怎么回家？好，这样回 CAB 怎么回家？这样回好复杂啊，大家想想是不是我现在设计了红颜色，就是离家好几种离家场景，CABC、 BABC 回家呢？又设计了 ABC 又回家。
+
+
+其实后台的业务逻辑还不一样，就通过简简单单银行行长的桌面上几个按键就能还成整个卡系统的快速的切换。很酷炫，已经做得很了不起了，已经是一个 c 级架构师。但是银行行长说什么叫人无我有人有我优，前面别人都有，我也有，不稀奇，我要来一个更酷炫的。怎么酷炫？我要求整个应用系统完全不宕机，在什么完全业务无感的情况下实行切换，那是不是要这样做？不停机也就是意味着我们的 a 上面永远时刻是什么有实际的卡了，业务交易的，那这个时候我怎么办？我通过数据库复制技术把数据复制到c，然后瞬间实现网络切换，在网络切换的时间就那么几秒钟之内，我要快速的用中间件推送技术把所有数据在 c 上追平，然后反 call 回a，再复制给b。
+
+
+这样一套流程如果不停机的话，那必然会有什么？中间会有很多个节点，是吗？是在 a 上要支撑运行的，也就是意味着这不是一个真正的灾难。真正灾难的时候 a 上所有的业务全停掉了，这些什么网络节点，这些中间件节点全死机的，没法实现不停机的一键离间。但是容灾演练可以，容灾演练我们可以把数据库挡掉，我们可以把后台的主服务器挡掉，但是我们前台的应用，前台的中间件依然可以帮助我们来实现完全不停机的一键离架。
+
+
+经过反复演练和测试，我们终于最后实现了一键变成，从 ABC 变成CAB，再一键回家的操作，是不是很酷炫？是不是属于 7 级架构了？那本质上其实还是那些套路，对吧？还是那几大传统技术，以及相应的反复的演练和组合？要说到演练，我们刚刚聊的是持架构，是吧？架构怎么样？一个思考来满足业务的需求，来满足经常能够切过去、切回来，但是在演练过程当中其实有更多的故事，我来自己分享一下当中主要的几个演练环节啊。
+
+
+
+第一环境就是纸上谈兵，所以纸上谈兵首先我们要看文档，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/557c431a-7529-4165-b00b-9522c752a82c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RCC5OZST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC7qpvc4mLyXao4NduRnfyiiWsftnZiGk5OP%2Fm%2FlEMz5wIgbBtR3guCuetgDAIoxk1R%2FpbY1kVu%2FvZHlENjYTSSimYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFfHCpY1IFGnmEkPkSrcA6pRqkP%2F6vqucwkasuBrphSSnDbmcngPJBQuaI%2BbcmfZ8DMDBNZF3wHZGEmH9hm%2BPsi9O13bbcWOgt%2FoDH1mIae%2BbUo6mibeuUI6m8PKqBbuw6kRgis5g5wu7%2BxULPRwtgc96D55lNZ%2B0UJwsajpwlMojcKj9iOdbJ%2BzG70NRQPG10nbW14Bx4j73reE3Y5rpvLAw%2FpaW%2BD3MieYPdWJjZbzJAvGHzRoKUkrQmqYfe5IYOrhz%2B6HkfJmbQeJWH0vGloDQhI1pg58Pq12vgClqH8ScP%2Bc%2FO0YEmgZxDI2G1CdaHAWSOagr%2FwtwrTegRcyrkLW65EFtjDMUoMNozMbL3b5l8DRhEAw09Cg0UoiQ0b3t5abk%2BjADo1cFaQ%2BuFO2AEju0mXlgAyZpQrwrw1Q8jRi9UCxY4yPYXYRSgjwqPuyOOFXYcyHsxl3fhFD4W8NaQN3R%2FxlKjW5AZ2KuU6d8JqptD8rY5soHczJmOqV1PzIbCn5quvYhkcSeKsC6TMHa9E7lGRDTD%2FcwNDNQvTHUZTTInh4VSMQ%2BBNAOvFvERnOq39C4fDGV3Yv%2FCHmMybpH9PPwLdXkDUGblPanL%2BHyov77zlHhxm3YvLeXqfw1q%2FdHSMXAbXZw%2BSRk0tGMJO3%2F9IGOqUBRr0Q7n6bLdfBEgNMaZPFKRNreDCdpBkG9xaxJgzGOQ9mM%2FG9GSp5wkMX2VXiRIXaQz7OZYEdNoqL%2FYUsssuzdzo1%2BQ9J6YmEKDJy5n9DYaMrHabcLnoTd5FVYq7zz1QYIs1ZXbHcjriuFe2HiWk9lkD2X3DjZFmFPn%2FUhkntjJsYjac1w%2FnwHIChQYtDy2jll0E0cemcvvwpmfAna1u41VKqcK46&X-Amz-Signature=3f7d8b741570e2ddf013b3d3765aa07536d688247ca39e9b1bb3afdc6d2c6cc8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+规定谁才是哪一个任务的负责人，以及他的时间安排。这就是什么叫核查性测试，那结构化台链就是这个文档就打印出来了，不能改一行字。然后在不同的会议室和不同的场所里面，大家什么采用黄河长江的呼叫系统和远程电话系统来安排，整个流程都是通过嘴炮的形式来完成。
+
+
+好，这是纸上谈兵，到第二阶段就是大事化小，就是通过准生产的模拟演练以及生产的并行测试。所谓生产变形测试就是真的在消费中心把生产数据恢复出来，这个生产数据是很敏感的支付数据，但是我们没有对外进行暴露，所以普通用户感觉不到。只有内部测试人员才能够真正的去实测这些数据，大事化消以后，就经过什么真正行长验收环节点那个键进行全栈的切换了。
+
+
+但是很不幸事情搞大了，飞扬老师没有把架构设计好，中间出现了一些小纰漏，切过去，因为我们在并行测试上切得很顺利，是不是经常测？那行长一点键我们就切过去了，完全没问题。但是在切回来的时候出现问题了，底层我们出现了一些小纰漏，比如说磁盘大小设计错了，灾备磁盘设计的比什么主磁盘还要大一些，这样会导致什么小磁盘可以向大磁盘复制，大磁盘没法复制回，小磁盘回切的时候存储这里就报错了，对方磁盘大小不对好不好意思，很丢脸的飞扬老师就被行长叫过去挨批评了。
+
+
+爱完以后重新再来纸上谈兵，大事化小，最后不是搞大了，而是成功地实现了什么。前面说到的一键切换，聊完了这样一个某某行一键切换，对不对？常回家看看的故事，大家能感受到什么？其实再难的技术其实都不难，就是通过一些简单的技术堆叠以及反复的演练，以及很好的架构设计，还要有自信永远不要做一级、二级、三级、四级架构师，要做五级、 6 级甚至于 7 级的架构师好不好？好聊完了数据的可用性，聊完了数据的安全，我们后面就是一个面试环节和本章小结，大家敬请期待。
+

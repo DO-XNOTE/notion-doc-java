@@ -1,0 +1,52 @@
+---
+title: 2-4 SpringCloud核心组件介绍 Netflix
+---
+
+# 2-4 SpringCloud核心组件介绍 Netflix
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2ad1be4d-63e5-40e4-891b-facfb40233ba/SCR-20240820-mxqi.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665D42HDFY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225522Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBtY5nCcf1cc0LRa3Ke0yqCOHYLzyN2vnjMF5gnR0b4tAiBhRxKlGffs%2BXnNGnaG%2Bq09GxR%2FVbLO7u%2F0wnxMnG1kLCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMPyDEuyS6MuR2Uu6WKtwDyzHICx51Y3uNTrLdbYV3odspxCj49DVzKud%2FpgGfxspD1J%2FgAOGbpDJFeI5spyE2Qgd6A%2FJVWLix2PZpzZBimrvdv9X5q%2Bv6Vki66Zhsyh0u5Pmy1h%2FvZTSM0epZXQPidSqyGacrrjyr7WENfJVmjVaCGfvJ9cGQdONOmiE0xsiVVmQj%2F2hwhjxgh1rdfX2uIA4DwPsWAFPntc%2BfWNiTmRTkBQpkvI15sllAn4m11BLbuY%2FSrIMjme9wJPH%2BGMavnG51qfgI048xjMCpx4DhNRGI6ECoBSNtz1KsYIeYS08Fwp7gs%2B1swpyRKuo43PjbU88bkXCGY6OR%2BQUQSITS66yxQ4XLeFc%2F%2BSC7druZOZKTLr2VI5IpceD5O3j42CEKmy7Tfwhm%2F%2FBVK3rfgwupByHROUkqemmRQDNTTLvQvwobufVLBiu4aSFdX2EeOOFmE%2BaAYoh3oFw1G8xUBFx7C7mfyttdLFQDqN2itH6kDPuYvtP5083Nth1nraC22qNBTqi5W1QLbxFxKmUCaAnDY3jy0gqLfMvYjhUCrtAR2T0BXjCJXxQkVEVgUTEBn%2Bq2A1NXS2zyQARYT1z9yg04GCYL6bzWSRENDLpNVXGcqM7j33Ua2zsoEki58dUwt7j%2F0gY6pgGmrcyKRzTXAzjtgu9EyRLjLN7A3wVAooRO0fCaLA%2BbPbRjYWF6pQwZTUSbbGZyzc95SJnUEo4MgiKvI%2F014u3QoWFC7S%2B4%2FhgC6HJQDThbCsnZrSfVUerB2Mlti11KAjj5gbZ3KlssFlbkI7BwLENmawWWOW4KxEqhtO95b0jx5FqHmmPid8Lp%2BnF0GT%2BlGwscRB6gTbgjP1oiUGHN93yzga0GIe%2Bi&X-Amz-Signature=e60436b542a124644e5d66b8db2e254923c9bb5aacfc64ecadc8f5dd71a64f1d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**2-4 SpringCloud核心组件介绍 (Netflix + Alibaba套件)**
+
+上一节我们队Spring Cloud里的各个组件做了简单的介绍，大家有所不知，看着Spring Cloud大家庭其乐融融，可是这里头有三股势力在暗地里较劲呢。
+
+**三大门派**
+
+有Spring Cloud的地方就有江湖，我们就来看一看在这个江湖中都有哪些独霸一方的门派！
+
+**Netflix**
+
+是先有Spring Cloud还是先有Netflix？这是一个好问题。Netflix是一家大名鼎鼎的互联网传媒公司，但为什么它在开源软件领域有这么大的名声呢？这就不得不说起它和Spring Cloud的渊源了。
+
+很久很久以前，天和地还没有分开，宇宙混沌一片。有个叫Netflix的公司，在这混沌之中，拿自身的业务动手，开启了一段微服务的改造之旅。在这段漫长的过程中，沉淀出了一系列优秀的微服务组件，比如大名鼎鼎的Eureka，Hystrix，Zuul等等，这些组件经过Pivotal的一系列封装以后就构成了初代目Spring Cloud。
+
+目前Spring Cloud Netflix组件库是Spring Cloud中最受欢迎的项目，并且还拥有最广泛的群众基础，这么说吧，10个用Spring Cloud的公司，有八九个都会选用Netflix组件库全家桶来构建自己的技术栈。听到这，同学们可能会问，难道Spring Cloud里还有其他的组件库吗？那我们就往下看。
+
+**阿里巴巴**
+
+阿里近些年开源的步子迈的很大，都说步子迈得大容易扯着裆，不过凭借阿里996+鸡血文化的加持，用互联网行业特有的糙快猛的精神，近几年在开源软件上不断开疆扩土，发展速度和规模都是是可圈可点。
+
+目前开源领域一大热门当属Spring Cloud，尽管前面有Netflix组件库占尽天时地利，可是不妨碍阿里巴巴集团一贯怼天怼地的做派。这不，Spring Cloud大家族中又添新丁，那就是–Spring Cloud Alibaba组件库。
+
+从目前的势头来看，Alibaba组件库还是呈现一路高歌猛进的态势，其中多款组件已经站上擂台和Netflix组件展开直接竞争。得益于阿里集团的福报文化，加班不要命的码农们给这些组件添加了各种业务功能，从我个人使用这两个组件的感受来说，Netflix组件相对来说比较“纯粹和纯净”，Alibaba组件似乎透出一股“KPI导向”的味道（恨不得把能想到的功能全塞进去）。本章课程我们将以Netflix组件为主，同时也会重点介绍几个Alibaba组件库的组件。
+
+**Spring Open Source**
+
+这最后一股势力就是Spring自个儿了，由Spring自己独家挂牌的开源组件，可以说是“原配”组件了。都说原配的才是最好的，不过在上面两个重量级组件库面前还真不好说。同学们经常会看到这样一个情况，在某个领域中这三家的组件会扎堆出现。比如服务治理，这三家各自都有一个独立组件，想想大家都是Spring Cloud一家子，为何还整出了一副三足鼎立的态势呢？这背后都有很多故事的，我们在后面进入实战课程之后再来跟大家说说这里面的恩怨情仇。
+
+**势力范围**
+
+那接下来我们就看一看上面那三股势力都在哪些领域部署了兵力
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b9a4c30d-58f5-4b88-8c99-5c8d2855d856/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665D42HDFY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225522Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBtY5nCcf1cc0LRa3Ke0yqCOHYLzyN2vnjMF5gnR0b4tAiBhRxKlGffs%2BXnNGnaG%2Bq09GxR%2FVbLO7u%2F0wnxMnG1kLCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMPyDEuyS6MuR2Uu6WKtwDyzHICx51Y3uNTrLdbYV3odspxCj49DVzKud%2FpgGfxspD1J%2FgAOGbpDJFeI5spyE2Qgd6A%2FJVWLix2PZpzZBimrvdv9X5q%2Bv6Vki66Zhsyh0u5Pmy1h%2FvZTSM0epZXQPidSqyGacrrjyr7WENfJVmjVaCGfvJ9cGQdONOmiE0xsiVVmQj%2F2hwhjxgh1rdfX2uIA4DwPsWAFPntc%2BfWNiTmRTkBQpkvI15sllAn4m11BLbuY%2FSrIMjme9wJPH%2BGMavnG51qfgI048xjMCpx4DhNRGI6ECoBSNtz1KsYIeYS08Fwp7gs%2B1swpyRKuo43PjbU88bkXCGY6OR%2BQUQSITS66yxQ4XLeFc%2F%2BSC7druZOZKTLr2VI5IpceD5O3j42CEKmy7Tfwhm%2F%2FBVK3rfgwupByHROUkqemmRQDNTTLvQvwobufVLBiu4aSFdX2EeOOFmE%2BaAYoh3oFw1G8xUBFx7C7mfyttdLFQDqN2itH6kDPuYvtP5083Nth1nraC22qNBTqi5W1QLbxFxKmUCaAnDY3jy0gqLfMvYjhUCrtAR2T0BXjCJXxQkVEVgUTEBn%2Bq2A1NXS2zyQARYT1z9yg04GCYL6bzWSRENDLpNVXGcqM7j33Ua2zsoEki58dUwt7j%2F0gY6pgGmrcyKRzTXAzjtgu9EyRLjLN7A3wVAooRO0fCaLA%2BbPbRjYWF6pQwZTUSbbGZyzc95SJnUEo4MgiKvI%2F014u3QoWFC7S%2B4%2FhgC6HJQDThbCsnZrSfVUerB2Mlti11KAjj5gbZ3KlssFlbkI7BwLENmawWWOW4KxEqhtO95b0jx5FqHmmPid8Lp%2BnF0GT%2BlGwscRB6gTbgjP1oiUGHN93yzga0GIe%2Bi&X-Amz-Signature=2eeb8ec1c38d1c35532ab037a4a89e18ef2855aded7922d4aef6736d228efe27&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+从上面的表格中可以看出，在大多数的领域当中，我们都有多与一种的解决方案，而且各个组织在不同领域发力程度也不一样。我们在实际的研发当中不会只盯着一个组件库用，而是结合使用来自不同组织开发的组件，这样才能发挥Spring Cloud的最强功力。
+
+同学们可能注意到了，阿里巴巴组件库传达出了一股不小的野心，它的很多的组件都和阿里云（Alibaba Cloud）紧密关联了起来，甚至连Nacos都有一股“强推Dubbo”的味道，看上去像是在大力推广阿里集团自己的技术栈，似乎并不打算全心全意服务于Spring Cloud原生的生态体系。所以从我个人角度来说，并不太喜欢这种比较“功利”和KPI导向的价值观。
+
+**小结**
+
+本节我们对Spring Cloud里的几大势力做了一番介绍，并且了解了在不同的业务领域都有哪些可供我们选择的组件。在下一小节里，我将跟大家聊一聊如何看待Spring Cloud像风一样的更新速度，我们是保持原地不动，还是随风向前不断“追新”。
+
+
+

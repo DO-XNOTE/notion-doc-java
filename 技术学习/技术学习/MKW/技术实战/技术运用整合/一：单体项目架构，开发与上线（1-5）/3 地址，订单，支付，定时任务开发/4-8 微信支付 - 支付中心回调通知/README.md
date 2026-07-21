@@ -1,0 +1,29 @@
+---
+title: 4-8 微信支付 - 支付中心回调通知
+---
+
+# 4-8 微信支付 - 支付中心回调通知
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c76b0842-90f1-4b32-9acf-b73b7c21e668/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665M225MT5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224713Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDDhTOO%2B3WyDoOHBUsjTlly48OIbc5n6Z%2B%2FTL%2BATxJ9mwIhAPrLI39h9NlP5HQmE56LtZx4DSfmEGH5seELLeC359beKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igy6u6C92DbsOS8mbTUq3APikqOoOnqUHGamvWw5e6OIyCCX%2FmnI6XQe3pRUNXIBzDoXKuONszf6qm%2FduwI7EDLoVB3T5bOpPSMj0J6vCDsqePz9fINC0xWiRew9G1tpuxWnZ7ANLM%2Bcv1mqlCs%2FXJNfTT0j%2BOLNX218XFgGrnPGV5fhheVdJnRz6WZVg7GJlAK%2BUo6X3ZOgAG%2BPkFIgoVDM4a5pH9%2F4Me4EyXbjHqybK0JSs%2FOu%2F083lTsLHQUQ2Yb9saD4mE%2F4%2FstlcjX8Nzwk2Swz6YdYdbHMiY1nO0G0iW96mRw8w0Tnj5XJe2ffih7WpeWlceultnWXkLzEUB%2BQhs7CIjwRMucPtsT9GrXDZOz9P6wfiQ%2BXjuPpup8z9Y7buOmKQzuP9O0jAi5Y7NUBxgv1BCO3MGUq7%2BJEJBrRcxeGLKbllbArsDCdKBH8CC%2F6ltPnPCZPGYWcAY8a228sAg4kjufTEBHgC49wNT1jTbauRogmNATvbVyrLDnVi95oLInEjn1gjXbUDakVBoG81SwjKzrMmhNPyY9HXhAgN6HfCswJ%2Fo2FMAgI1nbcny%2F2nx2d9kP50j%2FG6Y4vSIYH9qsBlehb17mJ9iJKwt%2F%2FD64Aylt1iZnBWt1PToTEVs8XTRnYsEErPU9IcTD9t%2F%2FSBjqkAYb15H0l5dM6A27uwxAMHU6xExvD%2BrBxq5FenaLiZuChM7tsRvQZrWJzspHMDg9UBIpodruyGph7YjAmj6fjkXtkF3zEk%2B%2BY%2FYxAmu%2FiYkfzsyE%2BgrADs1nK2bVU2BLhkiACpF2use1fPTugY0REbntEXajvB%2FOV0gr5Q9pDqlPfW5wnzq6m0fWodw5NY9eMY4UcEvI6ljuN1sPpTnO1H%2F0ADnYb&X-Amz-Signature=f7c97192bcdde22677e75a4c1db79105ff3dda450de3a7e13fabacf1880f2d08&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们的这一笔订单支付完成以后，其实现有的一些操作其实都是在我们时序图里面的，这部分，从 1 到 4 都是让我们去进行处理，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f6899fa4-ea8e-4836-8707-7dcc87d9bdd2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665M225MT5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224713Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDDhTOO%2B3WyDoOHBUsjTlly48OIbc5n6Z%2B%2FTL%2BATxJ9mwIhAPrLI39h9NlP5HQmE56LtZx4DSfmEGH5seELLeC359beKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igy6u6C92DbsOS8mbTUq3APikqOoOnqUHGamvWw5e6OIyCCX%2FmnI6XQe3pRUNXIBzDoXKuONszf6qm%2FduwI7EDLoVB3T5bOpPSMj0J6vCDsqePz9fINC0xWiRew9G1tpuxWnZ7ANLM%2Bcv1mqlCs%2FXJNfTT0j%2BOLNX218XFgGrnPGV5fhheVdJnRz6WZVg7GJlAK%2BUo6X3ZOgAG%2BPkFIgoVDM4a5pH9%2F4Me4EyXbjHqybK0JSs%2FOu%2F083lTsLHQUQ2Yb9saD4mE%2F4%2FstlcjX8Nzwk2Swz6YdYdbHMiY1nO0G0iW96mRw8w0Tnj5XJe2ffih7WpeWlceultnWXkLzEUB%2BQhs7CIjwRMucPtsT9GrXDZOz9P6wfiQ%2BXjuPpup8z9Y7buOmKQzuP9O0jAi5Y7NUBxgv1BCO3MGUq7%2BJEJBrRcxeGLKbllbArsDCdKBH8CC%2F6ltPnPCZPGYWcAY8a228sAg4kjufTEBHgC49wNT1jTbauRogmNATvbVyrLDnVi95oLInEjn1gjXbUDakVBoG81SwjKzrMmhNPyY9HXhAgN6HfCswJ%2Fo2FMAgI1nbcny%2F2nx2d9kP50j%2FG6Y4vSIYH9qsBlehb17mJ9iJKwt%2F%2FD64Aylt1iZnBWt1PToTEVs8XTRnYsEErPU9IcTD9t%2F%2FSBjqkAYb15H0l5dM6A27uwxAMHU6xExvD%2BrBxq5FenaLiZuChM7tsRvQZrWJzspHMDg9UBIpodruyGph7YjAmj6fjkXtkF3zEk%2B%2BY%2FYxAmu%2FiYkfzsyE%2BgrADs1nK2bVU2BLhkiACpF2use1fPTugY0REbntEXajvB%2FOV0gr5Q9pDqlPfW5wnzq6m0fWodw5NY9eMY4UcEvI6ljuN1sPpTnO1H%2F0ADnYb&X-Amz-Signature=6f31d299247d9b06fce8b9c93a2fcfad96c5761b0a43f40e876616e01e8c037d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+然后去进行一些相应的支付。最后会有一个第九步。第九步在我们手机上可以看到，在我们的一个通知里面会提示这笔订单是支付成功了，扣了多少钱。在这里它还会有第十步。第十步是一个异步通知，异步通知需要让我们去处理，因为我们的整个系统，我们的一个订单有没有支付成功，我们只认异步通知。所以我们在支付中心里面会有这样的一块业务去进行处理。所以这一节我们就来看一下异步通知是如何去处理的。
+
+
+打开我们支付中心的源码，在这里面有一个 notify Ctrl 的通知，来看一下。在这里面找到有一个微信配，其实它的一个路由地址应该是 payment notice。再来一个斜杠微信配，这个就是支付成功后的一个微信支付异步通知，是由微信支付系统调用到我们的支付中心的。来看一下。首先在这边会有一个request，微信回调过来，它其实会提供一系列的参数，这些参数其实全部都会放到 request 里面，在 request input stream 获取一下。获取一下之后，我们会调用 service 中的一个方法，这个是 get 微信配results。在这一段内容其实都是针对 input stream 的一个处理，处理完后会得到一个叉妙，其实本质上就是一个字符串，把这个字符串我们要转换成一个对象。叉妙 to object，这个对象就是 pay result，我们可以点进去看一下，这里面其实包含了一堆的属性，都是从微信那一端返回过来的，我们要去使用什么，我们就可以把相应的内容全部都可以拿到。我们来回到 Ctrl 了看一下。
+
+
+在这边其实我们拿到 pay result 之后，会进行一个判断，我们会 get return code，这个 return code 是一个什么东西，我们来看一下。它是一个返回的状态码，在这里我们是需要去进行判断的，一旦我们判断它是一个success，就代表我们这一笔订单执行是 OK 的，付款也是成功的。所以我们的一个标识，我们就把它改成了一个 true expect，就变成是 true 了。既然是支付成功了以后，我们就会有一个支付成功的业务。总共是如果支付失败，我们来看支付失败，在这里就是一个支付失败的业务就可以了。在这边会 return 一个fail。这个是传给微信看的，我处理是失败了，我传给你是一个 fail 的标识。OK，是这样的一个处理。我们来看一下支付成功。支付成功，在这里会获得相应的内容。这是一个商户的订单。这是一个微信 flow ID。这其实是一个，来看一下什么意思。这个是微信端的一个支付订单号，还会有一个 pay the amount。这是一个支付的总金额。
+
+
+在这边来看一下，在这里我们会有一个处理，这是我们操作自己商户的一个业务，主要是修改咱们的一个订单状态。来看一下点进去，在这里我们是通过 example 条件来修改它的一个状态。在这里来看到我们是把它的一个 pay status 改成了一个 pay 的状态，这个配的其实对应的就是一个 20 状态。
+
+
+已支付 OK 成功了以后，在这里我们还会做一个查询，这个查询其实我们主要就是用于去查到我们在支付中心的一个商户订单。OK，在这里进行一个查询，主要是用于去获取它的一个return，因为 return 我们拿到了以后是需要去通知到我们的。天天吃货的一个后端接口的，其实就是我们在之前所定义的接口。 notify Matt order paid，主要就是通知接口要把我们的一个订单的状态，在我们天天吃货的商户的订单状态，改成是一个已支付的状态，OK。它其实是有两个通知，一个是从微信通知我们的支付中心，支付中心成功以后再来通知我们的一个商户，是这样的一个操作 OK 好，继续。在这里我们修改完毕我们的整个欧的配的状态了。以后往下面继续是一堆日志的打印，打印的输出在这里其实就可以看得出来也是一样。会使用 rest template，我们之前在创建商户订单的时候其实也是使用的，现在我们会使用这种方式来调用我们的天天吃货商户。后台主要是调用相应的一个接口，要把状态改掉，OK，好发送过去以后，在这里会有一个返回。返回。我们必须要在这里设置为一个success，也就是通知我们的微信。通知微信我们当前支付是成功了，要不然你如果你这一步操作你不去执行。由于我们在之前说了它会有一个频率，它总共会通知 10 次。在这里如果你不返回一个success，后面它一直会请求你的一个接口的。所以你在这边一定要返回一个success。
+
+
+OK，在这里加了一个注释是通知微信已经收到消息，不要再给我发消息了，否则微信会进行一个 8 连击调用。本接口在很早以前其实是 8 次，支付宝应该也是 8 次，后来现在是 10 次了。OK，这个其实就是在我们的支付中心中的异步的通知它所对应的一个方法。OKa
+

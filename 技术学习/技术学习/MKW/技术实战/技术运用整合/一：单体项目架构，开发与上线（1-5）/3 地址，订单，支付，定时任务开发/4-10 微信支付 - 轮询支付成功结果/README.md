@@ -1,0 +1,45 @@
+---
+title: 4-10 微信支付 - 轮询支付成功结果
+---
+
+# 4-10 微信支付 - 轮询支付成功结果
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/991fda4a-85c6-4b85-a327-243c6017f7ed/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664Q5PO2IB%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224714Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGbc93zfx2OknBOXelrcUKcleEfvRs4BFsjz7IM7yrrGAiA5pD6Bw24Sk9jEGPz%2BaQstFju430a1Ev4uz7DMSgmMMSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMyxMpQZ%2FZCLHu4EEyKtwDChp9AANP9OvVuu7n0pYMoNfkfEFvNoi4Sd2XNbH2PZ6JdfFd%2FSdvvGPkMgTaTlKLDYTsWD8%2BsNX97VFkt77u25DPPvm26XsmO8TIV2bbBxJGf4mMdVNCPYYRfzcMZxhFu5QBPpneKw4yyAMGU17bgtUMMhxsBh0KGQ%2BNtJo5FET3pp%2Br%2BzPhff90iDqIxGkQ1KqZl2vcTU23ocmvm5uj6cCkk%2Fc9GoLO8M4WKzWMDOgTiJBE%2F0TueoDRoM7bUciMOj8ylDICMQfZuMUPCY2si3vLlfLqOAPZfx0zc7ebxa5p5IEhOVm9%2BfCpMTJKKqlIQ0eRjKY7R1fK8luorWf%2B5B3mfBX2JseT1aMjMUURQiZguP8Rnr8vMPVYHLnW6j3EsxVWsCATWMoZD5AMA3Z8yoA3SToIHIso8OcGvJ7sUnKY5WmLqVR%2Br9oWbuipLeu4dgdq6glC3VPE%2BmUu%2FJo3lNz%2B5f%2B6at74QvUTwmIcneGFQnhBcyaOlEh6wenABlt82DyVC0dyzIpWLQkVlrypUcK1BMUg9HS4SxgVe%2B9j5jKbjbyrL1i09x68rywSwd517I9yBSrKzDhfG0OxOOEqF5EedVMlqJSNTWmLbf%2FdskXh3dcBKkho9L1za%2BUworj%2F0gY6pgGe6vxm0YXMhlbVWxM3APBiNejWj3Lt%2FXeESGqqHGR3ZC1dhD1ejPP9ORP1VPSUCWcu1gr%2FgIVlmKBrUjYhPNfmbPEFdzeUHPFUTMV71Ae9RshMH%2BzTVkqsbE1hi2UHiQ5xqUxVmWeTI3%2FMWLtzYxw2Qi6T%2BvAy5Lg80HhxoSzQSLCCoHgiU%2F6MZvl%2F9psRRkF3UedgP0nVOd1RMZZ9uSycNNa%2FxYYs&X-Amz-Signature=f7b3d2a2ed20973971bbce896da9f3b5725100136997f907f5b22a3d37f29ab4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+现在我们已经是通过内网穿透，把我们本地的这台电脑其实发布到了公网，或者是直接暴露了我们的一个 IP 进行了一个映射，我们就可以通过映射的地址来请求到我们当前自己本地的某一个接口了。
+
+
+好，这一节我们先来测试一下我们的订单状态能不能进行一个更改。我们先返回到上一个页面，我们重新的再来支付一下，选择微信支付，点击订单提交。在这边我来进行一个支付。我就不去再开一下远程桌面了，我直接点击支付，在我手机端上发起支付。好，OK，手机端上已经是支付成功了。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e9e54099-a464-49ad-9a6f-eb6979ef3370/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664Q5PO2IB%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224714Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGbc93zfx2OknBOXelrcUKcleEfvRs4BFsjz7IM7yrrGAiA5pD6Bw24Sk9jEGPz%2BaQstFju430a1Ev4uz7DMSgmMMSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMyxMpQZ%2FZCLHu4EEyKtwDChp9AANP9OvVuu7n0pYMoNfkfEFvNoi4Sd2XNbH2PZ6JdfFd%2FSdvvGPkMgTaTlKLDYTsWD8%2BsNX97VFkt77u25DPPvm26XsmO8TIV2bbBxJGf4mMdVNCPYYRfzcMZxhFu5QBPpneKw4yyAMGU17bgtUMMhxsBh0KGQ%2BNtJo5FET3pp%2Br%2BzPhff90iDqIxGkQ1KqZl2vcTU23ocmvm5uj6cCkk%2Fc9GoLO8M4WKzWMDOgTiJBE%2F0TueoDRoM7bUciMOj8ylDICMQfZuMUPCY2si3vLlfLqOAPZfx0zc7ebxa5p5IEhOVm9%2BfCpMTJKKqlIQ0eRjKY7R1fK8luorWf%2B5B3mfBX2JseT1aMjMUURQiZguP8Rnr8vMPVYHLnW6j3EsxVWsCATWMoZD5AMA3Z8yoA3SToIHIso8OcGvJ7sUnKY5WmLqVR%2Br9oWbuipLeu4dgdq6glC3VPE%2BmUu%2FJo3lNz%2B5f%2B6at74QvUTwmIcneGFQnhBcyaOlEh6wenABlt82DyVC0dyzIpWLQkVlrypUcK1BMUg9HS4SxgVe%2B9j5jKbjbyrL1i09x68rywSwd517I9yBSrKzDhfG0OxOOEqF5EedVMlqJSNTWmLbf%2FdskXh3dcBKkho9L1za%2BUworj%2F0gY6pgGe6vxm0YXMhlbVWxM3APBiNejWj3Lt%2FXeESGqqHGR3ZC1dhD1ejPP9ORP1VPSUCWcu1gr%2FgIVlmKBrUjYhPNfmbPEFdzeUHPFUTMV71Ae9RshMH%2BzTVkqsbE1hi2UHiQ5xqUxVmWeTI3%2FMWLtzYxw2Qi6T%2BvAy5Lg80HhxoSzQSLCCoHgiU%2F6MZvl%2F9psRRkF3UedgP0nVOd1RMZZ9uSycNNa%2FxYYs&X-Amz-Signature=ed00e27181089b59c6161657162748af537d8dca850725261b2c7d163f28765f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+支付成功之后，我们就需要去看一下我们数据库所对应的一个订单的状态，我们拷贝一下订单 ID 到我们的后端，我们到这里我们来刷新一下。之后我们也不需要去搜了。可以看到这一条订单，它的状态就已经是 20 了，代表已经是支付成功了。它是处于一个代发货的状态，当然要通过 Postman 去进行测试也是没有问题的。我们在这里 Postman 把商户订单的 ID 改掉，点击 send 看一下，它的一个订单也是20。OK。其实我们现在从用户支付再到回调这一个流程的闭环，我们就已经是 OK 了。好，接下来我们继续来看一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5e0282f2-43c9-43c2-b1ff-a06e5632e31d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664Q5PO2IB%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224714Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGbc93zfx2OknBOXelrcUKcleEfvRs4BFsjz7IM7yrrGAiA5pD6Bw24Sk9jEGPz%2BaQstFju430a1Ev4uz7DMSgmMMSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMyxMpQZ%2FZCLHu4EEyKtwDChp9AANP9OvVuu7n0pYMoNfkfEFvNoi4Sd2XNbH2PZ6JdfFd%2FSdvvGPkMgTaTlKLDYTsWD8%2BsNX97VFkt77u25DPPvm26XsmO8TIV2bbBxJGf4mMdVNCPYYRfzcMZxhFu5QBPpneKw4yyAMGU17bgtUMMhxsBh0KGQ%2BNtJo5FET3pp%2Br%2BzPhff90iDqIxGkQ1KqZl2vcTU23ocmvm5uj6cCkk%2Fc9GoLO8M4WKzWMDOgTiJBE%2F0TueoDRoM7bUciMOj8ylDICMQfZuMUPCY2si3vLlfLqOAPZfx0zc7ebxa5p5IEhOVm9%2BfCpMTJKKqlIQ0eRjKY7R1fK8luorWf%2B5B3mfBX2JseT1aMjMUURQiZguP8Rnr8vMPVYHLnW6j3EsxVWsCATWMoZD5AMA3Z8yoA3SToIHIso8OcGvJ7sUnKY5WmLqVR%2Br9oWbuipLeu4dgdq6glC3VPE%2BmUu%2FJo3lNz%2B5f%2B6at74QvUTwmIcneGFQnhBcyaOlEh6wenABlt82DyVC0dyzIpWLQkVlrypUcK1BMUg9HS4SxgVe%2B9j5jKbjbyrL1i09x68rywSwd517I9yBSrKzDhfG0OxOOEqF5EedVMlqJSNTWmLbf%2FdskXh3dcBKkho9L1za%2BUworj%2F0gY6pgGe6vxm0YXMhlbVWxM3APBiNejWj3Lt%2FXeESGqqHGR3ZC1dhD1ejPP9ORP1VPSUCWcu1gr%2FgIVlmKBrUjYhPNfmbPEFdzeUHPFUTMV71Ae9RshMH%2BzTVkqsbE1hi2UHiQ5xqUxVmWeTI3%2FMWLtzYxw2Qi6T%2BvAy5Lg80HhxoSzQSLCCoHgiU%2F6MZvl%2F9psRRkF3UedgP0nVOd1RMZZ9uSycNNa%2FxYYs&X-Amz-Signature=7eea2613a643f849bbb7a322bf831bfabd59405260b93a55eb856ddc9dc6c689&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+现在我们的一个支付其实是已经成功了，并且也已经是接收到通知。现在其实对于我们用户来讲，我们的一个页面当前也在支付成功以后，应该要发生一个页面的跳转，页面的跳转如何去做？我们来看一下京东是如何去处理的。在这里我预先是已经准备好了一个京东的付款的页面，我先刷新一下。这里有一个微信的二维码，它加载起来比较慢，好可以来看一下。现在其实在微信这一端的收银台是需要让用户去进行一个支付，用户支付如果支付成功了以后，其实它也应该要发生一个页面的跳转。我们在这里按一下F12，在这边点击一个network。在这里我们可以来看一下。
+
+
+我们把 network 展开来以后，你会发现每一次，每隔一段时间，在我们当前页面，它其实会发起一个请求。这个请求是什么？可以看到 query order state，其实就是用于去查询订单的状态的，它的目的是什么？它的目的其实是查询我们当前的这一笔订单是京东的订单号，他要查询一下订单号在他自己的后台有没有成功的支付。如果成功的支付了，这个时候应该如何去处理？由于在他的下边，他会一直请求到他的一个支付是 OK 的，如果是 OK 的，它就会通过脚本发生一个页面的跳转，会跳转到一个支付成功的页面。它是这样的一个处理过程是使用的一个 JS 的轮询，其实我们也是可以通过这种方式去做的。我们其实也是通过轮询的方式去做的。
+
+
+来看一下，我们可以在这里按一下F12，这是我们自己的后台，在我们的自己后台其实也可以看到，我们先可以清空一下，每隔一段时间它都会发送相应的请求。可以看到这边的请求是什么，它是 get paid order info，是获得已经支付的订单信息。可以看到它其实一直在报 404 的错误，因为这样的一个接口现在我们并没有。如果拿到这样的一个数据，并且发现它的订单状态是已经支付成功了。
+
+
+在我们的前端页面，它就会发生一个页面的跳转。 OK 在我们的 network 里面其实也是一样的，每隔一段时间就会去进行一个查询的。OK。好。现在对于这样的一个接口，其实我们可以去做一下。打开我们的后端ID，我们的查询的方法就写在 orders control 的里面，在这边我们可以来写一下。我们把先拷贝一份，直接写。我们取一个名字，这个名字是什么？我们来看一下。
+
+
+我们的一个前端。在前端里面其实会有一个轮询的方法，在这里有一个 this 点 set timer，这是每隔 3 秒，这是隔错别字，每隔 3 秒。调用后台的方法，查看订单是否已经是支付成功了。在这里设置的是一个 3 秒，它是 this 点 check pay result。在这里它会发起一个请求，它是一个路由的地址。拷贝一下，我们贴到后端，把这个名称改一下，返回到我们前端。这里不再是一个 Int 类型，应该是一个 imock JSON result。OK，好传入进来。
+
+
+是一个 o 的ID，在这里改一下请求的 ID 是需要去进行一个修改的。拿到了这个 ID 以后，在这边我们会发起一个查询。查询很明显我们应该要去写一下service。我们到 service 里面去写一个方法， public 取一个名字。这是一个 query order status info，主要是用于去查询订单的一些信息。订单的信息我们直接可以返回一个 order status 这个对象就可以了。传入进来是一个 string 类型的订单ID，在写一个注释，查询订单状态。好，OK。随后我们要去把它的方法去实现一下。实现比较简单，我们直接使用 order status Mapper 点 select by 它的一个组件 primary key，把 order ID 给传进去，这个时候他就可以把相应的一个订单状态对象就可以拿到了。拿到了以后，在这里我们通过 order service 点应该是 query 写一下以后，我们就可以拿到这一整个对象了。写过来。好，我们在这里直接返回一个 Imock Jason result，点OK，再把订单状态给塞进去。塞进去了以后在我们的前端其实就可以获得了。
+
+
+OK，我们可以来看一下数据库，在我们的数据库里面，其实数据库主要就是把这一条记录给返回数据。前端拿到以后，他会去看一下它的订单状态，根据订单状态，他会去做一个相应的判断的。OK，好来看一下前端。前端我们主要是看一下它的一个回调，回调是在这个部分，主要是看一下它的一个订单状态，拿出来以后判断是不是20，如果是 20 就代表是支付成功。随后它就会发生一个页面的跳转，会跳转到 success 点HTML。这就是一个支付成功之后所跳转的一个页面。跳转过去之后，他会把这笔订单的订单号以及是支付的金额会带过去。
+
+
+OK，好，我们在这里做一个。现在我们其实后端写好了比较简单，我们就可以来做一个。 install 成功之后，我们再来做一个服务器的重启。好，现在是 install 成功了，再来重启服务器。好，OK，启动成功之后，我们可以来测试一下了。我们的到前端打开页面，我们重新把页面再来进行一个结算，提交一下订单，我们来支付一下一分钱。好，现在我手机上已经是支付成功了。支付成功之后可以发现，当我们的轮询到我们的订单的状态，发现是一个 20 状态，表示已经是支付成功。随后页面它就肯定要进行一个跳转，提醒用户说当前我们这笔订单是支付成功了，并且是支付了多少钱。
+
+
+OK。相应的内容是展现在了这里，这个是是从上一个页面所传递过来的，在这里还有两行字，适用于提示用户有问题可以联系一下我们的客服。当然客服 k f 艾特一个邮箱，这是一个假邮箱，大家没有必要去发这样子。其实对于我们的我们整个微信支付的流程，现在我们就已经是全部的对接开发完毕了。OK。
+

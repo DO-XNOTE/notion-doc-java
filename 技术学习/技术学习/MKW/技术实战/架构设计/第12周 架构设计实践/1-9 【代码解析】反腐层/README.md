@@ -1,0 +1,74 @@
+---
+title: 1-9 【代码解析】反腐层
+---
+
+# 1-9 【代码解析】反腐层
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d1954ccf-9d96-42cb-846a-c9f1c08cfdd7/SCR-20240801-eqmr.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4J47A3L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230913Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID6hRN97kbKoJS4Bg2Q8hDgZgJfI4lnjZndH7zFH62m9AiBsEzgD6uoU9RwogtdUPXeUfbMRm8uBIxMDwM4YIgWtViqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMUFsqEBiN0xsmG1wLKtwDNZ0qYYLs37nW6AYXZ9sXgBjNSO7IguEyQ23puMOIKTbWVJocRyjJawXR0ZeABc4xhEl1RlWiJ1agTGYmkHebJrzgcPUf8e3eXpwgUWXU0Ii6UEU7WF%2Fk9Vu%2FrX5kgDab3J2P1TnOwmwBPVNABvGLcg6hEfo8ZugftVQh2Kr%2BDSLIahlstRUIRQkSXOFL7U6dRLnpUPKJ2dtX%2FwhwtMnRnls9IeadnEh2xD33%2B3g9%2FXbDaY4wgD6Da8JBoiBUmjoettbvTgG%2BS3dcdxToXeAan5rGf1hOjXe4vCSE9Lt3mk%2B3WI1he9lHHZTuIEo%2Fjt9nt%2F6dLzlxZfyax%2F2SNJy2VpTPA9SbUmJrNb1LYVGywSjjI1lfbjV7zw7%2FwlyQRXc%2FBhGQ%2FeYsbYIkjgqYp4FSONSiQtdO7WRdvqwvLz5dKP576bxfOKytP7lLFGJJfVrUfeZjnHzLd3n%2FPz%2Bq%2F3qIEiJS3z6wDA%2FTqYhnciPczM0UPIRzZ6sgWReQhhF4pFoTLvxpSQgh5aWaFMC6JHCRgaEiAxf%2Fz4DHLTpPOSJQVwKb0p7zKwdzmNhZPGG%2FGYO2yW4cbdKsq4AXM3FTkYeeW4maww%2BjUGk3vaMBrCxdBGSfaXDQ5ZkN5pWXNiMw%2Fbf%2F0gY6pgEYQ81RpjZ%2BSVgaoqDtbz4U6tEHGynR8rX7cf2iupip8H0hg9rAmEE4Y8%2BL4ZPlKkEtlxqYv7HqDTJveUMF%2Fsi5kn2fG9bQiBVJbCwbacuwdGt067e5pOo5mRy15BniS%2Ft%2Fnhq4HX6nLPMAyA3PgWx81ogbTJXtYETbS9rBYYXmlTSQYmd1%2FFiNDitJpSo0qFZ8xuvGnocffGDC9K50cpSH1gz2wvtI&X-Amz-Signature=3a185613ef324b5bbf91fbd7f76ddc04ff30ad0ca70af72cf4fc4039f94d8b87&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/98f208c4-db3f-49bd-8384-ffed69f59269/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4J47A3L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230913Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID6hRN97kbKoJS4Bg2Q8hDgZgJfI4lnjZndH7zFH62m9AiBsEzgD6uoU9RwogtdUPXeUfbMRm8uBIxMDwM4YIgWtViqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMUFsqEBiN0xsmG1wLKtwDNZ0qYYLs37nW6AYXZ9sXgBjNSO7IguEyQ23puMOIKTbWVJocRyjJawXR0ZeABc4xhEl1RlWiJ1agTGYmkHebJrzgcPUf8e3eXpwgUWXU0Ii6UEU7WF%2Fk9Vu%2FrX5kgDab3J2P1TnOwmwBPVNABvGLcg6hEfo8ZugftVQh2Kr%2BDSLIahlstRUIRQkSXOFL7U6dRLnpUPKJ2dtX%2FwhwtMnRnls9IeadnEh2xD33%2B3g9%2FXbDaY4wgD6Da8JBoiBUmjoettbvTgG%2BS3dcdxToXeAan5rGf1hOjXe4vCSE9Lt3mk%2B3WI1he9lHHZTuIEo%2Fjt9nt%2F6dLzlxZfyax%2F2SNJy2VpTPA9SbUmJrNb1LYVGywSjjI1lfbjV7zw7%2FwlyQRXc%2FBhGQ%2FeYsbYIkjgqYp4FSONSiQtdO7WRdvqwvLz5dKP576bxfOKytP7lLFGJJfVrUfeZjnHzLd3n%2FPz%2Bq%2F3qIEiJS3z6wDA%2FTqYhnciPczM0UPIRzZ6sgWReQhhF4pFoTLvxpSQgh5aWaFMC6JHCRgaEiAxf%2Fz4DHLTpPOSJQVwKb0p7zKwdzmNhZPGG%2FGYO2yW4cbdKsq4AXM3FTkYeeW4maww%2BjUGk3vaMBrCxdBGSfaXDQ5ZkN5pWXNiMw%2Fbf%2F0gY6pgEYQ81RpjZ%2BSVgaoqDtbz4U6tEHGynR8rX7cf2iupip8H0hg9rAmEE4Y8%2BL4ZPlKkEtlxqYv7HqDTJveUMF%2Fsi5kn2fG9bQiBVJbCwbacuwdGt067e5pOo5mRy15BniS%2Ft%2Fnhq4HX6nLPMAyA3PgWx81ogbTJXtYETbS9rBYYXmlTSQYmd1%2FFiNDitJpSo0qFZ8xuvGnocffGDC9K50cpSH1gz2wvtI&X-Amz-Signature=df8813ca2c830e04b3429b30bbd1fddc6d06b58e3f332ab0632eb64dc3451257&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+架起需求到落地的桥梁，科技 it 新蓝图，我是张飞扬。上一节我们用代码来实战了一下工厂资源库和领域服务，那这一节我们看一个复杂一点的领域服务，看一看它是来如何实现反腐层的。那我们之前说过反腐层其实是什么？就是给华师大的同学进行卸妆的卸妆层，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/50e94392-274d-46c8-9e6b-89b44199361e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4J47A3L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230913Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID6hRN97kbKoJS4Bg2Q8hDgZgJfI4lnjZndH7zFH62m9AiBsEzgD6uoU9RwogtdUPXeUfbMRm8uBIxMDwM4YIgWtViqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMUFsqEBiN0xsmG1wLKtwDNZ0qYYLs37nW6AYXZ9sXgBjNSO7IguEyQ23puMOIKTbWVJocRyjJawXR0ZeABc4xhEl1RlWiJ1agTGYmkHebJrzgcPUf8e3eXpwgUWXU0Ii6UEU7WF%2Fk9Vu%2FrX5kgDab3J2P1TnOwmwBPVNABvGLcg6hEfo8ZugftVQh2Kr%2BDSLIahlstRUIRQkSXOFL7U6dRLnpUPKJ2dtX%2FwhwtMnRnls9IeadnEh2xD33%2B3g9%2FXbDaY4wgD6Da8JBoiBUmjoettbvTgG%2BS3dcdxToXeAan5rGf1hOjXe4vCSE9Lt3mk%2B3WI1he9lHHZTuIEo%2Fjt9nt%2F6dLzlxZfyax%2F2SNJy2VpTPA9SbUmJrNb1LYVGywSjjI1lfbjV7zw7%2FwlyQRXc%2FBhGQ%2FeYsbYIkjgqYp4FSONSiQtdO7WRdvqwvLz5dKP576bxfOKytP7lLFGJJfVrUfeZjnHzLd3n%2FPz%2Bq%2F3qIEiJS3z6wDA%2FTqYhnciPczM0UPIRzZ6sgWReQhhF4pFoTLvxpSQgh5aWaFMC6JHCRgaEiAxf%2Fz4DHLTpPOSJQVwKb0p7zKwdzmNhZPGG%2FGYO2yW4cbdKsq4AXM3FTkYeeW4maww%2BjUGk3vaMBrCxdBGSfaXDQ5ZkN5pWXNiMw%2Fbf%2F0gY6pgEYQ81RpjZ%2BSVgaoqDtbz4U6tEHGynR8rX7cf2iupip8H0hg9rAmEE4Y8%2BL4ZPlKkEtlxqYv7HqDTJveUMF%2Fsi5kn2fG9bQiBVJbCwbacuwdGt067e5pOo5mRy15BniS%2Ft%2Fnhq4HX6nLPMAyA3PgWx81ogbTJXtYETbS9rBYYXmlTSQYmd1%2FFiNDitJpSo0qFZ8xuvGnocffGDC9K50cpSH1gz2wvtI&X-Amz-Signature=6037eecfff42eb7bc069a0c82043c9cdc5ace6e8756a0d3792f22cc02b577f92&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这里我们实际上要处理的不是美女的妆容，而是一个什么，而是一个用户认证的子系统。那这是也是一个校园，它是什么身份与访问的 bounded contest 这样一个校园，那这个校园呢？它提供一个API，那这个 API 是这样写的，如果你的路径开头是以 tenets 开头，然后跟上租户ID，然后再加上users，加上 user 的 ID 以及 in row，再加上角色的名称，那这个时候它会告诉你这样的用户这样一个角色他的邮箱是多少？他的姓和他的名分别都能拿到，但这样并不满足我们下面那个就是下游服务协作上下文这样一个校园的需求，他希望什么？按照欧美的风格，把所有的用户以姓放在后面，名放在前面，中间加个空格的方式来进行展现。
+
+
+那要这样的展现，它就定义了一个什么，一个领域服务专门实现这样的一种姓名的逻辑的处理，但它真正实现逻辑转换的不是它本身，而是它调了底下基础架构层里面的两个功能，一个是什么？一个是这个 facade 外观模式，或者说是一个普通的 HTTP 的client，那这个 Claude 去真实的获取到数据，获取完了以后再调那个适配器模式，或者叫适配器层，这个适配器层完成了一个 collaborate translator 这样一个类的里面的方法的调用，最终实现什么？把姓和名抽取出来，然后按照一定的逻辑，比如名在前空格姓在后进行一个排列，排列完了以后返回给领域服务。
+
+
+就如果说我们未来要改变成中文习惯，把姓放在前面，名放在后面，该怎么办？也很简单，只要什么调整一下底层的这个具体的实现了这个代码就可以了。而我们领域的这个逻辑的服务抽象层依然可以放在那，很方便的让我们的应用层，或者让我们的测试代码来进行访问和调用。
+
+
+废话不多说，集中看一看如何通过下面这两块，一块是什么？ collaborator service，领域服务，还有一个 user enroll Adapter 这样一个适配器来组合起来实现卸妆的，让美女卸妆，我们开始实战。领域驱动的代码读起来有点艰难，那我们尝试有一个思路，什么思路？按照箭头从蓝到绿到紫逐步去看，那同时在栏里面我要强调一下，这次我们关注的是协作上下文，这样一个校园，那一个校园里面必然有他的什么？他的管理人，谁？校长在金字塔理论里面我们记得吗？领域驱动四层，第二层应用服务层，它是可以类比于校长或者校领导，那这一层通常会对外提供所有的服务的一个汇聚，这些服务都是他提供的，那他下面会管很多人，那他是怎么样去管理这么多同学？他是通过班主任，通过我们的这个辅导员还有校工来进行管理。
+
+
+那这一节就看一看怎么样应用服务来调领域服务，通过这样的校工来进行什么整个学校里面的这个数据的管理，人员的管理，打开代码，对吧？这个代码依然跟前面几句一样，慕课 GitHub 上进行下载，然后我们重点关注 collaboration 这样一个子域，那这个子域里面我们打开应用，在应用里面我们打开 Forum 里面的 discussion application service。
+
+
+那我这里要强调一下他是谁？就是我们刚刚说的他可是校长，你不要不把校长当校长，这校长里面首先它会定义什么？一上来就定义了一个叫什么叫校公，这个小工是谁呢？就是领域服务了。哪个领域服务？ collaborate 这样一个领域服务。这个领域服务我们先不看领域服务的内容，我们可以看看他后面怎么用这个领域服务，后面他是真正要发起的这个，这要发起一个讨论的时候，嗯，我要做一件事情了，这个事情恰好是发起讨论。但发起讨论的时候我要知道发起讨论的人是谁，你自己要传进来一个参数，这里面其实是有这个讨论的 ID 和这个 tenant ID 的，在这里面隐含着这是一个值对象的参数。
+
+
+那怎么样去获取到这个具体讨论人、发起人是谁？他会怎么调用其中的这样一个方法？这个方法返回的其实就是它这个成员变量，就是这个 collaborator service 这样一个什么领域服务的成员变量，那这个领域服务的是人员变量里面的具体方法叫 author from，就是用这个方法来把获取到了这个什么这个 author ID 转换成真正的名姓和他的邮箱的。
+
+
+所以我们可以看到什么我们校长要访问很多的具体内容的时候，要什么直接找我们的班主任，要么找我们的这个辅导员，或者很多时候就会找这个叫什么孝功教，用你的这个方法，赶紧把我数据给我获取出来，我们看一看孝功的这个方法到底该怎么样使用？我们点进去看，诶，这是什么？这是一个 collaborate service 领域服务里面的方法，这个方法有什么特征大家可以看出来吗？是不是一个工厂方法啊？诶，对的，这就是一个什么工厂类型的方法，它会返回具体的author，那另外一个方法会返回具体的Creator，那它就是一个创建 author 的一个工厂方法，而这个方法其实是什么？是一个抽象的这个接口里面的方法。
+
+
+那具体实现该如何实现呢？我们来看其中的具体实现怎么样？它怎么实现？它通过 translating collaborate service。这个 service 在哪里？在 port Adapter 底下，你这里就可以认为它是什么？它是基础架构层的意思，在基础架构层底下的一个服务，这个服务才是真正的服务。所以我们很多时候领域服务它只是一个抽象的接口，而它真正的实现要靠底下的基础架构层，这就跟 repository 一样。
+
+
+repository 是吧？资源库也是一个抽象的一个集合，那它的真正实现通常是通过我们 DAO 层来进行实现的。那这里大家可以很容易发现一个特点。什么特点？这个 author 的具体内容，它用到了什么？我们的适配器 user in row Adapter 来获取，对吧？用它这个适配器的具体的一个方法来获取这个用户的信息。那这个适配器就是我们前面 PPT 里面看到这个，当校长找到校工说请把我这次发表讨论的人给我找出来，那这个时候他不是直接找，他是找适配器，因为适配器既能获取信息，又能进行转换。
+
+
+那这个适配器在做什么事情？我们详细来看一下这个适配器，它说我用了这个方法，但这个方法其实是一个很空的内容，这个空的内容其实是什么？在这个接口里是没有具体定义的，要看看它的实现，就要点进去看了好几种实现，那通常就是 HTP 请求的实现，可以去看一下这个实现具体在做什么。
+
+
+我们来看一看第一步是什么？第一步其实是他说我是获取了请求的信息的，而且是 h t d p 的请求，我把它叫什么准备好了，或者要准备好了，对不对？准备了 Http 请求。第二步是什么呢？第二步是发送 h t d p 请求，获取响应，这个响应什么就输到了 response 里面，然后就对这个响应的这个什么这个状态码进行看判断是不是200，这里才是关键，这是什么关键？实际调用方法完成数据类型在转换，这才是实际。当我们这个什么底层的这个基础架构层里面的具体实现方法来实现的时候，它也会层层嵌套来具体实现。那我们看看被嵌套到的这个类什么呢？叫 collaborate translator 类，是不是就是 PPT 里面说到了什么卸妆棉适配器，先去获取数据，然之后用卸妆棉拿出来， collaborate translator 拿出来开始进行卸妆了，我们看看卸妆的过程是怎么样？是这个过程我们点进去看具体内容它怎么卸妆，它通过一个叫 representation read 的这个这个什么类，把它的类就是把它具体的这个实际的展现的信息全部获取到，然后分门别类地去读取它的值。
+
+
+比如说是这个user，比如说是这个名姓和他的邮箱的 Email 邮箱，然后进行一个转换，那这一坨因为什么这个代码写的层次特别深，感觉有点累？没关系，你就当成一个功能好了，我们直接去看它具体的实现就好。它在转化的本质是什么？在这里我们直接看到本质，本质就是很简单，我把这个 user name 保留不变，邮箱保留不变，唯一变的是什么？我要用欧美的风格，把什么明写在前面，空格姓写在后面，然后把多余的两头的空格删除了，这就是实际的功能，这就是实际的功能。
+
+
+我们这里备注一下实际操作保留欧美姓名风格，本来拿到的是两个字段，一个是名，一个是姓，但我们实际操作过程保留了欧美的姓名的风格，那这就是我们的这个这次转换的这个过程，那我们可不可以换写这个translate？当然可以，在基础架构层里面我们可以定义多个不同的类型，然后采用什么依赖、反转等等方式，很方便的来实现我们的具体的操作。
+
+
+回到我们前面，这里什么请求，这里我们可以看到什么？这里实实在在的操作过程，就是我们 PPT 里面说的调用外观模式的 HHP client 去获取这个身份认证的API，然后通过 API 的返回值进行一个什么名和姓的这种重建，重构构数乘完以后变成了一个 author 这样一个对象，然后返回给我们的 collaboration service，那这个 collaboration service 最终又通过他的这个实际的调用返回给我们调用他的这个校领导。
+
+
+我们看看这里一路返回，最后就是这个 author 类了，这个类就是符合我们本领域要求的这种欧美风格的姓名的这个 author 的信息，以及它的邮箱信息，把这些信息灌回进去，灌回到什么 author 这样一个内部的变量，然后这个变量就会用到后面真正发起讨论。
+
+
+这里面快速的过一遍，我们其实思路是什么？思路就是让我们的校领导去调用我们的校工，然后让效功来进行一个抽象，那这个抽象的效功其实要做的事情都是在底层的，这个我们的基础架构层来实现，那基础架构层阜阳老师也会叫他叫大爷层，比如什么收发室大爷，什么什么大爷、门卫大爷等等。
+
+
+大爷是什么？是听我们这个孝公的。那这个校工还是学校编制？大爷可能是社会编制好，那学校编制的校工，比如会安排一些任务，让大爷来帮忙操作，那这个大爷可以有好几个大爷，今天看你不顺眼，就换一个大爷。这个学校这个体系结构，这个层次管理有点剥削，对不对？校领导，然后什么班主任，什么辅导员，校工，下面还有什么大爷这一层，这就是我们金字塔三层里面 234 实实在在就是这样操作的。聊完这些层以后，大家回过去基本上是不是对领域服务有点了解了？领域服务是吧？相对来说是一个比较自由的服务，那它可以通过适配器外观配合起来实现一些什么？对其他的我们的领域的数据获取到以后进行反腐。那当然我们不光是领域服务可以反腐，我们校领导也可以直接调用适配基层，也就是应用服务直接调用适配基层进行反，这种操作也是有的，所以我们有很多种不同的实现来实现反腐。是我们什么实际的领域驱动过程里面， rest API 调用了一个最推荐的方法。
+
+
+那前面应该大家已经很了解，是吧？我们不同的校园之间有很多种不同的模式，比如是屈从的，比如是说是服务的供应和获取的，或者是大融合的，或者说是完全独立的，在反腐残这种情况下，最推荐的方法其实就是通过这种像领域服务或者应用服务进行适配管理，然后用 HTTP rest API 的方式进行很紧密，但是又可以进行卸妆的进行沟通。
+
+
+除了这种方式以外，还有一种方式也是非常推荐的，那就是用异步的这种消息队列，或者说是领域事件的方式进行沟通。这个我们在后面几个章节会详细交流，那下一章我们尝试会对工厂还有对我们的这个资源库进行进一步加深。我们看一看校领导 application service 是如何来访问我们的工厂的功能，以及来访问我们的 repository 的功能怎么样来通过班主任，通过我们的辅导员来管理学校的，大家敬请期待。
+
+

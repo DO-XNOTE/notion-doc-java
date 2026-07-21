@@ -1,0 +1,81 @@
+---
+title: 2-17 MyBatis 数据库逆向生成工具
+---
+
+# 2-17 MyBatis 数据库逆向生成工具
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2893f694-b341-49b7-aa4b-06620480f256/SCR-20240816-qayh.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224612Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=aee3b2e13d21d39fb063f51c5b857d5edfc215ff75cc5633579e8b87b7b673e5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/98416bf1-bb0e-4a57-9bd5-4c6d4b8954cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224612Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=8d93efcc2382d2987f7cb977cb5e88973c00ce0f284e31f73b7425bce4ab875a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b54e30c4-e30e-4668-b3cf-7bb6ec495dd7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224612Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=78ad382cfb5883ed968b02fc52e78c11df039bea29e4e2bd20156cdafcd83e20&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上节我们是把项目和数据层进行了一个整合，随后这一节我们一起来看一下。My bytedis 的一个逆向生成工具，这个工具它主要是可以去用于生成一些相应的文件，比方有 Pojo 实体类实体层，还有是 Mapper.xml，另外还有是 Mapper.xml所对应的一些 Java 接口的映射类。这些文件我们都可以通过工具去生成的，我们可以一起来看一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e95cbf08-d3df-457a-b6ba-4f8cda01f53e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224612Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=4e7641013b13dc1e2cf6bc2dbb58f4027567c948fc642a695287d156dc3bd1b7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先，当我们的数据库在创建完毕了以后，我们就可以通过一个项目，叫做 Mybatis generator。它虽然是一个工具，它本质上其实也是一个项目。这个项目我会直接提供给大家，我们只要去知道如何去使用就可以了。在工具里面，它还包含了另外一个插件，就是MyMapper，这个插件又是通用 Mapper 插件。因为我们所使用的逆向工具是一个通用 Mapper 的逆向工具，它其实在原来的版本上是做了一些优化，它其实是还有另外一个版本的逆向工具的，我们使用通用 Mapper 的逆向工具就可以了。通过  Mybatis generator，它就可以去生成一些相应的文件。 pod 其实就是我们的一些实体类，实体类会和我们数据库里面所有的一些表进行一些相应的对应。其次还有是Mapper、点  xml  以及是它所对应的 Java 类。这些这三类文件就是我们所要去生成的一些文件。
+
+
+通过工具为我们逆向生成的一些文件以后，可以极大的优化我们的生产效率，在我们进行一些单表的增删改查的操作，它也为我们提供了很多样化的一些功能，为我们提供了很多封装的方法，也是十分的好用的。我们来一起看一下如何去整合和使用工具。首先我们来先看一下在我们的项目里面，这个项目我是直接会提供给大家的，在这里，有一个叫做  Mybatis generate for imooc 这个工程名字，大家是可以直接去进行修改的。这个工程我目前也已经是导入到了咱们的这个 idea 开发工具里面，我们可以来一起看一下。
+
+
+首先我们是需要有一个 MyMapper 这样的通用的 Mapper 类，双击打开看一下。这个是由作者所提供的，非常简单，它其实就是一个接口，这个接口可以看到它有一个t，也就是代表我们的Mapper，其实是一个通用的，针对于任何的表，任何的 editing 都是可以去使用的。另外它在后面又继承了 Mapper 以及是 MySQL Mapper。这个我们在后面用到的时候，我们再来回过头来再说一下。好，这个是通用MAPA，来看一下。它所在的包是在 com 点 imock 点  mapper 。
+
+
+下面我们再来看一下。在这里有一个文件叫做 generator config，这个就是我们所要用到的一个配置文件，它是一个插妙。双击打开我们看一下。首先这里面全部都是一些相应的标签，我们只要去把相应的一些自己本地的目录配置信息在这里面去进行一个设置就可以了，比方我们所要做的第一个部分就在这里，这个就是通用 Mapper 所在的一个目录，也就是刚刚我们所提到的一个 MyMapper，在这里它的一个value，它的值去做一个设置就可以了。包名加上它的一个类名，在这里进行一个填充和设置。随后下一个设置我们的数据源，也就是在 jdbc  connection。在这里面把自己数据库所在的一个地址端口号项目名，就是数据库的名字写一下，另外用户名和密码填充一下就 OK 了。
+
+
+下一个是我们在数据库里面所有一些表，在数据库里面，我们有这么多表，你是需要去生成一些相应的实体类的，也就是Polo。 Polo 所在的包在哪里？我们可以设置 定义为 com 点 imooc 点 Pojo。设置好了以后千万不要忘记，你也是需要去到我们项目里面去进行一个设置的，这需要去做一个 1 的对应。我们可以再打开咱们自己的项目，来到  pojo 这一层展开。很显然在 Java 这一层里面，我们有一个 com 点 m 点 pojo，这个是我们之前所创建的，这个是需要去做到对应的。
+
+
+好，下一个。下一个就应该是一个 Mapper 所在的目录。这个 Mapper 是一个生成的Mapper。点 xml 。这些内容我们会放在 resource 下面的Mapper。这个也我们在之前课程里面其实也已经是创建好了。来看一下。是在这个里面在 Mapper 子模块展开看一下。在这里 resources 下有一个Mapper，这个也就是我们之前所创建的，在我们当前逆向工具里面其实也应该要有。来看一下。在 resources 下面也有两边都是要相互对应，好，下一个。下一个应该是 Mapper 生成的 xml ，它里面每一个 xml 是都必须要对应到有一个相应的 Java 接口映射，相互也有。它是在 com 点 m 点 Mapper 下面。
+
+随后我们再回到咱们的项目，在咱们的项目里面可以看到这里有吗？也有 Com 点 m 点Mapper，两边要做到一个相互的对应，这样子我们生成完毕以后，相应的文件以后就可以直接拷贝过去了。如果你两边的包名、目录名都不一样，你还需要去各自去修改他自己的一些包名等等。
+
+
+好，随后我们就可以去做一个生成了。生成是需要去设置相应的数据库表的，在这里有这样的一个标签table， table 是要对应到我们在这里面。在这里有很多的一些数据库表，每一个表我们都可以全部都拿过来，比方我们第一个凯瑞斯是轮播图表，随后我们在这里面可以写多个，以后一个一个的，我们再把相应的内容拷贝粘贴到这个部位，都可以去做一下。好，现在我们所有的一些表全部都在这里面。设置好了以后来看一下。
+
+
+在这个部位有一个 utils 叫做 generateDisplay，双击一下这个类其实主要就是用于去运行我们 xml 的，他会找到并且解析，随后去进行一步一步的操作，去逆向的生成。OK，在这里可以看到有一个 generateConfig.xml ，这个是用于去指定逆向工程的一个配置文件，我们只需要右键去 run 跑一下就可以了。
+
+
+好，运行一下。随后在这里面就可以看到运行是成功了。警告可以不用管，这个是日志，我们项目里面没有日志，它会报这样的警告。我们其实可以不用去管的，因为这毕竟是一个工具。好，我们来看一下。回到我们的一个工程结构，现在就可以看到在我们的 Mapper 里面生成了很多的一些 Mapper 文件，这些都是一个一个的夹巴类比方。我们先看第一个，这是一个 carousel Mapper，随后它会继承通用Mapper，也就是MyMapper。后面它的泛型是一个carousel，也就是我们之前在这里所说的t。我们再看。在下方会有一个 Pojo , pojo 也就是我们所有的表所对应后生成的那些实体类可以看到。我们以 carousel 为例，双击看一下。
+
+
+打开来以后可以看到它里面很多的一些字段，前方都会有一个注解。这个注解就是和我们的一个数据库所做到的一个映射。我们是需要去注意的一点，如果我们的字段是完全一样的，它在前面是没有column。如果我们的数据库字段里面，比方下面会有一个下划线，它会把它改成一个驼峰式命名。这个是在 Java 里面的一个开发规范，每一个字段都会有，包括它所对应的一些注释， comment 也都会在前面所展示。
+
+
+好话。还有一个接下来就是Mapper，一些对应的叉秒在这里全部都有。双击打开来看一下。在这个里面，其实我们就可以看到它为我们生成了一个Mapper，并且它会为我们提供一个 result Mapper，做一个简单的封装。这里面每一个字段全部都会有，并且都是映射到 Carousel 实体类里面去的。现在我们这些相应的一些文件生成了以后，我们就直接可以拷贝到咱们自己的项目里面去了。我们可以先把 Mapper 全部拷贝，把这一块全部拷贝到我们的一个项目里面去。这个是需要拷贝到 Mapper 数据层，全部都拷贝过来，点击OK，OK，在这里面全部都导入进来了。好，随后下一个。我们把叉庙倒一下，插庙，在这里全部选择 Ctrl c 拷贝。回到项目里面放大一下，在这里面选择目录， Ctrl v 粘贴一下。全部都可以贴过来。全部都有了。以后我们再来一个。就剩下一个。 POJO 实体类，在这里把这些全部都拷贝一下，拷贝到我们的项目里面来。pojo 实体层。
+
+
+OK，现在其实全部都已经是贴过来了，只不过在这里面还报了一些相应的错误。有一些红线对吧？这些红线主要是因为我们虽然生成了，但是在我们自己的项目里面，其实你也需要去做一些相应的配置的。我们来看一下，这是我们的一个笔记，使用马白底斯数据库逆向生成工具。
+
+
+首先我们是需要在咱们的 Pom 文件里面来看一下，要去引用一个依赖，这个依赖就是通用 Mapper 的一个工具。就这个吧，直接拷贝一下就可以了。 control c 拷贝贴到我们的项目里面来，找到我们的一个项目的Pom，比如这个在我们负底 DB 跟目录下的一个Pom，点叉庙双击以后，在这个下方我们直接拷贝过来保存，我们导入一些相应的change。
+
+
+好。下一个是需要去配置一下我们的 YAML 文件，直接拷贝一下贴到我们的 y m l，这个是在我们的 a p i 这一层 a p i 里面的，双击一下，我们直接放到  Mybatis 和  Mybatis，康龙写在他的下方。我们简单的来看一下。
+
+
+首先一个我们是需要设置Mapper，点 Mapper 就是我们的通用Mapper。通用 Mapper 现在我们还没有，还没有其实也没有关系，我们只需要拷贝一下就可以了。拷贝我们可以去找到我们的逆向工具，在逆向工具里面可以看到有一个满 Mapper 这样的一个通用类通用的插件，我们只要把拷贝一下就可以了。拷贝到我们项目里面来，找到数据层。在这里面我们可以去创建一个包，先去 new 一个package， come 点imock，点 my Mapperper， Mike 去掉，接过来也OK。这个时候我们的 Mapper 文件就已经是有了，有了以后我们再回到咱们的 YAML 文件，这个时候的红色波浪线就已经是没有了。
+
+
+好。随后下一个是一个 not empty，这个是设置为false。这是什么意思？这个是指其实我们在做一些，比方更新操作，插入操作，我们会有一些判断，这些判断的时候，我们可能会判断某一个属性是否为null，是否为空。我们是否可以通过 not empty 来进行一个设置，是否在后面去追加一个，不等于一个空码，我们可以在直接写一下。
+
+
+在进行数据库操作的时候，比方有一个判断的表达式， user name，如果不为now，它在后面是否帮我们去追加一个。 user name 不等于空，也就是空字符串，它是会帮我们去自动追加的。其实我个人建议我们不要去依赖框架的这种追加，不追加我们直接自己去手写就可以了，这是我比较推荐的一种方式。
+
+
+另外下一个是identity，其实也就是它的一个数据库方言，我们使用的MySQL，在这边设置一下就可以了。现在对于我们的通用 Mapper 以及是我们的一个逆向工具，其实在这里面就已经是设置好了。这边是一个满 Mapper 这样的接口类，里面的相关代码也可以直接去拷贝的，也是可以的。
+
+
+当我们的项目里面把实体层、数据层相关的内容全部都生成再放进去以后，我们也是需要去做一步操作的。也就是我们要在 maven 里面，我们再一次的 install 去安装，主要用于去编译一下，看一下有没有问题。现在是 build success 了。
+
+
+随后我们再来跑一下我们的 application 运行一下，看一下能不能启动。如果启动没有问题，是成功的。我们项目在使用逆向功率的时候，所使用到的相关的内容都是 OK 的。好，来看一下我们的springmode，现在是启动了。启动成功之后，我们打开咱们的浏览器，直接刷新一下 HelloWorld，还是可以打印。现在我们的一个逆向工具，现在我们就已经是整合使用 OK 了。
+
+[file](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/06c6502d-07f8-4797-9603-b39ef9486abe/2-18_%E5%9B%BE%E6%96%87%E8%8A%82.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224612Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=dcc5fd9405c2179f0fe9499786c154c12828acda6961c1eff93841e3d5c1018a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

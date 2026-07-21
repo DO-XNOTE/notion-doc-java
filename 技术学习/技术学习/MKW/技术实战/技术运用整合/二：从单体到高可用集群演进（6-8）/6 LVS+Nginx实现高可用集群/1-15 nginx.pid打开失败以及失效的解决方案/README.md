@@ -1,0 +1,120 @@
+---
+title: 1-15 nginx.pid打开失败以及失效的解决方案
+---
+
+# 1-15 nginx.pid打开失败以及失效的解决方案
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6152d69f-5f50-4d38-89f7-c5e08698d252/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=92f275282f980b0c61b45b2c07bc7cba524a0f15b156f061775113dce4e466a9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+```java
+## 1-15 nginx.pid 打开失败以及失效的解决方案
+
+当我们在使用 Nginx 进行开发时，有时候会发现 pid 找不到，这时候我们就需要解决这个问题。本文将为您介绍如何处理 pid 找不到的问题以及 pid 无效的情况，同时提供另一种解决方法。
+
+### 问题描述
+
+在使用 Nginx 过程中，有时候我们会发现在使用 `nginx -s reload` 命令重新启动 Nginx 后，会提示说我们的 `nginx.pid` 找不到或打开失败。这时候我们需要解决这个问题，否则我们无法正常启动 Nginx。
+
+### 解决方案
+
+### 文件或目录不存在
+
+当我们发现 `nginx.pid` 找不到或打开失败时，很可能是因为该文件或目录不存在。我们可以使用以下步骤重新创建该目录：
+
+1. 使用 `cd` 命令进入 Nginx 目录。
+2. 创建 `nginx.pid` 文件夹，使用命令 `mkdir -p /usr/local/engines/var/run/nginx/`。
+3. 重新启动 Nginx，使用命令 `nginx -s reload`。
+
+### pid 无效
+
+当我们发现 `nginx.pid` 无效时，我们需要重新定义 config 配置文件或使用默认 pid。
+
+### 自定义 config 配置文件
+
+我们可以使用以下步骤重新定义 config 配置文件：
+
+1. 在命令行中输入 `nginx -h`，查看 Nginx 帮助文档。
+2. 找到 `nginx -c file` 命令，该命令可以重新定义 config 配置文件。
+3. 使用命令 `nginx -c /usr/local/engines/config/nginx.config` 重新定义 config 配置文件。
+4. 重新启动 Nginx，使用命令 `nginx -s reload`。
+
+### 使用默认 pid
+
+我们也可以使用默认 pid，具体步骤如下：
+
+1. 在命令行中输入 `nginx -V`，查看当前 Nginx 的配置信息，找到 `-pid-path=/var/run/nginx.pid`。
+2. 创建 `logs` 文件夹，使用命令 `mkdir -p /usr/local/engines/logs/`。
+3. 重新启动 Nginx，使用命令 `nginx -s reload`。
+
+### 另一种解决方法
+
+除了以上两种解决方法，我们还可以使用默认的 pid。具体步骤如下：
+
+1. 在命令行中输入 `nginx -V`，查看当前 Nginx 的配置信息，找到 `-pid-path=/var/run/nginx.pid`。
+2. 创建 `logs` 文件夹，使用命令 `mkdir -p /usr/local/engines/logs/`。
+3. 重新启动 Nginx，使用命令 `nginx -s reload`。
+
+### 问题演示
+
+为了更好地理解以上问题，以下是一个问题演示：
+
+1. 当我们使用命令 `nginx -s reload` 重新启动 Nginx 时，会出现 `nginx.pid` 找不到或打开失败的提示。
+2. 通过使用 `mkdir -p /usr/local/engines/var/run/nginx/` 命令重新创建目录，我们解决了文件或目录不存在的情况。
+3. 当我们发现 `nginx.pid` 无效时，我们可以重新定义 config 配置文件，使用命令 `nginx -c /usr/local/engines/config/engines.config`。
+4. 如果不想重新定义 config 配置文件，我们可以使用默认的 pid，在 `nginx -V` 命令中找到 `-pid-path=/var/run/nginx.pid`，然后创建 `logs` 文件夹即可。
+
+在使用 Nginx 过程中，以上两种问题可能会经常出现，我们可以按照以上步骤解决这些问题，确保 Nginx 的正常运行。
+```
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/741c43ee-e2c4-4b51-a375-819b32103d42/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=3064fbedee0d19e5637df49452ba47e4ee67ff3dc9773cbc196abf1f7f955c06&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么在我们平时使用n，g， s 的过程中，在绝大多数情况之下，那么都有可能会发现我们的p，i， d 找不到了，莫名其妙的丢失了，那么它会报一个错。那么在这里我们给大家来演示一下，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c79a1622-fe08-4562-8769-ee3628070891/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=32ae9e10769fa49c1b3fae12ca83982f9a71b4b4c2a284764697e26966201c68&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们的通过 Nginx 来杠 s 与 load 重新来启动一下，那么这个时候它会提示说我们这个n， x 点p，i， d 找不到，失败了。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f6b32372-0b8c-4a71-9581-ecb581ae1d31/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=a3878c2fa88f6310d458d51f2d349c5023a089e8375058270ea528843d821ef5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么呢，它有两个原因，可能是我们这个文件不存在，也有可能是我们这个目录不存在。那么在这个时候我们可以通过 CD 我们进入一下，进入到这个 Nginx 里面，我们按一个回车，你会发现提示说这个当前的目录是不存在的，没有这个文件，或者说这也不是一个目录，那么莫名其妙的消失了，那么这个时候如何去解决呢？我们只需要重新的去把这个目录去创建一下就可以了。
+
+
+我们 m k d i， r 把这个贴过来，按一个回车，那么这个时候我们要再进入到这个目录的时候，我们是可以重新的进去的。随后我们再来进行一个重新的启动，进入到 user local engines，进入到 SB 点斜杠 engines 杠t，再来一个杠 s reload 回车。那么你会发现我们这个p，i， d 这个时候会报一个错，说我们这个 p i， t number 有一些问题，它是一个无效的，那么这个时候又如何去解决？那么在这里我们拿出一个命令，通过点斜杠 Nginx 杠h，那么这个是代表我们可以查看一下我们 Nginx 里面的一些帮助的文档。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cc246daf-16a3-487a-8233-2da5b7df4b32/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=ee756b19b9c55023619348de124637beea5f95abf663c788193e8840edc4cd3e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+h 的话其实就是一个help，那么在这里会有一个杠 c file name，那么这个是什么意思？后面有一个英文的注释，那么这个是指它可以重新的去定义一下我们的一个 config 配置文件，那么默认的 config 配置文件是在 config 下的engines，点 config 是这个，那么其实我们也是可以为它去自定义一个，或者说是重新去指定一个，是手动的方式去指定的。默认的话它是自动的。
+
+
+我们可以来这样子，我们来一个杠c，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/649b550c-ba0b-4157-b614-8ec6486f119a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=7b86c8a58e262ddf812d83c04d2e5070496da084787252d5fa9a8711881ce4e2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+然后再来一个空格，那么指定这个 config 的位置，那么这个位置是在 user local engines config engines 点config，那么这样子的话，其实我们就重新的去指定了它，然后我们来按一个回车，那么这个时候你会发现这个时候回车是没有任何问题的，是 OK 的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/37542ed7-d6d9-4c13-9e0c-c42ed1f1ab6a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=cd7f515cea1a7752a3c0df2d3f5348bf7069f77f90b3ee78c07270ceec57c139&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+然后我们再来一个杠 s Reload 回测一下，你会发现 Reload OK 了，没有问题，然后再请求一下咱们的这个页面，现在也是正常的可以去请求了。那么这个就是我们在平时使用 Nginx 的过程中有可能会出现的两个问题。
+
+
+那么有一个问题的话，就是我们的这个 n x 点 p i d 这个读取失败，打开失效了，那么你是需要去把这个目录重新的去创建一下，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/04f21ca8-299f-4f5e-9da0-abcf9d69ec99/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=4cc6fa00fff459a4ae95b271e08436c57f9e815fac58b8641455ed474c56ef09&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+那么另外一种就是我们这个 p i，d，这个 p i d 是无效的，那么发生这个无效的这个情况之下，我们是需要去通过 n x 杠 c 来重新的去指定一下我们的 n x 点config。那么这样子的话，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b9239811-a0ba-45bc-a5e7-dddc13c7489e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=f6e4bbfbe14495be0f666dfd283bd4d396b1cad8d69ff968313367ff12e14c8f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么我们就可以解决 p i d 无效的一个情况。
+
+
+OK，那么其实还有一种方式就是使用**它默认的一个 p i，d，**就是我们的一个安静思，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ad284090-af87-480b-b366-21bfa0063644/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R576FRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224846Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCedy%2F0ejyHLpPvE0JMjMOyZggevAGdvRq1TU6Q14GgdwIgSxYwYnhy5eHaHs2WlFJUEgvO9r6Iu6MjVylu7dTHnsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCFa08JPxrQGET2YgSrcA8j9hqOFGLS0TEvHgIIn0lOi4Tt2kdoCCM0hp0qAmsteVLN4Rf5JIYfLUVRQJ5NpzFSmIKzkiRQUSqiCrLxYoYJVvtfW9SZXcJGlZdcMet%2FLvTFrdpw4iHe56%2B4kQP5tpjIOYFoshoKHMVUIbBF5pKJcPFgTHAH8Sc%2BGw%2Bep82fis%2BwELnP9tKtG9UQC1%2FhKwZulONQqw8XMK3Y27yW3vTahKliyrzl4NQrGwFxIee1%2FeDRlijRYu%2BR916o6e%2B9PH1QXRX2cWeZPC0UGB5iVbsuqxdrZC7SJPe2EHvOuLWHQSxg3MiSQTuR8g9caoRfNN21TMCHZM8xwsz5Y0vnVnLY0%2FI0x95RTBxHVllU5vyUYk%2BAxHHHKVp1701BbYXRkpfCSUz09BpQHWwZdMg%2Bjemcy21Y4Pa3%2FK1nl5f98cD65TixQNF43Olv18FX2ebahQKRxmGbLDk1F0DjuS8msunEjLSYfS0i5Bkm6ISUH4GsxlbeSVZMdEDOowNVkEnLsmjkbw1yRgqfGN8XdHnSGY%2B8jXvzRA%2BMAqUMMKA4%2BbUTy93P24Qki28tBUhuW00SNY6PAJlnvIUg%2FtM6Riy4vQzjerImGH4yxulqgQ2424K5T7irUjN%2B7ZM1v5zUEMMe4%2F9IGOqUBq150wP3qj38LAE5ONasQzIoAyCSJwqAHoCkrK2ldO5hSEjtspr8csPcc4Xa4eFSvP4gt5hbDqNeMA3tqXxlPpDpbiOljgwJ994Bule9wmm4V9%2FkFFWtntVkw7%2FBj8dSoOCQCiyZG9syoTlEhcfFHoRFkV5pGFezFeFK8a1CRiGz1a%2FnxcunHQqGVd%2BWwowQQrw1VwtMUju22CpB%2BcnM2nrQFzidb&X-Amz-Signature=3e2bbf9807f31205b9df7987e61cd5f9b0b9360a63fafa61934783c5dbcabd34&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+它默认的 p i d 是放在 logs 之下的。那么给大家看一下这个，其实我们之前是在讲这个配置文件的时候是说过的，那么在这里面它默认的一个 PID 是在于 OX 之下，那么如果说在我们刚刚找不到这个 PID 的时候，其实你也可以在我们 Nginx 里面去创建一个 logs 的文件夹，那么这个时候我们的 annix 就会使用它自己自带的默认的这个 logs 里面的 pid 了，那么这样子也是另外一种解决的方式也是可以的。OK，那么这节的话就是讲了一下我们在平时使用过程中会出现的这 2 个小问题，遇到了那么就去解决一下就可以了。
+
+
+

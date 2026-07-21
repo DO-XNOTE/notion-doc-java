@@ -1,0 +1,30 @@
+---
+title: 2-12 MyCat-全局表
+---
+
+# 2-12 MyCat-全局表
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/39c8b2ee-6612-4dfc-b21d-162670d3921f/SCR-20240807-rbue.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XD4OAXBZ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225411Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC1SsoKd%2FRgBUyEN%2BfG7iYsbtrSUka2manJ3s5y1YqlIAIhAJDZEBPbmdrcPfXpHJVLhsN4xFcIMcXIL436QRz4FnqpKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igx1LVFTav8KUms5mfcq3AOxPxw2NxtPzd4MmNlRYPzpvgtNQd0hoMeTMAzTnB7SQkJbV0H23AyNdKy8wq3E4NCPGBv6U%2B5N8ADIAv9nIkjZAp0lYbIN52shBgs02NEeq2qe65hShY%2FYGPQvYm6o4qb2n7CmgYCIPhszMaDyliRkga5a97FkdCZ1kpqUhOKmIUetZ7TGB1pzhWpgJW%2FUcfWuBHV7KJCQjIN4ezbVzyfZrUTFJRwk%2BvJrUCoDMNtnpNP8cA3IfEbN99aMhhY0AMoZMkrNW%2FzknOMJ0%2BeChXXDfWXr1XOeJwK0KrDPPOP6fa5zi2wuofYG1nNBvmq3tLhvh2mE9sfNOdi9wdYlE8HJxjsOcdh2ea0ZHA%2FRskpl8WvRsgGjz8FQ7EKG%2BWi7czmIT%2BF4gqzGZryWAFczDNkwiU4GKrfdzG%2FuXi6VLQ8B1pOLzUW6Rpd2kIhnQ9of0Iurmc3Z9w%2FM6%2FKkKNjyC1Ogcfpw1Rt5rZ5I0iX%2FElWM5MP5OgG55GLbLjj%2Bs6lQoOv2ZKC3TmjIycLT6OKvW7gFAvbjXDwP6b6HWr583F7OukRpbWjlV%2FVqaoW%2FRXMhvwf9knaZMUOG1Mf7G6QSwOg%2FGxS15lgTRf4KmgZ0ep86ZI4kUGf%2F4eAf%2BTygEjCTuP%2FSBjqkAR7F1Z6tYRK%2BkC%2FaODiSoMyKD%2F5nZKG6%2FNapU5qQ3vWFW9qqlD4YYEBezsUdvVYhhlQ9WZMHz5%2FYMWEDwDpkHVj6NqfS2XSMuQxqmjQrq3oxmhXOvSEALzNdpH1o%2BGcNGeonM%2BE3Hm%2FdRsAd7vuXyPxI4paWh4rQrozQGXgGcJzNGRbnkUv8pn47%2FPeE6axGYJGeSSLD8a79%2FG8DoTfUHWvFHJCT&X-Amz-Signature=fa8ea5b666b254dfa795a85687868ea3dbdf9e2c3159d8acbce5378db3f4271d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/da90e841-857d-43f9-bb1c-abc9429f7b97/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XD4OAXBZ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225411Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC1SsoKd%2FRgBUyEN%2BfG7iYsbtrSUka2manJ3s5y1YqlIAIhAJDZEBPbmdrcPfXpHJVLhsN4xFcIMcXIL436QRz4FnqpKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igx1LVFTav8KUms5mfcq3AOxPxw2NxtPzd4MmNlRYPzpvgtNQd0hoMeTMAzTnB7SQkJbV0H23AyNdKy8wq3E4NCPGBv6U%2B5N8ADIAv9nIkjZAp0lYbIN52shBgs02NEeq2qe65hShY%2FYGPQvYm6o4qb2n7CmgYCIPhszMaDyliRkga5a97FkdCZ1kpqUhOKmIUetZ7TGB1pzhWpgJW%2FUcfWuBHV7KJCQjIN4ezbVzyfZrUTFJRwk%2BvJrUCoDMNtnpNP8cA3IfEbN99aMhhY0AMoZMkrNW%2FzknOMJ0%2BeChXXDfWXr1XOeJwK0KrDPPOP6fa5zi2wuofYG1nNBvmq3tLhvh2mE9sfNOdi9wdYlE8HJxjsOcdh2ea0ZHA%2FRskpl8WvRsgGjz8FQ7EKG%2BWi7czmIT%2BF4gqzGZryWAFczDNkwiU4GKrfdzG%2FuXi6VLQ8B1pOLzUW6Rpd2kIhnQ9of0Iurmc3Z9w%2FM6%2FKkKNjyC1Ogcfpw1Rt5rZ5I0iX%2FElWM5MP5OgG55GLbLjj%2Bs6lQoOv2ZKC3TmjIycLT6OKvW7gFAvbjXDwP6b6HWr583F7OukRpbWjlV%2FVqaoW%2FRXMhvwf9knaZMUOG1Mf7G6QSwOg%2FGxS15lgTRf4KmgZ0ep86ZI4kUGf%2F4eAf%2BTygEjCTuP%2FSBjqkAR7F1Z6tYRK%2BkC%2FaODiSoMyKD%2F5nZKG6%2FNapU5qQ3vWFW9qqlD4YYEBezsUdvVYhhlQ9WZMHz5%2FYMWEDwDpkHVj6NqfS2XSMuQxqmjQrq3oxmhXOvSEALzNdpH1o%2BGcNGeonM%2BE3Hm%2FdRsAd7vuXyPxI4paWh4rQrozQGXgGcJzNGRbnkUv8pn47%2FPeE6axGYJGeSSLD8a79%2FG8DoTfUHWvFHJCT&X-Amz-Signature=cb6c8b1a5047dc6745b3ca7ead1003fcb439995da19e02fc699e876a6771bec2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+cat 配置的这些表都是分片表，就是说要把这些数据对它进行水平的切分，分配到不同的实体的数据库当中。那么大家有没有考虑过这么一种情况，比如说我有一张表，这张表的数据数据量并不大，非常的少，而且它变化也很少。那么这个时候我这张表到底用不用分片？如果不用分片，我怎么去设置？不用分片的这些表往往都是一些字典表。比如说咱们上一节给大家举的这个例子，省市区地址表对吧，这些地址表数据量本来就不大，我们没必要对它进行分片。而且我们在查询数据的时候都需要关联这些表，把这个省市区的给它带出来。就像咱们之前用户在用户表里边，咱们加了一个省的 ID 标志着这个用户是来自哪个省的。
+
+
+那么如果我对这个省也给他做分片了，那么我关联查询的时候是不是就比较麻烦对吧？比如说我的这个用户在第一个数据库当中，我的这个对应的省份给它分配到了第二个数据库，那我这个关联是不是就要把所有库的这个省份的这张表都需要关联一遍，这样就比较麻烦。为了解决这个问题，我们把省市区这些地址表在所有的分片库当中都保留一份，这样的表我们称之为全局表。使用它的好处就是我们在关联查询的时候，只关联自己的这个分片库就可以了。因为三个数据库的这个全局表的数据是一致的，所以我查询到某一个具体的数据的时候，只需要关联我这个数据所在的分片库就可以了，也节省了这个跨库状元的这么一个非常麻烦的操作。那么这个全局表我们怎么设置？大家看看。
+
+
+在这表当中有一个属性叫做 type 怎么把这个 type 指定为 global 那么这张表就是全局表，如果你不止境，那么它就是一个分片表。下面试一下，咱们先进入到 navicate 先在这两个实体的数据库当中分别创建一张表。这张表就是这个省市区的表，咱们把右边的窗口全都先关一下。先在 131 这个数据库当中创建一个表，第一列叫做活跃 4id 然后添加一列叫做 promise name 然后保存一下叫做 province 表是吧。Promise.咱们看一下，把这 DL 语句复制一下，然后去 132 这个数据库再去实行一遍，然后刷新一下。
+
+
+好，这个 province 也已经有了对吧。下面咱们把这个 province 表设置成全局表，回到 130 这台机器，看一下 steamer 的叉 L 这里边咱们再写一个 table 对吧，然后内幕等于 province data note 指定一下 DN 131 DN 132，然后 type 等于 global 没有问题是吧。好，配置完了，咱们再给它保存一下，然后启动一下买 cat 的服务。
+
+
+console 对吧，咱们看一下报错了是吧，咱们具体看看他报的是什么？错等号写错了是吧，咱们这等号写错了，咱们再看一下内幕是吧。内幕这块儿咱们写错应该是等于 2 再保存一下儿，然后给它重启一下，没有问题了是吧，咱们回到那位 case 当中看一下这个promise ，双击一下没有问题。没有数据是吧，咱们先给他添一条，先给他添一条叫做 1 万是吧，咱们之前配置的这个叫做北京，保存一下。好，咱们是在买 cat 插入了这一条记录。然后咱们看看 131 和 132 到底有没有这条记录。咱们先看 131 双击一下有这条记录对吧，再看132。好，也有这条记录对吧。
+
+
+现在咱们这个 province 表就是一个全局的表，以后咱们再查询数据的时候，如果你关联 province 表，它会在你数据所在的分片去进行关联，这样就非常的简单，非常的方便，不用跨库的关联表去查询了。好，这个就是 my cat 里边的全局表。
+
+
+
+

@@ -1,0 +1,37 @@
+---
+title: 2-9 远程连接1-基于jstatd实现远程
+---
+
+# 2-9 远程连接1-基于jstatd实现远程
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c40be558-e20c-4873-9fcf-b2270a6fe307/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZBNEYOFP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230147Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAfa%2FhVyXER3O57NYFN7fPmRZK3k6Nwv70WIC5ISo0beAiEA17q7Jm%2B5NDqDCZpFq93D1C73I7f3L%2Fnb4a3ZAnneHhsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMtoIE8PfffwwfPuTyrcA6JUpeUKzTTo22%2Ft0qkTjlirMkZ3bS0zPpPEPiaJ6KKyaKrT78PYFtZKNNTYe4k0BcOH1lgx%2FhDE%2B7wiakYEFuYC0lrmzfRuEsh8bwxR0VQaes09fvh8wRXKBf0MRewJRcTx7bqU1UIJx5r9PI7SmyeFeDAnmNgdAWSb0%2BLFC4shBEnuB%2FBVzOQoE8jRelKJKrVwrJarTu3CrIGzotQFS25%2B5g4EukTUmwqMoigPq5PdrGFYe0n%2FpGBZ5LwnTRrIJtOfvRLMXarBeUYw86kj8FlYGUFz5nkkjhQIbmvoNI%2BLhnYdXRpdQd0biZaSJFyZr9SJaiyc5kwIuCqaxO5Gbox0Iw4SFbxeSophJJ2ZSu9ECT3gs08MJh5yPO6Xe4mBKL%2Fcrx5wLCQkX5jAlcVgpeHMg6ZFtfxS4mAmc9wLpPadtwNWg6EmElSeyMjcqaSCpHMrfNQ0IU3MCTabNgUj5GgGmDgR5BU9XVbWCgL1xw%2Fg4EgakSgHWmv0fFfyE32LGsjYsbGfCRcsoqB0KPqFAQVGCl41fiARy%2FmNjTPw3RIqDEg%2FodZX%2B4r%2BWmy%2FHx48yhfCMfGjNZx88WFMogtG5G9kyzn%2FG1LyvvQq4817QKB32BoIM7pOT9CKGkaDMIy6%2F9IGOqUBul6vnoeKQ9Togu0dTZ5OLevOE%2BM3kq%2BiZ1bjCyrg76Tq8y5EKSME4FneTfra1hMWzLtNI48EDW%2Fc4kFVCIA%2BqEyWxGCUneC1%2BiZkT8XTjN%2BbDBzOEYqBg41RNxV3kNnLfOlrlcPIa%2Btlx6GA%2BQm1U2h00AuCxddrAkKUE1KKRhgXr6o6panh2JMfUmU%2BdKJYb1bClhrXevkncEvQ9PTBYyhF6keL&X-Amz-Signature=d9cba668436aef49259977037242989a7fe80cf7dcec070ca56aa1729a320ad3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/007eb3de-5124-4141-9270-6da28ba724b8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZBNEYOFP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230147Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAfa%2FhVyXER3O57NYFN7fPmRZK3k6Nwv70WIC5ISo0beAiEA17q7Jm%2B5NDqDCZpFq93D1C73I7f3L%2Fnb4a3ZAnneHhsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMtoIE8PfffwwfPuTyrcA6JUpeUKzTTo22%2Ft0qkTjlirMkZ3bS0zPpPEPiaJ6KKyaKrT78PYFtZKNNTYe4k0BcOH1lgx%2FhDE%2B7wiakYEFuYC0lrmzfRuEsh8bwxR0VQaes09fvh8wRXKBf0MRewJRcTx7bqU1UIJx5r9PI7SmyeFeDAnmNgdAWSb0%2BLFC4shBEnuB%2FBVzOQoE8jRelKJKrVwrJarTu3CrIGzotQFS25%2B5g4EukTUmwqMoigPq5PdrGFYe0n%2FpGBZ5LwnTRrIJtOfvRLMXarBeUYw86kj8FlYGUFz5nkkjhQIbmvoNI%2BLhnYdXRpdQd0biZaSJFyZr9SJaiyc5kwIuCqaxO5Gbox0Iw4SFbxeSophJJ2ZSu9ECT3gs08MJh5yPO6Xe4mBKL%2Fcrx5wLCQkX5jAlcVgpeHMg6ZFtfxS4mAmc9wLpPadtwNWg6EmElSeyMjcqaSCpHMrfNQ0IU3MCTabNgUj5GgGmDgR5BU9XVbWCgL1xw%2Fg4EgakSgHWmv0fFfyE32LGsjYsbGfCRcsoqB0KPqFAQVGCl41fiARy%2FmNjTPw3RIqDEg%2FodZX%2B4r%2BWmy%2FHx48yhfCMfGjNZx88WFMogtG5G9kyzn%2FG1LyvvQq4817QKB32BoIM7pOT9CKGkaDMIy6%2F9IGOqUBul6vnoeKQ9Togu0dTZ5OLevOE%2BM3kq%2BiZ1bjCyrg76Tq8y5EKSME4FneTfra1hMWzLtNI48EDW%2Fc4kFVCIA%2BqEyWxGCUneC1%2BiZkT8XTjN%2BbDBzOEYqBg41RNxV3kNnLfOlrlcPIa%2Btlx6GA%2BQm1U2h00AuCxddrAkKUE1KKRhgXr6o6panh2JMfUmU%2BdKJYb1bClhrXevkncEvQ9PTBYyhF6keL&X-Amz-Signature=70f0c3320a2ff964fb806ab450b215336d47188d84825807b10c8323c9787642&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+大家好，我是大木。前面我们所有的实验都是针对本地进程去进行的，实际项目中我们往往需要连接远程服务器上的进程，就来详细探讨如何实现远程连接。有关远程连接，我整理了 3 种方式，分别是基于jstatd 实现远程连接，基于jmx 实现远程连接，以及基于 ssh 实现远程连接。这三种方式更有优势。实际项目中你是需要根据自己的需要选择其中一种去用就 OK 了。这里我已经准备了一台远程服务器，地址是 3W 点 itmuch.com。
+
+
+我们使用 secure crt 这款远程工具远程到这台服务器上，稍后在这台服务器上执行的命令都会在窗口里面去运行，我们先使用 jps 查看一下服务器上的 Java 进程，可以看到有一个 Java 进程号是59579。下面就来演示如何让本机连上进程。下来看一下怎么样基于jstatd 实现远程连接。接 state d 是一个基于rmi 的服务程序，它可以用来监控虚拟机资源的创建和销毁。同时它还提供了一个远程接口，从而允许监控工具能够远程的连接到 jstatd。
+
+
+所在机器的 jvm、 jstatd 该怎么玩儿？首先需要在远程服务器上创建一个安全策略文件。不同版本的安全策略文件写法略微不同。 JDK 8 以及更低的版本是这样写的 JDK 9 以及更高的版本是这样写的。我们来看一下服务器的 JDK 版本 Java conversion BIG 11 Z。我们应该拷贝这一段，到服务器上创建一个文件，比方叫 Jessica 的 d all policy。编辑，把内容粘贴过来保存。接着就可以在服务器上启动 JSON 的 d 了。这里我们使用了 4 个参数，每个参数的含义同学们可以看一下。
+
+
+需要注意的是，当你执行命令的时候，所使用的用户一定要和你想要远程连接的进程拥有相同的用户凭证。比方我们使用 p s 杠 e f grab 一下59579。可以看到这个进程是使用 root 用户去执行的。我们在执行尖 sturdyt 这个命令的时候，也必须使用 root 用户去执行 copy 粘贴。
+
+
+启动好了之后，我们需要新开一个窗口去设置防火墙。规则。这一步会稍微复杂一点，这是因为 jsted 的 d 需要用到两类端口。第一类叫做注册端口，注册端口只要使用这里的杠 p 就可以去指定了。第二类叫做通信端口，通信端口是随机的，所以我们需要使用防火墙去查看一下接 state 的 d 进程使用到了哪些端口。粘贴可以看到使用了 1231 端口以及 34991 端口，我们需要去开放这两个端口。开放 1231 端口，开放 34991 端口。开发完成之后，我们重载一下防雾箱的规则。 copy 粘贴。最后使用 list ports 查看一下当前开放了多少端口，确认这两个端口是不是确实已经开放成功了。 123134991 开放成功了。现在我们的机器就可以通过 jstatd 连接到服务器上的 59579 进程了。
+
+
+有关防火墙设置，如果你嫌麻烦，也可以关闭掉防火墙。这里我们可以补充一下，使用 system CTR stop five or d service 就可以关闭防火墙了。或者你也可以参考这篇文章，把通信端口从随机值改成一个固定值，这样以后哪怕重启接 state d，也不需要重新设置防火墙规则了。不过感觉这种方式有点折腾，而且需要写一些代码，所以个人并不建议这样玩。
+
+
+好，下面我们来用本机连接服务器上的进程。这里我们使用 visual VM 去演示基于 GPS 等等命令。 j console 或者是j、m、 c 使用起来也都是大同小异的，同学们可以自己发掘一下。找到 b 目录 b j v m，拖动enter，打开WVM，在 remote 上面右击 add remote host host name 填写3W。点 itmuch.com。需要注意这里的 host name 需要和这里的 RMI server host name 保持一致。点击 advanced settings 填写端口需要和这里的杠 p 参数保持一致。
+
+
+1231 refresh interval 表示多久刷新一次监控数据，我们就保持默认吧。点击OK，可以看到已经连接上远程服务器了。并且可以看到远程服务器上有两个进程，第一个叫 distatd，第二是 59579 这个进程双击就可以监控远程进程了。但是可以发现 visuv m 使用 Jstatd 连接的远程进程没有办法执行 profile。在 sampler 这一栏， CPU 以及内存的抽样也都是不支持的，这是一个不小的遗憾。下面我们就来探讨第二种方式，基于 JMX 实现远程连接。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/65bdf44d-08de-41cc-b790-c78c3de8310b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZBNEYOFP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230147Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAfa%2FhVyXER3O57NYFN7fPmRZK3k6Nwv70WIC5ISo0beAiEA17q7Jm%2B5NDqDCZpFq93D1C73I7f3L%2Fnb4a3ZAnneHhsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMtoIE8PfffwwfPuTyrcA6JUpeUKzTTo22%2Ft0qkTjlirMkZ3bS0zPpPEPiaJ6KKyaKrT78PYFtZKNNTYe4k0BcOH1lgx%2FhDE%2B7wiakYEFuYC0lrmzfRuEsh8bwxR0VQaes09fvh8wRXKBf0MRewJRcTx7bqU1UIJx5r9PI7SmyeFeDAnmNgdAWSb0%2BLFC4shBEnuB%2FBVzOQoE8jRelKJKrVwrJarTu3CrIGzotQFS25%2B5g4EukTUmwqMoigPq5PdrGFYe0n%2FpGBZ5LwnTRrIJtOfvRLMXarBeUYw86kj8FlYGUFz5nkkjhQIbmvoNI%2BLhnYdXRpdQd0biZaSJFyZr9SJaiyc5kwIuCqaxO5Gbox0Iw4SFbxeSophJJ2ZSu9ECT3gs08MJh5yPO6Xe4mBKL%2Fcrx5wLCQkX5jAlcVgpeHMg6ZFtfxS4mAmc9wLpPadtwNWg6EmElSeyMjcqaSCpHMrfNQ0IU3MCTabNgUj5GgGmDgR5BU9XVbWCgL1xw%2Fg4EgakSgHWmv0fFfyE32LGsjYsbGfCRcsoqB0KPqFAQVGCl41fiARy%2FmNjTPw3RIqDEg%2FodZX%2B4r%2BWmy%2FHx48yhfCMfGjNZx88WFMogtG5G9kyzn%2FG1LyvvQq4817QKB32BoIM7pOT9CKGkaDMIy6%2F9IGOqUBul6vnoeKQ9Togu0dTZ5OLevOE%2BM3kq%2BiZ1bjCyrg76Tq8y5EKSME4FneTfra1hMWzLtNI48EDW%2Fc4kFVCIA%2BqEyWxGCUneC1%2BiZkT8XTjN%2BbDBzOEYqBg41RNxV3kNnLfOlrlcPIa%2Btlx6GA%2BQm1U2h00AuCxddrAkKUE1KKRhgXr6o6panh2JMfUmU%2BdKJYb1bClhrXevkncEvQ9PTBYyhF6keL&X-Amz-Signature=46503758d516e96c3fc8dd0816e6384cb5062a19237823043553a601ed87d19b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

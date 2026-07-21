@@ -1,0 +1,48 @@
+---
+title: 2-2 什么是Feign？
+---
+
+# 2-2 什么是Feign？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5dd290d3-a772-4eb6-8a52-390e8ec9b21f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YON7TZOO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225619Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDTDOW4%2FG8mGPEsSJ%2FGRrMPytoBrfU41R%2BnADyKbItawwIgGjp6BckiNt0R7NSjXsiTHNuwFi%2Bk7zVz3j6QbgI4jM0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2F0bUIvmv4umWYjnSrcA%2BHjQUDQNrfWKSm16z8niKBN3b4pp4kLR%2FjcHrc630codTA37LieD6mxEXrp1jfzo0lkZWr9BuwYJ71Ihk2As8KkvNQzfwu8vdHtBp3xynF4mAppRSrQviiaTeZudD39we6NDg5ihY3cMnuQaojbANFUVs9lIxVhiTDfMCd%2FFrpSoTAkDrpW4iJ5uV%2BwjWvmUUXpSDhayVPqXcz1ntWILFAL%2B9jh3%2FmzjR1fU4lQz3dhK3T4tApn1JKQna78PEKswU7Hh%2Bh4tfd%2BNrh4Z4EIw476mV8lC59ZjXuZbCLkiT6oLqA1I73ScmdGVDP92yh3dBK0S3yCjZJOEVBE7q9hjwCtAxRWDWh3fIA4CkpMvOx34YrQXw3o%2FO4L%2FFt%2BahS2QTsZsWk%2FfVt6dP0nK6%2BA0l%2FQiFNXBxpas8xCeCwNnLuUs1gDeOAtqaQ0LnXIKRtlKJVTL4J%2B1PXzRWYi1OUDKTpiGNdWNNnZjqlzHHNcKuy5y5WcyEgf0iC2YIwvm4ZgtdSdDkKpB8NnEy%2B8%2FQfJ5dAgRTvaQ8TFFS1E5K2ehG2rO7Bv6%2Fged8rkXN%2FXo7rWf5ZewpIxne7FN%2FUPmTFN32QqJ2saXMWseW98nQCWI4h98Yfoi%2BWbgltrLcVbMNW6%2F9IGOqUBKKvcpK%2F1CDHx9v4rYy76zq8XfuWe3dNsenDkb4AqpnGyltcmvvvAvMbk%2FsNwyMjHxGQ7wkhVOJzHoxUD6PdbWHRKeUcYgVfpXtawvswc13XqPbxjDj37q%2B6LtiNpYoUMpVSeXuCTvPj1XEp8GaC0ung7rONyOcmH%2FgLQlfMjuz19k8H3OqxLszJ1Tj6%2FUJBJEnLnqjLfdJTEygrnpKDABZNchH9E&X-Amz-Signature=db4cb4f03d85a040e2b808f84f35144e4c53a811e921109580a9b21f23a812fe&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0d4e856b-2f0d-43a4-9120-960da8dc9271/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YON7TZOO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225619Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDTDOW4%2FG8mGPEsSJ%2FGRrMPytoBrfU41R%2BnADyKbItawwIgGjp6BckiNt0R7NSjXsiTHNuwFi%2Bk7zVz3j6QbgI4jM0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2F0bUIvmv4umWYjnSrcA%2BHjQUDQNrfWKSm16z8niKBN3b4pp4kLR%2FjcHrc630codTA37LieD6mxEXrp1jfzo0lkZWr9BuwYJ71Ihk2As8KkvNQzfwu8vdHtBp3xynF4mAppRSrQviiaTeZudD39we6NDg5ihY3cMnuQaojbANFUVs9lIxVhiTDfMCd%2FFrpSoTAkDrpW4iJ5uV%2BwjWvmUUXpSDhayVPqXcz1ntWILFAL%2B9jh3%2FmzjR1fU4lQz3dhK3T4tApn1JKQna78PEKswU7Hh%2Bh4tfd%2BNrh4Z4EIw476mV8lC59ZjXuZbCLkiT6oLqA1I73ScmdGVDP92yh3dBK0S3yCjZJOEVBE7q9hjwCtAxRWDWh3fIA4CkpMvOx34YrQXw3o%2FO4L%2FFt%2BahS2QTsZsWk%2FfVt6dP0nK6%2BA0l%2FQiFNXBxpas8xCeCwNnLuUs1gDeOAtqaQ0LnXIKRtlKJVTL4J%2B1PXzRWYi1OUDKTpiGNdWNNnZjqlzHHNcKuy5y5WcyEgf0iC2YIwvm4ZgtdSdDkKpB8NnEy%2B8%2FQfJ5dAgRTvaQ8TFFS1E5K2ehG2rO7Bv6%2Fged8rkXN%2FXo7rWf5ZewpIxne7FN%2FUPmTFN32QqJ2saXMWseW98nQCWI4h98Yfoi%2BWbgltrLcVbMNW6%2F9IGOqUBKKvcpK%2F1CDHx9v4rYy76zq8XfuWe3dNsenDkb4AqpnGyltcmvvvAvMbk%2FsNwyMjHxGQ7wkhVOJzHoxUD6PdbWHRKeUcYgVfpXtawvswc13XqPbxjDj37q%2B6LtiNpYoUMpVSeXuCTvPj1XEp8GaC0ung7rONyOcmH%2FgLQlfMjuz19k8H3OqxLszJ1Tj6%2FUJBJEnLnqjLfdJTEygrnpKDABZNchH9E&X-Amz-Signature=4731bf425c160f7a21d0554d318cf4aeedb59d85feda3f09d19155714322f733&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello 慕课网的各位同学们，大家好，从这一节开始，我们就要正式进入 spring cloud fin 组件的学习当中了。这一节我将对服务间的调用做一个简单的介绍。进入下一页，我们先来看一下前面两个章节学习了哪几种服务调用的发起方式。两种对不对？那第一种必然是谁尤瑞卡，那它是怎么调用的呢？它是通过拼接一个完整的 URL 来调用的。那我们这里要手动的拿到 IP 还要拿到 port 这两个信息从哪里来啊？从 client 里面来对不对？ load balance 一个默认的 client 里面来。在获得这些信息以后，我们还不能忘了添加上服务请求的路径 pass 把它拼接成一个完完整整的服务请求发送给谁，发送给 rest template 进行调用。
+
+
+对不对？你的核心业务代码还没有实现，前面摆出了一大堆拼接 UR L 的逻辑，这个看起来有点丑。对不对？那接下来我们在瑞本中做了什么样的改进呢？稍微好了那么一点，我们这里不用再去获得 IP 和 port 了，直接使用 service name 来访问，虽然比上一种看起来简单那么一些，但是作为程序员有这种代码洁癖追求极致的人，这种方式能忍吗？当然不能忍了，你只要是但凡拼接 UI O 的形式，我觉得这都算是一种 hard code ，也就是写死了一段逻辑在代码里。
+
+
+那作为一个专业的程序员，你怎么看待这个问题呢？哎呦这这谁这谁这快快亲戚快快。亲戚春节好像还没到呢，给不起红包。哎哎这个人看起来面熟这不就是我同事小李，对不对？也是一个程序员，那他怎么看待这个问题的？呦你看他说你们上面这两个方式你这个亚子太不 professional 了。Ok.那其实不光小李他有这个反馈，我心里也觉得有那么点膈应。
+
+
+为什么呢？之所以我们看不惯上面两种的配置方式，这源于什么？源于我们程序员的本性，对我们自己的高标准语言要求，那很多人觉得给你用就不错了，这个还挑三拣四的，非也。作为程序员，当你了解了这个群体之后，你就会发现为什么他们不能接受这两种配置方式了。
+
+
+我们接下来就看看以小李同志为代表的广大程序员阶级，他们的用户画像里都有哪些标签？有请被 996007 制度摧残的一个狂暴程序员。小李同学又在这磕头了。我们来看以小李为代表的程序员他有哪些特质呢？有代码洁癖，你代码还要写得整洁。同时你要考虑可扩展性，不能乱写。事事都要追求极致，每个功能都不放过你这些功能之间还要可重用性，一切都要从简，不能纷纷扰扰繁杂，还不能在代码里写死 hard code 大家都觉着你是纯粹是鸡蛋里挑骨头，简直就是没事找事。
+
+
+那所有这些画像合在一起就四个字叫什么？人间不拆，程序员的生活已经如此的艰难，有些真相就不要再拆穿了。不过好像感觉少了点什么东西，是不是还漏了个什么话？呦来了来了就是肉搏，产品经理攻击力加100。这句话说到点子上了，大家平时工作中就饱受产品经理的精神摧残，我们这个群体和产品经理是势不两立的，所以大家不用怕跟产品经理发生争执你争不过他怎么办呢？一个字上去就是干全都干不过用牙上牙也不行，就喊兄弟们喊测试，喊其他程序员一起上，把它一次打改打，怕我们打架不能输，尤其是不能输给谁。啊产品经理这句话是贯穿整个全篇的中心思想啊，啊一定要领会这个信仰精神的。
+
+
+OK 接下来我们来看看如何用 fin 解救这个狂躁的程序员。下一页， fin 它主要提供的功能是什么呢？我们学习 fin 这个组件应该围绕哪一个主线剧情往后发展呢？大家来看是简化远程调用在后面的小节，我要带大家去看看它如何简化远程调用它具体使用的方法和底层的原理。那在这一小节我们先做一个小剧透，再下一个 PPT 来看一下它最终调用远程服务的形式是什么。
+
+
+OK 那我们玩游戏都知道了主线剧情以外还有更丰富的什么？支线剧情对不对？份这里就是这么个情况，它有两条支线，第一条支线是我们前面学过的内容瑞本粪，它内置了瑞本组件。那么我们在粪中既可以指定瑞本的负载均衡，也可以利用瑞本的一个特殊的功能叫什么重试对不对？那接下来看下一个剧情是什么？这一个支线对大家来说就相对陌生了，那我们可能要到下一个章节才会走。
+
+
+这个支线的内容叫什么？ high streaks 它是 spring cloud 中的一个容错处理的组件，它主要的功能就是降级和熔断。那在 fin 中我们可以使用一些标签来指定一个降级处理类，这部分的内容我们不会错过，但是它会来的晚。那么一些。 OK 这里我们知道了它的主线剧情和两个支线，接下来就到了剧透环节了。
+
+
+对不对？先来看一下 fin 它的最终形态是什么样子。来到下一页。好，先来看一下在 fin 变身成最终形态以前，她要做哪些准备工作。就像很多怪物变身之前都要喊一句口号，对不对？我要变身了。看到吗？这里有一个注解，它叫 finn client 那注解中这个双引号括起来的这部分内容是 service name 它就是我们在前面声明的 service ID 大家在 eurika 的注册中心上所能看到的 application name 就是它了。那我们把这个注解加到一个接口上以后，大家就可以向正常调用其他 Java 接口或者其他任何 Java 方法的形式来调用份了。
+
+
+我们来看怎么调用 user service.register 这和调用一个普通加法方法是一模一样的，我们再也不用 service ID 再也不用拼 IP 再拼端口号了。平时怎么样的调用方法，我们这里就怎么样的调用是不是非常非常的方便。我们再看一下这个狂躁的小李同学，他对这个东西怎么看一嘿蛮乐呵的。对不对他在这想哟这个方法就是相当的 professional 啦。我想某些同学一定有过使用 double 或者 hsf 这类 RPC 框架的经验。那么跟雨瑞卡比， RPC 框架在这个调用方式上和费都是一样的。通过一个接口层的调用，就像调用 Java 的普通方法一样，但是它跟奋比有一个比较方便的地方是什么呢？待会儿我们在编码环节就可以深切的体会到这类差别。
+
+
+那么我在整个微服务治理框架的最后部分，也会带着大家去深入的学习 double 作为 spring cloud 这种基于 H TTP 形式的服务治理框架的一个补充，让大家了解一下什么是 RPC 框架，那我这里还可以跟大家剧透一点。前面说到的 RPC 在国内的一些互联网公司，像阿里，它应用的会比较多一些。但是 RPC 毕竟只是一个服务治理的解决方案，它跟 sprint cloud 的定位可是不一样的。 spring cloud 是一个全家桶，对不对？它是整个 cloud 的全局解决方案。所以从这个角度来说，学习 spring cloud 是实践微服务架构，落地微服务架构的不二选择。好同学们这一小节的内容就先讲到这里。下一小节我带同学到代码里实现一个 fin 的接口。那同学，我们下一小节再见。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/18bb4c47-beab-468c-bda3-4348f3c8500f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YON7TZOO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225619Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDTDOW4%2FG8mGPEsSJ%2FGRrMPytoBrfU41R%2BnADyKbItawwIgGjp6BckiNt0R7NSjXsiTHNuwFi%2Bk7zVz3j6QbgI4jM0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2F0bUIvmv4umWYjnSrcA%2BHjQUDQNrfWKSm16z8niKBN3b4pp4kLR%2FjcHrc630codTA37LieD6mxEXrp1jfzo0lkZWr9BuwYJ71Ihk2As8KkvNQzfwu8vdHtBp3xynF4mAppRSrQviiaTeZudD39we6NDg5ihY3cMnuQaojbANFUVs9lIxVhiTDfMCd%2FFrpSoTAkDrpW4iJ5uV%2BwjWvmUUXpSDhayVPqXcz1ntWILFAL%2B9jh3%2FmzjR1fU4lQz3dhK3T4tApn1JKQna78PEKswU7Hh%2Bh4tfd%2BNrh4Z4EIw476mV8lC59ZjXuZbCLkiT6oLqA1I73ScmdGVDP92yh3dBK0S3yCjZJOEVBE7q9hjwCtAxRWDWh3fIA4CkpMvOx34YrQXw3o%2FO4L%2FFt%2BahS2QTsZsWk%2FfVt6dP0nK6%2BA0l%2FQiFNXBxpas8xCeCwNnLuUs1gDeOAtqaQ0LnXIKRtlKJVTL4J%2B1PXzRWYi1OUDKTpiGNdWNNnZjqlzHHNcKuy5y5WcyEgf0iC2YIwvm4ZgtdSdDkKpB8NnEy%2B8%2FQfJ5dAgRTvaQ8TFFS1E5K2ehG2rO7Bv6%2Fged8rkXN%2FXo7rWf5ZewpIxne7FN%2FUPmTFN32QqJ2saXMWseW98nQCWI4h98Yfoi%2BWbgltrLcVbMNW6%2F9IGOqUBKKvcpK%2F1CDHx9v4rYy76zq8XfuWe3dNsenDkb4AqpnGyltcmvvvAvMbk%2FsNwyMjHxGQ7wkhVOJzHoxUD6PdbWHRKeUcYgVfpXtawvswc13XqPbxjDj37q%2B6LtiNpYoUMpVSeXuCTvPj1XEp8GaC0ung7rONyOcmH%2FgLQlfMjuz19k8H3OqxLszJ1Tj6%2FUJBJEnLnqjLfdJTEygrnpKDABZNchH9E&X-Amz-Signature=cbce79adff8a9d85761ff3f0a8bee99e028d78780dba1c52878833476d81b95e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

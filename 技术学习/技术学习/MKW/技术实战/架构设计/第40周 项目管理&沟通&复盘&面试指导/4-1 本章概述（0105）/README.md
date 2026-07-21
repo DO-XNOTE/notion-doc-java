@@ -1,0 +1,13 @@
+---
+title: 4-1 本章概述（0105）
+---
+
+# 4-1 本章概述（0105）
+
+hello 同学们，大家好，我是 EVA 老师，在接下来的一段时间我会跟大家详细讲解一下面试相关的内容。那么首先我们先来看一下面试指导这个部分总共有哪些内容。第一个内容是用企业的视角解读招聘，第二个内容是招聘渠道的解读。第三个部分也是我们整个模块儿当中最重要的部分，面试的准备。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/760ae15d-6c53-41ac-bd0b-1c7eef411b4f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V5VUB6HQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T232309Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHuwcYaYyeZBTPVebdneuxKOKxbW1a1FHQ1J6jaNnClyAiBZ7%2BplS7m7UthQPlEKYNwLHz70RigMYNdOcPR9WHUj4CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMVKfDbFSS%2B2YY73vqKtwD%2FnTWb%2BDTDyNsg4uP%2F7jRx4fo%2FyDyvLiMWuRzjsOTttAde1a6KeHn%2FeamrPdgvK8dF7P9QSHGxsrrhfw2kDiEVVVr9TJlHpMp14uiEdcaV%2BunviSsJ%2BThsRCLzw4b3594RHj%2FzN%2F6PM1Al9L5bWatRElt07DlXVWEDg18P4y0WRwWZsLFEf8%2F3v5uM4few6%2FchWOmCM4VAJXBt9HkwLRHhPf6L3mhRpPeIViBQJvKMKQdXoYv9nt7YNN3bUDZFtB18%2BLkWBsOuMHWQEvIcmpnVLA6pIZTQ46SqYGVy3aCmRlxkxWghOPlTe%2B%2Fs6ycrx3YCRjVonChCEvX%2B%2Bf8iCBumK4U88wQTn6c5eIivPXOxmmEfjclUUJ6%2FJSOO6RQo3H9pB9s8sSVxskmbcxbuYw%2F4uhnj6k31x88dQc5OLli12fXYnT1H3jdpGvotb9te6RZYIPb7p4ZIpzFhLKfhGvbnuffh9MuPXVD84P19gmzyHrBX982ssHvHVq4KZINgwxfvyOLKBi2S8DrrwntAvulbaDTD7k3DtdpbNOipx5XvkToCcy3GutZ8muZjvk%2FxAreDJMdZV21BXgobpQSF74EKS1QuhqAurazM5aA7js72Zbl%2FeZ%2FRg6cTQLktnkwoLj%2F0gY6pgHYm5gl3PGzcokY6HVHXbd8IcrBeTsnwgBvAkoJSHulilQevPtKNZ%2BNVZMBws%2FanugeDL9Umwr55E5t9GuOZa%2BpGBDV%2FZ4Gkac8bg4pYFSxxvRWEkbFFOl7IFPPm%2FKQrEj1iK9V3VBJxiYEqjsYtTXIxeztW4WhL%2Fl2JCbMd2NzJEyKS8GZQkp7DyhXHiBJ4GRI05CF%2BvoKtuextdLpS%2Bder9VWTzDm&X-Amz-Signature=f29c4c7fd1e3af5d47fa943b5101aadf4dcd3a902a7562256dd6e554b404d644&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+第四个部分是面试的总结及复盘方法，这个里边我也会给大家分享一个很有用的复盘方法论。第五个部分是如何去进行 offer 的选择，我想这个内容也是困扰了大家许久的。最后一个部分是关于背调和入职前的准备。我们知道面试指导的内容之后，就开启我们的第一个篇幅。
+
+

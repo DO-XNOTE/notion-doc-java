@@ -1,0 +1,75 @@
+---
+title: 3-20+服务下线-我的命运我做主
+---
+
+# 3-20+服务下线-我的命运我做主
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/255ff485-bf26-4adf-bd6b-f5fa79dba650/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X22GBKSC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCuLxMgxgQcXPCi%2B3XvsQH0oe%2BhfS9eNWuRrEICQr5oDgIhAPnIyOIcefCzxT3Jpv1Tf5dK7kRhZYINsnVB0lZvFdNqKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyAuoy4Y224Y%2BKCVBoq3AParhTSiJOnyM3lv7dPd18ktPvjeI5Gm9weRo1vrhgRMGOrRgg48WLY%2FWKIyqR2arpz7cHE207dzjhkjLb3uhLiOrmGF0lBs0UwISjHj4BbnKCFhxZzzv0erNlmiO9Ia7upH0u7CeyhRep9HX543JtYVO4cW2KEOTfe%2FZ5jrld0KjH5hcrVfp9UFNOyoAseZNMNTaMBMiwaCpO%2F5mv4jBw0NBJvHzrUg9IbRrIFEZYcnaEGiUJ9Zs0sK95HtArpA63wfIqThP%2BSVV6vOfI6REi6sd5%2FJwXoeGm9H1CKAGH3KGq9b0xWfNCFMCurVF1Mnsx7idsmTuaFoOU%2F%2B%2Ff7p3mDi0RjhNFxM1YYtzvgZzjffl%2BJhDbDGTdDfGPED05mMFuam1%2BJlLEs2cSFjtR44wtO9ZR2dwI1v6DJNx%2FblwvwcVNtv1FDr9IkuH61vQl8CKTkktj6t3h5AzM2pI34K84e9PzeWD%2Fpp5GvN5FtlbgjiWtR4rsljUhxf8UNiAj0xXNL%2BSB4UtLOzmpD7k1OXQjHVvmYzZ%2BDhMsQjYWt56%2BODYp9DgJK%2FqTwSw4T71v9Ycp8DpGzS%2BcguJhFDoJ6CGJvpaStcVq6N6z6yI30A6m4uo0UKqqRPdRv4PM56TDAu%2F%2FSBjqkAa4Ngum2%2BXhy4hmutL5yThim8mWQRGZ7Gj4CFMlGy%2BGbOeS0lJLDz5OMYTUAVB1UKq%2BdsWj1oJdfQc%2FaR0u3rZZ8ELwz1A4mRi1Khdk9IeudYwfR%2ByzN%2BawxrtVyBkujfyQ6pn%2FrlxBoqbi83jk4yw2C%2FuTh8nvvc3uUkCro4Dg9qMWXXcYKjTuJ55UVEjvDISA73vTUPPDsH6tM0rHKCxXMSnUq&X-Amz-Signature=64f3eb1039d5394813f23ccc48a2809fbdfad1a49cf9a197a904731b49a4e554&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**3-20 服务下线-我的命运我做主**
+
+我又想起1999年第一次去网吧的时候，那时候还没有网吧管理系统，走的时候一定要大声对着网吧老板来一句：“老板，下机！” - 这就是上世纪末的服务下线模型
+
+**我的命运我做主**
+
+前面讲了一堆续约，剔除和自保，都是由注册中心在控制，在Eureka的价值观中，难道服务节点的生死就如同浮萍一样，只能被动接受注册中心安排的命运吗？不！服务节点还可以选择一条自己的路，做一回命运的主人，只不过这条路是一条“不归路” - 服务下线
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/aa5652cb-cabf-4223-8add-3c51559558a0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X22GBKSC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCuLxMgxgQcXPCi%2B3XvsQH0oe%2BhfS9eNWuRrEICQr5oDgIhAPnIyOIcefCzxT3Jpv1Tf5dK7kRhZYINsnVB0lZvFdNqKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyAuoy4Y224Y%2BKCVBoq3AParhTSiJOnyM3lv7dPd18ktPvjeI5Gm9weRo1vrhgRMGOrRgg48WLY%2FWKIyqR2arpz7cHE207dzjhkjLb3uhLiOrmGF0lBs0UwISjHj4BbnKCFhxZzzv0erNlmiO9Ia7upH0u7CeyhRep9HX543JtYVO4cW2KEOTfe%2FZ5jrld0KjH5hcrVfp9UFNOyoAseZNMNTaMBMiwaCpO%2F5mv4jBw0NBJvHzrUg9IbRrIFEZYcnaEGiUJ9Zs0sK95HtArpA63wfIqThP%2BSVV6vOfI6REi6sd5%2FJwXoeGm9H1CKAGH3KGq9b0xWfNCFMCurVF1Mnsx7idsmTuaFoOU%2F%2B%2Ff7p3mDi0RjhNFxM1YYtzvgZzjffl%2BJhDbDGTdDfGPED05mMFuam1%2BJlLEs2cSFjtR44wtO9ZR2dwI1v6DJNx%2FblwvwcVNtv1FDr9IkuH61vQl8CKTkktj6t3h5AzM2pI34K84e9PzeWD%2Fpp5GvN5FtlbgjiWtR4rsljUhxf8UNiAj0xXNL%2BSB4UtLOzmpD7k1OXQjHVvmYzZ%2BDhMsQjYWt56%2BODYp9DgJK%2FqTwSw4T71v9Ycp8DpGzS%2BcguJhFDoJ6CGJvpaStcVq6N6z6yI30A6m4uo0UKqqRPdRv4PM56TDAu%2F%2FSBjqkAa4Ngum2%2BXhy4hmutL5yThim8mWQRGZ7Gj4CFMlGy%2BGbOeS0lJLDz5OMYTUAVB1UKq%2BdsWj1oJdfQc%2FaR0u3rZZ8ELwz1A4mRi1Khdk9IeudYwfR%2ByzN%2BawxrtVyBkujfyQ6pn%2FrlxBoqbi83jk4yw2C%2FuTh8nvvc3uUkCro4Dg9qMWXXcYKjTuJ55UVEjvDISA73vTUPPDsH6tM0rHKCxXMSnUq&X-Amz-Signature=c974da8b36ac601993f58c24431fa3ff436ffd990c773f8f6b7fe7899ad21eb7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+图片来自于《大话西游》，原作者享有版权
+
+**老板，下机！**
+
+服务下线，通常由服务器关闭，或主动调用shutdown方法来触发，是由服务节点主动向注册中心发起的资源释放命令。
+
+下线代表着服务的生命周期走到了尾声，服务节点在工作岗位站到了最后一刻。我们遵从服务节点的要求，一切从简，今天追悼会我们只有一个环节 - 追忆服务节点下线前的点点滴滴：
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/165f0936-ca56-4c84-9506-4e2567c15c12/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X22GBKSC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCuLxMgxgQcXPCi%2B3XvsQH0oe%2BhfS9eNWuRrEICQr5oDgIhAPnIyOIcefCzxT3Jpv1Tf5dK7kRhZYINsnVB0lZvFdNqKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyAuoy4Y224Y%2BKCVBoq3AParhTSiJOnyM3lv7dPd18ktPvjeI5Gm9weRo1vrhgRMGOrRgg48WLY%2FWKIyqR2arpz7cHE207dzjhkjLb3uhLiOrmGF0lBs0UwISjHj4BbnKCFhxZzzv0erNlmiO9Ia7upH0u7CeyhRep9HX543JtYVO4cW2KEOTfe%2FZ5jrld0KjH5hcrVfp9UFNOyoAseZNMNTaMBMiwaCpO%2F5mv4jBw0NBJvHzrUg9IbRrIFEZYcnaEGiUJ9Zs0sK95HtArpA63wfIqThP%2BSVV6vOfI6REi6sd5%2FJwXoeGm9H1CKAGH3KGq9b0xWfNCFMCurVF1Mnsx7idsmTuaFoOU%2F%2B%2Ff7p3mDi0RjhNFxM1YYtzvgZzjffl%2BJhDbDGTdDfGPED05mMFuam1%2BJlLEs2cSFjtR44wtO9ZR2dwI1v6DJNx%2FblwvwcVNtv1FDr9IkuH61vQl8CKTkktj6t3h5AzM2pI34K84e9PzeWD%2Fpp5GvN5FtlbgjiWtR4rsljUhxf8UNiAj0xXNL%2BSB4UtLOzmpD7k1OXQjHVvmYzZ%2BDhMsQjYWt56%2BODYp9DgJK%2FqTwSw4T71v9Ycp8DpGzS%2BcguJhFDoJ6CGJvpaStcVq6N6z6yI30A6m4uo0UKqqRPdRv4PM56TDAu%2F%2FSBjqkAa4Ngum2%2BXhy4hmutL5yThim8mWQRGZ7Gj4CFMlGy%2BGbOeS0lJLDz5OMYTUAVB1UKq%2BdsWj1oJdfQc%2FaR0u3rZZ8ELwz1A4mRi1Khdk9IeudYwfR%2ByzN%2BawxrtVyBkujfyQ6pn%2FrlxBoqbi83jk4yw2C%2FuTh8nvvc3uUkCro4Dg9qMWXXcYKjTuJ55UVEjvDISA73vTUPPDsH6tM0rHKCxXMSnUq&X-Amz-Signature=88fb1ff4be16d4ac3af1027909aaf29f22578fbc0eee56804e0662a9107df339&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+标记状态 ： 下线的第一步，就是先要给自己立一个flag，告诉别人“我不行了”，这一步在
+
+EurekaServiceRegistry.deregister
+
+里完成，这个方法也只做这么一件事情。
+
+获取系统锁 服务下线是一件严肃的事情，总不能反反复复被执行吧，所以这一步需要借助一个特殊的锁，来完成线程安全的下线操作。至于这个锁是什么，我想大部分的研发人员是没有接触过的，这也是我面试时经常问别人的问题，等咱开完追悼会，我在番外篇跟大家再絮叨。
+
+释放资源 在服务注册伊始，服务节点创建了很多监听器和后台任务，比如状态监听器会在服务状态发生变化的时候同步给注册中心，心跳任务会主动发送心跳包，还有很多生前的亲密战友们，都会被一同关闭，或者释放。
+
+发送下线指令 最后，发送一个Delete指令到注册中心，完成整个服务下线请求。
+
+一个服务节点就这样走完了它平凡又忙碌的一生。
+
+**番外篇 - 锁？**
+
+前面提到了一个很特殊的同步锁，这里我们展开讲一下。
+
+Java中的线程安全方法有很多，比如大家熟知的synchronize，或者借助concurrent包下的各种类。可是当面试官问你，抛开这些，你还有什么线程安全的方式？有的同学可能会说Thread中的wait和notify。很好，那还有其他的方式吗？
+
+刚才我们说的都是Java层面提供的封装好的机制，然而还有一个利用底层操作系统实现的乐观同步锁，他叫做CAS，即Compare and Swap。从字面意思上理解，就是先比较，再替换的过程，比如我们拿服务下线里的操作看，它调用了AtomicBoolean的CAS操作
+
+```java
+public final boolean compareAndSet(boolean expect, boolean update) {
+
+				int e = expect ? 1 : 0;
+				
+				int u = update ? 1 : 0;
+				
+				return unsafe.compareAndSwapInt(this, valueOffset, e, u);
+				
+}
+```
+
+这里的expect和update入参是不同的两个值，expect=false，update=true，而最后一行unsafe.compareAndSwapInt操作是看不到源码的，因为CAS操作是借助了底层操作系统的接口，因此这实际是一个被native关键字修饰的由操作系统实现的方法。操作系统的cas操作会将内存值与expect值进行比较，如果相等就会将update参数更新到内存，并返回成功，如果不等则返回失败，在操作系统层面，这个比对-替换的操作是原子性的，所以也就可以保证线程安全。这和我们平时业务代码中的乐观锁实现比较类似。
+
+
+当然，CAS也有一个著名的ABA问题，也就是当内存值从A变到B，然后再变回A的情况下，假如我的期望值是A，尽管中途发生了A->B的变化，可是因为最终又变回了A，因此CAS操作依然认为内存值是没有发生变化的。我想这个问题难不倒大家，解决方法很简单，用简单的版本号控制的方式规避掉就可以了（在比对的时候同时验证版本号，每次修改后版本号+1）。
+
+**小结**
+
+本节带大家学习了关于服务下线的流程，以及在下线过程中应用到的CAS原子锁。接下来，我将带大家对注册中心做一番高可用改造。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2260faa0-0dfe-4c4b-8838-c2448347d381/2020-09-17_051904.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X22GBKSC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCuLxMgxgQcXPCi%2B3XvsQH0oe%2BhfS9eNWuRrEICQr5oDgIhAPnIyOIcefCzxT3Jpv1Tf5dK7kRhZYINsnVB0lZvFdNqKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyAuoy4Y224Y%2BKCVBoq3AParhTSiJOnyM3lv7dPd18ktPvjeI5Gm9weRo1vrhgRMGOrRgg48WLY%2FWKIyqR2arpz7cHE207dzjhkjLb3uhLiOrmGF0lBs0UwISjHj4BbnKCFhxZzzv0erNlmiO9Ia7upH0u7CeyhRep9HX543JtYVO4cW2KEOTfe%2FZ5jrld0KjH5hcrVfp9UFNOyoAseZNMNTaMBMiwaCpO%2F5mv4jBw0NBJvHzrUg9IbRrIFEZYcnaEGiUJ9Zs0sK95HtArpA63wfIqThP%2BSVV6vOfI6REi6sd5%2FJwXoeGm9H1CKAGH3KGq9b0xWfNCFMCurVF1Mnsx7idsmTuaFoOU%2F%2B%2Ff7p3mDi0RjhNFxM1YYtzvgZzjffl%2BJhDbDGTdDfGPED05mMFuam1%2BJlLEs2cSFjtR44wtO9ZR2dwI1v6DJNx%2FblwvwcVNtv1FDr9IkuH61vQl8CKTkktj6t3h5AzM2pI34K84e9PzeWD%2Fpp5GvN5FtlbgjiWtR4rsljUhxf8UNiAj0xXNL%2BSB4UtLOzmpD7k1OXQjHVvmYzZ%2BDhMsQjYWt56%2BODYp9DgJK%2FqTwSw4T71v9Ycp8DpGzS%2BcguJhFDoJ6CGJvpaStcVq6N6z6yI30A6m4uo0UKqqRPdRv4PM56TDAu%2F%2FSBjqkAa4Ngum2%2BXhy4hmutL5yThim8mWQRGZ7Gj4CFMlGy%2BGbOeS0lJLDz5OMYTUAVB1UKq%2BdsWj1oJdfQc%2FaR0u3rZZ8ELwz1A4mRi1Khdk9IeudYwfR%2ByzN%2BawxrtVyBkujfyQ6pn%2FrlxBoqbi83jk4yw2C%2FuTh8nvvc3uUkCro4Dg9qMWXXcYKjTuJ55UVEjvDISA73vTUPPDsH6tM0rHKCxXMSnUq&X-Amz-Signature=39a41544e448f96e8e531e721d4cceda1d978802cad27b951412a2c3e9bea18f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

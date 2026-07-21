@@ -1,0 +1,48 @@
+---
+title: 2-1 架构调优与架构设计
+---
+
+# 2-1 架构调优与架构设计
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a471e7fe-8700-4fa3-b08a-e5e24222a4a3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230250Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=3959c74bf036c41b721312cdce5a907113ddc1dca4727020f5152a357be0f317&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/46d2846c-9804-4aa9-b9b7-5ac286ae9d26/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230250Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=962390aea7ec3a39311475356e74e7fcb724e03f31065afef0f48415e2c3d54f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/484bb0cc-19d1-4fba-bdf7-43e1e53b948d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230250Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=8395e3a8494f6c13a1643c7b997b1429c926cbf8d96e722540c592b05287aeaf&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+大家好，我是大木。这节课来探讨调优和架构设计之间的事儿。在探讨本节课之前，大木要再次强调，所谓的调优，并不是要达到比之前快多少倍的目标，而是要找到问题并去解决，发挥它本身该有的性能。从这个角度来说，本套过程中很多的技术演进以及架构演进，其实都做了无意识的调优。比方本道课程的架构演进，从单体架构到集群架构，再到分布式架构，最后到微服务架构，也可以把它理解成是一种调优的过程。下面来探讨在架构演进的过程中是怎么样做调优的。
+
+
+在课程的初期，我们的项目采用了单体架构，对吧？实际项目中，项目的初期也常常会采用单体架构，从而节省成本，并且推动项目快速开发。辩证市场一开始由于数据量比较的小，功能也不复杂，所以一般都不会面临性能问题。但是随着业务的不断增长，数据量越来越多，并发越来越大性的问题就会开始出现了。这个时候可以做一个双管齐下的调优。第一条路径是结合前面介绍的一系列工具，发现性的瓶颈，并去做针对性的调优。比如如果发现是应用的问题，就会做应用层面的调优。在这个层面，比方可以通过配置j、v、 m 参数去改进应用程序的内存分配，减少 stop s word 的时间，减少 for GC 的发生等等。又比如可以针对业务代码做一些重构，曹然代码变得更加容易维护，性能更加的优秀。
+
+
+如果发现是数据库的问题，会在数据库层面的调优。比如我们发现某一些 MySQL 导致了性能瓶颈，就可以使用 explain 或者其他的工具分析SQL，并根据分析的结果添加合适的索引，必要的时候甚至会重写SQL。而如果数据量实在太大的话，我们又会采用分库、分表等等措施去优化数据库层面的性能瓶颈。此外，还可以结合业务场景看是不是适合引入缓存，从而提升性能等等。
+
+
+而在操作系统层面，大部分的经验来说，操作系统自身的性能瓶颈相对是比较少的，更多的是应用或者数据库导致了操作系统的性能指标不正常。在实际项目中，我们常常需要借助操作系统层面的监控工具去了解哪些性能指标不正常，这样定位是什么原因造成了指标的不正常。比如借助 zabix 监控操作系统，发现 CPU 的占用比较高，这个时候就可以去分析是哪个进程导致了 CPU 占用高等等。此外，有时候我们还可以针对业务做一些技术方案上的调优，比如针对秒杀场景选不同的技术方案，性能差异是比较大的。还有一些场景调优并不是无损的，需要适当的做一些取舍，比如前面分享的财务 SARS 的调优经历，业务上就做了一定的妥协，对吧？OK，这是调优的第一条路径。
+
+
+第二条路径是通过架构上的演进去解决性能瓶颈。比如有一个单体应用，这个单体应用有 n 多个模块。 a 模块是 CPU 密集的，需要做大量的计算，占用大量的 CPU 而 b 模块则是 IO 密集的，需要占用大量的内存。某一天，我们发现机械的 CPU 已经到达了上限，想要进行扩容。而单体应用只能整体扩容，没有办法只针对 a 模块单独扩容。这个时候就可以考虑把项目拆分开，比如把 a 模块拆分成一个微服务，或者是多个微服务，这样就可以实现针对 a 模块的单独扩容了。
+
+
+有关应用的拆分，在课程的直播里面有非常详细的讲解，同学们可以参考一下。这里大门要说的是，架构的眼镜往往不是一蹴而就的，需要经历很久的时间。不过不管怎么，眼镜是单体架构也好，微服架构也罢，背后的调优思路是不变的，依然是发现性能瓶颈，解决性能瓶颈。这是路径2。实际项目中，路径 1 和路径 2 往往是并行的。总而言之，在做调优的时候，首先你需要有比较完备的工具，从而支持你迅速找到系统的性能瓶颈，知道是哪里有问题。第二，当知道问题在哪之后，你就要有相应的理论支撑你做调优，这样你才能知道为什么这里会有问题。这也是为什么课上花费大量的篇幅去剖析各种原理的主要原因。第三，要在调优的工作过程中积累丰富的调优经验，这也是最重要的。这一点同学们需要经常去归纳总结。我个人的做法是，当我发现某个问题并去解决之后，会记录一下大致的过程。这样下一次当我遇到类似问题的时候，只需要翻阅一下当初的文章，就可以迅速找到答案了。比方这篇文章，我遇到了 spring cloud 里面整合 ribbon 或者 fan 之后，第一次请求失败的问题之后做了一个总结。
+
+
+如果没有这篇文章，当我遇到类似问题的时候，又得去翻阅官方文档，到处去搜索资料，效率是比较低的。OK，这是条约的最佳实践。此外，今后同学们在做架构的时候，还可以考虑一下你的设计是否能够水平扩容。所谓水平扩容，通俗的，当性能达到瓶颈的时候，只需要通过部署更多的实力，就能够提升性能。微服务架构的项目一般都是可以支持水平扩容的。不是有个笑话吗？说现在所谓的调优，主要就是堆积气，就是所谓的水平扩容。但是同学们务必注意，水冰扩容也是有局限性的，那就是无敌的问题。
+
+
+无敌的问题本身指的是 Facebook 的工作人员发现他们有一个 Memcash 集群，有 3000 个节点，存储了数 t 的缓存。有一天他们发现慢慢开始的集群效率下降，就增加节点做水平扩容。但是增加完节点之后，性能并没有提升，甚至反而下降了。这就是无底洞现象。
+
+
+无敌的问题是广泛存在的。比方在微服务架构里面，每个微服务都要连上注册中心，并且要定时和注册中心发送心跳。随着微服实力的增加，注册中心承载的并发也会越大，网络开销也会越严重。比方咱们课上需要有瑞卡作为注册中心。大木个人的经验，当注册的语尔卡集群的微服实力达到 7000 左右的时候，有人卡 server 集群的性能就会逐渐下降了，出现所谓的无力的问题。怎么样解决？其实也比较简单，只要让你的集群保持小而美，把超大的集群拆分成多个小型的集群就 OK 了。
+
+
+对于瑞卡集群，只要让注册到友尔卡 server 的微服实力低于 7000 就 OK 了。如果你的企业微服的实力超过7000，可以规划多个友尔卡集群，比如把不同产品线的微服务注册到不同的 Euroka server 集群。上面举个例子，让淘系的业务和阿里云的业务选不同的友瑞卡 server 集群。再一个，在做架构设计的时候，可以考虑一下中心化以及去中心化的问题。什么是中心化？什么是去中心化？说的通俗一点，一般在一起去村口看电影，中心化，你拿着手机看电影去中心化。举个例子，假设有一个微服务构建的系统架构大量是这样子的，系统使用了session，并且每个微服务都把 session 存储到 session store 里面，你的 session 就是中心化的。因为一旦 session style 挂了，整个系统全部完蛋。而如果系统使用的是 cookie 或者是token，并且服务器端也没有存储 cookie 或者token，而是直接解密或者解析 cookie 或者 token 的这种情况下就是去中心化的。
+
+
+对于这个例子，其实不仅是去中进化的，还是无状态的。所谓的无状态，就是服务器端没有去记录任何状态。下面来对比一下。中心化以及去中心化。去轴计划的优点是比较明显的。首先，去轴计划的容错性得到了巨大的提升。在咱们这个例子里面，由于服务器端不需要存储session，所以不会因为 session store 挂了而导致故障。第二，去中心化的申诉能力也要好很多。使用 session store，由于是一个中心化的存储，每个微服务都会用到它，你得想办法维护好它。某一天塞修石头达到了容量上限，你还得想办法去做扩容。而使用去中心化的方案就不存在苦恼，理论上可以无限扩容。但是去中心化它也有缺点，主要是控制力相对差了不少。比如如果使用了cookie，在创建的时候设置了，有效期是 7 天，如果到了第三天，管理员想要强制下线用户。这种情况下，如果使用纯粹的无状态方案服务器，单不做任何存储是比较难实现的。所以，作为价格式的你，又做选择题了。
+
+
+得看你的场景，是更加看重去中心化的容错性，还是更加看重中心化的控制能力。大拇个人的经验，一般会优先考虑去中心化的方案，如果去中心化搞不定，再去考虑中心化的方案。总而言之，好的架构是演进出来的，而不是设计出来的。不同的项目适合不同的架构，相同的项目在不同的阶段适用的架构也不一定一样。同时们要能够活学活用。这节课就到这里，谢谢大家。
+
+

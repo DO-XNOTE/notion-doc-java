@@ -1,0 +1,60 @@
+---
+title: 1-20 哨兵集群流控策与替代方案分享
+---
+
+# 1-20 哨兵集群流控策与替代方案分享
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8ea91b8d-a985-4973-a2f5-2a0405f3d512/SCR-20240722-tfyn.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXTAQQ74%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225839Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD2PurRHsIXVyEyIS0fnPkyarL8cD8nhuKLrB1zeDD4HAIhAK%2BDHapjEoPPP05d%2FJEe%2B3kH9SQyahfgEHXYoe1e6s8uKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw%2ByuJEMWHwUABXbFEq3AOZY7w7piSppQOPfXIGdSHRUc4yB%2B6UOYU5CkpVrseyGK9f9o3%2FD%2BJsH7aLkGNZ3WWbL3cRko8jzoiKKYFExZNQMlb5OQoOMtyT3p0WLdfHDMpIRXEHy9QwI9xxajRF6zb61HwUxEStadUxvk9Alqu5u7vzkR8IGPUqdu1p895dKL9JAJSvzmE6%2BfpTiGxVO0qwa%2FNMkoCA49TsvSeiXRwWg26W%2Bwf4PSUDBb%2BWAWLo1CU5%2Bvx50DiIk7PN8GEKWiVEt595wmttUAcxAtbuPnLJoVhagKAfVKfPKw8aobYVyuNuQcFH%2B3GmBgL7PTJDccPeu6iARu1gtna%2F5cjbvhnsPYS0j%2FieGWS77L2uSaVMocbTukYqqCy1E%2F5fXN2pPDT6d9OygwLp4TBkzzPLUVmDKu03CHkjgMVzmWG5KE4yo8RDiQrj0g8n%2B54nRjqQIHsLHe6GSFoNPJ1vohKK0am5Pt%2FCpE3zkoLJm2rvbn%2FFaQfRxrES0OrPPvhFIE5L7L4XaYBmFxsmjqbO17I1sFEkR3h4zP8gd5Ud2nx8v9ePNJ3kRdnCGZDCCVm67pe5yR5PNwN6DlwRzqJVqlFY7ODI%2FtbCMVBGORKkF1sBf7DnpE%2FfeFy2WODDZKZ2TDC%2Fu%2F%2FSBjqkAbRhtKDWIvkfQaxLgW%2BjJbrYrNAiT8wiS63xHOLk5WOeCrYgdtwLDhEnk2GvQ4jmG4pnYNOp6kAuWtAxPKFqYBzLjlzfjrj3%2FA3IhfCBQTfUvnhhhEhwmGuY%2FFb3EIhtGGNl33Bf%2BaaBfdZT1fm2amDGYNnrEnQ8HDNDiIbN0i1jMOKiUNn5e%2FHKbS%2FxO5qhGYol2zTZjHu2BnEkfJHdpO5AZjkx&X-Amz-Signature=83cf26aa54fa3315a7166251a7b1355b5989c0259b59341932b78773909efe1d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2d78eb0c-3fd5-4dab-a0b0-ea493eabb4cd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXTAQQ74%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225839Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD2PurRHsIXVyEyIS0fnPkyarL8cD8nhuKLrB1zeDD4HAIhAK%2BDHapjEoPPP05d%2FJEe%2B3kH9SQyahfgEHXYoe1e6s8uKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw%2ByuJEMWHwUABXbFEq3AOZY7w7piSppQOPfXIGdSHRUc4yB%2B6UOYU5CkpVrseyGK9f9o3%2FD%2BJsH7aLkGNZ3WWbL3cRko8jzoiKKYFExZNQMlb5OQoOMtyT3p0WLdfHDMpIRXEHy9QwI9xxajRF6zb61HwUxEStadUxvk9Alqu5u7vzkR8IGPUqdu1p895dKL9JAJSvzmE6%2BfpTiGxVO0qwa%2FNMkoCA49TsvSeiXRwWg26W%2Bwf4PSUDBb%2BWAWLo1CU5%2Bvx50DiIk7PN8GEKWiVEt595wmttUAcxAtbuPnLJoVhagKAfVKfPKw8aobYVyuNuQcFH%2B3GmBgL7PTJDccPeu6iARu1gtna%2F5cjbvhnsPYS0j%2FieGWS77L2uSaVMocbTukYqqCy1E%2F5fXN2pPDT6d9OygwLp4TBkzzPLUVmDKu03CHkjgMVzmWG5KE4yo8RDiQrj0g8n%2B54nRjqQIHsLHe6GSFoNPJ1vohKK0am5Pt%2FCpE3zkoLJm2rvbn%2FFaQfRxrES0OrPPvhFIE5L7L4XaYBmFxsmjqbO17I1sFEkR3h4zP8gd5Ud2nx8v9ePNJ3kRdnCGZDCCVm67pe5yR5PNwN6DlwRzqJVqlFY7ODI%2FtbCMVBGORKkF1sBf7DnpE%2FfeFy2WODDZKZ2TDC%2Fu%2F%2FSBjqkAbRhtKDWIvkfQaxLgW%2BjJbrYrNAiT8wiS63xHOLk5WOeCrYgdtwLDhEnk2GvQ4jmG4pnYNOp6kAuWtAxPKFqYBzLjlzfjrj3%2FA3IhfCBQTfUvnhhhEhwmGuY%2FFb3EIhtGGNl33Bf%2BaaBfdZT1fm2amDGYNnrEnQ8HDNDiIbN0i1jMOKiUNn5e%2FHKbS%2FxO5qhGYol2zTZjHu2BnEkfJHdpO5AZjkx&X-Amz-Signature=612dcf8acbea2733034d21c7e14cec363201d61f045e91f5513d3e621c8ac9ac&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那我们继续往下去学习，来看一看我们那个 sentence 集群流控。我们现在先跟大家介绍一下什么是集群流控？为什么要使用这个集群流控？希望某一个用户做一个总的 QPS 的限制。比如说我现在有 100 台机器，那我们可能很自然的想到的就是这里面说的找一个 server 专门统计总调用量，然后用来判断其征信是否可用，这是最基本的方式。
+
+
+那这个集群流控能解决什么问题呢？它主要还可以解决说流量不均匀导致总体流控效果不佳的问题。比如说说你有 10 台机器，然后每台机器 QPS 限制是10，那最终整个的流控就是 100 呗。那不过实际的生产环境中，流量打到每一台机器，可能不是那么特别均匀，就会导致什么呢？还没到总量，某些机器就开始限流了，那这个就不太合适对吧？我们怎么去精确的去控制总流控的这个流量，这里边就是集群流控就应运而生了。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3b82d2de-fd0f-408e-bf1b-bf4db9646721/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXTAQQ74%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225839Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD2PurRHsIXVyEyIS0fnPkyarL8cD8nhuKLrB1zeDD4HAIhAK%2BDHapjEoPPP05d%2FJEe%2B3kH9SQyahfgEHXYoe1e6s8uKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw%2ByuJEMWHwUABXbFEq3AOZY7w7piSppQOPfXIGdSHRUc4yB%2B6UOYU5CkpVrseyGK9f9o3%2FD%2BJsH7aLkGNZ3WWbL3cRko8jzoiKKYFExZNQMlb5OQoOMtyT3p0WLdfHDMpIRXEHy9QwI9xxajRF6zb61HwUxEStadUxvk9Alqu5u7vzkR8IGPUqdu1p895dKL9JAJSvzmE6%2BfpTiGxVO0qwa%2FNMkoCA49TsvSeiXRwWg26W%2Bwf4PSUDBb%2BWAWLo1CU5%2Bvx50DiIk7PN8GEKWiVEt595wmttUAcxAtbuPnLJoVhagKAfVKfPKw8aobYVyuNuQcFH%2B3GmBgL7PTJDccPeu6iARu1gtna%2F5cjbvhnsPYS0j%2FieGWS77L2uSaVMocbTukYqqCy1E%2F5fXN2pPDT6d9OygwLp4TBkzzPLUVmDKu03CHkjgMVzmWG5KE4yo8RDiQrj0g8n%2B54nRjqQIHsLHe6GSFoNPJ1vohKK0am5Pt%2FCpE3zkoLJm2rvbn%2FFaQfRxrES0OrPPvhFIE5L7L4XaYBmFxsmjqbO17I1sFEkR3h4zP8gd5Ud2nx8v9ePNJ3kRdnCGZDCCVm67pe5yR5PNwN6DlwRzqJVqlFY7ODI%2FtbCMVBGORKkF1sBf7DnpE%2FfeFy2WODDZKZ2TDC%2Fu%2F%2FSBjqkAbRhtKDWIvkfQaxLgW%2BjJbrYrNAiT8wiS63xHOLk5WOeCrYgdtwLDhEnk2GvQ4jmG4pnYNOp6kAuWtAxPKFqYBzLjlzfjrj3%2FA3IhfCBQTfUvnhhhEhwmGuY%2FFb3EIhtGGNl33Bf%2BaaBfdZT1fm2amDGYNnrEnQ8HDNDiIbN0i1jMOKiUNn5e%2FHKbS%2FxO5qhGYol2zTZjHu2BnEkfJHdpO5AZjkx&X-Amz-Signature=e041032de9f986520aba20b34ffdf3a9c4015cf31bf49e6c0be3ab38ff02907d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在这里老师也是跟大家一起画个图，比如说现在四台机器，然后我们现在可能上游，比如说这是我的一个 service A 我把它最大化一下。然后这是我的 service B 这都是我的 service B 或者你认为它是入口也可以，它不一定是 service A 你认为它是一个入口或者 HTTP 请求的入口，反正就是访问这四台服务器。
+
+
+访问这四台服务器，我们现在所做的都是什么，都是针对于单台服务器的流空。比如说每台服务器的 QPS 我在这给它限制成 100 对吧，可以，单点的流控策略是100，无论什么负载均衡策略，你都保证不了它 100% 的均匀。尤其是在高并发的情况下。那你比如说我总流量入口在这里边，我说我有 400 个请求过来，可能出现一种情况是什么呢？就是我打到这台服务器包括这台服务器的时候，一共 400 个请求过来，可能打到这两台服务器的时候，他可能就直接打了80，这边可能给他打进了70，能理解，我说意思吧，那这肯定都不会处罚流控对吧。
+
+
+但是可能下面这台服务器流量打的就很高了，他可能打出去 120 我指的是在并发特别高的场景下，就因为它这个并发特别高，你是控制不住它具体的流控的。然后这边可能打了130，就真的有可能出现这种情况。好了，我问你，那现在你这种策略做流控其实就没有太大意义。对吧？就是本身来讲，我期望 400 个请求我的服务器性能都足够，每个流控如果能够真的是特别均匀的话，那我肯定能做到根本就不做限制。但是实际情况下不是这样，在高病方下肯定是不会那么特别均匀的。尤其是某一个点请求并发特别大的情况下，就不应该是特别均匀。
+
+
+那也就是说我的这一台服务器比如说给它标颜色，就是这台粉色的服务器可能它就被卡掉了 20 个请求过去，那这一台蓝色的服务器，它就会卡掉了 30 个请求过去，因为它们的流量限制都是100，那就是说导致什么呢？导致我还没有达到我们总入口 400 的限制，然后我这两台服务器就做流控了，就做限流了。
+
+
+那这个是不是一个问题呢？所以说我希望有一种机制能够做这种集群的轮空，也就是说我期望有一个节点能够做总控，我的所有的请求都打到这个节点上，然后通过这个节点再去通过了之后再去把请求转发给四台应用。这是最开始集群流控的一个初衷，或者是他最开始要设计的这个思路是怎样？这台服务器我们管它叫做 server 这是它整个集成流控的一个理念。它通过把所有的请求都打到一台服务器上，然后去做设置。这样的话我就有一个总控了。对不对？比如说我们说这个绿色的就表示一个总控服务器请求都到他这来，然后再负载均衡的去到四台服务器，只要总请求量没到400，那我这里边所有的就哪怕你是120，你过来的是130，都不会做流空线是这样。
+
+
+好了，那他的初衷是这样，但是有什么问题呢？其实我们可以看一下官网里边的这个集群流控有两种身份，一种叫做 token client 还有一种叫做 token servertoken client 什么意思呢？就是集群流控的客户端，它用于向所属的 token server 去进行一个通信请求 token 然后就是我的 client 去 server 端拿 token 去，拿到了就表示 OK 拿不到就表示进行流控。这个 token server 专门去发 token 了，是不是就是处理来自 token client 的请求，然后根据配置的流控规则判断是否应该发放图片。如果说你的流控达到上限了，那我就不给你发 token 你看到这个意思就是 token server 1， token server 2。然后这是 token 一堆的 contact 对吧。
+
+
+好了，这是一个身份的例子。然后它的模块的结构从一点四点零开始才引入了这个图片 server 和图片 cat 然后具体它的一些策略，有兴趣的小伙伴可以看一看。然后我们来往下看，它这个相当于它的这个配置方式，说白了也有点复杂。但是它最大的问题是它的启动方式有两种策略，一种叫做 alone 独立模式，还有一种叫做 inband 就是嵌入模式。独立模式是什么意思呢？就是说我单独有一个独立的服务叫做 token server 然后你具体的每一个 App 应用就是 App 123，每一个 App 应用去跟我去打交道，去请求 token 然后他就做一个什么 global RAID limit 说白了，你请求之前你都得去问我去要有没有 token 有 token OK 你就不被留空，然后你就可以去执行没有 token 那不好意思，我就把你挡住做限流这种方式好了。
+
+
+那也就是说跟我们上面这个差不多，就是他去做走控请求过来的时候，能不能访问这个，你先得问一下 token server 给你吐笨之后你才能去做具体处理。到底是请求还是说这个进行一个降级就这么一个概念好了，这种方式有什么弊端？单点比如说我这个 QQ 搜索挂掉了怎么办？还有我这个图克搜索这个服务器性能得多好。那我现在是这个三个节点对不对？以后我 300 个，3000个节点，我大规模的去部署你这个图文 server 性能有多好。也就是说其实所有的请求压力都是压到了一个图文 server 上，这是一个最大的问题。
+还有一点就是刚才我们看到这一点，如果说万一这个请求 120 你不做流控限制，或者这 130 你不做流控限制，那万一这服务挂了对吧？他可能说你有从事策略是可以去做，但是我觉得这都是一些细节点。然后我们再看一下，往下。这是第二种叫做 inbande 方式。 inbana 的方式就是说这些都是我自己的实力。我单纯的去找一台服务器，假如说这个四个服务器都是我的 appa 对吧好，我随便找一台服务器，把我的 ToC server 去部署到 appa 上，也就是说你自己的一个物理机既部署了你的实际应用，又部署了什么 server 那这样的话你想一想，你的所有的流量都打到其中一个节点，那这个节点它压力太大了，你的 App 的这个业务都不一定能够正常的去运转，他很可能会把我们的一台服务器压挂掉，可能一台服务器压挂掉没有什么太大的影响。但是万一有影响了是不是这也是问题，那这种方式就更不靠谱。
+
+
+我个人觉得，所以说我觉得这种集群流控的方式不是那么特别好。包括其实官网上也说了，目前集群模式也有一些问题。比如说他说在生产环境中，你要想使用集群内控的话，那你管控端还需要注意的以下的问题，比如说 to go server 怎么去自动调度，怎么去做自动管理，怎么去做选举主从选举对不对？它如果出现一些脑裂的问题，你怎么去处理？还有高可用某一个 server 不可用的时候，你怎么去做到自动的 fail over 的机制？这是其中两个问题。还有一个就是更大的问题是刚才我说的你所有的压力都到一个 to server 的了，就是你这个 to server 性能得多好。
+
+
+所以说基于这几个问题，那我个人觉得，对于这种集群的流控，因为这个是就 1.4 版本才出来的一个新的这么一个理念，就是叫做集群流控，我觉得这个概念是很不错的，要解决的问题也是挺好的，但是**目前来讲可能还不是特别成熟。那我建议在实际的生产环境中，小伙伴们不要去选择这种集群。那有没有替代方案呢？这替代方案不就是 getaway 吗？我可以用网关去做这个事情。**在这里我们这个课程就暂时不去讲。那我网关什么概念？这是我的 geteway 网关，然后这是我后面的 server 我把它重新给大家发一下。那我去 getway 网关之后，它去分发请求，它能够去做一个具体的负载均衡，包括等等的一些策略。然后就相当于变成这种东西了，就变成这种就行了，就是我的请求通过一个入口统一的 gepi 网关，然后我把所有的规则都配到这个网关里边。
+
+
+我所有的这个规则列表就是我的 API 服务列表都配到服务列表所对应的规则。比如说大家耳熟能详的这个 zoo 是不是 Netflix 的 zoo 包括 gateway 十分 cloud 它肯定是都通过这个伊维卡，然后去做服务，发现去把具体的某一个 API 下面的有几个节点，然后它里边有一些什么 rebalance 就轮询的策略，包括随机的策略等等，很多的策略都会有列表你都有了。然后你是通过网关的这个本身的功能，在这基础之上去加上我们的这个 center 就是流控的机制，就是对整体的这个 API 去做一个流控，这样的话就是也是一个天然而然的集成的一个整体。所以说他从这个角度来讲我觉得会更好一些。当然这个网关因为它是 1.6 点 X 刚出来，所以说大家有兴趣可以去看一看。是在 1.6 之后刚出来没多久，她才引入了这个 API get 位的这么一个模。
+
+
+好了，也就是说他从网关的切入点去解决了集群流控的事情。个人是觉得是这么一个概念，所以说以后我们可能就是这个集群流控，它如果说不做更好的这个完善，那么我们就利用 API get 位网关流控的这种规则去来代替集成。那统一一个入口。对，这个资源我们访问量最大四百，对不对？然后后面就帮我去做负载缺口，利用网关就做到，没必要说再搞一个 token server 去请求拿 token 这个又增加我们这个请求的一些传输的链路，然后也增加性能，包括它这个请求肯定会有延迟，因为它本身走的是 HTTP 就即使 TCP 它也有些并发的时候它肯定会有延迟。它不是那么特别准，但是从网关入手出发就不一定了，它就很准，因为网关它本身就有一些自带均衡包括流控的一些策略。然后你再集成你的这个三特点，可能你会做得更好，就把这个规则跟网关整合起来，会做得更好。
+
+
+OK 那这就是老师，对目前 center 的版本，它的**集群流控跟这个 API 网关。在这里老师就是给大家分享一些经验。那最终的结果其实我现在还是想跟大家说，我们就老老实实的用单点的流控就好了，先不用考虑太多，如果要用目前来讲也是用这种 API 网关。**这节课我们就先讲到这，感谢小伙伴们收看。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b854694b-0932-44bb-9f71-0a48926564fc/%E4%B8%BB%E6%B5%81%E6%A1%86%E6%9E%B6%E7%9A%84%E9%80%82%E9%85%8D--alibaba-Sentinel-Wiki.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXTAQQ74%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225839Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD2PurRHsIXVyEyIS0fnPkyarL8cD8nhuKLrB1zeDD4HAIhAK%2BDHapjEoPPP05d%2FJEe%2B3kH9SQyahfgEHXYoe1e6s8uKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw%2ByuJEMWHwUABXbFEq3AOZY7w7piSppQOPfXIGdSHRUc4yB%2B6UOYU5CkpVrseyGK9f9o3%2FD%2BJsH7aLkGNZ3WWbL3cRko8jzoiKKYFExZNQMlb5OQoOMtyT3p0WLdfHDMpIRXEHy9QwI9xxajRF6zb61HwUxEStadUxvk9Alqu5u7vzkR8IGPUqdu1p895dKL9JAJSvzmE6%2BfpTiGxVO0qwa%2FNMkoCA49TsvSeiXRwWg26W%2Bwf4PSUDBb%2BWAWLo1CU5%2Bvx50DiIk7PN8GEKWiVEt595wmttUAcxAtbuPnLJoVhagKAfVKfPKw8aobYVyuNuQcFH%2B3GmBgL7PTJDccPeu6iARu1gtna%2F5cjbvhnsPYS0j%2FieGWS77L2uSaVMocbTukYqqCy1E%2F5fXN2pPDT6d9OygwLp4TBkzzPLUVmDKu03CHkjgMVzmWG5KE4yo8RDiQrj0g8n%2B54nRjqQIHsLHe6GSFoNPJ1vohKK0am5Pt%2FCpE3zkoLJm2rvbn%2FFaQfRxrES0OrPPvhFIE5L7L4XaYBmFxsmjqbO17I1sFEkR3h4zP8gd5Ud2nx8v9ePNJ3kRdnCGZDCCVm67pe5yR5PNwN6DlwRzqJVqlFY7ODI%2FtbCMVBGORKkF1sBf7DnpE%2FfeFy2WODDZKZ2TDC%2Fu%2F%2FSBjqkAbRhtKDWIvkfQaxLgW%2BjJbrYrNAiT8wiS63xHOLk5WOeCrYgdtwLDhEnk2GvQ4jmG4pnYNOp6kAuWtAxPKFqYBzLjlzfjrj3%2FA3IhfCBQTfUvnhhhEhwmGuY%2FFb3EIhtGGNl33Bf%2BaaBfdZT1fm2amDGYNnrEnQ8HDNDiIbN0i1jMOKiUNn5e%2FHKbS%2FxO5qhGYol2zTZjHu2BnEkfJHdpO5AZjkx&X-Amz-Signature=171ca71cf1692245f7d9fbbc8d54b836fceff259d5dd5e7b6b9c4d0b33531b86&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

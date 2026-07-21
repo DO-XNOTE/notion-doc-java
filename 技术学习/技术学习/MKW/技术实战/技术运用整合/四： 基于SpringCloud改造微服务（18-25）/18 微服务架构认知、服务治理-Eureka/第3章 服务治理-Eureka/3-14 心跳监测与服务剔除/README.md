@@ -1,0 +1,109 @@
+---
+title: 3-14 心跳监测与服务剔除
+---
+
+# 3-14 心跳监测与服务剔除
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/93f39790-3feb-46be-b956-708f01d9d3d9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667OUNS5UF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225544Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEXcZKeCbwjwxiVBUBWA9QX9kZ4DpUTLFj6OrXM7lY9kAiEAjoyuqEJi%2FAMkSeakEY%2BQakmwTHBY3qQrcZctqEjHnvoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBFzRRPlp7DA%2FB%2FepyrcA0C6bJfA3iVvSWi70B00lEMjfaSGnf%2FZFRiFX%2BFlMHWmJE6c1QYCs3FC3ACsZId%2FLlMNIufjREVyiCbuhoClJPEcx%2F5yFvzSULPYFxPXEO9fwvpWPMSNqvT7UVhKrPBpM5X5KhGCRcU2SiEdhY5Y8LSjQslMGuY%2FIgdjYdJ6A9mlztwTrA3bkduzjU9qHvAsv5IOD73clLH5u5t3tJK55QC9RdE4N1klrpBTCkKfmJ1K7jwA1jUWw7LOCUTyWSjLfCtERT8WoqIUVUdjekxYYzHfjiD0VLZD1RNxL8VT7hK0Bcu%2FccxVIG%2BqNc%2FIcNvZFhxK4153LQmXGpdKSHz6meLOeQxmjTJsKN%2FMwISeIwD%2BnQRBSgFuqX%2Bv2miLlHrd1rTHn2q%2F7QRlTmnqm43lVNQWpXDaCztEg7V8o0Lx8%2BwgGtXiXFrEaY3qUpohW8xQmp6%2FYL6UjjaCWR%2B77rV7BBvYznuwDDxylOsB0FPq7Fe9ySlwRIvNDlEI3giSOBW0h3hZRpjbi2l%2BCzvR5yPU2uwylM0JJ51kEfyyyrxCusWC6Dx1kOBypuINgx0f%2B1iyLkFt6IwMBMNSjg20f%2BzAa%2FhV333ny5UdTWqLen2kisg7n%2B%2FpiGqciPwx%2FkfHMMS4%2F9IGOqUBlh0JvYSbf9GcQ2gFnlpWcBDgdH0NGAFRa82pfIztHYwFUbrpvEPvf9vWuVWVKkjPN2qrht7Qfp2OpH9MlS2lbhu0x2oe84rXrPYvmqGC%2BZkRvsvSokRpiAnQUmwR5J8JHWSJOPSOfRyni3esT%2BxJt%2F8D0O801yqUhwX2RfV6%2F1Eu16vE37BcBz%2FPkbq6GZygFimkMU8uyQwSPzpttx6SJos5dUUH&X-Amz-Signature=05fe1062e9041d242c0a0cd013f5f0471279fb0804be43115d685a28841c7a0d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/682f96b9-eaeb-4ded-97f2-b2137fcf2df5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667OUNS5UF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225544Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEXcZKeCbwjwxiVBUBWA9QX9kZ4DpUTLFj6OrXM7lY9kAiEAjoyuqEJi%2FAMkSeakEY%2BQakmwTHBY3qQrcZctqEjHnvoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBFzRRPlp7DA%2FB%2FepyrcA0C6bJfA3iVvSWi70B00lEMjfaSGnf%2FZFRiFX%2BFlMHWmJE6c1QYCs3FC3ACsZId%2FLlMNIufjREVyiCbuhoClJPEcx%2F5yFvzSULPYFxPXEO9fwvpWPMSNqvT7UVhKrPBpM5X5KhGCRcU2SiEdhY5Y8LSjQslMGuY%2FIgdjYdJ6A9mlztwTrA3bkduzjU9qHvAsv5IOD73clLH5u5t3tJK55QC9RdE4N1klrpBTCkKfmJ1K7jwA1jUWw7LOCUTyWSjLfCtERT8WoqIUVUdjekxYYzHfjiD0VLZD1RNxL8VT7hK0Bcu%2FccxVIG%2BqNc%2FIcNvZFhxK4153LQmXGpdKSHz6meLOeQxmjTJsKN%2FMwISeIwD%2BnQRBSgFuqX%2Bv2miLlHrd1rTHn2q%2F7QRlTmnqm43lVNQWpXDaCztEg7V8o0Lx8%2BwgGtXiXFrEaY3qUpohW8xQmp6%2FYL6UjjaCWR%2B77rV7BBvYznuwDDxylOsB0FPq7Fe9ySlwRIvNDlEI3giSOBW0h3hZRpjbi2l%2BCzvR5yPU2uwylM0JJ51kEfyyyrxCusWC6Dx1kOBypuINgx0f%2B1iyLkFt6IwMBMNSjg20f%2BzAa%2FhV333ny5UdTWqLen2kisg7n%2B%2FpiGqciPwx%2FkfHMMS4%2F9IGOqUBlh0JvYSbf9GcQ2gFnlpWcBDgdH0NGAFRa82pfIztHYwFUbrpvEPvf9vWuVWVKkjPN2qrht7Qfp2OpH9MlS2lbhu0x2oe84rXrPYvmqGC%2BZkRvsvSokRpiAnQUmwR5J8JHWSJOPSOfRyni3esT%2BxJt%2F8D0O801yqUhwX2RfV6%2F1Eu16vE37BcBz%2FPkbq6GZygFimkMU8uyQwSPzpttx6SJos5dUUH&X-Amz-Signature=3d05b48c19f6be63291977c78cd03f9eb63127d4502d713209838f7ce7d2dc6f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**3-14 心跳监测与服务剔除**
+
+假如志玲姐姐亲了你一口，你却没有心动的感觉，那么一定是你停止了心跳 - by 半仙
+
+**社保中心的忧桑**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/323e135b-1aa2-438f-8074-f5eb35267a9c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667OUNS5UF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225544Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEXcZKeCbwjwxiVBUBWA9QX9kZ4DpUTLFj6OrXM7lY9kAiEAjoyuqEJi%2FAMkSeakEY%2BQakmwTHBY3qQrcZctqEjHnvoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBFzRRPlp7DA%2FB%2FepyrcA0C6bJfA3iVvSWi70B00lEMjfaSGnf%2FZFRiFX%2BFlMHWmJE6c1QYCs3FC3ACsZId%2FLlMNIufjREVyiCbuhoClJPEcx%2F5yFvzSULPYFxPXEO9fwvpWPMSNqvT7UVhKrPBpM5X5KhGCRcU2SiEdhY5Y8LSjQslMGuY%2FIgdjYdJ6A9mlztwTrA3bkduzjU9qHvAsv5IOD73clLH5u5t3tJK55QC9RdE4N1klrpBTCkKfmJ1K7jwA1jUWw7LOCUTyWSjLfCtERT8WoqIUVUdjekxYYzHfjiD0VLZD1RNxL8VT7hK0Bcu%2FccxVIG%2BqNc%2FIcNvZFhxK4153LQmXGpdKSHz6meLOeQxmjTJsKN%2FMwISeIwD%2BnQRBSgFuqX%2Bv2miLlHrd1rTHn2q%2F7QRlTmnqm43lVNQWpXDaCztEg7V8o0Lx8%2BwgGtXiXFrEaY3qUpohW8xQmp6%2FYL6UjjaCWR%2B77rV7BBvYznuwDDxylOsB0FPq7Fe9ySlwRIvNDlEI3giSOBW0h3hZRpjbi2l%2BCzvR5yPU2uwylM0JJ51kEfyyyrxCusWC6Dx1kOBypuINgx0f%2B1iyLkFt6IwMBMNSjg20f%2BzAa%2FhV333ny5UdTWqLen2kisg7n%2B%2FpiGqciPwx%2FkfHMMS4%2F9IGOqUBlh0JvYSbf9GcQ2gFnlpWcBDgdH0NGAFRa82pfIztHYwFUbrpvEPvf9vWuVWVKkjPN2qrht7Qfp2OpH9MlS2lbhu0x2oe84rXrPYvmqGC%2BZkRvsvSokRpiAnQUmwR5J8JHWSJOPSOfRyni3esT%2BxJt%2F8D0O801yqUhwX2RfV6%2F1Eu16vE37BcBz%2FPkbq6GZygFimkMU8uyQwSPzpttx6SJos5dUUH&X-Amz-Signature=60bdaae1dad0d404ccc41cdc86f6f035be99419cd6d9a50947e26aa20f4dc5cf&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+今天社保中心来了一位钉子户，90多岁的王大爷又兴高采烈的来给自己快120岁的老父亲领社保了！
+
+工作人员这一想，好像哪里不对啊，这老父亲120岁的年纪都可以上吉尼斯世界纪录了，要不咱帮老爷子去申请一下？王大爷一听可慌了，连连表示使不得使不得，就来领个社保而已。但是本着负责的态度，社保中心还是决定实地走访一下。
+
+眼看要穿帮，王大爷只好老实交代，原来王大爷的老父亲早就没了十好几年，坟头草都快长成非洲大草原了，但是在社保中心没有销户，这才造成了这么一个BUG。
+
+不光社保中心有这个情况，眼下Eureka的注册中心也有同样的问题，昨天就有几台服务器中暑了，没了响应，很多调用请求不停报404，那Eureka有什么行之有效的手段来解决这个问题呢？
+
+**感受你的心跳**
+
+心跳不息，生命不止。大道至简的SpringCloud就借助这生命的本源，也就是“心跳”，来知晓服务的可用性。我们来看一下心跳检测有哪些特点：
+
+客户端发起 我们前面说过Eureka的注册中心是一个运筹帷幄的角色，足不出户办天下事，所以心跳服务是由一个个服务节点根据配置的时间主动发起的。
+
+同步状态 我们说的“心跳”不光要告诉注册中心“我还活着”，还要告诉他我活的好不好，是现在快不行了（OUT_OF_SERVICE状态）还是生龙活虎（UP状态）
+
+服务剔除 现在轮到注册中心做点事情了，对一段时间无响应的服务，反映到心电图上就是一根直线跌停板，那便要主动从注册列表中剔除，以防服务调用方请求失败。
+
+服务续约 也许大家还不知道，服务续约底层也是靠着心跳来实现的，但包含了一套“脏数据”处理流程，老师在服务续约章节会详细讲解。
+
+**心电图里的信息**
+
+心跳检测之于服务注册来说，就像做心电图检查之于办入院手续，入院手续需要做全方位的检查，因此要同步数十个属性到注册中心，而做一个心电图，仅仅需要以下这些信息就够了
+
+访问地址 也就是Eureka注册中心的地址，如http://localhost:20000/eureka/
+
+访问路径 为了防止注册中心把我的心电图当做了别人的，给人治错了病，我还要主动告诉注册中心我是谁。不同于服务注册流程中把个人信息放到POST请求的body，心跳包把这个信息放到了访问的URL中，例如
+
+apps/${app_name}/${instance_id} ，这里的appname是服务注册时提供的服务名，而instance_id则是当前这个服务节点的唯一编号，比如9527。
+
+服务状态 心跳能反映出一个人的身体状况，对服务节点也一样，一个节点的服务状态有以下几种
+
+UP, DOWN, STARTING, OUT_OF_SERVICE, UNKNOWN
+
+最后一次同步注册的时间 lastDirtyTimeStamp，这是心跳检测环节最复杂的一个知识点，它是当前服务节点最后一次与服务中心失去同步时的时间，InstanceInfo封装了该属性以及另一个搭档isInstanceInfoDirty，当isInstanceInfoDirty=true的时候，表示当前节点自从lastDirtyTimeStamp以后的时间都处于未同步的状态。
+
+**两个核心指标**
+
+## 客户端指标
+
+eureka.instance.lease-renewal-interval-in-seconds=10
+
+eureka.instance.lease-expiration-duration-in-seconds=20
+
+这两个指标都配置在服务节点上，分别表示了以下的含义
+
+第一个指标决定了每隔多久向服务器发送一次心跳包
+
+第二个参数告诉服务器，如果我在x秒内都没有心跳，那就代表我挂掉了
+
+通常第一个时间一定是小于第二个时间的，否则还没等到发送第二个心跳，就被注册中心推进太平间了。毕竟两次心跳之间的间隔时间，还得再多加几秒的网络延迟，才是判断服务是否挂掉的最小时间。
+
+**服务剔除**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/33862cea-7fa7-47ee-9c48-1d76915740e8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667OUNS5UF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225544Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEXcZKeCbwjwxiVBUBWA9QX9kZ4DpUTLFj6OrXM7lY9kAiEAjoyuqEJi%2FAMkSeakEY%2BQakmwTHBY3qQrcZctqEjHnvoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBFzRRPlp7DA%2FB%2FepyrcA0C6bJfA3iVvSWi70B00lEMjfaSGnf%2FZFRiFX%2BFlMHWmJE6c1QYCs3FC3ACsZId%2FLlMNIufjREVyiCbuhoClJPEcx%2F5yFvzSULPYFxPXEO9fwvpWPMSNqvT7UVhKrPBpM5X5KhGCRcU2SiEdhY5Y8LSjQslMGuY%2FIgdjYdJ6A9mlztwTrA3bkduzjU9qHvAsv5IOD73clLH5u5t3tJK55QC9RdE4N1klrpBTCkKfmJ1K7jwA1jUWw7LOCUTyWSjLfCtERT8WoqIUVUdjekxYYzHfjiD0VLZD1RNxL8VT7hK0Bcu%2FccxVIG%2BqNc%2FIcNvZFhxK4153LQmXGpdKSHz6meLOeQxmjTJsKN%2FMwISeIwD%2BnQRBSgFuqX%2Bv2miLlHrd1rTHn2q%2F7QRlTmnqm43lVNQWpXDaCztEg7V8o0Lx8%2BwgGtXiXFrEaY3qUpohW8xQmp6%2FYL6UjjaCWR%2B77rV7BBvYznuwDDxylOsB0FPq7Fe9ySlwRIvNDlEI3giSOBW0h3hZRpjbi2l%2BCzvR5yPU2uwylM0JJ51kEfyyyrxCusWC6Dx1kOBypuINgx0f%2B1iyLkFt6IwMBMNSjg20f%2BzAa%2FhV333ny5UdTWqLen2kisg7n%2B%2FpiGqciPwx%2FkfHMMS4%2F9IGOqUBlh0JvYSbf9GcQ2gFnlpWcBDgdH0NGAFRa82pfIztHYwFUbrpvEPvf9vWuVWVKkjPN2qrht7Qfp2OpH9MlS2lbhu0x2oe84rXrPYvmqGC%2BZkRvsvSokRpiAnQUmwR5J8JHWSJOPSOfRyni3esT%2BxJt%2F8D0O801yqUhwX2RfV6%2F1Eu16vE37BcBz%2FPkbq6GZygFimkMU8uyQwSPzpttx6SJos5dUUH&X-Amz-Signature=6db06136f8db0d12ea69d27b58eeeb13d12e9dad093c0f95335a3a836381f5e4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+图片来自山东蓝翔驾校，图片版权归属原作者
+
+**支付宝也敌不过挖掘机一铲子**
+
+大家通过一个案例，思考一下在极端情况下服务剔除的作用。2015年5月份，因市政施工导致杭州支付宝机房的光缆被挖断，随后全国部分用户陆续出现支付宝无法登陆的情况。支付宝随后紧急通过技术手段，将用户请求切换到其他机房，这才在近2个小时后使受影响用户逐渐恢复。
+
+**那么问题来了 - **~~**挖掘机技术哪家强?**~~
+
+假设我们自己的应用也碰到了类似情况，当一部分服务因为网络问题导致不可用，那么如何在尽可能短的时间内，剔除不可用的节点？
+
+这就要借助Eureka的服务剔除功能，服务剔除是心跳检测的后手，正是为了让无心跳响应的服务节点自动下线，让我们来看一下Eureka的服务剔除流程
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3cc70649-f33e-460d-b3d9-99a62a431f94/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667OUNS5UF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225544Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEXcZKeCbwjwxiVBUBWA9QX9kZ4DpUTLFj6OrXM7lY9kAiEAjoyuqEJi%2FAMkSeakEY%2BQakmwTHBY3qQrcZctqEjHnvoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBFzRRPlp7DA%2FB%2FepyrcA0C6bJfA3iVvSWi70B00lEMjfaSGnf%2FZFRiFX%2BFlMHWmJE6c1QYCs3FC3ACsZId%2FLlMNIufjREVyiCbuhoClJPEcx%2F5yFvzSULPYFxPXEO9fwvpWPMSNqvT7UVhKrPBpM5X5KhGCRcU2SiEdhY5Y8LSjQslMGuY%2FIgdjYdJ6A9mlztwTrA3bkduzjU9qHvAsv5IOD73clLH5u5t3tJK55QC9RdE4N1klrpBTCkKfmJ1K7jwA1jUWw7LOCUTyWSjLfCtERT8WoqIUVUdjekxYYzHfjiD0VLZD1RNxL8VT7hK0Bcu%2FccxVIG%2BqNc%2FIcNvZFhxK4153LQmXGpdKSHz6meLOeQxmjTJsKN%2FMwISeIwD%2BnQRBSgFuqX%2Bv2miLlHrd1rTHn2q%2F7QRlTmnqm43lVNQWpXDaCztEg7V8o0Lx8%2BwgGtXiXFrEaY3qUpohW8xQmp6%2FYL6UjjaCWR%2B77rV7BBvYznuwDDxylOsB0FPq7Fe9ySlwRIvNDlEI3giSOBW0h3hZRpjbi2l%2BCzvR5yPU2uwylM0JJ51kEfyyyrxCusWC6Dx1kOBypuINgx0f%2B1iyLkFt6IwMBMNSjg20f%2BzAa%2FhV333ny5UdTWqLen2kisg7n%2B%2FpiGqciPwx%2FkfHMMS4%2F9IGOqUBlh0JvYSbf9GcQ2gFnlpWcBDgdH0NGAFRa82pfIztHYwFUbrpvEPvf9vWuVWVKkjPN2qrht7Qfp2OpH9MlS2lbhu0x2oe84rXrPYvmqGC%2BZkRvsvSokRpiAnQUmwR5J8JHWSJOPSOfRyni3esT%2BxJt%2F8D0O801yqUhwX2RfV6%2F1Eu16vE37BcBz%2FPkbq6GZygFimkMU8uyQwSPzpttx6SJos5dUUH&X-Amz-Signature=79855c0eccdadb379df529e231eec60c146e4100ec44d8951a5d89af76f9798e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+\启动定时任务 注册中心在启动的时候也会同步开启一个后台任务，默认每间隔60秒触发服务剔除任务，当然我们也可以通过在服务端```eureka.server.eviction-interval-timer-in-ms=30000``做如下参数配置修改触发间隔，这里将间隔设置成了30秒。此处建议不要设置的时间过短。
+
+调用evict 不像服务注册的山路十八弯，服务剔除比较直接了当，通过AbstractInstanceRegistry的eviction方法直接运行。
+
+自保开启 服务自保是注册中心的保命招，后面课程会详细介绍，这里大家只要知道一旦自保开启，则注册中心就会中断服务剔除操作。遍历过期服务 接下来注册中心会遍历所有服务节点，揪出所有过期服务。如何判断一个服务是过期服务呢，只要满足以下两点中任意一点就可以当做过期已被标记为过期（evictionTimestamp > 0）
+
+最后一次心跳时间 + 服务端配置的心跳间隔时间 < 当前时间
+
+计算可剔除的服务总个数 所有服务是否能被全部剔除呢？当然不是，服务中心也要顾及自身的稳定性，因此他设置了一个系数（默认0.85），可剔除的服务数量，不能大于已注册服务的总数量乘以这个系数。比如当前有100个服务，其中99个已经断了气，那么注册中心实际上只能剔除100*0.85 = 85个服务节点，而不是99个。乱序剔除服务 哦呦，这一招老厉害了，乱序剔除，乱拳打死老师傅。回头源码环节带大伙瞧瞧这个作案现场怎么个乱法，这里你就当做是歌单随机播放，随到哪个过期服务就把它踢下线。
+
+**小结**
+
+本节带大家学习了关于心跳检测和服务剔除的知识
+
+心跳检测的作用，心跳包含的内容以及控制参数
+
+注册中心服务剔除操作的核心流程
+
+接下来，我们带大家学习另一个和心跳密切相关的流程 - 服务续约
+
+

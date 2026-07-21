@@ -1,0 +1,61 @@
+---
+title: 1-6 服务降级常用方案
+---
+
+# 1-6 服务降级常用方案
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d5c173e0-5cfb-4adc-a6cc-aeb99c750acf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XSFIAQL5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225636Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDdJN7kZeZNVx%2FEFZg6IQh5wU%2F5YXm58SCXDfXVaxrVVgIhALDqPZLSOqcNacSiIr%2BDYRhZMeoqCkfUR%2B9jURafOiUHKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUQLYLk1yJVDoqHBsq3AOVBRaVNGr9F4QNwNOnmROWlt2bHdtbhvVKFvDGlHQihaO%2BXG7QOy%2FzrauMI8d2bOr3MqNFmtWelzAJWEhzCYI1qhAOkqNnWlEx%2F7QBFVcxzzCM8FDs94bTaDGhnsngjzLk23j981qHsVGfb8UG6SZpzGgSa3H3KywIy2K1Q7SgH%2FFdZ1RQ4KlidohLU05DQ4dQYDiTYeK2%2B8JwzWlaYybVTE77ytj6Tv8osEu%2FjDs2sIq4lCQDl7VZM8l7GG8AKfhaRHEkq84rTk8YFRTNC4kpHug%2FDAq4v8qKt1v%2FIcTzaxGcgHhobVwtl3zPxkVR4M1T83qBztyzDqR7H3qwYl%2B3I%2FitfW2L7t6hO38ZOls9JtCjpz%2F9ZA5YiBvmj3eGNa8xtSSqFZ7Q2jxD0FWjc0D5HagG2KWj%2FtrIvBP%2FfLfdSjhyKAfETm2qgvmbvxFFbOr96hFIbK3HgWQrenWWXk%2BtpAtY1FTN7jFpplw1ApHt%2Bvu9ZmDy0T%2FMuAsc1ejy0I9%2BLMti79Qwh4VMOMqi5LDoOT9Xp6ULa8tObxNcqP25NiFk1g55s9QlDtgoDeXIHHFDANBT2U5TPmp38o9QtOpmehYRBiIZ4nKIxHynN9MzGpdMGbNJJWUUBH11rjCRuP%2FSBjqkAffOk50wNEUaanmcJprZw8qX3zGDXZ74ls89ocaAZ6CznEY4Wdx80JXWFfZya4Tr%2FJziJKzBGe1wSvoZWiEhKMI2L2t9OJah6nv4jnh%2BqPjLpHTlILLrsq7R6MZg%2BquImCEzHIAuqYSxdA2%2BHb1L7L3HGiyWe6%2BdbUBm91ceeMQ5%2FFBHhboFx69ugwgCMHGRvhwkcrMg7sGFQHr%2BS9pRb60sATUC&X-Amz-Signature=697df474629e3667cf25adbc6d4cbb8a754e5d337314b87558a729d25698d41b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b0a011b6-aa20-42c4-b229-a1347d9d480f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XSFIAQL5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225636Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDdJN7kZeZNVx%2FEFZg6IQh5wU%2F5YXm58SCXDfXVaxrVVgIhALDqPZLSOqcNacSiIr%2BDYRhZMeoqCkfUR%2B9jURafOiUHKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUQLYLk1yJVDoqHBsq3AOVBRaVNGr9F4QNwNOnmROWlt2bHdtbhvVKFvDGlHQihaO%2BXG7QOy%2FzrauMI8d2bOr3MqNFmtWelzAJWEhzCYI1qhAOkqNnWlEx%2F7QBFVcxzzCM8FDs94bTaDGhnsngjzLk23j981qHsVGfb8UG6SZpzGgSa3H3KywIy2K1Q7SgH%2FFdZ1RQ4KlidohLU05DQ4dQYDiTYeK2%2B8JwzWlaYybVTE77ytj6Tv8osEu%2FjDs2sIq4lCQDl7VZM8l7GG8AKfhaRHEkq84rTk8YFRTNC4kpHug%2FDAq4v8qKt1v%2FIcTzaxGcgHhobVwtl3zPxkVR4M1T83qBztyzDqR7H3qwYl%2B3I%2FitfW2L7t6hO38ZOls9JtCjpz%2F9ZA5YiBvmj3eGNa8xtSSqFZ7Q2jxD0FWjc0D5HagG2KWj%2FtrIvBP%2FfLfdSjhyKAfETm2qgvmbvxFFbOr96hFIbK3HgWQrenWWXk%2BtpAtY1FTN7jFpplw1ApHt%2Bvu9ZmDy0T%2FMuAsc1ejy0I9%2BLMti79Qwh4VMOMqi5LDoOT9Xp6ULa8tObxNcqP25NiFk1g55s9QlDtgoDeXIHHFDANBT2U5TPmp38o9QtOpmehYRBiIZ4nKIxHynN9MzGpdMGbNJJWUUBH11rjCRuP%2FSBjqkAffOk50wNEUaanmcJprZw8qX3zGDXZ74ls89ocaAZ6CznEY4Wdx80JXWFfZya4Tr%2FJziJKzBGe1wSvoZWiEhKMI2L2t9OJah6nv4jnh%2BqPjLpHTlILLrsq7R6MZg%2BquImCEzHIAuqYSxdA2%2BHb1L7L3HGiyWe6%2BdbUBm91ceeMQ5%2FFBHhboFx69ugwgCMHGRvhwkcrMg7sGFQHr%2BS9pRb60sATUC&X-Amz-Signature=0fe515fd5d51b0feed63a6135d2da3319c716f51477590e3e515ed1a782fbc70&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**1-6 服务降级常用方案**
+前面的小节里我们学习了  Hystrix  的服务降级流程，这一节我们就看看服务降级一般都有哪些方式。话说进了  fallback  的多多少少都是犯了点错的人，犯了错就要老实交代，我们六扇门的锦衣卫也不是吃素的，对付进了  fallback  的人，那手段可多了去了，就看你招还是不招？
+
+
+**沉默是金-静默处理**
+所谓的静默处理，就是什么也不干，在  fallback  逻辑中直接返回一个空值  Null。同学们可能会问，那我用 try-catch 捕捉异常不也是能达到一样的效果吗？其实不然，首先 try-catch 只能处理异常抛出的情况，并不能做超时判定。其次，使用 try-catch 就要在代码里包含异常处理块，我们在程序设计时讲究单一职责和开闭原则。正所谓凯撒的归凯撒，上帝的归上帝，既然有了专门的 fallback 处理类，那这个工作还是交给 fallback 来吧，这样你的业务代码也落个清爽。
+
+
+**瞒天过海：默认值**
+瞒天过海实际上就是说个谎话，在并不确定真实结果的情况下返回一个默认值。打个比方，假如在商品详情页调用营销优惠接口时发生了故障，无法返回正确的计算结果，这里我们就可以在 fallback 逻辑中返回商品原价，作为打折后的价格，这样就相当于返回了一个没有打折优惠的计算结果。
+
+
+这种方式下接口的返回值并不是真实的，因此不能应用在某些核心主链路中。举个例子，比如下单页面就是核心主链路，是最终确定订单价格的关键步骤。假如我们对订单优惠计算采用了这种瞒天过海的默认值，那么就会实际造成用户损失。因此，这里面的优惠计算决不能返回默认值，一定要得出真实结果，如果无法获取那么宁可返回异常中断下单操作。同学们可能会问，那为什么商品详情页可以用默认值降级，而下单页面不能呢？这就要讲到主链路的规划，简单来说，电商平台的用户购物行为是一个漏斗模型，上宽下窄，用户流量在漏斗口最多，在尾部最少，越接近尾部的流量被转化为购物行为的比例就越高，因此越到后面对降级的容忍度就越低。商品搜索和商品详情页处于漏斗的上部，主要是导流端，在没有发生金钱往来的情况下我们可以容忍一定程度的降级误差。但对于下单页，这是整个漏斗模型的尾部，直接发生交易的环节，绝不能容忍任何金钱上的误差。老师在实际工作里设计商品详情页服务的时候，规定了淘系营销服务接口响应时间的上限是  1000ms，超过这个数字则自动降级为  0  优惠。
+
+
+**好好改造：想办法恢复服务**
+这个才能称得上是正儿八经的积极措施，fallback 会尝试用各种方法获取正确的返回值，有这么几个常用场景。
+缓存异常：假如因为缓存故障无法获取数据，在 fallback 逻辑中可以转而访问底层数据库（这个方法不能用在热点数据上，否则可能把数据库打挂，或者引发更大范围的服务降级和熔断，要谨慎使用）。反过来如果数据库发生故障，也可以在 fallback 里访问缓存，但要注意数据一致性
+切换备库：一般大型应用都会采用主从+备库的方式做灾备，假如我们的主从库都发生了故障，往往需要人工将数据源切换到备份数据库（参考支付宝 2015年的挖掘机事故），我们在 fallback 中可以先于人工干预之前自动访问备库数据。这个场景尽量限定在核心主链路接口上，不要动不动就去访问备库，以免造成脏读幻读
+重试：Ribbon  可以处理超时重试，但对于异常情况来说（比如当前资源被暂时锁定），我们可以在  fallback 中自己尝试重新发起接口调用人工干预：有些极其重要的接口，对异常不能容忍，这里可以借助  fallback 启动人工干预流程，比如做日志打点，通过监控组件触发报警，通知人工介入
+
+真实项目里服务降级的补救措施是八仙过海各显神通，但是目标都是相同的，就是对系统的影响降到最低。
+
+
+**一错再错-多次降级**
+总有那么几个顽固分子，在 fallback 里不好好改造，又捣鼓出一个异常来。这时候我们可以做二次降级，也就是在 fallback 中再引入一个 fallback。当然，你也可以引入三四五六七八更多层的降级，对应一些复杂的大型应用，比如淘系很多核心系统，多级降级是很常见的，根据系统故障的严重程度采取更精细粒度的降级方案。那假如这一连串降级全部都失败了，难道要牢底坐穿不成？对这种一错再错无药可救的顽固分子，锦衣卫也是没有办法啊，那只好放你走了，将异常抛到最外层。
+
+
+番外篇-Request Cache 
+
+Request  Cache  并不是让你在  fallback  里访问缓存，它是  Hystrix  的一个特殊功能。我们可以通过@CacheResult  和@CacheKey  两个注解实现，配置如下
+
+```java
+@CacheResult
+@HystrixCommand
+public Friend requestCache(@CacheKey Integer id) {
+
+}
+```
+
+
+**@CacheResult **注解的意思是该方法的结果可以被 Hystrix 缓存起来，@CacheKey 指定了这个缓存结果的业务 ID 是什么。在一个 Hystrix 上下文范围内，如果使用相同的参数对@CacheResult 修饰的方法发起了多次调用，Hystrix 只会在首次调用时向服务节点发送请求，后面的几次调用实际上是从 Hystrix 的本地缓存里读取数据。Request   Cache  并不是由调用异常或超时导致的，而是一种主动的可预知的降级手段，严格的说，这更像是一种性能优化而非降级措施。
+
+
+**小结**
+这一小节我们讲了服务降级的几种方案，接下来，我们就挑几个方案去手把手练一下。
+学习  Tips：很多同学在学习过程中“直奔主题”，在实战和随堂  demo  里下功夫，但是忽视了原理讲解和源码解读，其实这是一种买椟还珠的做法。把一项技术用到实际项目里只需要几天时间，而搞懂后面的原理和源码，可能要花上几倍的时间。如果我们只追求“会用”，就像一个只会按照菜谱做菜的厨师，但是当我们学会这背后的原理思想，那就能够成为一个会创造新菜品的大厨了。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7457a739-c677-495b-977c-98ac5eef61bd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XSFIAQL5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225636Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDdJN7kZeZNVx%2FEFZg6IQh5wU%2F5YXm58SCXDfXVaxrVVgIhALDqPZLSOqcNacSiIr%2BDYRhZMeoqCkfUR%2B9jURafOiUHKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUQLYLk1yJVDoqHBsq3AOVBRaVNGr9F4QNwNOnmROWlt2bHdtbhvVKFvDGlHQihaO%2BXG7QOy%2FzrauMI8d2bOr3MqNFmtWelzAJWEhzCYI1qhAOkqNnWlEx%2F7QBFVcxzzCM8FDs94bTaDGhnsngjzLk23j981qHsVGfb8UG6SZpzGgSa3H3KywIy2K1Q7SgH%2FFdZ1RQ4KlidohLU05DQ4dQYDiTYeK2%2B8JwzWlaYybVTE77ytj6Tv8osEu%2FjDs2sIq4lCQDl7VZM8l7GG8AKfhaRHEkq84rTk8YFRTNC4kpHug%2FDAq4v8qKt1v%2FIcTzaxGcgHhobVwtl3zPxkVR4M1T83qBztyzDqR7H3qwYl%2B3I%2FitfW2L7t6hO38ZOls9JtCjpz%2F9ZA5YiBvmj3eGNa8xtSSqFZ7Q2jxD0FWjc0D5HagG2KWj%2FtrIvBP%2FfLfdSjhyKAfETm2qgvmbvxFFbOr96hFIbK3HgWQrenWWXk%2BtpAtY1FTN7jFpplw1ApHt%2Bvu9ZmDy0T%2FMuAsc1ejy0I9%2BLMti79Qwh4VMOMqi5LDoOT9Xp6ULa8tObxNcqP25NiFk1g55s9QlDtgoDeXIHHFDANBT2U5TPmp38o9QtOpmehYRBiIZ4nKIxHynN9MzGpdMGbNJJWUUBH11rjCRuP%2FSBjqkAffOk50wNEUaanmcJprZw8qX3zGDXZ74ls89ocaAZ6CznEY4Wdx80JXWFfZya4Tr%2FJziJKzBGe1wSvoZWiEhKMI2L2t9OJah6nv4jnh%2BqPjLpHTlILLrsq7R6MZg%2BquImCEzHIAuqYSxdA2%2BHb1L7L3HGiyWe6%2BdbUBm91ceeMQ5%2FFBHhboFx69ugwgCMHGRvhwkcrMg7sGFQHr%2BS9pRb60sATUC&X-Amz-Signature=eacb1ce41e068266a4615ee487d1dab168459e33d5eff95cc04d565c7c4db57c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

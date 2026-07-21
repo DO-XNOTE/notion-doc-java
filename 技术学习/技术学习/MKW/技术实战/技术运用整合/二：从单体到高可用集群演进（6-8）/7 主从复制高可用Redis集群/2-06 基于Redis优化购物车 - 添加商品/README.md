@@ -1,0 +1,54 @@
+---
+title: 2-06 基于Redis优化购物车 - 添加商品
+---
+
+# 2-06 基于Redis优化购物车 - 添加商品
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/504e0766-fd3d-419d-b075-ad91a8712edd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SZAFSUZV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224943Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDIbUz%2FQY1U9AkpfhDbBUClJZKk24X5LjZjLcA6Ix3MRAIgTLRz4R55hboiQKsKhb5XKaWDLxIb79M6MC3NC%2BCZW5AqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDH1E8A9MM7khu6kuBCrcAyzGfK6GNEiioduJQCeVJgjbdIt55AaB58E8s2Z9WOiqn4E%2F8pk7%2FIVC%2Bv0SlatX%2FwSX35HUTlm45r%2FspS33Emy7P8qLcx%2Fo3%2Bq4TawZMXZocrbw%2Byp8IUmS8z3r2xXXlrVrmnkUKGUf%2BNHTZKFMojNL8H6kzpzPYVoppD7hp7vIHUnddqiuHNY5GroWGM3bc5O3OsRw5zKYgQN1VJypXAae%2Bk9uS%2BbpEAjT0s5Xx9sFHJUOKSvinRPp%2Fmk%2Bw8epk%2BkYE1UfX7bFyqmqS%2Bd461SWllrZ%2FfQGTef1ps5E4xt%2FteHELkZB763dVpSN4DP5lTgRgy%2FWsY3Czb74IT%2BhkCniFJGUEDCFKOCQEFTtfvfJogrUDkjPZlge57MI7yetGKn7R06aoQZKxzy8EQRLXMrumHlBdZoFjvHc2lCMa764YKN88fWRA7OpJIwVsitjFHDAax8aJxt%2FcEEIH6eGY%2BTzGdWOR2YnV4GKlKxwNsNPaQjEwY5h75vXKSght%2B%2Fqp5MXHLqmXPZM%2FUjJ2ijwKNi3Nrdv4v%2BeY0nXox%2BOvFuU%2BnzMhYgpioWpTOXfifQL8iNJF869jmXanBF5GRt7UNiGXLGyiLeURIOozy05E3NdWBSeB1w5W5vKCVdmMKG6%2F9IGOqUBFT8chh%2FsptURKAnp1bQR9snDL%2B5Zs9GJu0%2B1dvJTPvjy8VyPim7GLqvKzBtRa54ARSwXIRpd%2Bo%2FTtgEHWExU58EA8Ov2JOw4ZQBeDuwEfXcMgDZDCg9lM7NdP9O7vkqnC%2BQLJdfa3xf1E3YlKufEXs%2F48wsCtmEoyqBBFTgzsdmjDDHmp3m7n2l8FaTFZwACYf2yaJphwKkLSV6WtFUJusOZ%2B9Oj&X-Amz-Signature=dcbe2d20d373ff378bde0defe3a7187a166cb0034d759b0e103f9ec8eaaa3b97&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cfe1b9b9-a09d-4c3f-8221-e397db2dc6d4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SZAFSUZV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224943Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDIbUz%2FQY1U9AkpfhDbBUClJZKk24X5LjZjLcA6Ix3MRAIgTLRz4R55hboiQKsKhb5XKaWDLxIb79M6MC3NC%2BCZW5AqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDH1E8A9MM7khu6kuBCrcAyzGfK6GNEiioduJQCeVJgjbdIt55AaB58E8s2Z9WOiqn4E%2F8pk7%2FIVC%2Bv0SlatX%2FwSX35HUTlm45r%2FspS33Emy7P8qLcx%2Fo3%2Bq4TawZMXZocrbw%2Byp8IUmS8z3r2xXXlrVrmnkUKGUf%2BNHTZKFMojNL8H6kzpzPYVoppD7hp7vIHUnddqiuHNY5GroWGM3bc5O3OsRw5zKYgQN1VJypXAae%2Bk9uS%2BbpEAjT0s5Xx9sFHJUOKSvinRPp%2Fmk%2Bw8epk%2BkYE1UfX7bFyqmqS%2Bd461SWllrZ%2FfQGTef1ps5E4xt%2FteHELkZB763dVpSN4DP5lTgRgy%2FWsY3Czb74IT%2BhkCniFJGUEDCFKOCQEFTtfvfJogrUDkjPZlge57MI7yetGKn7R06aoQZKxzy8EQRLXMrumHlBdZoFjvHc2lCMa764YKN88fWRA7OpJIwVsitjFHDAax8aJxt%2FcEEIH6eGY%2BTzGdWOR2YnV4GKlKxwNsNPaQjEwY5h75vXKSght%2B%2Fqp5MXHLqmXPZM%2FUjJ2ijwKNi3Nrdv4v%2BeY0nXox%2BOvFuU%2BnzMhYgpioWpTOXfifQL8iNJF869jmXanBF5GRt7UNiGXLGyiLeURIOozy05E3NdWBSeB1w5W5vKCVdmMKG6%2F9IGOqUBFT8chh%2FsptURKAnp1bQR9snDL%2B5Zs9GJu0%2B1dvJTPvjy8VyPim7GLqvKzBtRa54ARSwXIRpd%2Bo%2FTtgEHWExU58EA8Ov2JOw4ZQBeDuwEfXcMgDZDCg9lM7NdP9O7vkqnC%2BQLJdfa3xf1E3YlKufEXs%2F48wsCtmEoyqBBFTgzsdmjDDHmp3m7n2l8FaTFZwACYf2yaJphwKkLSV6WtFUJusOZ%2B9Oj&X-Amz-Signature=d2afc5de150f28c76e725d3fa03a45ab14f91a0419761df4eb669019f2d39e35&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上一节课的话，我们是把首页的轮播图做了一个优化，这一块的话我们就是把数据是从缓存里面去读取的，就不再经过数据库，然后还会有一个作业，大家如果说去实现了以后，那么可以参考一下这边的内容，那么这个是和首页分类相关的内容，那么一个是一级分类，另外一个是它的一个子分类。这两块也都是和瑞丽丝去进行了一个结合。
+
+
+最后我们就应该要来优化一下咱们的购物车，那么在我们的一个之前在做单体的时候，其实我们购物车里面的一些内容，我们仅仅只是保存到了 cookie 里面对吧，那么在我们的后端的话，其实是没有维护购物车，在这里的话那么我们就会通过 Redis 去进行一个维护，在这里我们找一下找到在这里面有一个Todo，在这里有一个 shop cut Ctrl 打开看一下。
+
+
+在这里这一块内容的话是我们添加添加购物车的话，那么在这个地方其实我们就应该要去做一个判断，就是说在前端的用户，如果说是一个当前用户登录的一个情况下，那么前端用户在添加商品到购物车的时候，它不仅仅是添加到前端，那么它还会要把我们的一个商品数据要同步到我们后端的 Redis 里面去。所以在这里的话我们是需要去注意的。
+
+
+那么除了这个步骤以外，还有一点我们也应该要去做一个判断，写一下需要额外判断，那么这个判断的话是用于去判断我们的同样的重复的一个商品，如果说判断出来当前购物车中包含已经存在的商品，那么这个时候我们就应该去做一个数量的累加，如果存在则累加购买数量。OK，然后在这个下方我们就要去写一些相应的一个业务了，那么在这里写一下，把这个 Redis operate 这个操作类你是需要去拿过来的，那么随后在这个地方，在这里我们就要去写一些相应的业务，这一块业务的话，这一块代码在这里的话我就直接去拷贝一下。之后我们来做一个讲解来看一下。
+
+
+首先的话我们是通过这个 Redis operate 去获得我们用户的一个购物车中的数据，那么在这里会有一个key，那么这个 key 的话，其实我们是在 extends 有一个 base Ctrl，在这个 base Ctrl 里面只是定义了一个 shop card，我们直接拿过来，然后第一步这里是从我们的缓存里面去获得当前用户的一个购物车的数据。
+
+
+在这里是注意一下有一个冒号，那么这个冒号是什么意思？如果说事情的同学应该会发现，在首页里面，首页的源码里面，在获取子分类的时候，其实我就使用的是一个冒号。冒号的话是代表我们的一个内容，比方说我们会有一个大类和小类，那么大类的话它是可以作为一个文件的目录树这样的一个结构去展开的。我们可以打开这个 r d m，也就是 Redis 的一个工具，打开可以看一下，如果说你加了一个冒号，那么冒号前面的其实可以看得出来，它都是一模一样的数据，一模一样的话它就可以作为一个类似于文件夹的一个样式给我们展示，我们只需要点击，那么相应的内容全部都会在这里显示。
+
+
+如果说你不使用冒号的话，那么所有的一些 key 全部都会在这个 DBE 下面去展示，那么你的一个观看的一个体验就非常的差了。所以这个冒号的话，是可以为我们带来一些同样分类的数据，可以进行的一个归类和分类，那么这样子会更加的好。那么当然我们的 shop cut 也可以使用这样的一种方式去做好，然后在这里就是我们通过 shop cut 去做的一个获取，这里是有的一个分号。拿到了这样的一个 GS 以后，我们肯定是需要去做一个判断的。如果说不为空，那么就表示我们的一个购物车里面现在是有数据的。如果说它为空来看一下，如果说它为空的话，就代表 Redis 里面没有购物车。那么这个 shop cut list 这个是我们在 y 层定的，它是一个null，我们直接就可以把它给弄出来，然后再把我们当前的一个 shop cut Bo 直接给丢进去，丢进去了以后直接往我们的 Redis 里面一扔就可以了。
+
+
+然后在这个下方有一个 Redis operator，同样的是使用的这个 key 去做了一个设值对吧，根据这样的一个key，把我们的购物车的数据重新的放进去，那么这个对于我们这里的操作其实是一个新的购物车，放到我们的一个 Redis 里面去。如果说是对于我们已存在的一个购物车的话，那么它其实就是一个覆盖，去做到一个更新。然后我们来看一下这里的一部分内容。
+
+
+这里的话其实我们主要是要去做一个判断，那么首先的话我们是先要把这个杰森转换为一个list，它是一个 list 结构，然后我们在这里面去做了一个循环的话，在外部我们是设置了一个 is having，就是用于去判断我们当前的一个商品是不是已经存在了，那么在这里可以看到循环的时候去会去做一个判断，那么判断的话它是会以它的一个规格 ID 去做一个equals。
+
+
+如果说判断是相等的话，就代表我们这个商品已经是存在于我们的购物车里面了。那么这个时候我们只需要去更新它的一个 by Cos，把我们现有的一个 by Cos 和一个购物车里面的一个 by Cos 做一个叠加，累加到一起之后，那么我们的购物车中相同的一个数据就进行了一个商品数量的一个更改，随后再把它的一个标记改为以Kevin，改为true，那么这样子的话就OK。
+
+
+那么如果说这个 is having 它是force，也就是说在这个列表其实它循环之后没有起到作用的话，也就是说我们这个当前的这个商品是不包含在我们的购物车里面的，那么这个时候我们只需要去把这个 Bo 往咱们的这个 shop card list 去添加，再去添加一个额外的一项就可以了。
+
+
+那么最终在我们当前这个条件里面，其实最终的一个产出就是一个 shop cut list，其实和我们在这里是一样的，只要把它更改去覆盖我们 Redis 中的一个购物车，那么这样子就 OK 了。好，那么现在这样子的话，就是我们这段月就已经是 OK 了，我们也是为大家去做了一个业务上的一个梳理，那么这个时候我们来重启一下咱们的服饰，我们可以去做一个测试，我们主要是要看一下咱们的一个购物车中的数据，一旦我们添加之后能不能够放到咱们的缓存里面去，那么现在我们的缓存里面现在目前是没有购物车。使用成功。使用成功之后展开咱们的页面刷新一下，那么目前是有购物车都是在 cookie 里面的，那么这个我们不需要把这个内容我们全部都 clear 一下。
+
+
+好，刷新。好。OK，那么这个时候很明显我们要去做一个登录，我们重新去注册一下 a b c 123123456，重新注册 a b c 123，然后123456，注册一下。好，OK。然后购物车里面是没有任何的数据的，我们到首页里面随便的去添一个了，以后添加到购物车，现在已经是添加成功了，有一项内容，然后的话我们到Redis，在这里面我们来一个刷新，刷新以后你会发现在这里多了一个 shop cut。
+
+
+双击，双击以后这个是用户的一个ID，然后这里面就包含了一条数据，来注意一下它的一个 by Com 是1。OK，先把这个页面打开，然后我们再来去加入一下，加入购物车，那么这个时候其实我们的购物车里面的一个数量，我们刷新一下，刷新一下购物车当前这个商品只有一件，但是它的数量是2。那么很明显这个在我们的前端的 cookie 里面是没有问题的。然后我们再要到咱们的后端，再到 Redis 里面去做一个刷新，刷新一下再来看一下，这个时候你会发现其实它的一个白 Cos 也做了一个累加。OK，那么说明这一点的话是没有任何的问题。这是同一个商品，那么我们可以再换一个规格，我们换一个香草味添加到购物车，再来一个草莓味添加到购物车，那么在我们的购物车里面其实是有三个商品，都是不同的一个规格。那么在我们的购物车回到 Redis 再来做一个刷新进来看一下，那么你会发现没有任何问题的。原味的是有两件，香草和草莓分别为一件。
+
+
+OK，那么这样子其实对于我们的购物车添加到咱们的一个后端的话，添加到咱们的 Redis 里面的话，这一块其实我们就已经是做了一个完善了。OK。
+

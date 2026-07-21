@@ -1,0 +1,39 @@
+---
+title: 2-6 【Demo】Guava RateLimiter客户端限流以及适用场景
+---
+
+# 2-6 【Demo】Guava RateLimiter客户端限流以及适用场景
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b28e7785-8adc-4606-a84c-7c3e3ad9473e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466U346WJ5G%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225457Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC2CA6uMLNtkM80VFRo8hH0CBf%2FbRT4XHanPXOHxRWKZAIgIlURLWXzXGvYxg%2FMgjbnbG043wCHCdEpCADK7J9UH6wqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA%2BITAH0P%2FTnYmzGLircA4penVcKIsWCGdLEJJcHd3LHUIILT1%2Bc%2BrkMwltbFUyVeh0ky%2Fujw35%2FmtjUqI9SI6Jmwb5pLXNcJmR4HtqC9v46Br2yzEyDSSUM1J4OvHJrFJFIyyB8pHfEJrp%2BJUbyUfr2qCprx7x1lOfNvGl6z6eud0pfXamIQ%2BE5%2FoB5SXT%2FG6fslGcFkONQWCM8gb2xHa81orOmmPMxWVJ18kOLP8rhiQe1Q5dYx1f%2BQ%2BICmsIoyMrF21kBgikRyaavNsEgcD5R5gCfpfBZlkdWr%2BfH01YDN6L6wxP6vezA94zxRo4jX%2B5dUKXLuUPmYIbODR0FO782VexKNzWXbLH4yD5SpH6vx7MEg%2FCIRskIycuuZ0SAjOrfU61YNi1KpI60R3s4kw76%2FiulpGlHLPDG5t%2Fr9EnUWgeEMcsbuW9euM459UgruMkXVNVtsevIeZX%2B6rKjZDxiFboMefGQB8LnhjtsgMTi8WcIYx2zTQXrmyK4nEFH6xfHbUCkQPPWt5208%2Bj18AQavLOP7kzaAEWUkbjbf%2FJlM8229N9%2BDK9O3Jt9cG%2BBK1QSMqw3%2FF7Y%2BERMKvABlWp23KtFyhy2CmEPCFFrVnHhabtKeHYvbmosXz7C1jz9DMkqr71DWRolHtZ4MJy6%2F9IGOqUBl%2FNSCP%2B%2Fb4yhCYbUjkEl9nyRzoS7njJ4LrP3G0Guz0tVsHF65cpOnjnGCeITGg%2FQwgRYfenEwjntvw4AgtzYjU3ebkXJT%2FqtHeC8lwoA5cE0LpSnyMjUOqHZdF3ZRVZamo%2FhHNbPTBkS0v6U%2FhgQUrkFG1aUW9E%2BFlf2cwa0YWx2R4XD0vXHYTwdFN0p5AzP%2B2X33krx0YK%2FIWM2Oh9pJxDCtmru&X-Amz-Signature=7ce3fdf2e48deab962458529fa7feb73fba6b48062fdde35fb9d717d0c049d73&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/aba8b396-5cc7-4250-9375-12b560395eca/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466U346WJ5G%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225457Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC2CA6uMLNtkM80VFRo8hH0CBf%2FbRT4XHanPXOHxRWKZAIgIlURLWXzXGvYxg%2FMgjbnbG043wCHCdEpCADK7J9UH6wqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA%2BITAH0P%2FTnYmzGLircA4penVcKIsWCGdLEJJcHd3LHUIILT1%2Bc%2BrkMwltbFUyVeh0ky%2Fujw35%2FmtjUqI9SI6Jmwb5pLXNcJmR4HtqC9v46Br2yzEyDSSUM1J4OvHJrFJFIyyB8pHfEJrp%2BJUbyUfr2qCprx7x1lOfNvGl6z6eud0pfXamIQ%2BE5%2FoB5SXT%2FG6fslGcFkONQWCM8gb2xHa81orOmmPMxWVJ18kOLP8rhiQe1Q5dYx1f%2BQ%2BICmsIoyMrF21kBgikRyaavNsEgcD5R5gCfpfBZlkdWr%2BfH01YDN6L6wxP6vezA94zxRo4jX%2B5dUKXLuUPmYIbODR0FO782VexKNzWXbLH4yD5SpH6vx7MEg%2FCIRskIycuuZ0SAjOrfU61YNi1KpI60R3s4kw76%2FiulpGlHLPDG5t%2Fr9EnUWgeEMcsbuW9euM459UgruMkXVNVtsevIeZX%2B6rKjZDxiFboMefGQB8LnhjtsgMTi8WcIYx2zTQXrmyK4nEFH6xfHbUCkQPPWt5208%2Bj18AQavLOP7kzaAEWUkbjbf%2FJlM8229N9%2BDK9O3Jt9cG%2BBK1QSMqw3%2FF7Y%2BERMKvABlWp23KtFyhy2CmEPCFFrVnHhabtKeHYvbmosXz7C1jz9DMkqr71DWRolHtZ4MJy6%2F9IGOqUBl%2FNSCP%2B%2Fb4yhCYbUjkEl9nyRzoS7njJ4LrP3G0Guz0tVsHF65cpOnjnGCeITGg%2FQwgRYfenEwjntvw4AgtzYjU3ebkXJT%2FqtHeC8lwoA5cE0LpSnyMjUOqHZdF3ZRVZamo%2FhHNbPTBkS0v6U%2FhgQUrkFG1aUW9E%2BFlf2cwa0YWx2R4XD0vXHYTwdFN0p5AzP%2B2X33krx0YK%2FIWM2Oh9pJxDCtmru&X-Amz-Signature=bc78ab6c6004fbfa04f0af97e20f5cff464c6ec43f385a7ceb81819d3ef17830&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+播客网的各位同学们，大家好，上一节课老师一不小心拖堂了，所以这里留了一个小尾巴，也就是同步式的限流方案放到这一节当中跟大家来 demo 好，我们这一节继续上一场的内容，来看一下 gravaa 的 rate limiter 如何实现同步阻塞式的限流方案。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4b419cbf-575d-479a-9992-68a00dd161ba/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466U346WJ5G%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225457Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC2CA6uMLNtkM80VFRo8hH0CBf%2FbRT4XHanPXOHxRWKZAIgIlURLWXzXGvYxg%2FMgjbnbG043wCHCdEpCADK7J9UH6wqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA%2BITAH0P%2FTnYmzGLircA4penVcKIsWCGdLEJJcHd3LHUIILT1%2Bc%2BrkMwltbFUyVeh0ky%2Fujw35%2FmtjUqI9SI6Jmwb5pLXNcJmR4HtqC9v46Br2yzEyDSSUM1J4OvHJrFJFIyyB8pHfEJrp%2BJUbyUfr2qCprx7x1lOfNvGl6z6eud0pfXamIQ%2BE5%2FoB5SXT%2FG6fslGcFkONQWCM8gb2xHa81orOmmPMxWVJ18kOLP8rhiQe1Q5dYx1f%2BQ%2BICmsIoyMrF21kBgikRyaavNsEgcD5R5gCfpfBZlkdWr%2BfH01YDN6L6wxP6vezA94zxRo4jX%2B5dUKXLuUPmYIbODR0FO782VexKNzWXbLH4yD5SpH6vx7MEg%2FCIRskIycuuZ0SAjOrfU61YNi1KpI60R3s4kw76%2FiulpGlHLPDG5t%2Fr9EnUWgeEMcsbuW9euM459UgruMkXVNVtsevIeZX%2B6rKjZDxiFboMefGQB8LnhjtsgMTi8WcIYx2zTQXrmyK4nEFH6xfHbUCkQPPWt5208%2Bj18AQavLOP7kzaAEWUkbjbf%2FJlM8229N9%2BDK9O3Jt9cG%2BBK1QSMqw3%2FF7Y%2BERMKvABlWp23KtFyhy2CmEPCFFrVnHhabtKeHYvbmosXz7C1jz9DMkqr71DWRolHtZ4MJy6%2F9IGOqUBl%2FNSCP%2B%2Fb4yhCYbUjkEl9nyRzoS7njJ4LrP3G0Guz0tVsHF65cpOnjnGCeITGg%2FQwgRYfenEwjntvw4AgtzYjU3ebkXJT%2FqtHeC8lwoA5cE0LpSnyMjUOqHZdF3ZRVZamo%2FhHNbPTBkS0v6U%2FhgQUrkFG1aUW9E%2BFlf2cwa0YWx2R4XD0vXHYTwdFN0p5AzP%2B2X33krx0YK%2FIWM2Oh9pJxDCtmru&X-Amz-Signature=1d9eaf796b20a52e1e1b41950f30ff5610cf0d810c5a6f4c3a726517a5384308&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+同学们准备好的话跟我到 empty jelly 咱开工了，每天扣订一小时，健康工作 50 年，还是那个熟悉的地方还是熟悉的味道是哪里呢？就是咱上节课中落下来的 controller 还有两个方法没写完，这两个方法都是给阻塞式限流来用的。好，我们开始coding ，这里先给它打一个注解，叫同步阻塞限流，然后骑手给他来一个方法，依然返回 string 它的名字叫什么？ acquire 你看前面叫 try acquire 说得很虚，咱这里怎么样？不虚了？就拿走，没有的话，我在这等到你什么时候有我再来进行咱的方法逻辑，这就是同步阻塞式限流。那它调用的方法有什么不同呢？同学们这里看，咱依然还是引用前面的 limiter 这个类。
+
+
+在这里把 limit 调用它的哪个方法呢？ acquire 方法，咱看 acquire 方法它返回的不是一个布尔值了，它是一个 double 这个 double 是什么含义？它这里已经给注释了 time spend sleeping to enforce rate 然后单位是什么 in seconds 如果你没有被限流它返回你一个0.0。 if not read limited OK 那我们直接返回。这里就不用给它加什么判断了，直接给你打一行 log log info 叫 success 然后同样的把你的这个 rate 给它打印出来，这样我们应该直接 copy 上面的方法，有作业抄，为什么不抄还要自己手写。 OK 那最终返回的值我们给他返回一个。恭喜你 success 好，这个方法就写完了，我们给它加一个 get mapping 然后它的路径我们给它起叫和方法的名称保持一样 acquireok 那这就是同步阻塞式的限流方案了。那咱这里也可以像前面的方法一样，给它返回一个 count 接受一个 count 入参。这个 count 是什么含义呢？就是说我一次要消耗多少张通行证，那我们把这个 count 直接传到 choir 里面。那如果 count 不传，它默认是几，我们往上看一下这里的缺省方法，如果 count 不传，它默认其实就是一好，我们返回回来。
+
+
+好，我们把这个项目给大家启动起来看一下，然后咱到 postman 里面，等这个项目启动好之后，就发起一个调用，看一看他这个请求是不是在托斯曼前端页面被阻塞住，在那夯住一直转。好，这里项目已经启动起来了，我们转战到 postman 当中。 OK 那接下来我看这里已经声明好了一个方法，这个方法发送一个 acquire 请求到 10086 端口，那后面我们给它加一个 count count 等于几，count等于2。好了，好，我们准备发送走。你第一个请求很快返回一个 success 对吧，那咱接下来连续发送请求，看他是不是会在前端这里夯住走。
+
+
+同学们看到，在咱快速的爬爬点按钮的时候，他这里成了一个阻塞式的消息，也就是说当你令牌不足的时候怎么办呢？他不会转头就走，而是在原地等你。多像个痴情的女子，你没钱的时候她不走，她等你你有钱了她再跟你走。好品质。那咱把这个 count 改成4，让你等长一点，我们点击发送。那这个 4 代表着你要等几秒。两秒钟，咱们每秒钟两个通行证，那两秒钟就是四个通行证。好一一二，差不多两秒钟左右。
+
+
+OK 那这里咱同步阻塞式的限流方案也已经 demo 成功了。好，咱这下半场的课程虽然比上半场少了很多，但是它真的结束了。 OK 同学们，那这里就是全部的我要跟大家 demo 的 rate limit 的限流功能了，我来跟大家做一个简单的回顾，在这个章节当中，我们学习了非阻塞限流和阻塞限流两种方式。但是大家要记住一点，咱这节课学习的并不是真正意义上的分布式限流。因为为什么呢？它这个限流器只是在当前类这个范围内起作用。也就是说你即便声明了一个 global 的，也就是全局的限流器，它只在你当前这台服务器上起作用。
+
+
+如果你有两台服务器，那这个 limit 能跟另一个外一个服务器上面的 limit 通信吗？不能。所以说同学们用 rate limit 做限流的场景可以应用在哪些情况下呢？用在那些对单机资源比较敏感的访问请求上。比方说我这个请求它操作的或者是说读取的资源都是在本地。也就是说它的调用量并不会导向其他的组件。比如说像数据库，那如果你这个服务需要访问数据库，你对它进行单机版的限流其实没多大作用。因为你集群的数量一旦上来了，你即使每一个服务器你给他限流，每秒钟访问 10 个，那这 100 个服务器那这就是 1000 个。
+
+
+所以说这种单机版的限流组件其实并不适用于那些需要访问分布式环境中的某些中间件组件的方法。比如说你要访问Redis ，你要访问数据库，那这个数据库是会作用于整个集群的。那这种情况下，你的单机限流就并不好使。单机限流你就可以应用在一些很轻量级的限流场景，它只会消耗单机资源，比方说你这里的 try acquire 里面会执行一段计算逻辑 calculate 那它会占用很多计算机的资源，比方说你当前机器的内存或者是什么或者是 CPU 那它的只会消耗你当前机器的资源。那在这种情况下，为了避免你使机器的资源被过度消耗，导致机器的响应时间过慢等等情况，那你可以把这种单机版的限流组件应用在这个方法当中。
+
+
+OK 这就是 rate limit 的使用场景。咱了解了使用场景以后，就可以灵活的运用它提供的非阻塞式的限流以及限定时间的非阻塞式限流，还有同步阻塞式的限流这三种方式灵活的运用到自己的场景当中。 OK 同学们，那这一节的课程就到这里结束了，咱下一节将进入正儿八经的分布式限流的学习当中。先来看一看如何在 ngx 中配置一个限流规则。好，同学，我们下一小节再见。
+
+
+

@@ -1,0 +1,25 @@
+---
+title: 4-1 评价管理 - 评价需求分析
+---
+
+# 4-1 评价管理 - 评价需求分析
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d6bf86e9-8bc3-4efa-85fc-774cbc343922/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466THWEW4M3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224736Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAJLd1WMLHrT4lswU4qx79Dt3DbkYeJ1mGbp8lIDHL5RAiEA4nVKVBrLKyOq1D5BpU7Q8UFtep5jgHqrP%2FONDz%2BW%2FhMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDJAKgjVfpGghHsKnfircAwDUwHC8ItY8SIZ86JELe%2BwvPn0%2BW%2Ba31rmvKHRYBXDHR4RkAwcy08DLP1gBs3UB2eftTRmoBZeCfxVTl9jluyG%2F7GRVzSZHAcclSwjhVfiEEqaDj2wyk4yA5dpUsvULlFb42qOoeY9bVukIWTdWwQ8XrmXS%2BDWdC7YqOk%2BgRWn1eew%2Fjo8hbwrg0yCK50mnO5L%2BpSkT9AEl5gNvivELVGLlL6JgcfM5lJwLhyyNVF%2F9PNeBwRmP5J4xg%2BKFWms6zH1CVWLrxtFzo8FwmzIFv8np9ewfBxC%2FF1RPGBf0PAvn2UDlV0eNu2y13y8f%2BGveVg1Jy8Tx6XDTFkjY%2FAxLz2Z4qlh%2FZPgrD9dvJgoTwZrzdKNWmtNsx7s0RHQp4a73n%2BB4o%2BeMx4czr0IQ0ltD1F9eCTqAsiHaxK5vaADQ1sRXTejW19VHWec1LJP%2FIWR5SAuiwGxNqUt%2FsuvUrg5CvCCqxUL1nI9LMEhwgXjmqEB5AJn0AZ3VwSlWpeOvCzHD4bZZd5f%2Bdg3dLJKzj%2FWjIWifWM%2BfqtnhYtQUjjYOVO7X8mYX0sXODdvHa%2BMs0Xo9fQVlRrz4AHonGFnpeCoz3VD%2BXkAAK8RzlVC%2BmEfNvuEeRJFRlzyKqAwYdjzqMMq4%2F9IGOqUBfKWB3m60ZgBYK3bWMkvY9vgJeJsUASy5uR4mebCcV4DqURiY8lSuh0QK21LSq3A%2BaS4%2BrLeND2qmaGjEefZ%2Bqdtqe4jTjxK8%2FjEEH4gb18tssba9%2FgfVrl9YNDwgSyALOhcwsROuveUj%2BIlieXTwPPlpc7cGZYhtApmvN%2FazeGLKhDsN4hdD1wbxWW4eEZ%2FYkUkHxdGhhugW2ySIc0tg2uwccFk%2B&X-Amz-Signature=f8d4eccb6ae606ffbd6dd487c56385176575666d0d82d4ba83cac5eeae8f0c7b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在订单流程的最后一步，也就是商品订单交易成功以后，相应的用户可以选择性的去进行一个评价。所以我们可以看一下。这是生产环境的一个订单管理。点击已完成。在这里面有一笔订单是交易成功，交易成功之后，在后面会有一个按钮叫评价商品。这个其实是根据 is common 的字段判断而来的前提条件，它必须是一个交易成功。点击评价商品之后，它会把这笔订单所对应的这些商品给展现出来，这两个商品他们的规格也有。随后在这一部分就是针对于不同商品你所要去做的一个评价，你可以选择性的给好评、中评、差评都可以。在这里面可以填入相应的一些内容，比方第一个写一般般，第二个非常不错，在这里我们就可以提交发表一下咱们的评论，提交以后评论我们就已经是提交过去。
+
+
+在这里会有一个我的评价点一下，在这里你历史的一些评价都会在这个地方进行一个展示，是一个图片内容以及是对应的商品，在这里以一个列表的形式去展示的，并且它也带有是分页的，所以接下来的一部分内容，我们会一步一步去把我的评价相关的内容去进行一个实现。
+
+
+好回到咱们自己的一个网页，我们自己的网页在我们先来看一下，已完成，已经有一笔订单是交易成功了，但是在这里有一个评价它没有展示，我们可以到前端去看一下。打开前端的源码，我们来搜一下，在这里会有一个评价商品，在这里他其实是去判断的，他要判断当前。首先一个你订单状态必须是4040，是代表你交易成功，随后交易成功的同时，并且你订单 is comment 他有没有被评价过，他必须是还没有被评价。如果它是没有被评价的，在这里会以一个按钮的形式去展示。在这里会有一个 click 事件，如果你这一笔订单是已经评价过了，你只需要在这上面去显示一个已评价的文字就可以了。
+
+
+现在我们字段其实在我们页面里面是没有获取到，对吧？我们到下方去看一下咱们的查询。在咱们的查询语句里面是获得了一个订单list，搜一下，在这个部位我们拿到了一个 list 以后会有一个日志，我们把日志松开到页面里面去看一下。把 F12 拉起来，点击已完成，要必须要先刷新一下，点一下。我们可以到这边来看一下。把日志，我们可以去打开，其中会有一个 is comment。看一下它展示出来的一个内容是一个 null 是为空的，也就是我们在进行查询的时候，这个字段我们并没有查询出来。回到咱们的一个后端先来看一下。我们先可以打开我们查询订单的一个CEO。在 VO 里面我们可以先去看一下它所对应的一个字段，因为我们在前端去进行渲染的时候，它是从 VO 里面去渲染的。找到 my orders 是双击一下。在 VO 里面可以看到它有一个 is common 的这样的属性，有了这种属性之后，它其实是映射的，只不过它没有值。没有值说明我们在进行查询的时候和没有进行一个关联，到没有把字段去进行一个查询。所以我们这个时候就需要去看一下咱们的map，去找一下。
+
+
+在这个下方找到自定义实现的MAPA，有一个 orders custom，双击一下，这是接口，我们要搜一下它的具体的代码，要找一下，在这里双击看一下。打开以后在这里就是查询我的订单。在这里面其实在一部分我们应该要去再为他去加上一个查询的字段，应该叫做 od.IsVomment， s.is comment。这个是必须要和咱们的字段要映射的，搜一下。好，这是映射是 OK 的。好。在这里写了之后，你是需要回到上方再定义 result map，里面也要把这对应的字段去映射一下，写上一个result，把内容加过来。好，OK。现在我们在进行查询的时候，就新增了一个字段。随后我们要进行一个 install install，以后之后再去做一个重启。好，现在我们的一个 install 是成功了，随后我们来重启一下。
+
+
+好，OK。我们到前端再来刷新一下。刷新一下可以看到这一笔在所有订单里面，第一个其实就是已完成的订单，可以点一下。可以看到现在我们评价商品这个按钮就已经是出现了，我们可以点击一下，是可以发生一个页面的跳转，只不过在这个页面跳转的时候，我们是需要去发起一个查询的，所以在我们的控制台是有一些相应的错误，但是没有关系，我们在后边进行完善以后对接成功以后在就会把相应的内容给展示出来。
+

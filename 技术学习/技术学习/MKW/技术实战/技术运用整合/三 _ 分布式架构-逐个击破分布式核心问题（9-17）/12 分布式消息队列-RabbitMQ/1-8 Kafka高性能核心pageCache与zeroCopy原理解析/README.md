@@ -1,0 +1,69 @@
+---
+title: 1-8 Kafka高性能核心pageCache与zeroCopy原理解析
+---
+
+# 1-8 Kafka高性能核心pageCache与zeroCopy原理解析
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/03db5c91-fbad-4df7-8d82-e1ada0c6a2a3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667V3YHAST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225237Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDI%2FB626KZq9gD%2BY4G7yRgkc5duYpeOppXjHNIJgL9ihAIgGI%2FK%2BmiBp7IMifKjVDAH75Pgse8pj5cuwQWsQCa3CQoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMdXY16uHo2VUlZ%2FWircA7uPe04cwAwq1QYpiibgMnIafZpWwSTP6d0TpzDkFuBIK5SyCxCkwGRhF%2ByioP9MYcTwoCAS19Vwr2ytpVcy5VGMIW3biqz6l0RQEnEAEb2R2St9JWHmlezYHZ86JupXkOn0n0JXKu0zvozZbdUlQE8oHri2mfJW0wBlCfue%2Bf9ZXojt5V4KKRVZiR9SX9Dug0QW8zpaUj%2BkCDMow6NXOEWAdZGVhVu9h%2F4fyc9ktdVZlMmme%2BBFx8SUHZQBdU4dyXfa1t32zsHshOILMzrx8sSvZnfoN43CdFObVeYOeIoPzq%2FCKbNYtg1Mmq%2BR%2BwXAM%2Bmbrx7ZabBeZakPknXnf9nJTPQm9XnK1F0E9g69V%2F4jWFiwM1ecmbe3uvdWLKXDVu2R2eFQo9GcOZDP5fnhEI%2Beu2rFKkxZAB1aNbfAK7bXt49n3U%2B9Ajb9St%2FD7GWhy5m0n%2B%2BRJcOJW2coztSn87n%2BmrxQayuHqDvb%2BMhfH4SWkhiEGpupyNlpP%2BYNMWXVY7pBtip2%2Bls6jixeMDtEaZfRJkPHBA8m8IjdyJ2q931%2F3yL60nUrEVBAC%2BsVgMLoRaJT%2B%2Bgj%2FaR3xUHP3J5EVl8K8xc1AB%2BOEJpaRrGGvHOwh7uyu%2BZi0y0P9MsvMP%2B4%2F9IGOqUB79wgSeB3oBPDQyExbrCJriP8oBZ%2F05pr8HdF0IzV6Vn6Ea6kIIvD8lvLyxtT0XT0VMVx2sCe8BzLIPkz1awWoIataFE2ZwAgqoKelJ%2FTdwy5ULGKlGnfyM3mADpoeEQjUt%2Fm4rTCPZCNWKwIDpEQUu3FrbXn8FsdUp%2Fujib0paCHn7O20Rcjdj4py5zI%2FMVQEiy2jGT1FIx8vMTqBgyUImmCAwOI&X-Amz-Signature=eedf723bedfdd4ff0861e1e62cab89e15e0f8f48f4338c20cfbdbc63d69839dd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0d51d89f-a44a-452e-aa2f-3c3269c67c50/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667V3YHAST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225237Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDI%2FB626KZq9gD%2BY4G7yRgkc5duYpeOppXjHNIJgL9ihAIgGI%2FK%2BmiBp7IMifKjVDAH75Pgse8pj5cuwQWsQCa3CQoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMdXY16uHo2VUlZ%2FWircA7uPe04cwAwq1QYpiibgMnIafZpWwSTP6d0TpzDkFuBIK5SyCxCkwGRhF%2ByioP9MYcTwoCAS19Vwr2ytpVcy5VGMIW3biqz6l0RQEnEAEb2R2St9JWHmlezYHZ86JupXkOn0n0JXKu0zvozZbdUlQE8oHri2mfJW0wBlCfue%2Bf9ZXojt5V4KKRVZiR9SX9Dug0QW8zpaUj%2BkCDMow6NXOEWAdZGVhVu9h%2F4fyc9ktdVZlMmme%2BBFx8SUHZQBdU4dyXfa1t32zsHshOILMzrx8sSvZnfoN43CdFObVeYOeIoPzq%2FCKbNYtg1Mmq%2BR%2BwXAM%2Bmbrx7ZabBeZakPknXnf9nJTPQm9XnK1F0E9g69V%2F4jWFiwM1ecmbe3uvdWLKXDVu2R2eFQo9GcOZDP5fnhEI%2Beu2rFKkxZAB1aNbfAK7bXt49n3U%2B9Ajb9St%2FD7GWhy5m0n%2B%2BRJcOJW2coztSn87n%2BmrxQayuHqDvb%2BMhfH4SWkhiEGpupyNlpP%2BYNMWXVY7pBtip2%2Bls6jixeMDtEaZfRJkPHBA8m8IjdyJ2q931%2F3yL60nUrEVBAC%2BsVgMLoRaJT%2B%2Bgj%2FaR3xUHP3J5EVl8K8xc1AB%2BOEJpaRrGGvHOwh7uyu%2BZi0y0P9MsvMP%2B4%2F9IGOqUB79wgSeB3oBPDQyExbrCJriP8oBZ%2F05pr8HdF0IzV6Vn6Ea6kIIvD8lvLyxtT0XT0VMVx2sCe8BzLIPkz1awWoIataFE2ZwAgqoKelJ%2FTdwy5ULGKlGnfyM3mADpoeEQjUt%2Fm4rTCPZCNWKwIDpEQUu3FrbXn8FsdUp%2Fujib0paCHn7O20Rcjdj4py5zI%2FMVQEiy2jGT1FIx8vMTqBgyUImmCAwOI&X-Amz-Signature=fed355d7986286507a1f963b709e951849ee8306e59147aa33c9a1c4777f8129&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那接下来我们来一起来看一看这个配置cache。
+
+那首先我们先把这个配置 catch 的概念跟大家来解释清楚，之后我们再通过一个小的这个示例来分析一下这个整个的这个 page cache 的过程，或者是说一个操作系统级别的这么一个过程，那这个也是实际在面试中经常会去问的，那我希望小伙伴们来认真的去跟老师一起学习。
+
+
+那首先第一点我们来说一说什么是配置cache，也就是页面缓存配置 cache 是操作系统实现的一种主要的磁盘缓存，在这里要记住是操作系统主要实现的一种磁盘缓存的这种机制或者说策略，那它的目的就是以此来减少对磁盘 IO 的操作，因为我们知道对于磁盘 IO 它访问如果特别频繁的话，会影响我们整个操作系统性能，那具体来说其实就是把磁盘中的数据缓存到内存中，然后把对磁盘的访问变成为对内存的访问，就是这么一个事情。
+
+
+OK，那其实目前业界很多主流的这个框架，或者是架构设计，或者是现代的这个操作系统，它其实为了弥补性能上的差异，它都是直接将内存作为磁盘去做缓存的。当然这个磁盘缓存要加引号的，甚至是说可能会将所有的**内存就当做磁盘去用**，那这样也是想要充分的提高我们对于我们操作系统也好，或者是这个某个技术框架也好，就要提高它的这个性能，统一的去对，把所有的 IO 原来对 IO 的操作都会从这个内存中读取。
+
+
+那我相信很多做过一些高并发的一些项目的一些小伙伴都要知道，那开始我们最早期的时候，可能大家会读这种关键性数据库，对不对？关键性数据库压力一旦大了怎么办？大家可能想到策略去做这个分库分表，这分库分表它可能也有一天会满足不了我们的需求。那你有可能会用一些非关系型数据库，或者是用我们的这个 remote cat，比如说远程存少缓存，像Redis，对不对？那当然像一些入口级别，流量非常非常高，访问量非常非常巨大的一些入口，怎么去扛住呢？可能你 Redis 都会扛不住，那这个时候可能会借力于我们的内存，对不对？当然我们都知道你**把所有的数据都存到 Java  JVM 的这个内存中，它也会非常影响我们 Java 的这个程序的性能**，那从而又有了说我们来把这个一些数据放到 direct，就是对外内存储。OK，那我们废话不多说，最后老师给大家说一点，配置 cache 本质上就是把应该从磁盘中读取的数据转换成从内存中去读取，把对磁盘的访问变成对内存的访问即可。
+
+
+那接下来我们来看这幅图，这幅图说的是一个什么事情？这幅图主要就是对于磁盘文件的一个读写操作了，那映们 Java，比如说在我们的 d 盘中有一个这个文件叫一点TST，
+
+我们想把它**读到我们的这个应用程序里**，那这个对于 OS 级别、操作系统级别它都做了哪些事情？我们可以想一下，那其实呢，当一个进程准备去读取磁盘上的文件内容的时候，那操作系统它首先不是说直接去读这个磁盘文件了，它首先做的事情是什么？他首先肯定会做检查，注意去check，会去将待读取的数据所在的页来**看一看这个页在配置 cache 中是否存在**，如果存在就相当于命中了，那就直接把数据返回了就可以了，从而避免了对物理磁盘的一些个 IO 操作，那如果没有命中，那这个时候我们的操作系统会真正的向磁盘发起一次 IO 请求，并且将读取的数据它不是直接返回给这个进程，它直接是先把我们的这个读取出来数据先加入到缓存页中去做一个缓存，然后再把数据返回给这个进程，它是这么去做的。OK，那这个也可以理解为就是一个充电换时间嘛。
+
+
+那其实呢，你回想一下，我们其实有很多这种操作都是借力于这种机制。比如说我们数据库，当你去通过一些 cache 去做一个 select 查询的时候，你第一次去执行这个查询语句，它的性能可能会稍微慢一点，对不对？可能会花个一两秒钟甚至更长，当然数据多肯定会又强了，对吧？那么当你第二次重复的去再执行这条语句的时候，你会发现这条语句跑得飞快，可能把零点零几秒搞定了就返回了，那这个也是数据库，它也是帮你做了一层 cache 操作。那同理，其实现在越来越多的这个架构设计或者是底层存储都是使用 cache 去做的。
+
+
+好了，反过来同学们想一想，现在是读是这么去做的，那如果变成写，我说有一个文件我想写到磁盘中，那同样，那操作系统会怎么做？首先也会检查这个数据对应的页是否存在缓存页中，如果说不存在怎么办？那它会在缓存页中去添加相应的页，然后把数据去写到页里边，然后被修改的过滤页其实就变成了我们的这个脏页。操作系统会在合适的时机，这是他自己调度的事情，把脏页中的数据去刷到磁盘里，以保证数据的一致性。
+
+
+OK，那这就是一个最简单的文件读写的一个过程。那接下来我们看一看这幅图，如果说现在我们想把磁盘文件读到内存里之后，就读到我们这个应用程序里，然后我们通过应用程序再给他写回到，或者再写到另外的一个应用程序，那这个他经历过哪些过程？那我们来看一看这幅图。首先第一个大家看到最右侧的这个是我们的磁盘文件，它经历第一步骤是什么？这是物理磁盘文件，操作系统会把物理的磁盘里的这个内容先写到内核读取的缓冲区，这是操作系统级别的看叫做内核空间上下文。然后左边的这块完全就是我们的这个 user context，就是我们应用程序的上下文，就是你 Java 服务的上下文。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/948c73fc-2d84-4572-9426-634b77d6c50f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667V3YHAST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225237Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDI%2FB626KZq9gD%2BY4G7yRgkc5duYpeOppXjHNIJgL9ihAIgGI%2FK%2BmiBp7IMifKjVDAH75Pgse8pj5cuwQWsQCa3CQoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMdXY16uHo2VUlZ%2FWircA7uPe04cwAwq1QYpiibgMnIafZpWwSTP6d0TpzDkFuBIK5SyCxCkwGRhF%2ByioP9MYcTwoCAS19Vwr2ytpVcy5VGMIW3biqz6l0RQEnEAEb2R2St9JWHmlezYHZ86JupXkOn0n0JXKu0zvozZbdUlQE8oHri2mfJW0wBlCfue%2Bf9ZXojt5V4KKRVZiR9SX9Dug0QW8zpaUj%2BkCDMow6NXOEWAdZGVhVu9h%2F4fyc9ktdVZlMmme%2BBFx8SUHZQBdU4dyXfa1t32zsHshOILMzrx8sSvZnfoN43CdFObVeYOeIoPzq%2FCKbNYtg1Mmq%2BR%2BwXAM%2Bmbrx7ZabBeZakPknXnf9nJTPQm9XnK1F0E9g69V%2F4jWFiwM1ecmbe3uvdWLKXDVu2R2eFQo9GcOZDP5fnhEI%2Beu2rFKkxZAB1aNbfAK7bXt49n3U%2B9Ajb9St%2FD7GWhy5m0n%2B%2BRJcOJW2coztSn87n%2BmrxQayuHqDvb%2BMhfH4SWkhiEGpupyNlpP%2BYNMWXVY7pBtip2%2Bls6jixeMDtEaZfRJkPHBA8m8IjdyJ2q931%2F3yL60nUrEVBAC%2BsVgMLoRaJT%2B%2Bgj%2FaR3xUHP3J5EVl8K8xc1AB%2BOEJpaRrGGvHOwh7uyu%2BZi0y0P9MsvMP%2B4%2F9IGOqUB79wgSeB3oBPDQyExbrCJriP8oBZ%2F05pr8HdF0IzV6Vn6Ea6kIIvD8lvLyxtT0XT0VMVx2sCe8BzLIPkz1awWoIataFE2ZwAgqoKelJ%2FTdwy5ULGKlGnfyM3mADpoeEQjUt%2Fm4rTCPZCNWKwIDpEQUu3FrbXn8FsdUp%2Fujib0paCHn7O20Rcjdj4py5zI%2FMVQEiy2jGT1FIx8vMTqBgyUImmCAwOI&X-Amz-Signature=8d6fa39c28b3c393a35b0455b0276c3aa4965f01d7006564d351317e9bc0e172&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+第二步他做什么事情？第二步他是通过从用户缓冲区去读取操作系统 OS 级别的这个内核缓冲区的东西，就是说把用户缓冲区再次读取一下我们的这个内核空间的这个缓冲区，把数据再转过来，转到用户这个缓冲区域，那这个时候应用程序里就有了。然后我们再去读什么这个，把它打印一下什么的，在你的这个程序里就能看到这个数据了。那假设说我们说，唉，那这个数据我想给它远程给它传到另外的一个应用程序怎么办？那还是这个操作，他现在数据在应用的缓存中了，应用程序的缓存中他肯定会要把数据再写入我们操作系统级别的这个 OS 的这个缓存区域内，然后内核空间缓冲期就是我们操作系统的这个 OS 缓冲区，然后再把 OS 缓冲区，把数据再传到我们 socket 的缓冲区，然后 socket 缓冲区再到达实际的物理网口，然后通过网络传给对应的另一端的消费者。
+
+
+那这个就是我们正常的一个文件读取，然后写给另外一端的一个过程，他会经历过好几次copy，第一次 copy, 是 copy 到我们的内核中了，第二次 copy 是用户缓存中又 copy 了一次， 3 次copy，对不对？其实在这里一共有 4 次copy，因为我这块这个图已经画出来了，这边文件磁盘文件到我们的内核缓冲区就是第一次copy，第二次 copy 是我们的用户空间从我们内核空间去 copy 了，第三次 copy 就是用户空间再 copy 到OS系统，就是操作系统级别的这个内核空间缓存。然后第四次 copy 是从内核空间的缓存 copy 到 socket 缓存去，然后写到网卡，就他经历过 4 次的copy，这是我们传统的一个文件读写。那其实现在很多很多的应用都是使用叫做 zero copy 0 拷贝，其实我们的卡夫卡主要就是用 zero copy，它节省了这 4 次copy，它其实就是一次copy。
+
+
+OK，那我们后面呢来看一看卡夫卡对一个文件它是怎么去做？那接下来我们继续往下看，那这幅图其实就是利用了所谓的 zero copy，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3398bac8-d330-44ae-b363-e2fddaf6ea02/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667V3YHAST%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225237Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDI%2FB626KZq9gD%2BY4G7yRgkc5duYpeOppXjHNIJgL9ihAIgGI%2FK%2BmiBp7IMifKjVDAH75Pgse8pj5cuwQWsQCa3CQoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMdXY16uHo2VUlZ%2FWircA7uPe04cwAwq1QYpiibgMnIafZpWwSTP6d0TpzDkFuBIK5SyCxCkwGRhF%2ByioP9MYcTwoCAS19Vwr2ytpVcy5VGMIW3biqz6l0RQEnEAEb2R2St9JWHmlezYHZ86JupXkOn0n0JXKu0zvozZbdUlQE8oHri2mfJW0wBlCfue%2Bf9ZXojt5V4KKRVZiR9SX9Dug0QW8zpaUj%2BkCDMow6NXOEWAdZGVhVu9h%2F4fyc9ktdVZlMmme%2BBFx8SUHZQBdU4dyXfa1t32zsHshOILMzrx8sSvZnfoN43CdFObVeYOeIoPzq%2FCKbNYtg1Mmq%2BR%2BwXAM%2Bmbrx7ZabBeZakPknXnf9nJTPQm9XnK1F0E9g69V%2F4jWFiwM1ecmbe3uvdWLKXDVu2R2eFQo9GcOZDP5fnhEI%2Beu2rFKkxZAB1aNbfAK7bXt49n3U%2B9Ajb9St%2FD7GWhy5m0n%2B%2BRJcOJW2coztSn87n%2BmrxQayuHqDvb%2BMhfH4SWkhiEGpupyNlpP%2BYNMWXVY7pBtip2%2Bls6jixeMDtEaZfRJkPHBA8m8IjdyJ2q931%2F3yL60nUrEVBAC%2BsVgMLoRaJT%2B%2Bgj%2FaR3xUHP3J5EVl8K8xc1AB%2BOEJpaRrGGvHOwh7uyu%2BZi0y0P9MsvMP%2B4%2F9IGOqUB79wgSeB3oBPDQyExbrCJriP8oBZ%2F05pr8HdF0IzV6Vn6Ea6kIIvD8lvLyxtT0XT0VMVx2sCe8BzLIPkz1awWoIataFE2ZwAgqoKelJ%2FTdwy5ULGKlGnfyM3mADpoeEQjUt%2Fm4rTCPZCNWKwIDpEQUu3FrbXn8FsdUp%2Fujib0paCHn7O20Rcjdj4py5zI%2FMVQEiy2jGT1FIx8vMTqBgyUImmCAwOI&X-Amz-Signature=7116f27d4943f7f6a88e9a33eae85bb6454d8fc0422eb75023591941e53344cd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在卡夫卡中他经常会大量的去使用一些配置 cache 的一些技术，包括自由 copy 的一些技术，用来提升我们的性能，提升我们的系统的这个吞吐量。
+
+
+
+那举个例子，那比如说我们卡夫卡哈可能有一个生产者有个消费者，对不对？那我们的消费者因为我们卡不卡它都是破的机制，就是拉取的机制。那消费者在读取服务端的这个数据的时候，就是他向这个 broke 去拉取数据的时候，那肯定是需要将这个服务端的磁盘文件里的这个数据去读出来，对不对？比如说磁盘文件它肯定通过网络发送到消费者的进程，然后通常情况下我们的卡夫卡消息它肯定会有多个，这个订阅者、生产者发布的消息会被不同的消费者多次消费。
+
+
+那为了优化这个流程，卡夫卡它其实内部就使用了 zero copy，那卡夫卡中其实大量的使用了缓存页，包括 zero copy，那这是卡夫卡实现它这个高性能、高吞吐的一个非常至关重要的一个原因。虽然消息都是被写到这个缓存页的，然后我们由操作系统去负责具体的一些这个具体的刷盘策略、刷盘任务。
+
+
+那我们看这幅图吧，看这幅图就是一个经典的这个 zero copy 技术了，它跟应用程序是完全没有关联的，我们右边的这个应用程序完全不做任何copy，他就是做什么，此方文件直接是在用户内核的空间的上下文做一次copy，对不对？文件描述符，这个叫内核读取缓冲区，然后直接写到网卡给消费者，那这个过程就是一个 zero copy，那也就是说我们的 zero copy 就是 0 拷贝技术，它只是将我们磁盘文件的数据复制到了页面缓存中，一次注意这一点，然后将数据从页面缓存直接发送到网络中，直接发送到网卡中。就是说发送给不同的这个订阅者的时候，都可以去使用同一个页面缓存，而是避免了重复制的这么一个操作，这个就是一个自由copy。
+
+
+那其实通过这个图我们设想一下，我如果说现在有 10 个甚至 20 个消费者，甚至更多个消费者，现在如果你有 10 个消费者，在传统的数据 copy 的这种模式下，你至少要经历 10 乘以 40 这个次数，为什么呢？因为刚才我们看到这幅图了，是不是如果说你现在有 10 个消费者，那你想把磁盘文件中的数据想发给这 10 个消费者，是不是要经历 40 次？因为你每一次就是 4 次，而我们的 zero copy 它需要多少次？同学们想一想，他只需要 11 次，为什么呀？第一次他把磁盘文件 copy 到我们的这个配置 catch 中，然后接下来发 10 次就好了，是不是发给 10 个人？是不是把这个 page catch 中的内容发给 10 个对应的消费者，对接到 10 个网络的这个 IP 和端口就可以了。
+
+
+那这个就是卡菲亚它提升性能的一个非常重要的点，也就是说 zero copy 和 page catch，那我希望小伙伴们通过这节课完全的把这两个概念理解清楚，其实在很多时候面试的时候都会去问关于配置 catch 和 zero copy 的概念，那我希望小伙伴呢牢牢的把这个东西记住，掌握好。OK，那这节课呢，我们就先讲到这，感谢小伙伴们收看。
+
+

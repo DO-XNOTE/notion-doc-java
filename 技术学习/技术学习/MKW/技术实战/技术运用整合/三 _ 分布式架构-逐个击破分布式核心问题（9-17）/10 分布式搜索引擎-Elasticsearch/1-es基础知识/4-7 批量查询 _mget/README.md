@@ -1,0 +1,35 @@
+---
+title: 4-7 批量查询 _mget
+---
+
+# 4-7 批量查询 _mget
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3ad9e5ff-6735-469d-9616-7f21a6a7996c/SCR-20240806-esgu.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SFPKTHSP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225147Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNHQJOCLSKJikXprN%2FLOqOtGxg2EeuE%2F2AuyE8QrFUfAIhAK9y6eOwOvdog8W7maXGY66dcgjE4wxopYMTm2Mg%2BqOmKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyzWu3q0RBl2d%2FV3QQq3AN28jsNIs9d1b3tDtGMcRzSE3s7oKFAIp4jYWNXtqz8cdlOwT1bvEVedbXxfBj4Gcj0BKj5HWmRHlMUAfugJ%2FV2ElkZfhxph3ifl%2F6OUhhNzq%2B9hzuahxQUxOLLDyZX75FJr1f5wzUCTde05wmBSPbwlIzYqvz4jE9GsWWW1n3ay1%2B6nCSo%2BhxJ2EFywaSAAkVUjvPORUnsEy1b5yjPlIIWKzi1dtBqygjO7KVZ8%2F77pp4rPf%2BNnEti5ydSZO4dRS3w4OBwhH%2FNIhBuOhvbupWPiDLwq35fkBG2cPIZapLcf6xYo8yZKxHpuuz2wqdo4AKKzfiWYcX51rXDQ0IXsHWOxBF8Ym%2F66SzDOzlBj6S3aV1dd4PKJxy9xqXaFb4%2Ff%2FHdO584gtCKaUI0Uzib0IBkIzZo2iYBd5k5NPKjT2Sbodz5%2FsmwRYXd3g0aZUto6yNK4T9qu94NrvrobYaev2DI6gCFkMQbzFD9UwXbmMMMF6C84CbvlYlwTxjlBskBJzBtxrEX9Z1PZP8lBCzUpCsHSaD1j9B4bOiRPvHryU0YU%2FWI3iWkKDMajPvjPXlQQva9OZQLRgBDsjuBvzNqy%2FQc6oVV%2B8kKVzihaFSSD0WZk10KH9gsOhz41ADbnjChuv%2FSBjqkAVyiL0U2eHeUI0GS51sIiUYNq50qw1SPECuQHoTkTjh5t4DmrCfZZqfXBB1TJtKDJPgZL%2B%2BaBMSJJsPEWnVzYCs5l2jjn%2BOM2D3%2BT9UIAvrRfrvjhbLv8pEWvkrOFlCtTthsn%2B5Cl9jEI4eYAVyml94q1T8yhfAZVMt3kvHzuG%2BPukEbb6gkOIkMu5KeScNXdGkIWeN0%2BKmRbMIM%2FXsjGDs808Zu&X-Amz-Signature=2d2043a7fca94d8c9234dfe4d90716f8ef8fb85edb7133b8a526ed800698ccdd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/db9b1248-56e5-4d8a-8ccd-d808d5191603/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SFPKTHSP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225147Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNHQJOCLSKJikXprN%2FLOqOtGxg2EeuE%2F2AuyE8QrFUfAIhAK9y6eOwOvdog8W7maXGY66dcgjE4wxopYMTm2Mg%2BqOmKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyzWu3q0RBl2d%2FV3QQq3AN28jsNIs9d1b3tDtGMcRzSE3s7oKFAIp4jYWNXtqz8cdlOwT1bvEVedbXxfBj4Gcj0BKj5HWmRHlMUAfugJ%2FV2ElkZfhxph3ifl%2F6OUhhNzq%2B9hzuahxQUxOLLDyZX75FJr1f5wzUCTde05wmBSPbwlIzYqvz4jE9GsWWW1n3ay1%2B6nCSo%2BhxJ2EFywaSAAkVUjvPORUnsEy1b5yjPlIIWKzi1dtBqygjO7KVZ8%2F77pp4rPf%2BNnEti5ydSZO4dRS3w4OBwhH%2FNIhBuOhvbupWPiDLwq35fkBG2cPIZapLcf6xYo8yZKxHpuuz2wqdo4AKKzfiWYcX51rXDQ0IXsHWOxBF8Ym%2F66SzDOzlBj6S3aV1dd4PKJxy9xqXaFb4%2Ff%2FHdO584gtCKaUI0Uzib0IBkIzZo2iYBd5k5NPKjT2Sbodz5%2FsmwRYXd3g0aZUto6yNK4T9qu94NrvrobYaev2DI6gCFkMQbzFD9UwXbmMMMF6C84CbvlYlwTxjlBskBJzBtxrEX9Z1PZP8lBCzUpCsHSaD1j9B4bOiRPvHryU0YU%2FWI3iWkKDMajPvjPXlQQva9OZQLRgBDsjuBvzNqy%2FQc6oVV%2B8kKVzihaFSSD0WZk10KH9gsOhz41ADbnjChuv%2FSBjqkAVyiL0U2eHeUI0GS51sIiUYNq50qw1SPECuQHoTkTjh5t4DmrCfZZqfXBB1TJtKDJPgZL%2B%2BaBMSJJsPEWnVzYCs5l2jjn%2BOM2D3%2BT9UIAvrRfrvjhbLv8pEWvkrOFlCtTthsn%2B5Cl9jEI4eYAVyml94q1T8yhfAZVMt3kvHzuG%2BPukEbb6gkOIkMu5KeScNXdGkIWeN0%2BKmRbMIM%2FXsjGDs808Zu&X-Amz-Signature=7734e3237458de2bc4b0e68406218ef25be8f41f00621aa2c895fe5d4ce7f6bf&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+之前我们在讲针对于我们的一个文档数据做查询的时候，那么我们是可以指定我们文档的某一个 ID 去做一个对应的查询。那么这样子的话你只需要在这个 URL 中写上用户的一个要去查询的索引库的名称，外加它的一个下划线 Doc 然后再加上一个 ID 是可以去做到一个对应的查询的。
+
+
+那么这种查询的话我们是查询一个单条记录，如果说这个时候有 100 条甚至是一千一万条数据要去做查询的话，那么我们肯定不能够使用这种方式，那么让用户在我们的客户端做一个循环的去查询。那这样子它对于我们的整体的一个网络开销是非常的大的。所以为了提升我们的一个吞吐量，然后减少客户端和服务端的一个交互。所以我们可以使用 ES 所提供的一个批量搜索这样的一个功能。
+
+
+那么其实我们在之前已经是有使用到过这样的一个搜索，那么我们还是先来看一下。那么要去使用一个批量的搜索的话，那么在这里的话你要把它还是一样改成 post 在这个地方，那么也是写上一个 JSON 那么我们再来写一下，这个我们之前是有写过的。那么首先我们先把这个先改掉，因为是涉及到搜索，所以我们要去加上一个后缀，叫做下划线 search 那么随后我们要去做搜索，那么肯定是离不开 query 也就是咱们的一个顶级的元素。然后我们去搜索它的一个 ID 所以实时的是 ids 随后它会有搜索的一个类型。那么我们搜索所有的类型菜盘，那么其实全部都是基于下划线 Doc 去进行搜的。那么随后我们就会来一个 values 这个 values 就是针对于我们的 ids 那么写一下 values 注意不要拼错，它是 values 并不是 value 那么它是一个数组，所以你可以去查询，把 1001 再加上一个1003，我们再来一个 1005 进行一个搜索。那么这样子的话它会命中三条之路，把对应的数据在这里做一个相应的展示。
+
+
+那么这个其实是我们之前所使到的一种搜索方式，那么它其实也是批量的搜索。那么除此以外的话，那么我们还能够使用另外一种方式去做一个相应的查询，那么其实也是批量查询。那么如何去写呢？就是我们可以来写一下，我们把这个拷贝一下，在这里的话我们就不再是下划线 search 那么其实我们在之前讲 Redis 的时候，其实 Redis 它包含了一个批量查询，叫做 M get 那么其实在 ES 中其实也是一样的，它是下划线 M get 写一下，写一下之后，随后在她的 body 里面。
+
+
+那么这个时候我们就不需要再去把这些内容写的太多了，我们把这个拷贝过来，此时的话我们只需要去写上一个 ids 就可以了，我们把这个都删掉，写上一个元素叫做 ids OK ，那么它其实就是一个 DS 对象，它包含了一个属性 ids 这个 ids 直接就把它的一个只要是它的一些ID ，把它以一个数组形式写上就可以了，随后点击 send 那么它其实也是一样，它可以把我们这个 Docs 所有的内容全部都给搜出来，那么这些其实全部都是我们在这里所指定的这些ID 。Ok 。
+
+
+那么这两个我们可以来做一个对比，如果说我们使用下划线 search 这种方式来做的话，那么它其实展示的一些内容其实会比较的多。从这里像 took time out shots 然后命中对吧，相关的一个分数其实全部都会有。那么这个我们使用下划线设置，针对于我们的 ids 去搜索的话，那么它其实是比较偏向于搜索那一块的，它会有 hits 命中这一个说法。但是当我们使用这个 M 盖在批量查询的时候，那么它仅仅只会把我们对应的 ID 只要是有的，那么它都会帮我们给查出来。那么它是一个 Doc 数组。然后这里面的每一项那么可以看到它其实都是单独的一个的 ID 所对应的一个文档数据，它和这个搜索其实是没有那么多的一些元数据信息的，这一点是需要去注意的。那么此外的话它还多了一个叫做放的，就是说如果说你能够搜到的话，那么它就是一个 true 代表是能够被搜到。那么这个时候假设来一个我们把这个 1005 改成10015，我们再去做一个 send 查询。
+
+
+那么你会发现我们的第一条数据，第二条数据都是有的，但是最后一条它还会有，就说它还会有第三个 JS 对象，但是它会提供一个放的就是一个 force 就是说代表在我们的当前 index 就是说在 shop 这个索引下，然后我们的 Doc 我们是并没有 10015 这个文档数据的代表他是搜不到。
+那么如果说我们在这个下划线搜池以这种搜索的方式去查询的话，我们来写一下10015，点击 send 那么这个时候在这里它是一个 hiss 它只会命中两条。然后在我们下方的数据里面， hiss 里面它只会包含两个文档，这是一个。那么这是第二个，它第三个文档 10015 的话它是不会反馈出来的。那么这是它们的一个区别。
+
+
+也就是说如果说我们想要判断某一个数据，它在不在某一个 ID 它对应的文档有没有的话，那么其实我们可以使用这种方式使用批量查询 M get 那么这个时候你这个东西如果说你文档存在的话，那么放的是 true 如果说不存在，那么放的就是 false 那么这个的话注意一下。那么这个其实就是我们可以通过 M get 来实现的一个批量查。
+
+

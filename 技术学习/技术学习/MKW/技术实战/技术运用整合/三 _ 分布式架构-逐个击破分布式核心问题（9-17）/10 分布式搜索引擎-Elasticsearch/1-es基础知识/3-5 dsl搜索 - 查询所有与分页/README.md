@@ -1,0 +1,45 @@
+---
+title: 3-5 dsl搜索 - 查询所有与分页
+---
+
+# 3-5 dsl搜索 - 查询所有与分页
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4f119e33-cdc2-4c07-90a2-065b3e73998c/SCR-20240806-dbvt.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S5ZTXHAV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225137Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDWT5V20b%2Fmiw5UXd%2F%2B1b1C9YS7vt8QMaPuu9jOLTrpVgIhAOnD%2FA0QG2IIjSC8G0GqrGfTXYGBj93ZoAwNOo869JKyKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzF1dNiMk1yPKiuoB4q3AP4OSBQbCBNNfYSZsmi8eBlwiPM3Wf7mnLXtSvavbCOohA9DSTCsUSCQIqO3n6e%2B5cTxl5hfpSIEAzyQSSWUY6M7jRHhPYnpuk5Q4OWQxsuiGVRBUPVW1o8tloJbQ20d8JxIOVoLlVfr9Fm0Smq%2BNvEO23C%2FeR5z%2FMXQal4YctQY0A4AtcpJv2gMz0M7Tz2G21czOlCkgu9FWhL%2Fs%2ByBcgL9eCfrAb6Z9GBFjOYeAMBpBviESJR0RcV1jXdre6iKBp8rzAMxMz8hCDcwq%2Bu3EqqXRmjSYja5ZSA0iLmFJXpy%2BOCAVI3u4nXqiZS%2FpeTeYUzp1xEzN6qwj9R0bFFAaj9iD%2FRQspDSJ8PJ4VNRaF2x8%2BFcRHWoEn3S7Bw2V283bFrxt6T0RAoQe1IrdgjtIbeSqDRolAWUAJrzrCa9sTYn26NLII9F6hufXkg1cI%2BlLMp1pb4CKiyyCrLJNpz6VPjotmqeHnTrh4LmU0kL9NB9iFIqXYeX8S7YY2B6SOA3VHCJq4G2LZX0j0pWHBQbX%2B6E2555xrl%2BEWTeUQ5qs0jUhZi7BIUAwPxpHfvcRoOdQ2NQpgYWfZTc2c8gAclyK1y%2BylIk6J4RhO2bd%2BBZXU2x%2Bf2qaBnY%2FXiTohdpzDvuv%2FSBjqkATqSIL53mrGR6wFw6bZBFou2thWXXIdg2Vk48rwUteZuSLf00m62MOfLCX5Plt5n3aTFAXL1HwgTxqRPV1zKub3STJUF0F9lySzqKbz4obgPNiSzEDh5YUqwEkAI6qqBPMDwpqOVN3vGWlI19mahA0hQaydu1ePrJesy6s3ErDfJwe7S67yxspoOY6UYh7tt47v%2BZcumTG6UIbnlnol9igdf8%2B%2B9&X-Amz-Signature=50592234a8f76ba2a1ecd63338bc73b137558bfe9f2661d3e21b98fbd9e13bcf&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1f114d0b-b817-4814-8b3f-784dfc6ce2e2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S5ZTXHAV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225137Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDWT5V20b%2Fmiw5UXd%2F%2B1b1C9YS7vt8QMaPuu9jOLTrpVgIhAOnD%2FA0QG2IIjSC8G0GqrGfTXYGBj93ZoAwNOo869JKyKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzF1dNiMk1yPKiuoB4q3AP4OSBQbCBNNfYSZsmi8eBlwiPM3Wf7mnLXtSvavbCOohA9DSTCsUSCQIqO3n6e%2B5cTxl5hfpSIEAzyQSSWUY6M7jRHhPYnpuk5Q4OWQxsuiGVRBUPVW1o8tloJbQ20d8JxIOVoLlVfr9Fm0Smq%2BNvEO23C%2FeR5z%2FMXQal4YctQY0A4AtcpJv2gMz0M7Tz2G21czOlCkgu9FWhL%2Fs%2ByBcgL9eCfrAb6Z9GBFjOYeAMBpBviESJR0RcV1jXdre6iKBp8rzAMxMz8hCDcwq%2Bu3EqqXRmjSYja5ZSA0iLmFJXpy%2BOCAVI3u4nXqiZS%2FpeTeYUzp1xEzN6qwj9R0bFFAaj9iD%2FRQspDSJ8PJ4VNRaF2x8%2BFcRHWoEn3S7Bw2V283bFrxt6T0RAoQe1IrdgjtIbeSqDRolAWUAJrzrCa9sTYn26NLII9F6hufXkg1cI%2BlLMp1pb4CKiyyCrLJNpz6VPjotmqeHnTrh4LmU0kL9NB9iFIqXYeX8S7YY2B6SOA3VHCJq4G2LZX0j0pWHBQbX%2B6E2555xrl%2BEWTeUQ5qs0jUhZi7BIUAwPxpHfvcRoOdQ2NQpgYWfZTc2c8gAclyK1y%2BylIk6J4RhO2bd%2BBZXU2x%2Bf2qaBnY%2FXiTohdpzDvuv%2FSBjqkATqSIL53mrGR6wFw6bZBFou2thWXXIdg2Vk48rwUteZuSLf00m62MOfLCX5Plt5n3aTFAXL1HwgTxqRPV1zKub3STJUF0F9lySzqKbz4obgPNiSzEDh5YUqwEkAI6qqBPMDwpqOVN3vGWlI19mahA0hQaydu1ePrJesy6s3ErDfJwe7S67yxspoOY6UYh7tt47v%2BZcumTG6UIbnlnol9igdf8%2B%2B9&X-Amz-Signature=667dcc76a597c24717bc86b75f3252dcebfa0e8e398bf862747e25f068ee7ce4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么接下来我们继续来讲咱们这个 DSL 的搜索。那么这节我们来看一下查询所有的话如何去做。那么我们先这样子再开一个新的 tab 页，那么在这里面我们写上一个 get 那么之前我们其实有操作过，就是说查询所有，那么查询所有的话，那么直接就是写上一个索引的名称，然后下划线 Doc 外加一个下划线设置。那么这个其实就是代表在我们当前 shop 这个索引里面，要去查询所有的内容，点击 send 好，OK那么这样子他就可以把我们的数据都给查询出来。
+
+
+那么这是一种 query stream 的一种方式。那么除了这种方式的话，那么其实我们使用 GS 2 的话，那么我们在这里我们就可以使用它的一个关键字叫做 matcho 那么如何去写呢？那么其实也是和我们之前的类似。首先这个 query 你要写上，因为你是需要去基于查询去做的。所以在这个 query 的这个里面，内部你要去写上相应的一个关键字，因为我们查询所有是属于是归类于 query 的。那么在这里面写上一个叫做 match 那么这个就是代表是匹配所有。那么匹配所有的话，那么在这个里面其实我是不需要去加上一些额外的内容的，我只需要给他附上直接写上一个空的一个 JSON 就可以了，点击查询搜索。
+
+
+这样子，其实也是一样，那么它会命中总共是有 12 条数据，在这里面全部都有。那么这种方式其实和我们使用这种 get 方式其实一模一样的。Ok 。那么当然可能会有同学会说就是说使用 get 这么简单的话，那么使用 get 不就可以去替换掉我们这种 GS 2 的摄取这种方式吗？那么其实还是和我们之前所说的一样。就是说你使用这种色持的话，就是说你虽然你初期可能使用 get 方式会比较简单，你就只有一个 URL 发送过去就可以了。但是如果说你要给他去在后续比方说你要去给他去加上分页一些过滤等等的一些内容的话，那么你写在这个 URL 里面的话肯定会越来越复杂。
+
+
+当然你使用这种 zsl 结构化的这种方式去做的话，肯定只会是更加的便利，而且它的一种可读性也是非常高的。所以我们使用这种 zsl 方式就可以去达到和这个一样的方式。那么去做的一个查询的所有OK 。那么当然我们还能够针对于我们的这些响应，也就是说响应的这些需要的内容去做一个自定义，我只想看某一些内容。那么现在我们这种查询方式就相当于是在我们查询数据库的时候，其实就相当于是一个 select 信号 from shop 这张表。那么如果说现在我只想返回其中的一些字段，那么我们可以这样子 select 比方说我想要一个 ID 然后我再想要一个叫做尼克 name 以及是它的一个年龄 H 那么我只想要这几个字段的话，那么其实在我们的这个里面也能够去做一个对应的设置。那么我们只需要这样子，在这里面再去加上一个叫做 source 那么就是我们之前有提到过，有讲过叫做下划线 source 因为这个东西其实是这里面的一个元数据，你看到吧是一个 source 元数据，所以在这里面这样子去定义去指定就可以了。
+
+
+那么在这边的话其实我们的这些属性，有很多个的话，那么在这里的话我们就要思考一下对吧。很明显其实你使用对象是不行的，这个对象的话你只能包含一个一项内容。所以在这边我们就应该要使用这个数组就可以了。使用数组。然后在这边比方说我现在要来一个 ID 然后我再来一个叫做 nike name 然后再来一个 H 那么我做这样的一个搜索的话，那么其实它就会把我们的响应做一个自定义。好，我把这些下面的内容给删掉，做一个查询。 OK 然后你就会发现那么现在就可以根据我们的一个定制化的一个情况，把这个 ID 尼克 name 和 age 在这边做了一个对应的展示了。OK ，我们查询的所有数据都只有这三个 field OK ，那么这样子我们就通过这种 max 奥的一种方式 max 奥外加这个 SaaS 去查询我们的所有的数据。那么当然这种方式的话，其实我们也可以通过这个 head 插件去做一个可视化的一个操作。
+
+
+那么在这个里面我们可以看一下有一个基本查询，我们这里面这个加号是可以去点的。比方说我们在这边我们现在要去搜对吧，你要去搜的话，在这边可以点击这里面去选择某一个表。其实就是我们所说的这个索引，索引这个表对吧，选择这个 shop 然后在这边会有一个 must must not 衡数的，这个我们先不用管，因为我们会提到，后面我们会具体根据这个去说的。那么这个其实就是一种组合，我们先不用管在这边，你可以直接使用这个 Mac 就可以了。在这里面其实它可以包含很多的内容，我们直接使用这个 Mac 然后在这边点击搜索，那么它就可以帮我们把这些数据全部都给搜出来。那么这些数据来看一下，总共是有 12 条命中。然后这个数据其实就是我们在这个 POS 面里面所展示的一些数据全部都是有的。然后在这边你也可以去点击这个点一下，然后是显示查询语句，那么点再一次点击搜索，那么在这边他就会把你的一些内容给搜出来。
+
+
+那么其实这个它相对来说内容比较多，比较复杂，只不过我们现在没有使用到这么多对吧？我们现在使用的其实就是一个 query 外加一个 match 里面是一个空的角色对象就可以了。像这个布网布网其实就是这种 master 所组合的。那么这个我们可以先不用了，不用的话这个其实可以忽略不看。然后在这里有一个 sort 就是排序，另外还有是阿克斯，这个的话我们都还没有用到。所以这个大家可以不用管，我们把这个激励关注在这里就可以了。
+又是一个 map 说。那么这种方式其实也就是我们的一种可视化的查询，通过这种方式也能够去看一下我们的这个记录，然后也能够看一下我们在这里面的这些搜索的这种查询的语句这种 JSON 整个格式也是可以去展示出来的。Ok 。那么然后在这里的话其实我们可以去数一下。就是说我们在这边做查询的时候，你会发现其实在这边总共是有一二三四五六七八九十，你会发现总共只有 10 条数据。那么 10 条数据但是在这里是 12 条命中，为什么会只显示 10 条数据呢？那么其实是因为这样子就是说我们的这个数据量其实会有很多，因为现在我们只有 12 条。
+
+
+那么假设我们有 120 万条的，或者说是有 1200 万条数据，那么你点击这样的一个搜索，它是不可能帮你把这些数据全部都给查出来的，因为数据量太大，你一下子查出来肯定是会有系列的影响。所以 yes 它默认会给我们做一个分页。那么默认的分页从这里能够看得出来。
+
+
+From size. 那么在这里 size 就是我们每次查询的一个数据量。那么在这里是10，也就是代表我们总共是有 10 条数据的一个数据量。OK ，然后 from from 什么意思？那么这个其实就是我们的数据开始查询的起始位置，也就是它的一个 index 下标。那么这是从第 0 条数据去查的，也就是我们的 0 设置为 0 就可以了，也就是我们数据的第一条，下标从 0 开始。然后每次分页查询了多少的条数， page size 在这里写上一个 10 就可以了。那么这个是它默认为我们去加上的。Ok 。那么当然你也可以去做一个修改，只不过我们在这边其实你能够看到，当我们在这边去做一个查询的时候，他这边不支持分页，当然你也可以去在这里写上一个五十，五十的话我们可以再来搜一下。那么这个时候你会发现总共就有 12 条腊肉，一二三四五六七八九十十一十二总共是有 12 条数据。那么在这边其实显示的数量就多了。那么这样子数量其实就是这个赛子。OK ，那么这样子其实我们数据就能够被查理出来。
+
+
+然后他说在这里其实它还会有一种格式，就是说格式有杰森还有是 CSV 都可以去看杰森的话点击搜索。那么这个数据反馈出来的内容其实就是和我们在 POS 内里面所展示内容其实是差不多的，其实它就是一种 JS 的方式。那么另外的话还能够使用这个 CSV 点击搜索看一下。那么这个数据其实也是可以看到的。
+
+
+Ok 。好OK ，我们还是使用这个 tab table 好，然后我们就可以在咱们这个里面在我们这个里面去写一下做一分页。分页只需要在我们这个 query 以及是这个下划线 source 它这个同一级的下方去定义写上一个 from 然后我们是从第 0 开始。随后我们再来一个赛子每页显示的一个记录的数量，赛子写上 10 条。好，点击搜索。Ok 。那么这样子的话其实这就是默认。那么随后如果说我现在是想要从第二页开始去看，那么第二页的话，那么这个下标我们改一下，我们改成 10 size 还是 10 点击查询。那么这样子你能够看到在这边我们现在所展示的总共是一个是隔壁老王，也就还有是 cpq 也就是 ID 对应是 1012 以及是一个1010。那么这样子其实我们就是把剩下的一些数据做了一个相应的查询，我们当然你也可以去做一个修改。比方说我下标，那么我只查五条，点击 send 那么也是可以。那么在这里面总共的数据量就是有五条。 OK 吧。那么这个其实就是通过 ES 它的一个 from 和 size 来实现的一个分页的功能。 OK 吧。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cc136407-5e42-4366-820f-8f36d5b1fb50/2020-09-17_174809.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S5ZTXHAV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225137Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDWT5V20b%2Fmiw5UXd%2F%2B1b1C9YS7vt8QMaPuu9jOLTrpVgIhAOnD%2FA0QG2IIjSC8G0GqrGfTXYGBj93ZoAwNOo869JKyKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzF1dNiMk1yPKiuoB4q3AP4OSBQbCBNNfYSZsmi8eBlwiPM3Wf7mnLXtSvavbCOohA9DSTCsUSCQIqO3n6e%2B5cTxl5hfpSIEAzyQSSWUY6M7jRHhPYnpuk5Q4OWQxsuiGVRBUPVW1o8tloJbQ20d8JxIOVoLlVfr9Fm0Smq%2BNvEO23C%2FeR5z%2FMXQal4YctQY0A4AtcpJv2gMz0M7Tz2G21czOlCkgu9FWhL%2Fs%2ByBcgL9eCfrAb6Z9GBFjOYeAMBpBviESJR0RcV1jXdre6iKBp8rzAMxMz8hCDcwq%2Bu3EqqXRmjSYja5ZSA0iLmFJXpy%2BOCAVI3u4nXqiZS%2FpeTeYUzp1xEzN6qwj9R0bFFAaj9iD%2FRQspDSJ8PJ4VNRaF2x8%2BFcRHWoEn3S7Bw2V283bFrxt6T0RAoQe1IrdgjtIbeSqDRolAWUAJrzrCa9sTYn26NLII9F6hufXkg1cI%2BlLMp1pb4CKiyyCrLJNpz6VPjotmqeHnTrh4LmU0kL9NB9iFIqXYeX8S7YY2B6SOA3VHCJq4G2LZX0j0pWHBQbX%2B6E2555xrl%2BEWTeUQ5qs0jUhZi7BIUAwPxpHfvcRoOdQ2NQpgYWfZTc2c8gAclyK1y%2BylIk6J4RhO2bd%2BBZXU2x%2Bf2qaBnY%2FXiTohdpzDvuv%2FSBjqkATqSIL53mrGR6wFw6bZBFou2thWXXIdg2Vk48rwUteZuSLf00m62MOfLCX5Plt5n3aTFAXL1HwgTxqRPV1zKub3STJUF0F9lySzqKbz4obgPNiSzEDh5YUqwEkAI6qqBPMDwpqOVN3vGWlI19mahA0hQaydu1ePrJesy6s3ErDfJwe7S67yxspoOY6UYh7tt47v%2BZcumTG6UIbnlnol9igdf8%2B%2B9&X-Amz-Signature=d595ca0ec7d23694c66eb57fffd6cbd697caa94225706407718b20ed3c14081e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

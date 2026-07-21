@@ -1,0 +1,79 @@
+---
+title: 3-8 响应式编程框架：Akka-2
+---
+
+# 3-8 响应式编程框架：Akka-2
+
+前面我们讲解的都是 Argue 这个框架本身的特点，或者它作为平台所对外展示的一些特性，以及它背后的一些基础的原理。共同的特性还包括 actor 模型本身的一些基础属性。我们了解这些有助于我们去理解 actor 模型和阿卡本身，但是在了解这些特性之外，我们需要一些更详细的信息来理解和运用，帮我们构建一个基于阿卡的系统，或者基于一个 actor 模型的系统，下面我们就来看一下 x 模型，它的一些基础操作，也就相当于作为 x 模型一般它会定义什么样的方法供外界的人来使用？第一个必不可少的。
+
+
+我不知道大家应用于你的脑海里面会是什么，我个人觉得在 Java 比较熟悉的这些同学当中，那肯定就是如何创建一个对象，对不对？相应的在 actor 系统当中，那第一件事情就是如何创建一个actor，所以说我觉得这个很好理解，这个逻辑很通，对不对？因为你要使用一个actor，就像使用一个对象，这样，你要使用这个对象之前首先要创建这个对象。但在 actor 当中原因就是你要使用actor，那你先得创建一个 actor 的实例出来。在 Java 当中，你创建一个对象，第一不开构造方法。那在 act 当中它是截然不同的一种方式，我们来看一下它是怎么创建。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f0678693-c3db-40c4-b6b3-89c2be86fb57/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VDAS77O3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC3VXRXUt4Z7WWSflUCjegBOBsb9JHEmPYYrZYKYLfgrAIhAKuOPwb5iI3YtqSesmG3tG1lECUAtLiLY8Zpi8aqZhoPKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igx8663bV2mPuMBb%2BAUq3AM%2Bl6aDBu4Mo2gr077DBmfZjNLvx1xYbCA%2By1fK8VcoVE9gHYe7lQ6DYns2lIWdt7nYob7KValUNEt%2BPTO0f1qTbRFYhGTdy5v7Vb9ARJp9Id4UVCaEYzfJPOj9g4AjAPKf65aMEYmx%2BMFZgD10ZYs580FMC6m%2FZqstkBVSi7zzcI3twkwDxCgpazG9srwFEsr8JBIVL%2BwB2rlxCLliIXPx2tHVIKJOPK1VClscahQnBg9QFZkZK7IGmRUC0Kr91yjj59u9DlZniOP9%2FagIGyeQYUhoXp9cXb0CXo4VPqNnPETQVSZ0oLkyxsWoigdZO3MlLxW64cbKcaZrMAVTJTMn1AwR2IsoUHq%2BE3FPkyMb9Wz5Tbyv5jALJNzhguyU2WIRYGaSLf3dOoLX69iT1I0wvk5tdd457CIPArTq2GSVaoDH8V4ee8mzhgaaJA1tsNAMJldPe1fmHkeV417EMBoo%2BU8GXloh7DqPq86%2FvuZxa8sVEeh9SOyLmeVc6DW913AeaNPeeMS0Trl%2Fhe0KBOJzGQl8n7O5GGkAWtnE866XOs33vCxnBg4aiK586MrnnYGuAimyWKFjnDb31JbDtvqZiBMvdlvnqXOntfoHjkVxNLh%2Fpvi9HBwy5Qrv%2BjCEu%2F%2FSBjqkAS3Nv0ZHFmqtZwBcCbXz7k%2FJlQ5MtH4IE3J19pzNN9ievGYisUpXt2gw3HuK5MgSJowUfxcchsDnE9QG%2Fq64o81hYw02L4T3zXzjs93Y8gI7%2ByJXGSaH7mmQFFz4sVDjPdfpdayil59IO9Xruxx1qPbM32hN8YVFfyS5nY4%2Fp5%2BHsK6Ag2gRzuJyvGK%2BCLKHc1HEFahW9%2FC61qsI3ND5RF%2B1D7pZ&X-Amz-Signature=5c996aa071c81b6ebba5a042613e746be161b59d5551339ada3534558eb48195&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先 answer 肯定是有创建这个过程的，这个是毫无疑问的，它的模型当中肯定是要支持创建的，但是它的创建方式就跟我们对象的创建有相似之处，也有不同之处，它其实也有很大的区别。首先来讲actor，它可以创建更多的actor，这个在之前我们讲 actor 模型的特征的时候就有讲到过这一点，一个 actor 它接受一个方法，要做响应的时候，它可以做的其中的一件事情就是创建出更多的actor，这点前面已经说过了。
+
+
+其次 actor 它创建出别的Acro，它们会形成一个层次结构，也就是说整个 actor 系统里面，它最终会构成一种层次结构，以此构成了完整的 x 系统。用户或者说开发者就是在层次结构体系之中来运行各种各样的功能，达到自己的业务需求的目的。
+
+
+我们以阿卡 actor 陈词结构为例，从这张图里面我们可以看出来，从最根结点到下面真正由用户创建这个地方，所谓的用户其实就是我们的开发者创建出不同的actor。阿卡的 actor 总是属于它的父或者是父节点，通常在阿卡当中，我们通过这种 get context 和 actor of 这两个方法来创建一个actor，但是这种 actor 创建出来之后，它并不是一个独立的actor，它是将新的一个 actor 作为类似于一个子节点的形式加入到它的父级的成员当中，比如追根溯源，那我们就会想一个问题，如果一层层的反对从最叶子的这个节点往上推，那它的根是什么？那就像我们这个图里面一样，至少在阿卡系统当中，它们都有一个共同的附节点。其实就是用户监护人，他是使用 system actor all 这样子创建出来的。
+
+
+后面我们会讲到阿卡的 actor 的pass，每一个路径和他这个 actor 人的关联关系是怎么样的，我就先不详述了，我们再来看一下代码当中创建所有的 actor 之前，卡系统的启动成功以后，已经在系统中创建了 3 个actor，至少 3 个actor，在这个地方这三个 actor 大家可以看最上面的三个节点，就是根节点，root、 user 和system。
+
+
+第三个如大家所见，在最上层的这个 root 有一个 Archa 系统中所有 actor 的父级，如果系统要停止运行的时候，最后一个停止的这样一个 actor user，那当然就是 whom is seeing 用户创建的actor，只要是用户，就是我们作为开发者或者系统和运行器后面创建出的actor。所有的这种由用户创建出来的 actor 都是属于这个父 actor 的子节点 system 就是 ACCA 这个系统内部自身它要支撑自己的运行，它需要一些其它的额外的功能，比如说系统监控什么之类的，这种就会归类于system，这就是 x 模型中的创建。
+
+
+其实简单来讲，如果以 ARCHIVE 的话，那就是他们都有一个最根的 root 节点作为所有 actor 的负，然后我们开发出来的功能的actor，对，都是属于用户actor，它的父节点就是属于user。那 AKA 系统本身有一些内部的功能工具带来actor，它都属于system。
+
+
+那记住这 3 个最重要的actor，你就知道了整个 archictor 系统运作的基础模型、层次结构在创建之后重要的是什？对于一个 at 模型来讲，相信通过前面的这些科普，嗯，这些介绍大家都知道，最重要的就是 act 能够发送消息，那毫无疑问 send 在 act 模型中是非常重要的一个功能。那这个功能第一，就像我已经强提了很多遍的这样一个道理，一个 actor 它只能通过发送消息的方式与其他 actor 进行交互。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/397ed58b-e853-4e0c-a612-d118eac3143d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VDAS77O3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC3VXRXUt4Z7WWSflUCjegBOBsb9JHEmPYYrZYKYLfgrAIhAKuOPwb5iI3YtqSesmG3tG1lECUAtLiLY8Zpi8aqZhoPKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igx8663bV2mPuMBb%2BAUq3AM%2Bl6aDBu4Mo2gr077DBmfZjNLvx1xYbCA%2By1fK8VcoVE9gHYe7lQ6DYns2lIWdt7nYob7KValUNEt%2BPTO0f1qTbRFYhGTdy5v7Vb9ARJp9Id4UVCaEYzfJPOj9g4AjAPKf65aMEYmx%2BMFZgD10ZYs580FMC6m%2FZqstkBVSi7zzcI3twkwDxCgpazG9srwFEsr8JBIVL%2BwB2rlxCLliIXPx2tHVIKJOPK1VClscahQnBg9QFZkZK7IGmRUC0Kr91yjj59u9DlZniOP9%2FagIGyeQYUhoXp9cXb0CXo4VPqNnPETQVSZ0oLkyxsWoigdZO3MlLxW64cbKcaZrMAVTJTMn1AwR2IsoUHq%2BE3FPkyMb9Wz5Tbyv5jALJNzhguyU2WIRYGaSLf3dOoLX69iT1I0wvk5tdd457CIPArTq2GSVaoDH8V4ee8mzhgaaJA1tsNAMJldPe1fmHkeV417EMBoo%2BU8GXloh7DqPq86%2FvuZxa8sVEeh9SOyLmeVc6DW913AeaNPeeMS0Trl%2Fhe0KBOJzGQl8n7O5GGkAWtnE866XOs33vCxnBg4aiK586MrnnYGuAimyWKFjnDb31JbDtvqZiBMvdlvnqXOntfoHjkVxNLh%2Fpvi9HBwy5Qrv%2BjCEu%2F%2FSBjqkAS3Nv0ZHFmqtZwBcCbXz7k%2FJlQ5MtH4IE3J19pzNN9ievGYisUpXt2gw3HuK5MgSJowUfxcchsDnE9QG%2Fq64o81hYw02L4T3zXzjs93Y8gI7%2ByJXGSaH7mmQFFz4sVDjPdfpdayil59IO9Xruxx1qPbM32hN8YVFfyS5nY4%2Fp5%2BHsK6Ag2gRzuJyvGK%2BCLKHc1HEFahW9%2FC61qsI3ND5RF%2B1D7pZ&X-Amz-Signature=b0b874ad6cac1d18b63bb56fcfc1cd29556a459b9dc9e8dca97283f4e22db3f2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+甚至可以断言说只能通过异步消息的形式与其他 actor 进行交互，因为你是同步的，就失去了我们这种响应式编程的魅力，所以基本上不大可能会出现同步的这种消息机制来支撑这种功能，如果有，那也是相当例外的一种实现，这目前我还没有见到过，大家有兴趣的可以探索一下，当然我个人觉得可能意义不是特别大，一个 actor 只能通过发送消息的方式与其他交互，就相当于在 Java 的对象中，你通过这种异步方法调用与其他的类进行交互一样。简单来讲就是你发送一个消息到别的actor，别的 actor 不仅可以得到你要传递的信息，也可以知道你的地址，在他完成计算以后，可以通过这种方式再把结果通过另外一种消息的形式发送回来。但这就是一个交互的过程。
+
+
+actor 本身是不对外开放任何状态改变的功能，这其实是对前句 send 的一个补充，就是你要改变一个 actor 的状态，几乎是没有直接的能力的，只有间接的能力，就是向他发起一个消息，不管你是要做什么，你先向他发起一个消息，在消息的响应中，也就是另外一个 x 所接收的消息以后做出的应对的逻辑当中，他会进行自己的相应处理，他如果要修改状态，他就会修改状态，他要做别的事情，那也是他本身挨个的决定的。
+
+
+因你是无法直接改变 actor 的内部状态的，就像我前面举个的例子一样，你在 Java 当中可以通过访问权限的控制来实现是否允许第三个类来改变当前内的或者对象的状态，但是在 actor 当中它是没有开放这条捷径的，所以说 actor 只能通过发送消息去控制或者去协调其他 actor 状态变化。
+
+
+消息它是非可变的 immutable 所有的这个消息它都不可以被修改，因为如果一个消息发送出去之后可以被修改，那这个消息或者消息的传递通道，或者说 actor 之间的这个信息交互就变得不可靠、不可信。因此在 actor 的模型当中，所有的消息发送一旦离开发送者，消息就不可被篡改，这一点可以让大家放心，特别是前面我有讲过。因为 act 模型天然是支持这种分布式的，那如果说你都在内存当中还好，对于他来讲攻击的手段比较少。如果说你一旦是远程的这种调用，如果说你的消息是可以被改变，那这个相当危险。所以说 actor 它本身在这模型里面设计要求就是消息一旦发出不可篡改，这一点就是从各个方面来考虑的。这样一个设计结果，一个 actor 可以向其他任何 actor 发送任何消息接收者他本身是有自己的业务逻辑判断说他是否要处理，但是他不会做这种什么内心检查。因为每个 actor 他要做出各种各样的响应消息，就是说所有的 actor 可以向任何一个 actor 发送消息，而 actor 本身并不会对消息做强行规定，说你必须要是什么样是怎么样，但是它可以根据质检的逻辑来决定说我要不要处理这个消息，也就是相当来说，消息体本身不被赋予任何强制的类型检查。但是我有办法就作为actor，它是有办法根据自己所需对消息等内容体进行检查，然后做出相应的判断和响应。
+
+
+发送消息的顺序保持在发送者和接受者之间。 at 一次接受一条消息。消息的顺序请由每个发送方来保证。对于接收者来说按照先后顺序，但是哪个先到哪个后到并不是由他来控制的，是由发送方来控制的，甚至你也无法控制，因为有很多个 actor 在向不同的 actor 发消息，所以说到底哪个先到达 actor 的邮箱，你是没有绝对的控制权的，可能会有些技巧，但是你应该是没有绝对控制权，哪个先到哪个后档，特别是分布式系统里面，明明你消息只要一旦发出去了，它什么时候到？其实你是无法控制的，只要经过网络传输，所以说你作为发送方，在分布式系统里面你要控制这个道德先后顺序是很困难的，所以对于 actor 来讲这个意义就不是那么大，它要保证的是按照街道的先后顺序处理就可以了。
+
+
+所以说你说这个顺序到底怎么来控制，本身其实没有特别大的意义，因为每一个 actor 接收的消息都是千奇百怪、五花八门的，它怎么能保证这个先后顺序？不同的系统发送有的是相当于一个本地调用，有的可能是一个远程调用一样，所以这种控制起来本身就不现实。
+
+
+下面我们也讲到这一个操作，或者这个方法其实跟我们前面讲的这个消息类型是有一定关联性，我为大家来分析一下，这是一个 b 抗，如果对有限状态机都很熟悉的同学，就马上想到这个玩意儿肯定是跟状态机有关的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d7143d36-76ed-462f-8eb9-55a190b74ec4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VDAS77O3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC3VXRXUt4Z7WWSflUCjegBOBsb9JHEmPYYrZYKYLfgrAIhAKuOPwb5iI3YtqSesmG3tG1lECUAtLiLY8Zpi8aqZhoPKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igx8663bV2mPuMBb%2BAUq3AM%2Bl6aDBu4Mo2gr077DBmfZjNLvx1xYbCA%2By1fK8VcoVE9gHYe7lQ6DYns2lIWdt7nYob7KValUNEt%2BPTO0f1qTbRFYhGTdy5v7Vb9ARJp9Id4UVCaEYzfJPOj9g4AjAPKf65aMEYmx%2BMFZgD10ZYs580FMC6m%2FZqstkBVSi7zzcI3twkwDxCgpazG9srwFEsr8JBIVL%2BwB2rlxCLliIXPx2tHVIKJOPK1VClscahQnBg9QFZkZK7IGmRUC0Kr91yjj59u9DlZniOP9%2FagIGyeQYUhoXp9cXb0CXo4VPqNnPETQVSZ0oLkyxsWoigdZO3MlLxW64cbKcaZrMAVTJTMn1AwR2IsoUHq%2BE3FPkyMb9Wz5Tbyv5jALJNzhguyU2WIRYGaSLf3dOoLX69iT1I0wvk5tdd457CIPArTq2GSVaoDH8V4ee8mzhgaaJA1tsNAMJldPe1fmHkeV417EMBoo%2BU8GXloh7DqPq86%2FvuZxa8sVEeh9SOyLmeVc6DW913AeaNPeeMS0Trl%2Fhe0KBOJzGQl8n7O5GGkAWtnE866XOs33vCxnBg4aiK586MrnnYGuAimyWKFjnDb31JbDtvqZiBMvdlvnqXOntfoHjkVxNLh%2Fpvi9HBwy5Qrv%2BjCEu%2F%2FSBjqkAS3Nv0ZHFmqtZwBcCbXz7k%2FJlQ5MtH4IE3J19pzNN9ievGYisUpXt2gw3HuK5MgSJowUfxcchsDnE9QG%2Fq64o81hYw02L4T3zXzjs93Y8gI7%2ByJXGSaH7mmQFFz4sVDjPdfpdayil59IO9Xruxx1qPbM32hN8YVFfyS5nY4%2Fp5%2BHsK6Ag2gRzuJyvGK%2BCLKHc1HEFahW9%2FC61qsI3ND5RF%2B1D7pZ&X-Amz-Signature=b4306267af069858419e327c89830c5a24dae7836b1b20ebb64e401ace54a813&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+没错，确实是这样子的。简单来说，一个 actor 它可以处理很多很多的事情，但是它在什么情况下处理什么，做出什么响应，其实是可以通过状态机来控制的。也就是说当一个actor，它在某一种状态下，它可能对 a 消息进行响应，做 b 这样一件事情，可能在另外一种状态下，它经过 become 这种变化以后，那只接受另外一种消息逻辑，他只处理那一种消息，这就是通过 become 这种行为来改变 x 的状态，进而在改变他接受消息之后做出的各种响应。
+
+
+前面也有讲过，因为 actor 他一次只接受一条消息，所以说不存在这种锁征用这个对于实现状态机来讲也是相当友好。 actor 就是通过这种 become 的行为来改变自己当前 actor 的一些状态，进而改变 actor 对外界消息的一个行为。简单来说有一个状态机来控制这个 actor 内部的行为，或者说他对哪种消息进行一个响应和怎么响应。
+
+
+假如说我们有一个万能的锅，当这个锅里面放的是不同的东西的时候，它产出的东西是不一样的，你可以有各种不同的开关来控制它。你比如说有一个按钮，一按首先是煮饭模式，那它就可以煮出一个白米饭。如果说像这个炒菜模式，它就可以炒出一个菜，也就是这样子一些道理，我们可以通过状态机来控制 actor 对外间消息的响应，这就是 become 存在的意义。
+
+
+在讲到 actor 的创建，我们有讲到层次结构，我们讲过不光只是存在这样一个父子关系而已，它更重要的是存在一种监控的能力，所有的子都是需要被赋来管理的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/41d6121f-55b6-414c-a32a-375d193c764a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VDAS77O3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC3VXRXUt4Z7WWSflUCjegBOBsb9JHEmPYYrZYKYLfgrAIhAKuOPwb5iI3YtqSesmG3tG1lECUAtLiLY8Zpi8aqZhoPKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igx8663bV2mPuMBb%2BAUq3AM%2Bl6aDBu4Mo2gr077DBmfZjNLvx1xYbCA%2By1fK8VcoVE9gHYe7lQ6DYns2lIWdt7nYob7KValUNEt%2BPTO0f1qTbRFYhGTdy5v7Vb9ARJp9Id4UVCaEYzfJPOj9g4AjAPKf65aMEYmx%2BMFZgD10ZYs580FMC6m%2FZqstkBVSi7zzcI3twkwDxCgpazG9srwFEsr8JBIVL%2BwB2rlxCLliIXPx2tHVIKJOPK1VClscahQnBg9QFZkZK7IGmRUC0Kr91yjj59u9DlZniOP9%2FagIGyeQYUhoXp9cXb0CXo4VPqNnPETQVSZ0oLkyxsWoigdZO3MlLxW64cbKcaZrMAVTJTMn1AwR2IsoUHq%2BE3FPkyMb9Wz5Tbyv5jALJNzhguyU2WIRYGaSLf3dOoLX69iT1I0wvk5tdd457CIPArTq2GSVaoDH8V4ee8mzhgaaJA1tsNAMJldPe1fmHkeV417EMBoo%2BU8GXloh7DqPq86%2FvuZxa8sVEeh9SOyLmeVc6DW913AeaNPeeMS0Trl%2Fhe0KBOJzGQl8n7O5GGkAWtnE866XOs33vCxnBg4aiK586MrnnYGuAimyWKFjnDb31JbDtvqZiBMvdlvnqXOntfoHjkVxNLh%2Fpvi9HBwy5Qrv%2BjCEu%2F%2FSBjqkAS3Nv0ZHFmqtZwBcCbXz7k%2FJlQ5MtH4IE3J19pzNN9ievGYisUpXt2gw3HuK5MgSJowUfxcchsDnE9QG%2Fq64o81hYw02L4T3zXzjs93Y8gI7%2ByJXGSaH7mmQFFz4sVDjPdfpdayil59IO9Xruxx1qPbM32hN8YVFfyS5nY4%2Fp5%2BHsK6Ag2gRzuJyvGK%2BCLKHc1HEFahW9%2FC61qsI3ND5RF%2B1D7pZ&X-Amz-Signature=65f969c448dafa026bde7d455b65c948bc12990b02746a9f6cdc168e5ff5cfee&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+大家还记不得我之前在讲这个成绩结构里面有讲过root，它是所有的，不管是 system 还是 user 下面创建出来的 excellent 终极副节点，而系统在关闭一个正常的，不是指异常退出的，比如停电的这种，在正常停止一个阿卡这种 actor 系统里面，它是最容易被关闭的，这是为什么呢？就是因为在这种 actor 模型系统里面，上级也就是父类或者父节点，他对子节点是具有监控责任的，也就相当于说在家庭当中，父母亲是要监管儿女的行为的，这个小朋友不听话是不是要教育他一下？在这里就是如果这个 answer 的状态不正常的时候，是不是需要重新恢复它，重新启动它？类似于这么一个意思，也就是所有的 actor 对其子的actor，它富有监管的作用，要管理它supervisor，actor，也就是说父的节点当然可以层层往上推，它可以决定它的子的 actor 出现问题的时候，它采用什么样的故障处理措施。
+
+
+这是前面我讲的是不是要从某一种特定的错误状态中恢复过来，还是直接从启他，还是就将他置之不理？这个都是可以由 supervisor 决定的。在你的家庭当中，你的父母作为你的监护人，他会替你做很多决定，就是一样的道理。比如说你成绩考得好，是奖励你出国玩一趟，还是奖励吃一个草鸡蛋，这是一种，对吧？如果说成绩不好，是把你体罚一顿，还是帮助你进步，这都是它来决定。那在这个 supervisor 里面， actor 这种模型的 supervisor 里面，就是我前面讲的，它就会决定这个 actor 出问题的时候，是重新从失败的状态中恢复到正常状态，还是直接就把它重启完事儿，这都是有可能的。还有一种特殊的消息可以通知监护的这actor，它会告诉它说某个 actor 它已经 crush 了，就已经崩溃了，而且也会告诉它是什么原因崩溃的，以方便监控的actor。据监护者的这 actor 他做出相应的措施，也就是前面讲到一系列的措施是哪些这个监护的 actor 它可以决定是否要重启这个actor，或者直接让这个 actor 退出整个服务，也就是说整个监护的 actor 它有子的 actor 的生命周期的管理权限，当然这个到底应该做什么？这是完全由这个supervisor，也就是我们的监护 actor 来做决定的。
+
+
+那作为开发人员，那你就可以根据前面提到的这种消息通知机制来决定，是直接重启这个崩溃的actor，还是就让他退出服务，这都是可以的。这就具体逻辑、具体分析、具体应用了，这个没有统一的标准。
+

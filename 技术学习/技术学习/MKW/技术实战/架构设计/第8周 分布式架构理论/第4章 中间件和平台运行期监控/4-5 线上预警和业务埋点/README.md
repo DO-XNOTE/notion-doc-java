@@ -1,0 +1,120 @@
+---
+title: 4-5 线上预警和业务埋点
+---
+
+# 4-5 线上预警和业务埋点
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/70f6d6ed-01ff-4ea7-93c7-6869a78b9048/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666CWTBYCK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230731Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDgRZOP9ZqGY0K2fdeepvIdaHzgDbQQA5Du%2FeqQI1jZlAiEAngMUgz2y0S8W5hLYYRwddZeAkfXUQb9iUaev%2F2uGACUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGUn%2B9J9urkL6T%2BNEyrcA2j9v6DuH0jqq0Fq8pseefMCYSFnx%2Bh0OYxHxo%2FEUeFIxMYziB8XGe7E%2B8u%2BMfDJz5v8FuyXhOszYwXHaCHYV6E0naPdG9M0KInK1zj4bk45HnSzQfz%2B4gC95qFtr2pCJX%2FmbYNEt1zEAuLWipe7hyo13MYvdz0N%2B8XOsVPqw3SDkTDl6HqFFoQem3f9IWIdBgKDxZhYQhkVbAhsu7QszzSFCZiXBeAuYWMgKzfVxiSExnZv7fT7tBncHE1gWst35AyvbCb93SWwO4Ag2K46%2FfqIxt21QQaGMieMm7OnOUb%2BE3lyJWSVGJP2FEDIWg2D%2FBzCYj6c1mDPXxg0f7gPV1P%2FXQdODk1UAX%2FHrdxHumnWD4HN9k%2FY3NY6TyD6dAxSDu2CdR64JqgcBZR8EzN1XgOpDj%2BGgLp77XfVFlbqNd4cd8V2MgwYlPwAW4M9jvBPJqX1rf3obdZyk0xS466AO%2Fy6OZAgPXRlBzpUsMi7kD3dRi35hOIeJlu6ycx4kvETx7E7nZ4s8irEOCP7wVbUjEb1YUtoCBvilu8Wk4oAN2kMQIgpo0jEpY2KTs8Y4GXmtqyO%2BLKUJ3tB3kBmXN1SIos855rD3AXVxEzp6CHRV52tH00kaJwD3WgcieJvMKO3%2F9IGOqUBUXZ1wcowSa2Xt45hR2pe73UxiUkNPrslAe1yln%2BlfcqVAAtO7NkxPw%2FOaXGnH8Rh9dIp5VNGqU3nochSI28lYmHlepuxXpqSkiv2oVmVCWDImDzenbk6Htk%2F%2Bga%2Bh492eZzECBLqzypTOlxi3e90LCzJjHZ5KdG%2F9%2Bhxm91S2oUVLMvOqu5PuX8WNa3HFBRx%2B7TT6u4cJN2Vv50NOp5x2v9c7WGI&X-Amz-Signature=3f5965edd4ac8cd44d402341df1c861fee4ed757ba3b4461da04c53e5fd23654&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/817bac2c-c7be-4db3-97fc-62cb02057800/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666CWTBYCK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230731Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDgRZOP9ZqGY0K2fdeepvIdaHzgDbQQA5Du%2FeqQI1jZlAiEAngMUgz2y0S8W5hLYYRwddZeAkfXUQb9iUaev%2F2uGACUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGUn%2B9J9urkL6T%2BNEyrcA2j9v6DuH0jqq0Fq8pseefMCYSFnx%2Bh0OYxHxo%2FEUeFIxMYziB8XGe7E%2B8u%2BMfDJz5v8FuyXhOszYwXHaCHYV6E0naPdG9M0KInK1zj4bk45HnSzQfz%2B4gC95qFtr2pCJX%2FmbYNEt1zEAuLWipe7hyo13MYvdz0N%2B8XOsVPqw3SDkTDl6HqFFoQem3f9IWIdBgKDxZhYQhkVbAhsu7QszzSFCZiXBeAuYWMgKzfVxiSExnZv7fT7tBncHE1gWst35AyvbCb93SWwO4Ag2K46%2FfqIxt21QQaGMieMm7OnOUb%2BE3lyJWSVGJP2FEDIWg2D%2FBzCYj6c1mDPXxg0f7gPV1P%2FXQdODk1UAX%2FHrdxHumnWD4HN9k%2FY3NY6TyD6dAxSDu2CdR64JqgcBZR8EzN1XgOpDj%2BGgLp77XfVFlbqNd4cd8V2MgwYlPwAW4M9jvBPJqX1rf3obdZyk0xS466AO%2Fy6OZAgPXRlBzpUsMi7kD3dRi35hOIeJlu6ycx4kvETx7E7nZ4s8irEOCP7wVbUjEb1YUtoCBvilu8Wk4oAN2kMQIgpo0jEpY2KTs8Y4GXmtqyO%2BLKUJ3tB3kBmXN1SIos855rD3AXVxEzp6CHRV52tH00kaJwD3WgcieJvMKO3%2F9IGOqUBUXZ1wcowSa2Xt45hR2pe73UxiUkNPrslAe1yln%2BlfcqVAAtO7NkxPw%2FOaXGnH8Rh9dIp5VNGqU3nochSI28lYmHlepuxXpqSkiv2oVmVCWDImDzenbk6Htk%2F%2Bga%2Bh492eZzECBLqzypTOlxi3e90LCzJjHZ5KdG%2F9%2Bhxm91S2oUVLMvOqu5PuX8WNa3HFBRx%2B7TT6u4cJN2Vv50NOp5x2v9c7WGI&X-Amz-Signature=e93622faae36b7daf8fc9f49754a8d4149bdbff7f86fc8bba0ac82151fd23c93&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，我们课网的各位同学们大家好，我是姚半线。咱这一节呢，来聊一聊如何在线上对你的应用程序做小动作。咱的这个小动作具体指的是什么呢？哎，那就是我们在链路追踪环节当中的预警，系统预警以及业务的埋点。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3dd15ecc-13d8-4c65-9d31-fbe99b8f029d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666CWTBYCK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230731Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDgRZOP9ZqGY0K2fdeepvIdaHzgDbQQA5Du%2FeqQI1jZlAiEAngMUgz2y0S8W5hLYYRwddZeAkfXUQb9iUaev%2F2uGACUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGUn%2B9J9urkL6T%2BNEyrcA2j9v6DuH0jqq0Fq8pseefMCYSFnx%2Bh0OYxHxo%2FEUeFIxMYziB8XGe7E%2B8u%2BMfDJz5v8FuyXhOszYwXHaCHYV6E0naPdG9M0KInK1zj4bk45HnSzQfz%2B4gC95qFtr2pCJX%2FmbYNEt1zEAuLWipe7hyo13MYvdz0N%2B8XOsVPqw3SDkTDl6HqFFoQem3f9IWIdBgKDxZhYQhkVbAhsu7QszzSFCZiXBeAuYWMgKzfVxiSExnZv7fT7tBncHE1gWst35AyvbCb93SWwO4Ag2K46%2FfqIxt21QQaGMieMm7OnOUb%2BE3lyJWSVGJP2FEDIWg2D%2FBzCYj6c1mDPXxg0f7gPV1P%2FXQdODk1UAX%2FHrdxHumnWD4HN9k%2FY3NY6TyD6dAxSDu2CdR64JqgcBZR8EzN1XgOpDj%2BGgLp77XfVFlbqNd4cd8V2MgwYlPwAW4M9jvBPJqX1rf3obdZyk0xS466AO%2Fy6OZAgPXRlBzpUsMi7kD3dRi35hOIeJlu6ycx4kvETx7E7nZ4s8irEOCP7wVbUjEb1YUtoCBvilu8Wk4oAN2kMQIgpo0jEpY2KTs8Y4GXmtqyO%2BLKUJ3tB3kBmXN1SIos855rD3AXVxEzp6CHRV52tH00kaJwD3WgcieJvMKO3%2F9IGOqUBUXZ1wcowSa2Xt45hR2pe73UxiUkNPrslAe1yln%2BlfcqVAAtO7NkxPw%2FOaXGnH8Rh9dIp5VNGqU3nochSI28lYmHlepuxXpqSkiv2oVmVCWDImDzenbk6Htk%2F%2Bga%2Bh492eZzECBLqzypTOlxi3e90LCzJjHZ5KdG%2F9%2Bhxm91S2oUVLMvOqu5PuX8WNa3HFBRx%2B7TT6u4cJN2Vv50NOp5x2v9c7WGI&X-Amz-Signature=db28bc9b35374ae3309ec5c2bcc20c7fdd67c6eb1182c65a6f5e3cd51df89e4e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那预警相信大部分同学都比较熟悉，那埋点来说相对会比较陌生一点。那我们这一节就先从预警开始，跟大家一起去看一下咱这个线上系统的监控预警一般会从哪些维度来进行。
+
+
+设置警钟长鸣，咱这个警察办案也得靠线索，我们这个监控预警一样也需要通过一些线索来触发这个警报。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6d198f7a-cb72-4a2d-8840-52e362f44a00/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666CWTBYCK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230731Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDgRZOP9ZqGY0K2fdeepvIdaHzgDbQQA5Du%2FeqQI1jZlAiEAngMUgz2y0S8W5hLYYRwddZeAkfXUQb9iUaev%2F2uGACUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGUn%2B9J9urkL6T%2BNEyrcA2j9v6DuH0jqq0Fq8pseefMCYSFnx%2Bh0OYxHxo%2FEUeFIxMYziB8XGe7E%2B8u%2BMfDJz5v8FuyXhOszYwXHaCHYV6E0naPdG9M0KInK1zj4bk45HnSzQfz%2B4gC95qFtr2pCJX%2FmbYNEt1zEAuLWipe7hyo13MYvdz0N%2B8XOsVPqw3SDkTDl6HqFFoQem3f9IWIdBgKDxZhYQhkVbAhsu7QszzSFCZiXBeAuYWMgKzfVxiSExnZv7fT7tBncHE1gWst35AyvbCb93SWwO4Ag2K46%2FfqIxt21QQaGMieMm7OnOUb%2BE3lyJWSVGJP2FEDIWg2D%2FBzCYj6c1mDPXxg0f7gPV1P%2FXQdODk1UAX%2FHrdxHumnWD4HN9k%2FY3NY6TyD6dAxSDu2CdR64JqgcBZR8EzN1XgOpDj%2BGgLp77XfVFlbqNd4cd8V2MgwYlPwAW4M9jvBPJqX1rf3obdZyk0xS466AO%2Fy6OZAgPXRlBzpUsMi7kD3dRi35hOIeJlu6ycx4kvETx7E7nZ4s8irEOCP7wVbUjEb1YUtoCBvilu8Wk4oAN2kMQIgpo0jEpY2KTs8Y4GXmtqyO%2BLKUJ3tB3kBmXN1SIos855rD3AXVxEzp6CHRV52tH00kaJwD3WgcieJvMKO3%2F9IGOqUBUXZ1wcowSa2Xt45hR2pe73UxiUkNPrslAe1yln%2BlfcqVAAtO7NkxPw%2FOaXGnH8Rh9dIp5VNGqU3nochSI28lYmHlepuxXpqSkiv2oVmVCWDImDzenbk6Htk%2F%2Bga%2Bh492eZzECBLqzypTOlxi3e90LCzJjHZ5KdG%2F9%2Bhxm91S2oUVLMvOqu5PuX8WNa3HFBRx%2B7TT6u4cJN2Vv50NOp5x2v9c7WGI&X-Amz-Signature=b54e71e503201cd8b21dbf853c48085d12891f11c72fed98bfa52f16af61fd12&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那线索从哪里来？这里就靠我们的日志收集的系统。通常我们这里的线上预警，咱抛开硬件层面的那些 CPU 线程数之类的预警，我们单从系统业务层面来说，那我们如何依靠业务层打出了日志来做监控预警？它有哪些的维度？我们这里首先最重要的一个维度就是利用这个监控预警保障我们的核心主链路。那打个比方，咱的这个订单交易绝对是一个系统当中核心中的核心，那么对于这些核心链路，我们通常有一些业务量的阈值的估计，比如说我对你的订单业务量有一个每分钟的订单量的估计，那同样交易系统也有每 5 秒钟、每 10 秒钟的业务量估计，那对于一些大体量的业务来说，你的订单和交易的产生速率是相对平滑的一个曲线，那么就非常容易的去做一个业务量的阈值的估算。
+
+
+比如说在日间的正常时间，那我可以做一个每分钟的信息采集，我们在下单成功和交易成功的时候，同时会打上一行日志，一行比较有针对性的一行日志，那我们这里可以采用至收集系统去专门的采集这种特征量。如果我发现你每分钟该日志的出现次数小于一个指定的阈值，那么我认为你的业务系统可能出现了一些不可预知的异常情况，那它是咱线上链路监控最常见的一个应用手段，那除此之外，我们通常还会去监控一些异常的拐点。黎醇点什么意思？比方说我当前的订单系统或者交易系统，我平均每秒钟有大概 500 笔单量的这样一个业务量，OK，那它是一个正常的一个曲线，再往前走，那突然间你在某一秒，或者我们把这个时间窗口设大一点，每 10 秒钟你的单量出现一个急剧降低或者急剧增高的情况，那么这种情况叫异常的拐点，或者我们叫它离群点。那离群点的数据就像那种黑夜中的萤火虫一样耀眼，那它不一定能说明你的系统一定处于异常，但是总归可能发生了一些情况，需要去人工排查。
+
+
+那通常来讲，我们的拐点和离群点，它与正常你平稳的流量会有一个比较大的偏差的设置，这样一来可以减少误报，比较有针对性的发现那种拐点非常大，非常离谱的一些离群点。
+
+
+OK，那除了在业务交易链路当中做这样的线上监控设置以外，那我们通常来讲还会对线上的异常情况做一个监控。比如说老师以前做商品发布的业务，那么对于商品发布来说，你总是有接口的失败率的，那这个失败有可能是你前端提交的数据验证没有通过，那这个叫做正常的失败。但是对于你们在这个业务过程当中发生的 runtime exception，或者因为各种网络原因捕捉到的不可恢复的那种异常错误，那通常来讲我们 try catch 捕捉到的这种错误会打一行 error lock，那在一些核心链路当中，我们特别关照这种 error lock，比如说老师在之前的商品发布业务的接口当中设置了这样一条日常异常的监控，如果你的商品发布每分钟大于 10 个失败率，那么这种情况下有可能是你的上游或者下游系统发生了一些异常。比如说你商品发布的时候，你的库存中心这里挂掉了，导致商品发布失败等等。那对于这种维度来说，我们通常在主链路层面也需要对它的异常情况把它给监控起来。OK，那这里是一个监控维度。
+
+
+另外一个还有一个非常重要的指标，你的核心接口的性能基线。什么是性能基线？比如说我们的商品详情页，那这是一个非常重的接口，它会从各种上下游服务当中去聚合信息，然后统一的封装打包返回给前端手机APP，那这种接口我们通常对它的性能基线要求得非常的严格，那么如果它的平均 r t 就是 response time，也就是响应时间，假如它大于了 1000 毫秒，那通常这种情况下要么是网络阻塞，要么呢？可能是你的限流规则没有配置好，或者是你的熔断降级没有做很好的规划，导致你的接口它承载的访问压力比较大，那因此它对应的响应时间被拉长。那我们对核心接口的性能基线有非常严格的要求，因为通常来讲，你的核心接口是你主链路当中不可或缺的一环，那么我们对主链路上的这些接口都要做到关怀备至，把这种各种的监控给它加上去。
+
+
+通常我们现在比较常用的一些线上的日志组件，它都可以满足这样的需求，比如说像收费版的 Splunk 或者是 Kibana 这种开源的日志查询系统，那它都可以去集成一些监控预警、报警的控件，来达到这样的预警的效果。OK，那对于咱的这个线上监控预警，咱发生了之后，你要通知到对应的开发团队来做排查。
+
+
+那么这里我们在一些大型项目或者是大厂当中，我们通常是这样的几种路子，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/19592fc5-0d12-49d6-a646-82895bf95518/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666CWTBYCK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230731Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDgRZOP9ZqGY0K2fdeepvIdaHzgDbQQA5Du%2FeqQI1jZlAiEAngMUgz2y0S8W5hLYYRwddZeAkfXUQb9iUaev%2F2uGACUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGUn%2B9J9urkL6T%2BNEyrcA2j9v6DuH0jqq0Fq8pseefMCYSFnx%2Bh0OYxHxo%2FEUeFIxMYziB8XGe7E%2B8u%2BMfDJz5v8FuyXhOszYwXHaCHYV6E0naPdG9M0KInK1zj4bk45HnSzQfz%2B4gC95qFtr2pCJX%2FmbYNEt1zEAuLWipe7hyo13MYvdz0N%2B8XOsVPqw3SDkTDl6HqFFoQem3f9IWIdBgKDxZhYQhkVbAhsu7QszzSFCZiXBeAuYWMgKzfVxiSExnZv7fT7tBncHE1gWst35AyvbCb93SWwO4Ag2K46%2FfqIxt21QQaGMieMm7OnOUb%2BE3lyJWSVGJP2FEDIWg2D%2FBzCYj6c1mDPXxg0f7gPV1P%2FXQdODk1UAX%2FHrdxHumnWD4HN9k%2FY3NY6TyD6dAxSDu2CdR64JqgcBZR8EzN1XgOpDj%2BGgLp77XfVFlbqNd4cd8V2MgwYlPwAW4M9jvBPJqX1rf3obdZyk0xS466AO%2Fy6OZAgPXRlBzpUsMi7kD3dRi35hOIeJlu6ycx4kvETx7E7nZ4s8irEOCP7wVbUjEb1YUtoCBvilu8Wk4oAN2kMQIgpo0jEpY2KTs8Y4GXmtqyO%2BLKUJ3tB3kBmXN1SIos855rD3AXVxEzp6CHRV52tH00kaJwD3WgcieJvMKO3%2F9IGOqUBUXZ1wcowSa2Xt45hR2pe73UxiUkNPrslAe1yln%2BlfcqVAAtO7NkxPw%2FOaXGnH8Rh9dIp5VNGqU3nochSI28lYmHlepuxXpqSkiv2oVmVCWDImDzenbk6Htk%2F%2Bga%2Bh492eZzECBLqzypTOlxi3e90LCzJjHZ5KdG%2F9%2Bhxm91S2oUVLMvOqu5PuX8WNa3HFBRx%2B7TT6u4cJN2Vv50NOp5x2v9c7WGI&X-Amz-Signature=d68176fc3fef6a6d6a5dc596527aa4d2b5699f4390bcabdea9fde38a3d0209ef&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+比如说像外企里面非常喜欢用一个工具叫slack，那 slack 就像是微信、 QQ 一样，但是它是在 it 公司里面应用比较广泛的工作交流的一个软件。那通常我们会把你的消息发送到 slack 或者是微软的 link teams 这种即时聊天工具当中，那它都有相应的插件可以去来集成，那除此以外，我们还会设置一些邮件组，比方说把一些相关的重要人士，相关人士加到一个邮件的一个邮件组，那么在监控预警被触发的时候，我们给这些人发送一封八百里加急，告诉他订单系统告急请立即支援类似这样的消息。
+
+```java
+PagerDuty 是一个事件管理平台，主要用于监控告警和数字化运营管理。它提供可靠的通知、自动升级、随叫随到调度等功能，帮助团队快速检测和修复基础设施问题。在关键时刻，PagerDuty 能够自动化、编排和加速响应，以确保数字基础设施的连续运行和用户体验的优化[1][2]。
+
+### 如何使用 PagerDuty：
+
+1. **集成方式**:
+   - 配置代理：通过 agent 方式与监控工具集成，如 Linux 系统。
+   - 通过电子邮件集成：如果与此服务集成的工具可以发送电子邮件，则可以创建集成电子邮件地址。
+   - 直接调用 API：直接与 PagerDuty 平台进行交互，无需中间代理或邮件系统[1].
+
+2. **响应电话通知**:
+   - PagerDuty 提供了按键回复电话通知的功能，用户可以按照提示（如承认、解决、升级等）回复，以便快速处理事件[1].
+
+3. **通知捆绑**:
+   - 当在一分钟内通知量急剧增加时，PagerDuty 会将多个同时发生的事件汇总或捆绑到一个汇总通知中，以避免警报疲劳[1].
+
+4. **自动化和协调工作**:
+   - PagerDuty 的平台能够将机器数据、人类行为数据、工作流信息和业务指标相结合，在几秒钟内自动化和协调关键任务工作，确保合适的人在合适的时间处理合适的问题或机会[2].
+
+5. **全球客户支持**:
+   - PagerDuty 支持全球客户，能够将事件通知发送到客户所在地，以确保即使在不同时区也有快速的响应[4].
+
+通过上述方法，用户可以有效地使用 PagerDuty 来管理和响应事件，确保数字基础设施的安全和可靠性。
+
+Citations:
+[1] https://blog.csdn.net/william_n/article/details/106387198
+[2] https://www.sohu.com/a/506209476_121123928
+[3] https://www.zhihu.com/question/32084832
+[4] https://bird.com/zh/customers/pagerduty
+[5] https://www.youtube.com/watch?v=9ghv4T-7Etc
+[6] https://hongcloudtech.com/pagerduty/
+[7] https://www.kpp798.com/faq/
+[8] https://developer.aliyun.com/ask/422160
+[9] https://flashcat.cloud/docs/content/flashcat-monitor/nightingale-v6/quickstart/1/
+[10] https://m.kpp798.com/response/before/different_roles/
+```
+
+
+OK，那国内公司比较偏向用什么呀？呦，我这里就要吐槽了，比方说咱大阿里非常喜欢用这个东西，大家一看就是冷汗都冒了出来，叫叮叮，叮叮很厉害，它有一个非常厉害的招式叫夺命三连钉。夺命三连丁分别叫丁一下、丁一下，还有丁一下，那我们各个阿里系的业务方深受其害，线上预警发生了之后，那会集成钉钉的插件在应用里钉你一下，接着在短信里钉你一下，最后再在电话里打一封自动电话叮你一下。那这是践行国内 it PUA 精神的一个得心应手的神器。
+
+
+叮叮，荣登员工离职后最想谢责的软件榜排行榜第一名。好，那在一些相对制度比较完善的大厂里面，我们这里还会设置一些叫 Pager duty 的机制，那就是一个轮班线上支持的这样一种响应机制。那后面章节当中我会跟大家去来稍微介绍一下。OK，那与线上监控对应的还有一个比较相似的概念，叫做业务的买点。
+
+那业务埋点，讲白了说就是在你的**业务执行过程当中预先埋置一些线索，以待后期排查。做什么排查？比如说我们做一些审计相关的排查**，
+
+
+
+那对你的关键资源的一些操作，比如说你的后台的运营小二，或者是你的财务人员、市场人员等等，对你的商户资源做了一些非常关键的操作。比方说你给一个商户添加了限制收款的功能，或者是解除了一个限制收款的功能，或者你锁定了他的账号等等。
+
+
+那我们这里通常要求所有后台人员的操作，或者说对一些特定的关键资源的操作，我们都要去埋一行审计日志，那这个审计日志可以是直接埋在你的 log 组件当中，或者我们通过一些其他的特殊的存储介质，比如 Hbase 等等，把把这条审计日志给它保存下来。
+
+
+那对应一些大公司来说，**通常我们都会有外部审计、内部审计，那这个审计其实是专门针对 it 系统的审计，**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4672915c-3848-4b5e-a717-f905eb472ac8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666CWTBYCK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230731Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDgRZOP9ZqGY0K2fdeepvIdaHzgDbQQA5Du%2FeqQI1jZlAiEAngMUgz2y0S8W5hLYYRwddZeAkfXUQb9iUaev%2F2uGACUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGUn%2B9J9urkL6T%2BNEyrcA2j9v6DuH0jqq0Fq8pseefMCYSFnx%2Bh0OYxHxo%2FEUeFIxMYziB8XGe7E%2B8u%2BMfDJz5v8FuyXhOszYwXHaCHYV6E0naPdG9M0KInK1zj4bk45HnSzQfz%2B4gC95qFtr2pCJX%2FmbYNEt1zEAuLWipe7hyo13MYvdz0N%2B8XOsVPqw3SDkTDl6HqFFoQem3f9IWIdBgKDxZhYQhkVbAhsu7QszzSFCZiXBeAuYWMgKzfVxiSExnZv7fT7tBncHE1gWst35AyvbCb93SWwO4Ag2K46%2FfqIxt21QQaGMieMm7OnOUb%2BE3lyJWSVGJP2FEDIWg2D%2FBzCYj6c1mDPXxg0f7gPV1P%2FXQdODk1UAX%2FHrdxHumnWD4HN9k%2FY3NY6TyD6dAxSDu2CdR64JqgcBZR8EzN1XgOpDj%2BGgLp77XfVFlbqNd4cd8V2MgwYlPwAW4M9jvBPJqX1rf3obdZyk0xS466AO%2Fy6OZAgPXRlBzpUsMi7kD3dRi35hOIeJlu6ycx4kvETx7E7nZ4s8irEOCP7wVbUjEb1YUtoCBvilu8Wk4oAN2kMQIgpo0jEpY2KTs8Y4GXmtqyO%2BLKUJ3tB3kBmXN1SIos855rD3AXVxEzp6CHRV52tH00kaJwD3WgcieJvMKO3%2F9IGOqUBUXZ1wcowSa2Xt45hR2pe73UxiUkNPrslAe1yln%2BlfcqVAAtO7NkxPw%2FOaXGnH8Rh9dIp5VNGqU3nochSI28lYmHlepuxXpqSkiv2oVmVCWDImDzenbk6Htk%2F%2Bga%2Bh492eZzECBLqzypTOlxi3e90LCzJjHZ5KdG%2F9%2Bhxm91S2oUVLMvOqu5PuX8WNa3HFBRx%2B7TT6u4cJN2Vv50NOp5x2v9c7WGI&X-Amz-Signature=882c7d75a021bedc69eee8a03aab350b1a99cf42e5710165665fc334bfc8fbab&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+** i t 审计，那么它这里就非常关注你的一些 audit log，也就是审计日志。那对于银行业系统或者是证券金融等等系统，这个更是非常重要的业务埋点的一个审计功能。**
+
+
+OK。除此之外，我们还有一个重要的应用方向，统计分析。比如说我们现在经常挂在嘴边的，大家天天说，但是谁都不懂的一个东西叫用户画像。我利用 machine learning 还有 AI 等等的系统，对你当前的这个客户做一个精准的用户画像，而用来做一些推荐系统。
+
+
+那你用户画像的数据从哪里来？你如何让他得知你的这个购物行为是什么样的模型。OK，那这个数据就是靠我们的业务埋点。那埋什么点？比如说你在达成一个购物操作的时候，你所点击的这个购物链路的路径，点击的每个页面，它背后都有一个业务埋点。那正是这些埋点数据构建了你访问系统的一个行为模式，那它就是对你做用户画像的一个数据源。
+
+
+OK，那当然不止用户画像，还有很多统计分析的功能都依赖于你的业务埋点。好，那我们再往下看业务埋点，这里对于开发团队来说其实还有一个非常非常重要的功能，那就是做一个线上问题的排查。那像阿里系它有一个非常厉害的中间件叫鹰眼，那鹰眼其实就是一个链路日志的追踪系统，那么同时也是一个业务埋点的系统，那在我们埋点的时候，打出一行营业的日志的同时，我们需要指定一个非常重要的一个参数，比方就是你订单的 ID 或者是你正在操作的这个关键资源的主键 primary key。
+
+
+那在你发生任何异常情况的时候，我可以根据这个主键很快的定位到你当时打下的这个买点，以及这个买点当中相关的一些业务的属性。除此以外，这个业务买点还有一些比较偏门的用法，比如说咱可以去把业务买点和 a b test 结合起来做一些统计。打个比方，你当前对你的网页的主题做了一个更改，那么我想去统计一下你的这个更改是否去提高了用户在你网站上面停留的时间，或者提高了复购率等等。那么这些数据的统计也依赖于业务埋点提供数据支持。
+
+
+OK，那这里跟大家聊的是业务埋点的在业务层面上的一些用途。那么**至于买埋点的手段，其实有非常多的方向，比方说前端买点、业务买点，还有现在比较流行的一个无痕买点等等。那么我们在后面的小节当中再跟大家去一一介绍**。那这一节的内容就讲到这里了，那下一节当中我跟大家聊一聊线上预警的响应机制， Pager duty，也就是甩锅序列。好，同学们，我们下一小节再见。
+
+

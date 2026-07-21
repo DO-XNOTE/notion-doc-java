@@ -1,0 +1,60 @@
+---
+title: 2-12 文档乐观锁控制 if_seq_no 与 if_primary_term
+---
+
+# 2-12 文档乐观锁控制 if_seq_no 与 if_primary_term
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/77644f14-50a3-41c5-a32a-007fae51303b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YNPDM6WY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225133Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDoYh%2Flg6E4XajN1b13EfXcMxWNbqQXe9i%2BvH71GePW6AIgKHvgePrPk5Aw5a6CMlDJEQRioJscjWgxFa%2B7uId7%2BU8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNpltXqIqYlDj4eVJyrcA9GIZ4HwCk7bdm4wKlEbnXM33ZyIMwRuxGeOjXeQh%2FSLGzDlqRjxcCXZ04VHTs07OPE%2B3GOfD%2FsLXd7L%2BZ7t7YNjXX2zt%2FY9attFsxA5zBFT6rmUpukRb1Y1vGJNzHDskygdwu56iQdyPjsq%2BkcIbtX4HdF2cEcOjpEp6U6HCShd98nnUnw4OASFQwzDv%2BZT%2BxrGidzNpoHXlRTk078f%2Bm7kQRJhOSTHG6AgNO2VdlZqbu9BXTiEPXBoEOAUIjiuFsGFoPyviyJEjR7LcdinqXuaBrbT6P%2FV1L6nkJVubOm2Yp%2BbGscoz4IlSJBhJ9qr67SEsT9LvNwWUAUw7qkcspiiciV1o6FdODBVWFDQ%2F%2FzKdTEP3K5Cz2tyffSjvmdmYF2HOCuFsn8CdO7Z0nAPoh6vhMfprwgxa5J5k1RQnd2Hb0xfcisRPKnbJsYwTea%2BWWSezjteJAiOlLXk68srybtQZCOpB9POQU0wKFgWcE7pby1L8DmZHSe9OotUjO4igWQlFaiuY%2FwoZs%2BrDzW5MiNO9tlGSp0CcRX7QRYh6jsk53yu5Nx9MwW4D5%2BETcnDYZ%2BEtIIj%2BgUmV3n88PbWhyO5pFTVcTDVpV6rLa%2Bjh8kca8T4Ozyipu43QzaCMM%2B3%2F9IGOqUBIVbhMKHLyVhO8tytTLdKQ4RoO0LAF4vgx3C2RGmePB5g0AZIw3bw7Dy0VgxoP%2FMB7C2G%2FENcPKua%2BUnq7MOWvUnz8Dx90njBL2HEmuiOygaZh8AgIfWFax8rBi18SemulmJ46ZR1u4Shm8IgCOGfrlkFOIWD0hq8D8du8RVxkmnaA17AlLmGrGseohggyOXd1QXEZ2rm9oCwEeYOy8mgozH0%2BRpM&X-Amz-Signature=d6f73e4869ad85fc210ace71ad34239499653dbbb4f8f067725b5857b832a5f1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2a2dde37-d7a7-4955-bfd0-5f4095bd08b4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YNPDM6WY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225133Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDoYh%2Flg6E4XajN1b13EfXcMxWNbqQXe9i%2BvH71GePW6AIgKHvgePrPk5Aw5a6CMlDJEQRioJscjWgxFa%2B7uId7%2BU8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNpltXqIqYlDj4eVJyrcA9GIZ4HwCk7bdm4wKlEbnXM33ZyIMwRuxGeOjXeQh%2FSLGzDlqRjxcCXZ04VHTs07OPE%2B3GOfD%2FsLXd7L%2BZ7t7YNjXX2zt%2FY9attFsxA5zBFT6rmUpukRb1Y1vGJNzHDskygdwu56iQdyPjsq%2BkcIbtX4HdF2cEcOjpEp6U6HCShd98nnUnw4OASFQwzDv%2BZT%2BxrGidzNpoHXlRTk078f%2Bm7kQRJhOSTHG6AgNO2VdlZqbu9BXTiEPXBoEOAUIjiuFsGFoPyviyJEjR7LcdinqXuaBrbT6P%2FV1L6nkJVubOm2Yp%2BbGscoz4IlSJBhJ9qr67SEsT9LvNwWUAUw7qkcspiiciV1o6FdODBVWFDQ%2F%2FzKdTEP3K5Cz2tyffSjvmdmYF2HOCuFsn8CdO7Z0nAPoh6vhMfprwgxa5J5k1RQnd2Hb0xfcisRPKnbJsYwTea%2BWWSezjteJAiOlLXk68srybtQZCOpB9POQU0wKFgWcE7pby1L8DmZHSe9OotUjO4igWQlFaiuY%2FwoZs%2BrDzW5MiNO9tlGSp0CcRX7QRYh6jsk53yu5Nx9MwW4D5%2BETcnDYZ%2BEtIIj%2BgUmV3n88PbWhyO5pFTVcTDVpV6rLa%2Bjh8kca8T4Ozyipu43QzaCMM%2B3%2F9IGOqUBIVbhMKHLyVhO8tytTLdKQ4RoO0LAF4vgx3C2RGmePB5g0AZIw3bw7Dy0VgxoP%2FMB7C2G%2FENcPKua%2BUnq7MOWvUnz8Dx90njBL2HEmuiOygaZh8AgIfWFax8rBi18SemulmJ46ZR1u4Shm8IgCOGfrlkFOIWD0hq8D8du8RVxkmnaA17AlLmGrGseohggyOXd1QXEZ2rm9oCwEeYOy8mgozH0%2BRpM&X-Amz-Signature=3247ebb93b4a6ca3ac449218dfd9e3dab6511d01854ff819b362770d653797df&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么前面几节我们是针对了咱们的一个文档做的一些相应的基本操作，做了一个快速的入门。这节课我们来看一下。就是说在我们的每一个文档信息里面，其实它都会包含一些元数据。之前我们有提过，那么其中就会有一个 version 这个 version 的话其实就是可以用于去控制一个乐观锁的。那么 version 其实就是一个版本号，是由 ES 为我们去提供的，每一个文档它都会有。OK ，那么默认它是从一开始进行累加的。
+
+
+如果说一个文档被删除或者说是被修改以后，那么它的这个佛系是会做一个累加的。那么 ES 对于它的一个乐观所其实也有对应的一个控制。那么它的一个乐观锁其实就是这样子的，就是说当一个共用的数据同时可能并发的被几个用户或者说是被几个线程同时去进行一个操作，那么它会和它的一个版本号做一个对比。如果说它的一个版本号是匹配的，那么它会让你去做一个更新。如果说你的版本号不匹配，那么它是不会让你去做更新的，这就是它的一个乐观所控制的一个机制。这种方式其实在其他的一些像数据库里面也是比较常见的，那么道理也都是一样，在 ES 这里也是同样的一种操作的方式。所以在这里我们可以看一下这个乐观锁如何在 ES 中去做一个对应的控制。
+
+
+那么首先我们先来看一下，我们打开 postman 那么我先创建一个数据，这个数据是2001。然后我们先去创建一下这个数据，我预先是准备的，当我们创建完毕以后，那么它就会有一个对应的version 。那么这个 version 是 1 OK 。然后我们到这个 head 里面我们去刷新一下，刷新一下以后的话可以看到 2001 就已经是有了。然后我们把这个 2001 去做一个对应的查询，我们也是可以去做的查询到这里，写上这个加一下 my dog 奥利迷查询一下。然后在这里我们也能够查到它相关的一些信息，其中就会有一个弗洛西，那么它也是一好。随后这个时候我们来做一个修改。那么假设这个时候我要去做修改的时候，可能是有两个用户同时针对我们的这个数据做一个修改，可能我仅仅只是修改它的一个 name 或者说是它的一个 description 都是有可能的。所以我们在这里我们去做一个操作，发起一个 post 请求，然后在它的后方你要去把它的 my Doc 下划线 Doc 以及是它的 ID 给带上。然后我们在这里去加上他要去修改的一部分的内容。那么在这里我们写一下我们使用局部的更新方式而不是这种全量的更新，我们直接去修改他的 name 把它改为慕课。
+
+
+好。随后我们做一个请求，来看一下这个时候，那么它的一个版本号是发生了一个变化，变成了 2 对吧。好，OK那么是成功的，没有任何问题。假设这个时候我要做一个并发了，如果说并发的用户来去做一个相应的操作做一个修改的话，那么肯定是有一个用户的先后的顺序。所以说你的版本号匹配，我会让你去做一个更新，版本号不匹配，我就不会让你去做一个对应的更新。
+
+
+那么这个版本号的话如何去加呢？那么在这里在它的这个 URL 的后方加上一个问号，再加上一个 version 等于我当前的一个版本号，也就是 2 加上2。随后我们慕课这个名称我们改成1，随便去做一个修改，点击 send 那么随后在这里报了一个错，他会说，现在当我们要去实现这个版本号，就是我们版本冲突了以后，这个控制如何去做呢？版本控制应该是需要使用这个，也就是与 sequence number and 外加 if primary ten 你是需要把这两个去做一个替代。
+
+
+其实我们是这样子，就是说在我们老的版本里面，当我们要去实现一个版本控制的时候，其实我们主要在这个 URL 的后方你加上一个 version 就可以了。但是对于我们新版本的这个 ES 来讲的话，现如今你要去使用这种乐观锁的一个控制化，你就要使用到这两个参数。那么这两个参数从哪里来呢？其实我们从这个 get 请求里面可以看得出来。在这里来看一下。
+
+
+当我们去查询某一个文档的时候，其实它会有两个元数据，一个叫做下划线 sequence number seq 另外一个叫做下划线 primary ten 那么这两个是什么意思？这两个其实就是相当于去代表我们当前这个数据它的新的一个版本号。那那么这个 sequence number 和我们这个福尔型其实是同一个道理。 sequence number 一旦是我们的这个文档发生了一个更改，那么它的一个数值会一直累加的和这个版本号是一模一样，是同样的一个道理。
+
+
+另外下面一个 prime ten 这个其实就相当于是我们的一个分配的一个由谁去分配的，或者说它是所在的一个位置。就是说我们的一个文档。如果说是在一个集群里面的话，那么它肯定是会有多个主分片会有多个 prime 下的，那么它的一个位置会分配在某一个地方的，那么这个就相当于是它在某一个地方特定的一个位置，为它做的一个记录的编号。
+
+
+如果说我们在这里举一个例子的话，那么这个 sequence number 其实就相当于是我们在一个学校里面的一个班级，在班级中每一个学生他的一个编号。那么这个 prime term 这个的话，其实就相当于是我们在学校里面的一个班级，就是说学生在每个地方在某一个班级的话，它是需要去做一个类似相应的一个标识的。那么对于它的一个版本的一个分配，这个时候其实就是会由它的一个班主任，也就是由我们的这个普拉维萨来做到的一个维护以及是管理。Ok 。那么对于我们早期的老的版本来讲的话，那么它只有 version 所以就是通过 ES 本身去做了一个对应的管理。那么就相当于早期它是由整个学校的教务处对所有班级里面的所有的学生做的一个版本号的管理维护。那么很明显使用新的方式来做一个对应的管理的话，那么它的一个性能各方面其实肯定要比以前更加的优化。
+
+
+所以现如今在新版本中，你要去实现这种 version 的一种版本控制，你是需要去使用 sequence number 以及是 prime term 这两个参数，你共同的要去做到的一个携带，你要把这两个参数携带到我们的 URL 这个地址里面，你才能够做到一个对应的更新。
+好，那么现在我们的一个 sequence number 是30， prime term 是1。所以来看一下这个时候的参数，你要使用这个 if 在这个前方是具有这个 if 的一个前缀的，所以你要把这个给携带加上 sequence number 是30，然后你要拼接一个 prime term 把这个给带过来，那么它的数值是1。
+
+
+随后那么在这里我们再来看一下，我们把这个移上去，随后我们再来发起一个请求，点击 send 你会发现这个时候刚刚我们是做了一个更新的操作，所以它的一个 number 其实在这里就是应该会累加，所以我们把这个 sequence number 应该是做再累加一使用31。那么在这里的话其实就是由于我们的一个版本号就是说我们现有的一个版本号是最新的。那么之前的那个版本号是老的两个版本号， sequence number 不匹配，所以它就会报一个这样的错，我们的 Flash 现在是版本号冲突了，这个时候再一次的点击 send 你就会发现我们的这个数据成功的做了一个更新。
+
+
+然后来看一下，在这里面他会把这个最新的一个 sequence number 以及是 prime term 把这两个给返回出来。其实主要是我们的 sequence number 它会作为一个累加的。那么当然如果说我把这里改成2，假设是我们第二个用户去做一个修改，但是它的一个 sequence 300 还是老的还是 31 的话点击线的，那么它还是一样会报一个版本号冲突的错误。也就是说我们现在的一个 sequence number 是 32 了，你要去把它做一个对应的修改，把它改成 32 点至现的，那么这样子他才能够做到一个对应的更新。
+
+
+OK ，这个其实就是我们 ES 就是在我们做这个乐观所控制的时候所提供的一种版本号的一种方式。信用君一定要记住是使用的是 sequence number 外加这个排名称。那么这个其实在它的一个官方的文档里面其实也有。那么这个是目前最新版本 7.5 的一个文档，就说我们的一个版本号如何去做一个相应的控制。那么其实在这个里面其实也是一样的。
+
+
+来看一下，你可以使用可以分配一个 sequence number 外加一个 prime term 也就是我们的这两个元数据参数你是需要去携带的。那么在这里面其实还能就能够看得出来就是在这个位置。那么来看一下，如果说你要去携带的话，其实这里面在这个位置它会告知你如何去携带，也就是拼接上一个对应的数据，那么就可以了。
+
+
+对于这一段内容的描述其实都是英文的，可以看一下这一段文字就说为了保证我们的一个老的版本，文档的一个版本不会去覆盖我们新的一个版本号。那么每一个操作其实它都会要我们的文档去提供一个 sequence number by 的。这个其实就是说我们之前所说的这个 primary ten 它的一个数值。那么这两个都需要去携带进去的。并且在这里有一个阿克林内齐，也就是说针对我们的一次 change 针对我们的一次修改。那么你是需要去把这两个给携带上。
+
+
+然后这个 sequence number 它 is increased 它会做一个累加 with each operation 也就是我们每一次的一个操作。这样的话我们的一个新的操作，它就可以保证可以有一个更高的版本号，这个更高的版本号的话是会比我们老的一个操作会高的。所以我们这个 ES 它就能够使用我们的这个 sequence number 来保证我们的新的一个文档数据的一个版本号，永远不会被一些那些小的 sequence number 所覆盖。Ok 。所以这个其实就是我们这个官方文档所做出的一个说明。那么有兴趣可以把这个当前这一份文档去做一个通读，那么也是可以的，它的一些英文的描述其实也并不是很难。Ok 。那么这样子其实我们就通过了这样的两个参数，一个是 sequence number 一个是 prime ten 来做到我们的这个文档数据的一个乐观所这样的一个控制。那么需要注意，如果说是在早期的一些版本的话，那么就不会使用这两个参数，会使用这个下划线佛群来做一个相应的版本控制。那么这个我们之前也是演示过的，如果你是一个低版本的 ES 的话，那么可以使用下划线 version 去做一个类似的操作。 OK 吧。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b243727e-7946-4ad0-986b-d80000114f25/2020-09-17_174631.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YNPDM6WY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225133Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDoYh%2Flg6E4XajN1b13EfXcMxWNbqQXe9i%2BvH71GePW6AIgKHvgePrPk5Aw5a6CMlDJEQRioJscjWgxFa%2B7uId7%2BU8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDNpltXqIqYlDj4eVJyrcA9GIZ4HwCk7bdm4wKlEbnXM33ZyIMwRuxGeOjXeQh%2FSLGzDlqRjxcCXZ04VHTs07OPE%2B3GOfD%2FsLXd7L%2BZ7t7YNjXX2zt%2FY9attFsxA5zBFT6rmUpukRb1Y1vGJNzHDskygdwu56iQdyPjsq%2BkcIbtX4HdF2cEcOjpEp6U6HCShd98nnUnw4OASFQwzDv%2BZT%2BxrGidzNpoHXlRTk078f%2Bm7kQRJhOSTHG6AgNO2VdlZqbu9BXTiEPXBoEOAUIjiuFsGFoPyviyJEjR7LcdinqXuaBrbT6P%2FV1L6nkJVubOm2Yp%2BbGscoz4IlSJBhJ9qr67SEsT9LvNwWUAUw7qkcspiiciV1o6FdODBVWFDQ%2F%2FzKdTEP3K5Cz2tyffSjvmdmYF2HOCuFsn8CdO7Z0nAPoh6vhMfprwgxa5J5k1RQnd2Hb0xfcisRPKnbJsYwTea%2BWWSezjteJAiOlLXk68srybtQZCOpB9POQU0wKFgWcE7pby1L8DmZHSe9OotUjO4igWQlFaiuY%2FwoZs%2BrDzW5MiNO9tlGSp0CcRX7QRYh6jsk53yu5Nx9MwW4D5%2BETcnDYZ%2BEtIIj%2BgUmV3n88PbWhyO5pFTVcTDVpV6rLa%2Bjh8kca8T4Ozyipu43QzaCMM%2B3%2F9IGOqUBIVbhMKHLyVhO8tytTLdKQ4RoO0LAF4vgx3C2RGmePB5g0AZIw3bw7Dy0VgxoP%2FMB7C2G%2FENcPKua%2BUnq7MOWvUnz8Dx90njBL2HEmuiOygaZh8AgIfWFax8rBi18SemulmJ46ZR1u4Shm8IgCOGfrlkFOIWD0hq8D8du8RVxkmnaA17AlLmGrGseohggyOXd1QXEZ2rm9oCwEeYOy8mgozH0%2BRpM&X-Amz-Signature=22bf5dc1694cd544856b3481437deb5c4cfde5ee858d5241d619259fca92d922&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

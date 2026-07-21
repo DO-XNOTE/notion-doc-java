@@ -1,0 +1,40 @@
+---
+title: 3-13 实现keepalived双主热备
+---
+
+# 3-13 实现keepalived双主热备
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f1b00047-4093-4ce7-a4d4-282668626156/SCR-20240805-dnno.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SNCMFJRN%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224915Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGwgpOImsrfnuHTJ1YcZua%2Bcgk69MCjKidXCQcPeDN6fAiEA5Xyc3TT6YFvX5ILlClZVdr3vCXHuZVaIhuc8jS5y3EkqiAQIx%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKTH2hUMWNX1CgJEhyrcA4JzMOV8TCspBwPoJfe3viIYG9O4nyNgSFv%2Bteet6V%2BeB4LgLUeoUM3unTb4j8XxILVre%2BhRNEbUDxQfd7sg4cAFm631o8qoK5c5zOzZ2ZLTZ73i1eKPQvfyD2cEdzrCoEmGn69RD2qv%2FJbYGm%2F08OT121U6Vp1bBs%2Bhp40gZwz15Sih5FVk521lbKA4QPQbQN6myDqmhPYsQrJM7JyJyjEUHVX9ihRrvBgLLSHlfO6EtW8grSAOnZVEKADPMKR6b%2Fn6bEh6mqB19mNCjSDWrQ4Q91AuMI6XTQoW3zuRRK2qwlJ0t8Fp2S42ed3z1ouzIXtchY7NNcgPcNYvW1%2BKGOz137Q2Slr%2Fj6iMxs1aZz%2FyqQgVerNJagWWzLjyxXmANVHRfzNbdodJ%2FCKamxbHDzbstL5nPtYzFmZ7AOtF9SXqcWQL02Z9NfzbJicIwWlTuNeH%2Bsj1yQSqIgK8vmwAsr0Ocq%2BUaUcqy3SArvFUHgKVgpFiHvCYds3QJdGL2HLV533CSklX%2F6vssuftSvU%2B6h%2FP5OP92oRDQczqztyf8apQRYx6vg5g0JTosMmeMkx89oa9cyYBqSBjGaDKyv63Y8JbtRz7vw1PxLAlylpe4%2BO7OcNoHwR1JkuFS%2BqWMP3O%2F9IGOqUBFSstEJ6CsV6YdCRUtR4eIDcB99pQAkrp1yfj8KQDOcD4CEX1XXQwmhEcD1JJisghN4j4xHng1LA4Q1%2BUPmHKOAd5wcDVCR4e%2FffK4EhSQpxhwePHdQA1pbPMPI7ZHioKGf2dnJbV0mZfVOM%2BRXrtGMBfGtbQnPwU%2FjJjb00FfbwrxxvEXnMvAsp8U8yzygY5C4VFS7SyEfTJaSzR7oyP21hSSIw3&X-Amz-Signature=7afe5de481b778578096abe369037476c9b43cd9cbc83516fb48984d36fb0db9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[file](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/552b1258-ff3a-4eef-b35f-a6dfe705893a/3-14_%E5%9B%BE%E6%96%87%E8%8A%82.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SNCMFJRN%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224915Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGwgpOImsrfnuHTJ1YcZua%2Bcgk69MCjKidXCQcPeDN6fAiEA5Xyc3TT6YFvX5ILlClZVdr3vCXHuZVaIhuc8jS5y3EkqiAQIx%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKTH2hUMWNX1CgJEhyrcA4JzMOV8TCspBwPoJfe3viIYG9O4nyNgSFv%2Bteet6V%2BeB4LgLUeoUM3unTb4j8XxILVre%2BhRNEbUDxQfd7sg4cAFm631o8qoK5c5zOzZ2ZLTZ73i1eKPQvfyD2cEdzrCoEmGn69RD2qv%2FJbYGm%2F08OT121U6Vp1bBs%2Bhp40gZwz15Sih5FVk521lbKA4QPQbQN6myDqmhPYsQrJM7JyJyjEUHVX9ihRrvBgLLSHlfO6EtW8grSAOnZVEKADPMKR6b%2Fn6bEh6mqB19mNCjSDWrQ4Q91AuMI6XTQoW3zuRRK2qwlJ0t8Fp2S42ed3z1ouzIXtchY7NNcgPcNYvW1%2BKGOz137Q2Slr%2Fj6iMxs1aZz%2FyqQgVerNJagWWzLjyxXmANVHRfzNbdodJ%2FCKamxbHDzbstL5nPtYzFmZ7AOtF9SXqcWQL02Z9NfzbJicIwWlTuNeH%2Bsj1yQSqIgK8vmwAsr0Ocq%2BUaUcqy3SArvFUHgKVgpFiHvCYds3QJdGL2HLV533CSklX%2F6vssuftSvU%2B6h%2FP5OP92oRDQczqztyf8apQRYx6vg5g0JTosMmeMkx89oa9cyYBqSBjGaDKyv63Y8JbtRz7vw1PxLAlylpe4%2BO7OcNoHwR1JkuFS%2BqWMP3O%2F9IGOqUBFSstEJ6CsV6YdCRUtR4eIDcB99pQAkrp1yfj8KQDOcD4CEX1XXQwmhEcD1JJisghN4j4xHng1LA4Q1%2BUPmHKOAd5wcDVCR4e%2FffK4EhSQpxhwePHdQA1pbPMPI7ZHioKGf2dnJbV0mZfVOM%2BRXrtGMBfGtbQnPwU%2FjJjb00FfbwrxxvEXnMvAsp8U8yzygY5C4VFS7SyEfTJaSzR7oyP21hSSIw3&X-Amz-Signature=f0923b16cb623d1fb04d8f827a1ed98da3ce2472c391f1078da9baef4e87f4ec&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么接下来我们就一起来实现一下双主热备，这个的话我们是在之前也就是双击主备的一个基础上去做的一个扩展，打开我们的一个命令行。那么现在我们可以先来看一下，我们先进入到我们的 ETC 下的 keepalived 的修改它的核心配置文件，那么在这个核心配置文件里面现在是171，那么 171 的话目前它是一个master，那么这样子我们呢把这一段的配置我们呢先来拷贝一下，这里边有很多的内容，把这个先拷贝到这里。贴一下。贴过来以后那么上面还有一部分的内容我们也要粘贴过来，也就是从这一部分开始，贴过来。贴过来以后那么在这里面其实是包含了一些相应的注释，那么注释我们在这边我们都清掉，把注释都删掉以后，那么我们可以看得稍微的清晰一点，那么这个是我们现在复制出来的一部分的内容，那么我先保存一下，然后我再到 172 在 172 这一台也就是目前的一个 back up 本名。那么也是一样。
+
+
+进入到 etc 下的 keepalived，修改它的核心配置文件。在核心配置文件里面你也应该要把这一段的配置进行一个拷贝，那么我在这边全部拷贝一下。好拷贝，那么最后有一个大括号不要忘记。拷贝过来以后，那么在这里头，把所有的注释全部都清掉，然后保存一下，那么现在我们就要可以来修改一下我们现在的一个配置，那么目前的话，目前其实我们只有一组路由，那么这一组路由全部都是绑定到了 161 这个虚拟 ip 上。那么由于它的一个双组热备的话，它本质上其实就是由两组不同的组备关系所共同的一个组成，它是一个互为主备。所以我们把这里面复制出来的新的一个 instance 做一个修改。那么目前我们是在 172 这一台节点， 172 的话我们原来在进行定义的时候，那么它是一个backup，所以现在的话相对而言它自己要成为一个master。我们在这边进行一个修改，把这个 state 改成一个master，然后改完之后千万不要忘记在上面这里有一个instance，把这个改掉原来是1，我们把它改为2，随后在这里下方有一个interface，这是它的一个网卡，我们不用去动，那么这个就是我们现有的一个名称。
+
+
+随后在这里有一个虚拟的路由ID，那么这个的话我们就应该要修改了，之前我们所说的我们要保证所有的都要一致，那么这个是针对于一组 11 来讲的，那么现在其实我们是第二组的，所以我们做一个修改，把它改为52。那么下面还会有一个权重，那么由于现在我自己要成为一个 master 了，所以我自己的一个权重把它改大一点，改成100。那么下面这个我们就不要动了，直到最后一个虚拟ip。
+
+
+现在的话，那么我的一个第二组的一个主流关系，我要绑定到 162 这个虚拟 ip 上，那么这样子的话，现在其实我们在 171 这个节点里面所配置的一个master，那么就已经是配置成功了，随后保存一下再来到171。那么在 171 里面我们来做一个修改，那么看一下这个是我们之前所复制过来的，那么在这边的话我们也是一样修改掉，把这个 vi 下划线 1 改成2，然后这里的话我们就不再是一个master，我们要把它改成一个 backup，那么这样子的话我当前 171 的话其实就作为我们 172 的一个备用节点了。那么这样子的话其实就是一个相互的互相的一个组别关系。那么随后下面这个 interface 是 ens 三三不用动，然后这边是一个路由，刚刚我们是52，修改一下权重的话，这个我们由于是 back up 备用机改成 80 稍微低一些，那么下边这些都不用动，只有在这里最后他们的一个第二组的一个虚拟ip，我们把它改为 162 就可以了。
+
+
+那么这个这里有一个自动监测engines，我们直接删掉，那么这样子的话保存一下，那么现在其实我们的配置就已经是 OK 了。那么配置 OK 了以后，现在我们要去做一个测试，测试的话我们这样子肯定要去做一个重启，先去重启一下，我们重启 restart，回测一下。好，重启成功，然后我们再来到 172 上去做一个重启。好，重启成功。那么现在我们先来做一个测试，我们 ip 来查看一下回车，那么目前这个 ip 我们能够看出来在我的 171 上，那么 171 那么它其实和我们之前看出来它还是和 161 绑定到了一起，这个没毛病。
+
+
+最后我们再来到 172 上，那么 172 在重启之后我们也来看一下 ip address 看一下，那么这个时候你会发现当我们再一次去查看咱们虚拟 ip 的时候，在同一个网卡下，那么现在我们的 172 你会发现它和 162 绑定到了一起，那么从而也就说明我们的 172 目前对于他自己来讲的话，它是一个master，它是一个主节点了。OK，好。
+
+
+随后我们来做一个测试，那么测试的话我们现在访问 171 和 171 的话是没有任何问题的，然后我们现在来看一下访问到 ha，这是 ha 的一个域名，直接访问，那么现在我们直接去进行访问的时候，那么我们是只能够访问到 171 的，然后看一下我们在 host 里面的一个配置，那么我是这样子去配的， ha 是映射到了161， ha1 映射到了是162。
+
+
+那么在我本地，其实我们本地的话没有d，n， s 这种说法，那么我们就直接模拟我们的请求已经是经过了GS，请求到了我们的虚拟ip，那么这样子我们把 ha 1 再打开在这边看一下，那么从这里面我们能够看出来，我们访问到 ha 的时候是请求到了171，访问 ha1 的话是请求到了172。那么现在就相当于是我们是经过了 DNS 去访问到我们的一个虚拟 ip 了。好，那么随后我们就可以来做一个测试了。那么在这里我们可以这样子做，我可以把当前的 171 这个节点，也就是原来我们所使用的那个主节点直接可以关掉，那么关掉的话我们可以再来看一下，我们直接把这个 keepalived 它的一个服务给 stop 给关闭了以后，随后我们再来看。那么现在我刷新 ha1 这个域名的时候，那么是没有任何的问题的。那么随后我来刷新一下 ha，那么刷新以后你会发现它会把用户的请求导向到了172。OK，那么在这边的话，在 171 这个节点上，其实它就绑定了两个虚拟 ip 了，因为这两个虚拟 ip 它都能够为用户去提供一个请求的服务。
+
+
+好，为了检测我们的 ip 来到 172 这个节点，我们再来看一下我们的 ip address。这个时候我们可以发现，在我们当前这个网卡里面， 172 这个静态ip，在这个节点里面它绑定了 162 以及是161，那么刚刚我们只有是1628。由于我们的 161 它发生了故障，所以这个虚拟 ip 由于它们之间有一个心跳检测，那么它就能够把用户的请求导向到了我们当前 172 这个节点上了。那么这样子其实我们就实现了一个高可用，并且这种方式就是一个双主热备，相互都是一个主机，也同时都是相对的一个备用机。 OK 吧，那么这个双主播背我们就已经是实现了，那么这个在课后的话，那么大家可以去操练一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5ebf57d7-7228-4b88-8dc3-2152d4caca8b/2020-09-17_201851.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SNCMFJRN%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224915Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGwgpOImsrfnuHTJ1YcZua%2Bcgk69MCjKidXCQcPeDN6fAiEA5Xyc3TT6YFvX5ILlClZVdr3vCXHuZVaIhuc8jS5y3EkqiAQIx%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKTH2hUMWNX1CgJEhyrcA4JzMOV8TCspBwPoJfe3viIYG9O4nyNgSFv%2Bteet6V%2BeB4LgLUeoUM3unTb4j8XxILVre%2BhRNEbUDxQfd7sg4cAFm631o8qoK5c5zOzZ2ZLTZ73i1eKPQvfyD2cEdzrCoEmGn69RD2qv%2FJbYGm%2F08OT121U6Vp1bBs%2Bhp40gZwz15Sih5FVk521lbKA4QPQbQN6myDqmhPYsQrJM7JyJyjEUHVX9ihRrvBgLLSHlfO6EtW8grSAOnZVEKADPMKR6b%2Fn6bEh6mqB19mNCjSDWrQ4Q91AuMI6XTQoW3zuRRK2qwlJ0t8Fp2S42ed3z1ouzIXtchY7NNcgPcNYvW1%2BKGOz137Q2Slr%2Fj6iMxs1aZz%2FyqQgVerNJagWWzLjyxXmANVHRfzNbdodJ%2FCKamxbHDzbstL5nPtYzFmZ7AOtF9SXqcWQL02Z9NfzbJicIwWlTuNeH%2Bsj1yQSqIgK8vmwAsr0Ocq%2BUaUcqy3SArvFUHgKVgpFiHvCYds3QJdGL2HLV533CSklX%2F6vssuftSvU%2B6h%2FP5OP92oRDQczqztyf8apQRYx6vg5g0JTosMmeMkx89oa9cyYBqSBjGaDKyv63Y8JbtRz7vw1PxLAlylpe4%2BO7OcNoHwR1JkuFS%2BqWMP3O%2F9IGOqUBFSstEJ6CsV6YdCRUtR4eIDcB99pQAkrp1yfj8KQDOcD4CEX1XXQwmhEcD1JJisghN4j4xHng1LA4Q1%2BUPmHKOAd5wcDVCR4e%2FffK4EhSQpxhwePHdQA1pbPMPI7ZHioKGf2dnJbV0mZfVOM%2BRXrtGMBfGtbQnPwU%2FjJjb00FfbwrxxvEXnMvAsp8U8yzygY5C4VFS7SyEfTJaSzR7oyP21hSSIw3&X-Amz-Signature=ecdf1473ddde623452eb8ce89eb91bbc97fe22883fac5ba14287f4adddc99ad3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+- 

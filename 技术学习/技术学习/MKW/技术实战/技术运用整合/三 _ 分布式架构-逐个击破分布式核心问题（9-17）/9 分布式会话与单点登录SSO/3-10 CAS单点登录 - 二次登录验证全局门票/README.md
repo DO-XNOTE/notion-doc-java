@@ -1,0 +1,42 @@
+---
+title: 3-10 CAS单点登录 - 二次登录验证全局门票
+---
+
+# 3-10 CAS单点登录 - 二次登录验证全局门票
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1a9a746d-226d-4203-a9ec-582ceba0ad9e/SCR-20240805-najf.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664IG2FE4G%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225118Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIC7jsravPlxivdBkbehkYo8%2Bo%2FsQd0OrqXt5HVXo5tU1AiBfqTIKz%2FfYu4zXxikMe0zvDGYNsSPA%2B4G6ljrZLFFdaCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMtLgFDbq1ai9JWqczKtwD34we7LECC4j%2BJEiRnAKHbubSB63sWrpnCuExFF1ItLHB0Izlsfeb2Ig0wdzNnIXWjFdoCOnngrkOOZhmdV0aCcJm4DTuZrXGygl1WoCySID5oIa0FPEGAlvuKqUBLiTPYCZaRpvTyycJIchLCHgxd9foqzjTClLF2QQ8iVVOZZqKPLqoFPz%2FLvD%2BihqW2i6h2gsG425iHp5YYDCltW%2Bj9ITOh5hhcxkp%2B6SAWKZJFbznGANlunUOCKF%2BIii38cjW0%2Bv8u8%2FVLPwHWja58spmEbQBwItk1mUyqzJbHAF4yVz6hS7pWdKuYi7hYpAb7PXf%2Fx%2BmWqXt6Hm4Ii3DXd%2FCv4tkt7RLwHWb%2Byp%2FfK6l%2FIL4JP5AexHVrAhROW%2FGuk5fETSwKG4RA%2Bqkd3RBqvASeQU4%2ByJSrlBThBq%2FVAKbKfmJ5AR83m4dT1D1Gy1QTODzkDtIPJvnifyCaY5rshJJQ7f5IT9jBUyxQRiTsx%2FdoQQ6UhtAbioQ%2BAtKQodjkRYL6%2BCi1sYxRmRkpeThdTpe8OF%2FYAiM5A8WwSyoPFeQ%2BC5ps9IoQaA4G601Q0NGf9kroDX6IGW1Ph%2Fn2CviPHQL%2BhuSkcZOUzJMb%2BaSlJMSxCFcS3qq%2B4Suqz0ldscwnLn%2F0gY6pgH3BpNO%2B%2FaFWRBUEEXEBpuHMXGMgc2iHRO%2FJxaiETN2M9gX8r%2BwxNOM1NE3RbmQJkCRfjC293TTkMX%2B9KsHPyNJJ3XoyE9I0TtXq7hmiGaPVWoE1SuCRWe3MtiBsIJ2QJvvDKM2gdpVEdkeYk1GhwFFCboyCDdE0%2Bo7yaw%2BHver5DvH9xpriBBQX4zRJsUologEeNVO9%2FNGL7D7T3srMH4rfl422ct7&X-Amz-Signature=ab28eb6d44552ae657754bad623eca473afe5bfe6b268119fc057c0d9d2e62db&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a48eea72-21dd-4025-8233-84b60e661511/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664IG2FE4G%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225118Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIC7jsravPlxivdBkbehkYo8%2Bo%2FsQd0OrqXt5HVXo5tU1AiBfqTIKz%2FfYu4zXxikMe0zvDGYNsSPA%2B4G6ljrZLFFdaCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMtLgFDbq1ai9JWqczKtwD34we7LECC4j%2BJEiRnAKHbubSB63sWrpnCuExFF1ItLHB0Izlsfeb2Ig0wdzNnIXWjFdoCOnngrkOOZhmdV0aCcJm4DTuZrXGygl1WoCySID5oIa0FPEGAlvuKqUBLiTPYCZaRpvTyycJIchLCHgxd9foqzjTClLF2QQ8iVVOZZqKPLqoFPz%2FLvD%2BihqW2i6h2gsG425iHp5YYDCltW%2Bj9ITOh5hhcxkp%2B6SAWKZJFbznGANlunUOCKF%2BIii38cjW0%2Bv8u8%2FVLPwHWja58spmEbQBwItk1mUyqzJbHAF4yVz6hS7pWdKuYi7hYpAb7PXf%2Fx%2BmWqXt6Hm4Ii3DXd%2FCv4tkt7RLwHWb%2Byp%2FfK6l%2FIL4JP5AexHVrAhROW%2FGuk5fETSwKG4RA%2Bqkd3RBqvASeQU4%2ByJSrlBThBq%2FVAKbKfmJ5AR83m4dT1D1Gy1QTODzkDtIPJvnifyCaY5rshJJQ7f5IT9jBUyxQRiTsx%2FdoQQ6UhtAbioQ%2BAtKQodjkRYL6%2BCi1sYxRmRkpeThdTpe8OF%2FYAiM5A8WwSyoPFeQ%2BC5ps9IoQaA4G601Q0NGf9kroDX6IGW1Ph%2Fn2CviPHQL%2BhuSkcZOUzJMb%2BaSlJMSxCFcS3qq%2B4Suqz0ldscwnLn%2F0gY6pgH3BpNO%2B%2FaFWRBUEEXEBpuHMXGMgc2iHRO%2FJxaiETN2M9gX8r%2BwxNOM1NE3RbmQJkCRfjC293TTkMX%2B9KsHPyNJJ3XoyE9I0TtXq7hmiGaPVWoE1SuCRWe3MtiBsIJ2QJvvDKM2gdpVEdkeYk1GhwFFCboyCDdE0%2Bo7yaw%2BHver5DvH9xpriBBQX4zRJsUologEeNVO9%2FNGL7D7T3srMH4rfl422ct7&X-Amz-Signature=14b528fa2cef4b6a7655a43ca51578227c65c671b787546c0ac2bf33af2c23da&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8deb760e-f329-4cf9-a9fc-cf0395f34008/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664IG2FE4G%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225118Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIC7jsravPlxivdBkbehkYo8%2Bo%2FsQd0OrqXt5HVXo5tU1AiBfqTIKz%2FfYu4zXxikMe0zvDGYNsSPA%2B4G6ljrZLFFdaCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMtLgFDbq1ai9JWqczKtwD34we7LECC4j%2BJEiRnAKHbubSB63sWrpnCuExFF1ItLHB0Izlsfeb2Ig0wdzNnIXWjFdoCOnngrkOOZhmdV0aCcJm4DTuZrXGygl1WoCySID5oIa0FPEGAlvuKqUBLiTPYCZaRpvTyycJIchLCHgxd9foqzjTClLF2QQ8iVVOZZqKPLqoFPz%2FLvD%2BihqW2i6h2gsG425iHp5YYDCltW%2Bj9ITOh5hhcxkp%2B6SAWKZJFbznGANlunUOCKF%2BIii38cjW0%2Bv8u8%2FVLPwHWja58spmEbQBwItk1mUyqzJbHAF4yVz6hS7pWdKuYi7hYpAb7PXf%2Fx%2BmWqXt6Hm4Ii3DXd%2FCv4tkt7RLwHWb%2Byp%2FfK6l%2FIL4JP5AexHVrAhROW%2FGuk5fETSwKG4RA%2Bqkd3RBqvASeQU4%2ByJSrlBThBq%2FVAKbKfmJ5AR83m4dT1D1Gy1QTODzkDtIPJvnifyCaY5rshJJQ7f5IT9jBUyxQRiTsx%2FdoQQ6UhtAbioQ%2BAtKQodjkRYL6%2BCi1sYxRmRkpeThdTpe8OF%2FYAiM5A8WwSyoPFeQ%2BC5ps9IoQaA4G601Q0NGf9kroDX6IGW1Ph%2Fn2CviPHQL%2BhuSkcZOUzJMb%2BaSlJMSxCFcS3qq%2B4Suqz0ldscwnLn%2F0gY6pgH3BpNO%2B%2FaFWRBUEEXEBpuHMXGMgc2iHRO%2FJxaiETN2M9gX8r%2BwxNOM1NE3RbmQJkCRfjC293TTkMX%2B9KsHPyNJJ3XoyE9I0TtXq7hmiGaPVWoE1SuCRWe3MtiBsIJ2QJvvDKM2gdpVEdkeYk1GhwFFCboyCDdE0%2Bo7yaw%2BHver5DvH9xpriBBQX4zRJsUologEeNVO9%2FNGL7D7T3srMH4rfl422ct7&X-Amz-Signature=67412141705845218efbf4963453633d5d45549a9322c94fd535616a4d6f0226&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么现在对于我们第一个站点 m t v 现在其实就已经是实现了一个登录，那么就已经是 OK 了。那么随后我们再来看一下我们下一个系统，也就是咱们的一个 music 系统，那么这个时候回到咱们的一个时序图，那么现在我们要从这里开始进行一个访问，那么现在用户要访问我们的一个 music 就站点，那么在这个部位其实都是一样的，唯一的一个有区别的地方就是在这一块地方。
+
+
+那么在这里的话是需要去校验一下这个用户有没有在 CS 端去登录过，有没有相应的一个用户的全局门票，如果说有的话，就代表用户曾经已经是登录过了，那么他就可以直接去创建一个临时的票据，然后呢携带并且回跳给之前的一个站点就可以了。那么然后下面的这一部分的过程和上面都是一样的，所以在这里面我们把这一块内容去做一个完善。那么这一块代码其实也就是对应在我们当前这个页面里面的，往上面找，也就是 log in。在这一块这里我们写了一个Todo，然后我们在这里黄俊可以去写一下，写在这个中间的部位。我们这样子我们先把这个给删掉，然后加上注释，写一下就是获取 ticket 门票，这个门票应该是全局，应该是 user 779。如果 cookie 中能够获取到，证明用户登录过，此时签发或说是颁发一个一次性的临时票据，并且回跳。
+
+
+OK，好，写一下 string user ticket 等于那么在这里其实也是一样，我们通过这个 get cookie 可以去获取。搜一下，那么之前在这个部分我们是有拿到过，所以我们在这里直接可以把这一部分的内容我们做一个拷贝就可以了。拷贝到我们刚刚的这个部位。 get cookie 这边是直接获取用户的一个 user ticket。好，当我们获取到了之后，那么在这里如果说我们拿到之后，在这边我们还是需要去做一个校验的，如果说你不去校验的话，那么我们并不能够代表什么，所以我们在这里的话做一个校验的话，我们这样子写一个通用的一个方法。
+
+
+这个方法的话我们统一的对这个 user tickets 去做一层校验，我们写在这个部位写一下private，然后布熬，然后再加入一个 verify user 7 K9，把这个 string 我们传入进来写一下。这是用于去要校验，或者说是验证 CAS 全局用户门票。
+
+
+写一下第零部首先我们要验证一下 CS 门票，不能为空的话，那就肯定不行嘛。 string 与 tools 点 is blank，如果说它为空的话，那么在这里直接校验不通过吗？你称一个 force 好。随后我们下一步要验证 c s 门票是否有效，那么是否有效的话，在这里面我们就应该要去通过 Redis operator 点get。
+
+
+我们应该要去获取一下 Redis use up ticket，然后从我们的 Redis 里面去获取。这是一个冒号，把这个 ticket 给加过来，那么加过来以后其实我们就可以获得用户的一个ID。 user ID 获取，那么获取了以后，那么你还是需要去做一个判断，我们这个不能为空。那么这个步骤和我们下面其实是有一些类似，也就是在这个部位我们直接把这个内容拷贝，听到这里我们这边代码都是一样的，然后在这里如果说是为空的，那么很明显我们也称一个force。好，OK。
+
+
+然后我们再要去验证一下我们这个用户会话是否存在，验证门票对应的用户，那么在这里其实也是通过这个 user ID 去获取到这个 user Redis，那么如果说有的话，那么我们在这里去判空是否存在，如果说没有 return 一个false，OK，那么最终如果说通过的话就称一个true，那么这样子就可以了。那么这就是一个基本的一个验证。然后我们再返回到我们的一开始。那么在这里的话我们就直接可以去写一下，我们刚刚的一个方法，把这个我们可以写过来，英语的参数 is verify 的，塞进去，如果说它是一个 force 的话，应该这样子。如果说返回它是一个 true 的话，那么在这里如果说是成功，代表这个是验证过的，那么此时我就没有必要再一次的让用户去输入用户名和密码去登录了。所以在这个地方我们就直接可以这样子去生成一个 temp ticket，然后 create 这个我们之前写的，创建一个临时的票据，然后再做一个return，搜一下return，我们之前在这个下方是写过的，在这个部位把这个直接拷贝一下贴到这里。直接 return 一个redirect， return 是我们拿到的，然后 ticket 在这里参数，然后生成以后贴过来。那么这样子他就可以去做一个回跳过去之后，那么其实就是让他去做之前的一个流程。
+
+
+如果说这里没有是验证通过的话，那么就会进入到下面的步骤，也就是在这里加上一个第二步。这就是一个用户他从来没有登录过，第一次进入则跳转到c， s 的一个统一登录页面。OK，那么这样子对于我们这个时序图里面所对应的这一步骤，其实就是做一个校验，那么就已经是 OK 了。好，随后我们来做一个重启，重启之后我们来做一个对应的测试。
+
+
+刷新一下，这是我们的一个 music 系统，那么现在我们的 music 系统是还没有完全的一个，有一部分的注释我们没有开放，所以我们去找一下咱们的 s s o，它有个music，然后在这里需要把这个注释给开放，开放之后就可以做一个跳转。好，然后我们刷新一下，你会发现这个时候当我们刷新以后，它其实速度比较快，因为它是做了一层校验，它是先会跳转到我们刚刚的那个 login 的方法里面去做一个校验，那么校验其实是 cookie 中是有对应的数据的，那么校验成功之后，这个时候他就可以把对应的一个用户会话信息再一次的返回给我们的 music 系统。
+
+
+那么这样子就是对于我们不同的站点来讲的话，其实就已经是实现了我们的一个c， s 或者说是单点登录这样的一个功能的。然后在我们当前 music 里面，你也可以去看一下它的cookie，很明显这个用户的会话我们是能够回传可以换取的。OK，那么这样其实我们就已经是实现了这两个系统，现在目前我们都OK。
+
+

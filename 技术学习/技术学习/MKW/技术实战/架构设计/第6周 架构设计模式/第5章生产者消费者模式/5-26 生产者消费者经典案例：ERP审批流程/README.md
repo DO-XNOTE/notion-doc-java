@@ -1,0 +1,33 @@
+---
+title: 5-26 生产者消费者经典案例：ERP审批流程
+---
+
+# 5-26 生产者消费者经典案例：ERP审批流程
+
+它相对来说是比较偏技术层面的那种使用场景，或者几点实现，对吧？其实在咱们的这个 in 层面或者生活层面其实有很多作用的例子。前面我在讲这个语言基础，导致也结合了很多的真实案例，有些可能是半开玩笑的，有些真实的其实都是跟我们这个主题，深圳的消费的模式是环环相扣的。
+
+
+在这里我们再来讲一讲一个相对来说比较正规的一样一个应用或者应用场景，好了，对吧？一种系统的应用场景。比如说，那你现在不管是上班还是上学，OK，你现在要请一个假。举个例子，这只是其中的一种。这个典型的案例有很多这种在答案的，那可能你们在公司或者学校，它有一个类似于 ERP 的这么一个系统，在公司当中给您领导要请假在 ERP 系统里面填一下，在它完了之后他审批一下这个流程就完了。这听上去好像是一个很简单的流程嘛？你说那我直接就提交一下系统设计者，那我提交一个，然后之后领导就一直在审批。
+
+
+难道你提交完之后，那个老板就一直在刷新这个系统，来看这个系统里面有没有新的这种，那是不是有点傻？这种其实也是，你来看一下这个情况，我们这种员工作为什么一个流程的发起者其实是有很多个的，对不对？那我们相当于是什么生产者，我们在生产不同的这样一个任务，给我们的老板是不是感觉很爽？因为这是老板给你派任务，现在你给老板派任务了，我们作为生成者，我们不断地生产各种各样的这个任务给老板，比如说我要请假呀，我要离职，对吧？我要办什么事，对不对？也都要给老板请假，或者开什么单子。
+
+
+那这些通过 ERP 来完成，那老板就作为什么消费者，因为我们生成了各种各样的任务给他，他要把这些任务都消耗掉了，对吧？所以说这个一看就很典型的就是一个生产者消费者模式的应用，那只是想想谁是生产者，谁消费者，容器在哪里？那我们简单来看一个产品，前面已经讲过分析了，而任务是由生成生产的消费是有老板的消费，那这个任务蠢在哪里？那显就在我们的 ERP 系统里面怎么存？这个可以在实现层面的时候进来讲，那我们这个典型的场景，我们先把它画出来，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/acc1c1f8-9c4e-49fc-92ce-194361ea419f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466443Y4JEX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230629Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIArsLHisVtXGjmATyIZdbOPZH%2BTAMOw0wAgEFsCEzWrDAiEAp1HIn2gc5FsmnfTbyzpXAgAxttChTgbXxziR9zjh4gYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFCO4IF1q0nK%2FTPjHircA6syt1hkBTnHQSrErHoqcCglJJ5sBOu1Lljq2cHewg9M%2F84lzRLV0KaV202Wwmcy6LSmIqG4tk%2B8E9dM7gC%2Bjqg8%2F2pncuGhfpolzCBcCzE1g98hE3kbIlWdGWQmpbZo2i6sBwO6JfGBFFFFVgNGy2vlkvZQR5jXe%2BDm6tpO%2BiCdp9jcN3b7EFd0wuhVNmAaj0iqxaInaZRSkZ2nIyqny%2BhLPpitucjaBpFOrt1vAsdObau1GU8sy3Tc5vrEff2jasJa3y76zWa5GMhNBe2lHJfZ4ADx%2FuKhx1BXxGfEc0hQ6YsO%2BAbH1G6iQFgPv0ax6AxGSPvONPR63cMEflji8X5UITCQlBg3hJIAGwqQat9%2FDObA4taTiXIo1tKkCqTJt11Uk%2Fn0JV9kOTgOpkmFY9NUCk7LeJTGQMaggLWhrmj4JnZI%2BO52dRyo1HF47oxZwCQeFfj5QdcVGZo6hyyXerl31Pz9rsRRCRIcOe8jxNV4pbPnamrjPyTAQl2busjkJAHxbO3YKrhLs7eQcwVs4apzsM6OabXivYtyD%2BY%2FjymGuc28vyFlW57ftOjJhVldUEAIVWCpc6kK9NxovFVIeHksbVIxvLqNHuy2cyF8DvOxePxHK3jb8DjLrvqmMOq3%2F9IGOqUBYFFl%2BRPklu9%2BfdxR6%2BhUtiee6UKT3IfIxSk8Yu8fEQ5FXO3BSU%2BOyb0i4muFPq7573pI97bywyivuUtJo4imGcilHPR%2BHZPtatm1KC1gT9ioPveCoNyJK6%2Bqm%2FirwEFbkp6OrUBsBqhvlNgZkKWBnP%2F23pG7bSn7x0AMUgUCCHcCnrFdJbXv0abbBiAiSCp5AbKL30vs3R1hLNpQ%2BI%2F3yfJorGgw&X-Amz-Signature=476bb4a5a2a81caa83dd57645bc5b41084866c454eb55478bd9d95b1b7e1e1d5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先肯定有 ERP 系统，对不对？完了之后肯定要有它这个提交任务的人群 API 这些功能肯定是要有，否则你怎么来完成的？给你一个页面，然后你把这些功能都提交上去，完成之后这个任务就生成了，对吧？生成了任务之后，他把这个任务就放在一个容器里面去形成一个一个的，我们叫 task 或者叫任务，对不对？然后顶岗，再从这个任务列表当中来拿这个各种各大小，然后把这些任务拿出来进行一个审批。
+
+
+这样子是不是把整个流程就是第一异步化了？就是说提交申请的人你不一定会马上得到答复，哎，等到领导心情好的时候，他收到这个统治，他去做一下这个事。另外一个就是说这个任务它也可以在这个队列里面进行一个简单的存储、排队通知，这种功能可以做得出来的，对不对？这个取决于你当时这个具体的实现是怎么做的，但是整个流程其实跟我们那个生产者消费的模式是完全契合的，大家看一下这个图对不对？首先作为submit，你先 submit 了一个任务，就相当于我们生产了一个任务出来，然后把它放在这个 q 里面去了，对不对？这个当然可能有一些的业务规则，怎么把它放进去的，我这只是简化掉了，实际上你在做的时候你肯定是不同的时候，比如你像人事提出说我要高销，我这肯定这个任务最后跑到财务或者人事，你说我要请个假，可能是你的直属领导这种这个我们都简化了，就假定说把这个任务放到一个 q 里面去，然后这个对应的这个 q 它可能有不同的消费者。
+
+
+这个消费者可能是是一个什么样的东西，它是个通知机制，有可能是一个程序不停地去拿这个任务，把这个任务分配到不同的人，把它拉过来拿到在对应的系统里面去来进行下一步的处理。那你如果不这样做的话，你想想，那就等于有一个程序一直不停的去问到处啊，这里有没有事情，那里有没有事情，这样是不是很少？这样子就相当于说把所有的任务都放到一个 q 里面去，根据不同的规则，我们把它作为到不同的那里去完成这样一个任务，对不对？这就是一个非常典型的这个生产者消费者的一个应用场景，我们来回顾一下。
+
+
+首先作为一个生产者就是提交各种申请的人，因为是很多很多个人，那就不可能让领导来问每个人，唉，今天你要请假吗？今天你要报销吗？对吧？你现在要离职吗？这肯定不会这样子的，就是反过来把主流权交给了这个申请人，你愿意什么时候申请就申请，你只要一申请就会创建一个任务，在这个买任务池里面，然后就有个系统，它会不断地从池里面去看有没有新的人物出现，如果有就根据一定的业务逻辑规则把它放到对应的这个人的那个待办列表里面去，差不多就是这么个思路。
+
+
+所以说这个地方我只是使用了 ERP 的这个审批流程这样一个场景，来解释一下这个生态者消费者的这种使用的方式。其实这种模式在很多场景下都可以使，比如说只要是说那是一种任务，你要给谁发起一个任务，不管是在哪种场景下，你都可以采用这种方式。就是有一个地方它可以向这个任务队列里面加一条任务，然后另外一个系统也拔，人也拔，还是实际上代码一把，可以从这个任务列表里面去取出一过来，这种情况下就是一个典型的生产者消费者模式的应用，以后一直在你的这个需求文档或者 PRD 里面看见的这种类似于任务的这种场景，也将首先想到是不是可以使用生产者消费者模式来解决问题。然后你把这个模式往上套一套看，行拼得通，如果行得通的话，基本上就八九不离十了。然后你再把这个消息升零件或者你们自己开发的这种东西，它是个 q 的东西，任务乘一乘，最后发生到一个对应的目的地就好，这个需求就做好了，对吧？所以你有时候知道一些很好的这个模式，你要在以这个新的需求上去用，它会大大的加快你的开发速度。
+

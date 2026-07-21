@@ -1,0 +1,25 @@
+---
+title: 5-15 设计生产者消费系统：序列化
+---
+
+# 5-15 设计生产者消费系统：序列化
+
+这个现在的这个发送人本身这个是最重要的原因。那另外大家也知道，现在就是我们要把这个生产出的东西发送到容器里面去，并且最终被这个消费者所消费。中间一个过程就是如何把这个数据从生产者里搬到容器那里去，或者再有容器人如何又搬到那个消费者那里去？这个中间这个过程就有一个过程，是什么？把内存里面的对象就这个数据单元它在内存情况下存在的，对吧？因为它是从现在出来的时候，它是个内存对象，变成一个可以在网上进行传输这样的东西。
+
+
+那只要做过 Java 干嘛？大家都知道这个事就是序列化和反序列化的事情，对不对？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ec096575-5f4d-42c6-9dcd-28020ffe0be5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S7NVTWZD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230621Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8ToqNtK3O90TPGxkWukkKdeotYJWD6siHmdxQgRQTXAIgG6QikJ%2FY7zj8j8NeUPB3fFIf96x1xNhceylikkT%2BtGYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPdioMM44AoSaL35LircA9F8SzckaldCEwB1eI7%2FK4yvh8yF2vv%2FCzVEAVdpHuUzFWbaRld%2BjqmoMzlTESYeoVwm8J97axP0sZ2rSGU9Pu7yj8e44bNDK7acaE%2BgH0WuXHqXzJWieNNO0YgYpWqcvdMA3bXTY2xgunT2bIXPOZ%2BfQmy4zm%2FMRe4T56G6sW3feLXQiLwBx%2Ff4m9TDTWKw0r1JcatAO0erM1qxI0MUq7%2Fx%2BrVfxxpt113X8%2FgnIsHVHlGAT48%2BuZSGjVhwMLeKfaLRBTyYtCHc3LkIQOusG%2FguEuQP4nxVHdXJDrUJ6tfMWZ05o2a5N8YIM%2FTOxHBUvf0zga4XtftmQqBuab1JfTQ5aIybvqQ1pf9lnBvO6LkguilM%2F2lmvQfo5W5btsJt5t%2BRjXK4S9hcW8zQOCWJcv3Xbw29GPqfm%2FI1MXxF32jwLpEeo4TKTriCXTUhmXhTiqanhC1iK6WFlfuBq5mYok5KIGuEfM2IVaJi%2FR3CFNuezfTUQ%2FJgg%2BNhfUrPjPANCYib4NyZgn8Q8Q2Y7MlBXiqR9PxrZLnojECI6Yu7H4ue5x81O5YwVUHYj9H8Xc9%2Fzv54cEJAkOmgBancyfUzft0tXJe%2FSpDQ4IvGYjvM4p3LUP139uSlLt7Wzw5WMIW4%2F9IGOqUB1pIaAqWjTGCEjkYmaiXV5ZSIEZ3uR8KbR1B3ExxJ1exZd7svc4lkjG6ILWuWXCYXwDxB%2F3H6cwEJ%2BmkdKVd2fq7m0RNBXJqqC86cHd%2BSYt35TzFts161kA7WQ21IJSNkc7UmV7Geg86OyQ50uDk3IHzk28BvHyVn0nBMTiCoFwKya%2F5C1yoFonBbvdW40ACBQEjQWjqqwLIQlqmc2Qjt%2BHbmmZSQ&X-Amz-Signature=85c10990cae5b883f5550891064c5d130e72e395f0c32258832430683818af0f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那在这个过程当中第一步可能是先是序列化，在发送方的时候，你首先要把你内存对象构建出来的一些对象变成一个可以在网络上传输的东西，就是我们的数据单元，说白了就是因为我们现在生产的就数据单元，它通过过程方式把它创建出来，然后再把变成一种网络上可以进行传输的这样一个数据格式，放送到我们的网信里面去，然后再由消费者进行消费。
+
+
+这是两个段，但是都牵扯到这个序列化的问题，对吧？所以说这里有几种常见的这样一个规范或者协议，来帮助你把对称对象最终变成一个可以在网络上进行传输的数据格式。第一种比较简单一点，通用的 JSON 就说白了直接把这个东西变成一个string，这种数据 string 就变成一个字节流，很简单的，对吧？直接流就被传到了那种情况去变成一个对称，再把它放到 consumer 里去宣传出一次就是序列化的过程。
+
+
+还有一些其他的比较经典的，这个谐音error、thrift、 PP 这种东西都是可以的，给它是二进制什么之类的，对吧？各自按照它自己的这个要求规范，你只要把里面的东西变成它的格式，就可以进行传输了，传输了之后在另外边收到，从按照规范的使用就把它还原一个对象，进行各种使用或者消费，这个过程就完成了，这是序列化。
+
+
+就对于你来说，你必须得在你设计这个现在消费者模式的这个系统的时候，你必须要规定一个规范，就是说咱们这个数据在分布式的情况下怎么传输？或者说即使是非分布式，在同样的内存里面，你看这个对象如果不方便传输的时候，你是不是也要序列化一下进行传递？这当然是看上有可能，直接对象成熟，直接内存里面建立复制出来都有可能的，特别是对应这种爱情网络传输的时候，这点是必不可少的。
+
+

@@ -1,0 +1,41 @@
+---
+title: 2-8 文档的基本操作 - 删除与修改
+---
+
+# 2-8 文档的基本操作 - 删除与修改
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/849652ab-7041-477b-befe-60bfc56be6a4/SCR-20240805-ozxt.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXV4TOJR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225132Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFCojXdoGI3N8lOXUeyiyTRTDZGI5ix0%2B0EIjkv5rbmUAiEA5v4msyfqGn9M4B9qM6Ug7Rw6mfxX0U2%2B7gSnXJTgujAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFZNvL91uG%2BV521kfSrcA4jBwcc6iC4C16%2BklRAwVJlG3ha4ndVMfPtLkRxw2cXx5ZaFPEQxysoPdx5hRdoW4kwgoIxzPrfwefNHVm6%2B6GNUwtEwXkJfCseO0JkNooe3MZxXG7b%2FdfZKHUVbN1UQrHmWDnXDEGQES8ChDL4Ej6n0%2FnxwWRUME2BdD9Z%2FpbSKtajwqUttJGbuJwindzxFHzTtj6JtKkjWkjBQmJclQJlmd%2FFEgcC4zRiZiEd6dv5md0MiPnV8BbUW2kFLLdw7p8JcfhkEip5CTlcS7Wa26CIQaAXL%2BIx96leWW0jm8yptxIMRhhvYxWlJ3Mn0Uh7aouMVhT0YPXUc%2BT70UgbU1HVxwuKtzNpuVChbUeXeAeqzf77qgTX9FcimI3Z2AKLyuEkj4Wy4042m7PRRK0r35fECiLKArE7SZJDccvK0sMD1jL0XZUD8XC597cSgshYvzJx%2FKKSftQd8C%2FiLbWUcCpmEFF%2B8EsRu%2BMU6GlIFr6VS9%2ByDOktybGituBQQx8%2F9KqI%2FuIIrznI2AVwLqOGrdZXM3Tr2sUhsWoDaI%2FrmiFbsbMkPgbf4ALMoG6qrdifcSKYZietbFACTEGi%2F4%2F1zauppwT%2BPFDgwQ4vrJfOUsDyEAfiflAp2MUm8B3yQMJC7%2F9IGOqUB7uu5jLDFOw4X1UL%2BumFuNy0mN7AnZEWuypnjmmMKqH%2Fx55xKdBA6%2F0sVeQ5nElBIvR2QL3ujTwQLKs%2BtDZvH2GkonZmRLkPwQTQBQs8yDMqz%2Be7xKJRQyjzKdY9FT%2B7GF5skSJhjjX%2BTTKfchdSVT%2FImsQYpOKiKEr3d5a06hwqFs9MUU8F7bWWsowWkRSo6HRVkuNMzq3dKVzhvgndfdh6eRMrO&X-Amz-Signature=ba2429b7fbab2fbc38491c7eaf01e98b937db2bb48bbdc805e5b2b8bd1f82133&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ff155edd-cf66-4496-a6e9-fe86e032e0cd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXV4TOJR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225132Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFCojXdoGI3N8lOXUeyiyTRTDZGI5ix0%2B0EIjkv5rbmUAiEA5v4msyfqGn9M4B9qM6Ug7Rw6mfxX0U2%2B7gSnXJTgujAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFZNvL91uG%2BV521kfSrcA4jBwcc6iC4C16%2BklRAwVJlG3ha4ndVMfPtLkRxw2cXx5ZaFPEQxysoPdx5hRdoW4kwgoIxzPrfwefNHVm6%2B6GNUwtEwXkJfCseO0JkNooe3MZxXG7b%2FdfZKHUVbN1UQrHmWDnXDEGQES8ChDL4Ej6n0%2FnxwWRUME2BdD9Z%2FpbSKtajwqUttJGbuJwindzxFHzTtj6JtKkjWkjBQmJclQJlmd%2FFEgcC4zRiZiEd6dv5md0MiPnV8BbUW2kFLLdw7p8JcfhkEip5CTlcS7Wa26CIQaAXL%2BIx96leWW0jm8yptxIMRhhvYxWlJ3Mn0Uh7aouMVhT0YPXUc%2BT70UgbU1HVxwuKtzNpuVChbUeXeAeqzf77qgTX9FcimI3Z2AKLyuEkj4Wy4042m7PRRK0r35fECiLKArE7SZJDccvK0sMD1jL0XZUD8XC597cSgshYvzJx%2FKKSftQd8C%2FiLbWUcCpmEFF%2B8EsRu%2BMU6GlIFr6VS9%2ByDOktybGituBQQx8%2F9KqI%2FuIIrznI2AVwLqOGrdZXM3Tr2sUhsWoDaI%2FrmiFbsbMkPgbf4ALMoG6qrdifcSKYZietbFACTEGi%2F4%2F1zauppwT%2BPFDgwQ4vrJfOUsDyEAfiflAp2MUm8B3yQMJC7%2F9IGOqUB7uu5jLDFOw4X1UL%2BumFuNy0mN7AnZEWuypnjmmMKqH%2Fx55xKdBA6%2F0sVeQ5nElBIvR2QL3ujTwQLKs%2BtDZvH2GkonZmRLkPwQTQBQs8yDMqz%2Be7xKJRQyjzKdY9FT%2B7GF5skSJhjjX%2BTTKfchdSVT%2FImsQYpOKiKEr3d5a06hwqFs9MUU8F7bWWsowWkRSo6HRVkuNMzq3dKVzhvgndfdh6eRMrO&X-Amz-Signature=6107002061c28c1f1e462909ca7d9648c4585651b135e585dfd644330d933f10&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+之前我们是做了文档的一个新增的操作，除了新增，我们还是能够对它做删除修改和查询的操作。那先来看一下我们如何去做一个删除。删除的话其实也是和我们在数据库删是一样的，你可以根据它的一个主键去删。在这里我们就是根据它的一个下划线 ID 去做一个对应的删除。删除的话打开 post man 首先我们要把它的这个 master 改成 delete 代表删除。然后你要指明它要删除的一个位置，就说我们是在哪里指明我们的所有名称是 my Doc 随后这个下划线 Doc 就是代表你要去删的一个是文档。随后在它的后面你要去把它的一个整个文档，它的一个下划线的 ID 组件你要拿过来。比方说我们现在要删这个第五条，我点击删除。随后来看一下。那么在这里它会有一个 result 那么表示它是 delete 已经是删除了。然后在这里有一个 version 是 to 代表之前我们其实是一个一开始是，新增完之后它的版本号是1。那么一旦我们删除以后，其实删除它就是一个修改的操作被移除了，那么它的版本号会累加1，现在我们是删了一次。
+
+
+随后我们再来点一下，点一个 send 这里有一个body ，这个 body 其实可以不用管无所谓，我们再来点击 send 然后在这边它会提示说 result 是 not found 那么这是我们针对同一个 ID 去做的第二次删除，很明显只要被删过，那么它就是一个挪放的，但是在这里它还会有一个模型，它还是会累加的。然后我们不管点击多少次，这个佛群都会去加。
+
+
+其实我们这个文档当我们在执行操作的时候，它并不是真正意义上的物理参数，它其实是一个逻辑参数，它只不过是添加了一个标识符标识它是被删除了，但是它真正的并没有在磁盘里面被删除，它还是存在的。那么当我们这个磁盘里面的一些文件数据越来越多了，它才会去做一个被动的清理，他才会去把他那些被标记过删除的文档那些数据再去做一个清理，从她的一个磁盘上移除出去。OK ，那么他就是这样的一个道理。
+
+
+随后我们可以回到咱们的这个 head 插件，刷新一下数据浏览，看一下我们的第五条数据，很显然就已经是没有了吗？随后我们再来删这一条数据。这是它自动生成的，把他的这个 ID 拷贝一下，贴到我们的 postman 里面，把这个粘过来 send 一下。
+
+
+好。 OK ，1例子删除了，回到我们这里面，再来做一个刷新，来看一下。OK ，刚刚的那一条数据就已经是被我们成功的删除了，这个其实就是一个删除的操作。除了删除以外，那么我们还能够来做一个修改。修改文档的话我们可以看一下，比方说我们可以修改这个第一条，把这第一条的记录去做一个修改。那么他的 ID 号是一打开这个 post man 还是一样？在这里你要去做修改的话，那么在这个地方你要把它改成 post 随后指定它的一个索引是 my Doc 下划线 Doc 去针对某一个文档去做一个修改，然后他后面的这个 ID 你也要去修改。修改为1，根据这个一去修改。然后你还需要在他的后方，你还要再加上一个斜杠下划线 up date 代表我要去针对这样的一条记录这样的文档做一个修改。
+
+
+随后我们在这个里面我们要去写上一个 body 首先我们要去指明我们现在要去修改的其实是一个文档 Doc 固定格式，随后你要去修改的是哪一个属性的数据。那么来看一下，比方说现在我们要去修改这个name ，把这个 name mk 7 改掉，我们改成先写一下 name 属性改成我是慕课王。好。OK ，那么只是针对这样的一个属性做一个修改，点击 send 然后我们来看一下成功的被修改了吧。那么修改完了以后，在这里我们刷新一下。好，进来看一下。那么这个时候 name 我是木库网，就已经是被虚改掉了OK 。那么这个其实我们就是针对于某一列某一个属性做到的一个局部的中心。可能会有同学会问如果说在使用 losing 的时候，那么路径的话，它其实本身是一种全量的替换。它的修改其实你要把所有的一些字段你都要写上去，它才能够去做一个替换。它其实本质上可以说它并不是修改，那么 ES 的话它底层也是依赖的路径，但是它为什么可以使用这种局部的方式去做呢？其实这主要也是因为它 ES 的底层它又封装了一层，它是帮我们去做的一个处理。所以你只要按照它的这种风格，那么你就可以去做到针对于某一个属性某一个字段的一种局部的一个修改。这样子你就其实是避免了你写了很多的一些字段，可能会有一些误操作对吧？当然如果说你不想要使用这种局部的方式，你想要去使用一种全量的修改，全量的替换的话其实也是可以做到的。那么如何去做我们要把这里改成 put 这种方式。
+
+
+然后买 Doc 下划线 Doc 然后一是写上，只不过后面的这个下划线 update 你是不需要了使用铺子外加这种风格，那么你就是它的一个规范。随后在这个里面你是需要去把它的整个数据给拿过来，它整个数据的一个结构。其实在我们这里面就是从 ID name description 以及是 create date 你要把这些都要拿过来组成一个 JSON 那么这个我们直接拷贝一下，把它可以直接贴到这个部位就可以了，它就是一个 JSON 的数据。注意一下，在这里面就没有 Doc 这样的一个属性了。
+
+
+OK ，我直接贴过来，然后贴过来之后它本身就就是一个 JS 对象。对吧。 ID 这个 ID 的话，那么其实我们就保持一致，使用 1 然后这个 namename 的话我们改成就是一个 update 杠 I mock description 把它改成慕珂王，就改成一个中文。好了，慕珂王很强大，然后创建的时间我们改成 2020 年的圣诞节。好吧，25号。好，我们点击 send 刷新一下。好。
+
+
+OK ，那么这是被成功的修改了，那么这就是一种全量的替换。然后再来看一下我们的这个数据在我们的数据里面，那么我们也能够看得出来这个 ID 下划线 ID 组件唯一的这条数据。那么其实在这个地方，那么就已经是被我们给修改掉了，以及说是修改，不如说是一个替换。那么所以说在平时我们使用过程中，如果说你不想要把一个全量的所有的属性都写进去，你只是想要写某一个属性，你要局部的去更新的话，那么就使用我们之前的第一种方式去做相应的更新就可以了。
+
+
+OK ，在这里我们也是需要去注意的。所以说在我们修改以后，那么修改其实和删除一样，修改以后，那么相应的它的一个佛性是会发生一个变化的，这个也就是在我们这里面，你能够看得到在这边有一个佛系，只要修改，那么它就会被更改掉，它会做一个累加。Ok 。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f76bfd9f-61c4-4fb4-b0f9-846e239208a3/2020-09-17_174600.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YXV4TOJR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225132Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFCojXdoGI3N8lOXUeyiyTRTDZGI5ix0%2B0EIjkv5rbmUAiEA5v4msyfqGn9M4B9qM6Ug7Rw6mfxX0U2%2B7gSnXJTgujAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFZNvL91uG%2BV521kfSrcA4jBwcc6iC4C16%2BklRAwVJlG3ha4ndVMfPtLkRxw2cXx5ZaFPEQxysoPdx5hRdoW4kwgoIxzPrfwefNHVm6%2B6GNUwtEwXkJfCseO0JkNooe3MZxXG7b%2FdfZKHUVbN1UQrHmWDnXDEGQES8ChDL4Ej6n0%2FnxwWRUME2BdD9Z%2FpbSKtajwqUttJGbuJwindzxFHzTtj6JtKkjWkjBQmJclQJlmd%2FFEgcC4zRiZiEd6dv5md0MiPnV8BbUW2kFLLdw7p8JcfhkEip5CTlcS7Wa26CIQaAXL%2BIx96leWW0jm8yptxIMRhhvYxWlJ3Mn0Uh7aouMVhT0YPXUc%2BT70UgbU1HVxwuKtzNpuVChbUeXeAeqzf77qgTX9FcimI3Z2AKLyuEkj4Wy4042m7PRRK0r35fECiLKArE7SZJDccvK0sMD1jL0XZUD8XC597cSgshYvzJx%2FKKSftQd8C%2FiLbWUcCpmEFF%2B8EsRu%2BMU6GlIFr6VS9%2ByDOktybGituBQQx8%2F9KqI%2FuIIrznI2AVwLqOGrdZXM3Tr2sUhsWoDaI%2FrmiFbsbMkPgbf4ALMoG6qrdifcSKYZietbFACTEGi%2F4%2F1zauppwT%2BPFDgwQ4vrJfOUsDyEAfiflAp2MUm8B3yQMJC7%2F9IGOqUB7uu5jLDFOw4X1UL%2BumFuNy0mN7AnZEWuypnjmmMKqH%2Fx55xKdBA6%2F0sVeQ5nElBIvR2QL3ujTwQLKs%2BtDZvH2GkonZmRLkPwQTQBQs8yDMqz%2Be7xKJRQyjzKdY9FT%2B7GF5skSJhjjX%2BTTKfchdSVT%2FImsQYpOKiKEr3d5a06hwqFs9MUU8F7bWWsowWkRSo6HRVkuNMzq3dKVzhvgndfdh6eRMrO&X-Amz-Signature=3ffba5266bccff889d6658187458ff4175c6a375d800d632f8f98f4c0b3167df&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

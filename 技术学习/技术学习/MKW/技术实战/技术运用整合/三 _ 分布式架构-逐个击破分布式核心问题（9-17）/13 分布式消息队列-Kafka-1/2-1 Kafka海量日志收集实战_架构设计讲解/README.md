@@ -1,0 +1,88 @@
+---
+title: 2-1 Kafka海量日志收集实战_架构设计讲解
+---
+
+# 2-1 Kafka海量日志收集实战_架构设计讲解
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7f03c9fc-8454-45ae-a932-7226275ef22e/SCR-20240807-gfez.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VQCGY5PV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225323Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA1dLRaLFFmA86piTyHb%2FxSrlWad6lCA8zc7NDGR4bpFAiB1GnK0E6mgdxDOE19%2FQu9VWh9g7O2BJxozdA5ytOIlHCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKOMu7RXNcYPT76dnKtwDd42qyDy9I5uwfsOqyk3IOvYDKU%2B8isZDHm0y9ZmPUH8iLTsK%2BCLWafmGFhO2ckl9HdxZb7t%2FJJRycqbdiC066tj%2F9sQM2pPfpfAFYYDWkQza3vMjerwFq7HwgZEjjGVnLlRtnHdac2b4zAHzhsN2jq96El%2BsU%2FBv8PyQRXH90%2FowIC0P79H81%2BtJZc86NzWLET6YX%2Fu4KD1xepmrvS%2BrfnMqqs0SUVUkjUmy8Ws6%2FZtGvsJLzdfKD1tf7J3K786EBi2cGa50t0%2FnbvcTi1Ae%2FLaSwaZ32JX4yqMJT6Kyx68n7lliSulJ5GchoNdCyRaJTXoy1YnKkLyDQWKEL6LmMnetQhA5Q307kGlavOx2zKXoQd15WfPlfD9TdBeeJxhtCSzO10aUaQ06zkB9PEQyInjhE5biFbhQNqZcMO%2BMwN8%2FcaWdfS15XG51%2FppMHmGdjpXoR4XpMUbPme2i1aFRI0fujoCyJC0KVk%2BlvaNodzkntgPwOFfGd1iLSkJMQ0%2F3l0V6GesxGVv%2BlirB7uQtZp9oLUcXvCOthLj9JJ53ZXdH%2F21oWakFfXw1QUBO8Os9okUG%2F3nJz26SMsUa2IPvJS4PHJv1ErEq9gXyARGQIPB4%2F39HHnRNakBc7TYw6rf%2F0gY6pgHy8MBt6JjSdz6ryhJAoSfJQshPbALntBxda2WSAsSTV1FkkFbEht9Bp3z1229p3Jtl32ehyFaYs3PVTiC5wSLfPnUjYJUyjSXU8jHsXhuHGUcusIyYfwpcYFoeJMsZfMmZ4vPUklWrVJW%2FCcyiYwz%2FrQ7corFJ6BS2QdZ5qX7Hnk4fFfbcKoDljRU8U6SUwnruw0MltZtjJZNVsK76ZAIbKgo%2FHap0&X-Amz-Signature=bedc4fe63f86facd7adb30c36878e44316ef519993f6c264ce4c99502f4ab75a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5b47fd58-3fef-4402-9414-c3ad0379441d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VQCGY5PV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225323Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA1dLRaLFFmA86piTyHb%2FxSrlWad6lCA8zc7NDGR4bpFAiB1GnK0E6mgdxDOE19%2FQu9VWh9g7O2BJxozdA5ytOIlHCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKOMu7RXNcYPT76dnKtwDd42qyDy9I5uwfsOqyk3IOvYDKU%2B8isZDHm0y9ZmPUH8iLTsK%2BCLWafmGFhO2ckl9HdxZb7t%2FJJRycqbdiC066tj%2F9sQM2pPfpfAFYYDWkQza3vMjerwFq7HwgZEjjGVnLlRtnHdac2b4zAHzhsN2jq96El%2BsU%2FBv8PyQRXH90%2FowIC0P79H81%2BtJZc86NzWLET6YX%2Fu4KD1xepmrvS%2BrfnMqqs0SUVUkjUmy8Ws6%2FZtGvsJLzdfKD1tf7J3K786EBi2cGa50t0%2FnbvcTi1Ae%2FLaSwaZ32JX4yqMJT6Kyx68n7lliSulJ5GchoNdCyRaJTXoy1YnKkLyDQWKEL6LmMnetQhA5Q307kGlavOx2zKXoQd15WfPlfD9TdBeeJxhtCSzO10aUaQ06zkB9PEQyInjhE5biFbhQNqZcMO%2BMwN8%2FcaWdfS15XG51%2FppMHmGdjpXoR4XpMUbPme2i1aFRI0fujoCyJC0KVk%2BlvaNodzkntgPwOFfGd1iLSkJMQ0%2F3l0V6GesxGVv%2BlirB7uQtZp9oLUcXvCOthLj9JJ53ZXdH%2F21oWakFfXw1QUBO8Os9okUG%2F3nJz26SMsUa2IPvJS4PHJv1ErEq9gXyARGQIPB4%2F39HHnRNakBc7TYw6rf%2F0gY6pgHy8MBt6JjSdz6ryhJAoSfJQshPbALntBxda2WSAsSTV1FkkFbEht9Bp3z1229p3Jtl32ehyFaYs3PVTiC5wSLfPnUjYJUyjSXU8jHsXhuHGUcusIyYfwpcYFoeJMsZfMmZ4vPUklWrVJW%2FCcyiYwz%2FrQ7corFJ6BS2QdZ5qX7Hnk4fFfbcKoDljRU8U6SUwnruw0MltZtjJZNVsK76ZAIbKgo%2FHap0&X-Amz-Signature=9a9d44f7d1566ad79f2abf903c8bffbe4a771d7b9ed98ed9b884574fc1df5b6e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，小伙伴们，大家好，那么这节课呢，我们继续往下去学习，我们来学习海量日志收集架构设计。那在这里呢，看到这个标题，同学们，很明显你会想到哈，那老师接下来整个这个 MQ 的后半部分内容，肯定是关于日志收集的这么一个事情。那首先我们小伙伴来一起回忆一下，那对于这个日志收集，你呢？正常情况下，或者说你们实际的公司中是到底是怎么去做的，对吧？那在这里我们就采用对应着 elk 的技术栈，去对于这个日志收集做一个架构的设计，然后应用上我们的这个卡夫卡，当然卡夫卡只是其中一个非常核心的这么一个环节。
+
+
+好了，来我们首先来整体看一下整个的这个 e l k 技术栈的架构示意图。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bc16ffde-45b6-4b38-82a6-d156cab025e2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VQCGY5PV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225323Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA1dLRaLFFmA86piTyHb%2FxSrlWad6lCA8zc7NDGR4bpFAiB1GnK0E6mgdxDOE19%2FQu9VWh9g7O2BJxozdA5ytOIlHCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKOMu7RXNcYPT76dnKtwDd42qyDy9I5uwfsOqyk3IOvYDKU%2B8isZDHm0y9ZmPUH8iLTsK%2BCLWafmGFhO2ckl9HdxZb7t%2FJJRycqbdiC066tj%2F9sQM2pPfpfAFYYDWkQza3vMjerwFq7HwgZEjjGVnLlRtnHdac2b4zAHzhsN2jq96El%2BsU%2FBv8PyQRXH90%2FowIC0P79H81%2BtJZc86NzWLET6YX%2Fu4KD1xepmrvS%2BrfnMqqs0SUVUkjUmy8Ws6%2FZtGvsJLzdfKD1tf7J3K786EBi2cGa50t0%2FnbvcTi1Ae%2FLaSwaZ32JX4yqMJT6Kyx68n7lliSulJ5GchoNdCyRaJTXoy1YnKkLyDQWKEL6LmMnetQhA5Q307kGlavOx2zKXoQd15WfPlfD9TdBeeJxhtCSzO10aUaQ06zkB9PEQyInjhE5biFbhQNqZcMO%2BMwN8%2FcaWdfS15XG51%2FppMHmGdjpXoR4XpMUbPme2i1aFRI0fujoCyJC0KVk%2BlvaNodzkntgPwOFfGd1iLSkJMQ0%2F3l0V6GesxGVv%2BlirB7uQtZp9oLUcXvCOthLj9JJ53ZXdH%2F21oWakFfXw1QUBO8Os9okUG%2F3nJz26SMsUa2IPvJS4PHJv1ErEq9gXyARGQIPB4%2F39HHnRNakBc7TYw6rf%2F0gY6pgHy8MBt6JjSdz6ryhJAoSfJQshPbALntBxda2WSAsSTV1FkkFbEht9Bp3z1229p3Jtl32ehyFaYs3PVTiC5wSLfPnUjYJUyjSXU8jHsXhuHGUcusIyYfwpcYFoeJMsZfMmZ4vPUklWrVJW%2FCcyiYwz%2FrQ7corFJ6BS2QdZ5qX7Hnk4fFfbcKoDljRU8U6SUwnruw0MltZtjJZNVsK76ZAIbKgo%2FHap0&X-Amz-Signature=d98ed1beb7303577501c955eb06f3393aa8dd2d97cf8b857b4fd8c78971d7b6c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先我们看到最左侧的叫做bits，那这个 bits 是用于干什么呢？它主要是用于收集日志的，那它的这个bits，比如说我们的这个 file beat，那接下来我们去学习了，它的底层是使用这个 go 浪语言去写的，这个性能非常的好。那其实我们自己的业务系统中，然后通过这个 log 打出来的日志，都会帮我去用这个 fail beat 去帮我去抓取出来。它 fail beat 有四大金刚，比如说它主要是监控文件的一些变动变更，然后去把这些变更抓取出来，然后我可以去把它 think 到其他的地方，那 think 的意思就是输出到其他地方，那在我们 elk 的架构这里边，它是相当于把 file beat 搜集上来的这个数据直接转储到我们的这个卡夫卡，也就是说我们这一部分 MQ 的一个核心转储到卡夫卡上，然后通过卡夫卡对应的卡夫卡的右边有一个叫做 LOX test 一个东西，它主要是对于这个日志做一个过滤。当然你可以写一些，比如说像正则表达式，或者是一些这个Brook，因为 log size 它里边用的一个表达式过滤日志的语言叫做Brook，这个后面我们也介绍，然后通过这个 group 去把你想要达到的数据进行一个过滤，然后 log stash 可以帮你把过滤后的数据去 think 到我们的这个最终的数据存储平台，也就是说 elastic search，OK，最后就是 elastic search。
+
+
+那怎么去展示呢？通过kibna OK，那整个这就是我们海量日志收集架构设计的一个 top 图，那同学们有没有一些思考？就是说老师我们的应用服务打出来的 log 日志是在我们是真正的这个服务器的磁盘上的，然后我们通过 fail beat 把日志抓取出来，然后扔到卡夫卡。
+
+
+人家说老师我能不能直接，我在实际工作中我可以直接通过什么呢？如果不用菲尔贝塔，我直接利用这个，比如说像 local j 的一些插件跟这个劳斯莱斯集成，就直接可以帮我去过滤，然后一次性的帮我去 think 到我们的这个 elasks 色上，这样也可以，还有包括比如说老师，那我们干脆就不用这个 file beat 了，那我们可以直接自己封装一个。
+
+
+如果熟悉 LOGO 复制的小伙伴知道我们 logo 复制里边有好多append，自己封装一个Appender，比如说叫做 e l k，或者是叫做 Elasticsearch Apander，对吧？我直接可以把数据上报到 Elasticsearch 上，中间的这些什么卡夫卡，包括我的 log stash，我都不需要去做任何的这个搭建了，我直接 think 到 elastic search 上，也就说老师让我再省略一点，我说我不要 fail beat，我直接通过 up 卡夫卡的Panda，这个是 lock 工具里面提供的。是不是这个卡夫卡 Panda 直接帮我们去把数据传到卡夫卡上，然后再走lock，stash，然后以及Elasticsearch。
+
+
+当然实现这个日志收集的手段和方案有太多种，刚会有同学说，老师，那我就想用类似于像开源的一些，像这个阿帕奇的这个 sky working，我直接通过 net 的方式，通过这个 Java agent 的方式，直接把收集上的日志传到另外一个 agent 端，然后去展示出来等等。有很多一种手段。但是我们在这里跟大家讲的是最标准，业界最通用，也是真正的能够承载海量数据收集的一个架构示意图，这也是官方推荐的。
+
+
+所以说小伙伴们，你不要有任何的其他的问题，也不是说不是有问题，我的意思是说你不要有其他的顾虑，就是说我们在这里可能所做的架构设计跟你在实际工作中不一样，当然也是不同的场景的，那老师在这里讲的是一个最完善、最全面的 e l k 官方的一个标配。
+
+
+废话不多说了，那我们再来分析。首先我们来看一看我们怎么去通过把我们的应用日志输出到这个应用日志的，把这些日志输出到一些文件上，那很明显咱们都会用到这个 s l 呼g， log 呼 g 或者是我们的这个 log bike，就是 spring boot 默认可以提供支持的这种日志的插件而知的组件，把它输出到这个文件里，然后我们在这里用到的是 file beat 去做一个日志的收集。
+
+
+在这里同学们思考一个问题，为什么说中间需要用到卡夫卡？我说我 CL beat 直接收集，把它扔到这个 elastic search，或者说直接转储到这个劳斯莱士行不行？也不是不可以用到卡夫卡的一个目的就是说前提是海量日志收集的架构设计，比如说可能在某一点有一些你的业务，肯定有一些业务高峰期，在高峰期的时候，那么我用卡夫卡中间作为一层缓冲，用来缓解我们 elastic search 的压力。
+
+
+在这里一定小伙伴们要注意，整个这个架构设计最经典的地方就在于中间这块卡夫卡，它是做一个作为一个缓冲，就是海量特别海量的数据过来，如果你不用中间的这个卡斯卡缓冲的话，可能会把我们的这个 e r elastic search，就是最后面的这个实际存储的，把它的这个 l p s 打满，导致我们的 elasticaearch 它的这个 IO 已经超越它的极限了。
+
+
+那有人说，老师，那我就横向扩展呗，对不对？横向扩展这个不是不可以，一般来讲实际的，除非说你有那么多服务器。那其实在老师的实际工作中，我们在线上跑着至少有 30 多个 Elasticsearch 节点用于处理我们整个就是目前我们公司整个的日志平台的一个存储。当然每一个 Elasticsearch 大体上每一个节点差不多是 500G 的，这个 SSD 就是固态硬盘，然后包括它的一些CPU、内存、网卡，就是整个的配置都特别的高。你想一共 30 多个节点，那其实我们的这个配置已经是非常非常高的了。但是我们在高峰期的时候，在业务高峰期的时候，比如说我们在某一个时间点，我们有一些抢购的一些活动，有一些秒杀的一些场景，那个时候它的日志量是非常非常庞大的，如果你不去做缓冲，那很有可能把我们的 elastic search 集群冲垮，这个是很正常的。所以在这里我就用到了一层中间的转储，就是卡夫卡这一块。
+
+
+当然卡夫卡还有一个好处，比如说当我们的 Elasticsearch 还有我们的后端有问题的时候，那卡夫卡呢？它也有一个非常非常牛的一个消息堆积能力，那可以说几百亿的数据做堆积。当然你的配置一定要稍微好一点，我们线上的是这个五台卡夫卡，然后每一台卡夫卡的配置也是相对来讲比较高的。那卡夫卡它就是说你在很廉价的服务器上，它就能有一些非常优质的体现，那你更别说你把它的这个硬件配置提高一点，那它的性能肯定就是特别特别好。OK，好了，那在这里我们已经充分的介绍了卡夫卡的目的就是为了做缓冲，然后通过侃法做缓冲之后把卡法里的数据对应着。
+
+
+我们的这个 love 赛事其实就相当于一个 consumer 的角色，就是消费者的角色，那么我们的 fail beat 相当于一个producer，就是生产者卡夫卡相当于broker，对吧？那消费者是 loss 赛事，那 log 赛事去消费卡夫卡上的数据，然后帮我去做指定的一些卢克表达式的一些过滤，把我想要过滤出来的数据最终转储到我们的 elastic search 上。那这个就是我们整个的 e l k 架构设计。那我啰嗦这么多，其实是想让小伙伴们真正的去了解这个海量日志收集的这一套官方标配的 ERK 到底是一个什么概念。OK，那接下来呢？我们继续往下看，看一些我们接下来要做的试试。
+
+
+
+首先我们看这幅图，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f7337572-950f-4c44-a87e-8f9b092c846d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VQCGY5PV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225323Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA1dLRaLFFmA86piTyHb%2FxSrlWad6lCA8zc7NDGR4bpFAiB1GnK0E6mgdxDOE19%2FQu9VWh9g7O2BJxozdA5ytOIlHCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKOMu7RXNcYPT76dnKtwDd42qyDy9I5uwfsOqyk3IOvYDKU%2B8isZDHm0y9ZmPUH8iLTsK%2BCLWafmGFhO2ckl9HdxZb7t%2FJJRycqbdiC066tj%2F9sQM2pPfpfAFYYDWkQza3vMjerwFq7HwgZEjjGVnLlRtnHdac2b4zAHzhsN2jq96El%2BsU%2FBv8PyQRXH90%2FowIC0P79H81%2BtJZc86NzWLET6YX%2Fu4KD1xepmrvS%2BrfnMqqs0SUVUkjUmy8Ws6%2FZtGvsJLzdfKD1tf7J3K786EBi2cGa50t0%2FnbvcTi1Ae%2FLaSwaZ32JX4yqMJT6Kyx68n7lliSulJ5GchoNdCyRaJTXoy1YnKkLyDQWKEL6LmMnetQhA5Q307kGlavOx2zKXoQd15WfPlfD9TdBeeJxhtCSzO10aUaQ06zkB9PEQyInjhE5biFbhQNqZcMO%2BMwN8%2FcaWdfS15XG51%2FppMHmGdjpXoR4XpMUbPme2i1aFRI0fujoCyJC0KVk%2BlvaNodzkntgPwOFfGd1iLSkJMQ0%2F3l0V6GesxGVv%2BlirB7uQtZp9oLUcXvCOthLj9JJ53ZXdH%2F21oWakFfXw1QUBO8Os9okUG%2F3nJz26SMsUa2IPvJS4PHJv1ErEq9gXyARGQIPB4%2F39HHnRNakBc7TYw6rf%2F0gY6pgHy8MBt6JjSdz6ryhJAoSfJQshPbALntBxda2WSAsSTV1FkkFbEht9Bp3z1229p3Jtl32ehyFaYs3PVTiC5wSLfPnUjYJUyjSXU8jHsXhuHGUcusIyYfwpcYFoeJMsZfMmZ4vPUklWrVJW%2FCcyiYwz%2FrQ7corFJ6BS2QdZ5qX7Hnk4fFfbcKoDljRU8U6SUwnruw0MltZtjJZNVsK76ZAIbKgo%2FHap0&X-Amz-Signature=edcfb0d2761d5f8bd960a6265a76561d799edb62caa41dde18c62c8f5215ba3c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这幅图就是接下来我们要跟小伙伴们从 0 开始一点点搭建的一个对应的一个架构，那也就是说我们使用 log for g two 这个插件。在这里为什么我没有选择 spring 默认就是 spring boot 默认的官方的这个 lock back，那其实原因很简单，因为 log4j2它是性能会更好一些，因为它底层是基于无所并行框架 disruptor 去做的。
+
+
+当然它想发挥出威力也是有一定前提的，因为它的这个配置一定要高，因为 super 它比较吃内存，比较吃CPU，所以说你想让它这个日志收集的更实时，那对应着你自己的 application 应用服务的性能也应该，它的配置应该相对来讲要求要高一些，并且一定要经过一个这个压测。
+
+
+好了，那在这里呢，我们看看这个两个粉色的，就是一个 APP 点log，还有一个是 error 点log，在这里我们把它分成两个对应的 log 日志文件，那 APP 在这里我们可以去存储一个全量的 log 日志，就是说无论我的业务打什么样的日志。
+
+
+当然我们一般来讲会限制在 info 级别，就是日志的这个 info 级别，比如说 info warning，包括error，这些全量的日志我们都会打到 APP 点 log 上，然后对应着还有一个叫做 error 点r，也就是说只要出现异常，只要出现错误的就是warning，你可以认为是 warning 级别以上的日志我们都会打到这一个文件上。
+
+
+有的时候老师为什么你要分成两个文件，一个存储全量，还有一个存储 error 量，其实目标很简单，就是为了后面我们去做什么呢？我们去做对应的这个对于数据的一些告警分析，然后我们可以去选择 error 点 log 日志，而不是 APP 点 log 日志，其目的就是为了因为 APP 的 log 日志它的这个量级太多了，那对应的系统出现一些 warning 或者 l 相对来讲的日志，肯定要比这个全量日志要少了很多。
+
+
+所以说我们后面的这个告警通过一些特殊的手段去对这个 l log 去做一些定时任务，定时的这个抓取，但是性能会更高，所以说对应的告警实时性会更强。那就是把两方面的这个打两个 log 日志，然后用 fail beat 去把这些日志收集上来，然后给它转储到我们的卡夫卡组件，然后卡夫卡这边收到了消息以后，它对应的 consumer 消费者就是我们的Logstash，那 Logstash 呢？把消息得到之后再帮我去转储， think 到我们的 ES 中，OK，那这个就是整体的一个设计，那再往下看，
+
+
+这有一个全量的这么一个图，我们会看到。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/33d851a4-b4e5-4603-8b13-41936c9268c0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VQCGY5PV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225323Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA1dLRaLFFmA86piTyHb%2FxSrlWad6lCA8zc7NDGR4bpFAiB1GnK0E6mgdxDOE19%2FQu9VWh9g7O2BJxozdA5ytOIlHCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKOMu7RXNcYPT76dnKtwDd42qyDy9I5uwfsOqyk3IOvYDKU%2B8isZDHm0y9ZmPUH8iLTsK%2BCLWafmGFhO2ckl9HdxZb7t%2FJJRycqbdiC066tj%2F9sQM2pPfpfAFYYDWkQza3vMjerwFq7HwgZEjjGVnLlRtnHdac2b4zAHzhsN2jq96El%2BsU%2FBv8PyQRXH90%2FowIC0P79H81%2BtJZc86NzWLET6YX%2Fu4KD1xepmrvS%2BrfnMqqs0SUVUkjUmy8Ws6%2FZtGvsJLzdfKD1tf7J3K786EBi2cGa50t0%2FnbvcTi1Ae%2FLaSwaZ32JX4yqMJT6Kyx68n7lliSulJ5GchoNdCyRaJTXoy1YnKkLyDQWKEL6LmMnetQhA5Q307kGlavOx2zKXoQd15WfPlfD9TdBeeJxhtCSzO10aUaQ06zkB9PEQyInjhE5biFbhQNqZcMO%2BMwN8%2FcaWdfS15XG51%2FppMHmGdjpXoR4XpMUbPme2i1aFRI0fujoCyJC0KVk%2BlvaNodzkntgPwOFfGd1iLSkJMQ0%2F3l0V6GesxGVv%2BlirB7uQtZp9oLUcXvCOthLj9JJ53ZXdH%2F21oWakFfXw1QUBO8Os9okUG%2F3nJz26SMsUa2IPvJS4PHJv1ErEq9gXyARGQIPB4%2F39HHnRNakBc7TYw6rf%2F0gY6pgHy8MBt6JjSdz6ryhJAoSfJQshPbALntBxda2WSAsSTV1FkkFbEht9Bp3z1229p3Jtl32ehyFaYs3PVTiC5wSLfPnUjYJUyjSXU8jHsXhuHGUcusIyYfwpcYFoeJMsZfMmZ4vPUklWrVJW%2FCcyiYwz%2FrQ7corFJ6BS2QdZ5qX7Hnk4fFfbcKoDljRU8U6SUwnruw0MltZtjJZNVsK76ZAIbKgo%2FHap0&X-Amz-Signature=99066b61e161eb155d993646d81df0f1353d804dee3214fc33587b30554d8ec3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这个全量的图，我们看到 e s 之后，我们可以通过 x pack watcher，就是 x pack，大家应该知道之前我们应该有学过这个 e l k，那对于 s pack 大家应该也所了解，然后提班也就不说了。那也就是说我们会通过什么呢？会通过一些触发器，就是 trigger shell，那其实它也是根据 x pack 里边有一个 water 水滴这么一个插件，通过这个插件去做一个什么呀？去做一个对于错误日志的 1 上报和告警的功能，然后我们可以通过我们自己就是把告警的信息通过，比如说通过一些 HTTP 或者其他的一些方式，然后上报到我们的这种 web API，就是我们自己的应用程序，然后我们的自己应用程序还可以去通知到我们的企业微信，对应着以后我们可以做到什么呢？比如说某一个业务组，某几个项目出现问题，我们可以专门的去把一些告警日志推送到这个业务组里边，对应的这几个人当然是通过企业微信的方式，当然你可以接不同的渠道，比如说发邮件、发短信，还有可以发一些 IVR 语音播报等等，都可以。
+
+
+OK，好了，那这个就是我们整个海量日志收集的一个架构设计，那我希望小伙伴们简单的去捋顺一下这个思路。当然后面这一块呢？因为企业微信这块老师可能没有权限，那我们就去模拟收集到我们的这个对应的 web API 就可以，因为只要 watch 收集到 web API，基本上后面的事情小伙伴应该知道怎么去做。OK，那这个就是我们整体的一个架构设计，感谢小伙伴们收看。
+
+
+
+

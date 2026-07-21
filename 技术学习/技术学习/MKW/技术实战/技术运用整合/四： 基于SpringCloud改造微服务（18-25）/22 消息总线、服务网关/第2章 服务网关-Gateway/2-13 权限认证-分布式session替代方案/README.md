@@ -1,0 +1,121 @@
+---
+title: 2-13 权限认证-分布式session替代方案
+---
+
+# 2-13 权限认证-分布式session替代方案
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/916237eb-df53-49a8-8171-c159f094c759/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PEB7WCM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225739Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGFv7AIB%2BxhaVQ9NLsLUnOfEWbpqebmz%2BJCoXWmmHQAWAiEAmHqAfE4C2dbCbfJUAlILu%2FDEuSD3NRPZwFhU3%2BNcDF8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDPrA2xfBh8%2FivKLGircA7HHvz0OZLu0isjQXrnYuTsTsq8NCOFbBc0fgfzzh9Zz9GBpEpLe5L1VUJjLCv63LP1VbWpb%2FDyQPguN1kYLPrEsCLL8Z5ZaTHMIy4Iei6WBRk8C1C25OP4m5QLI5U3Pt0hlunnBKvu26yGTJl%2FeG%2BDIsuI1jxbb9EczeeceIOPYQg1q457iy2lbHh8U%2BS%2FNBVNrFfDBsnIRKq0TISm1X8H2AXtFKE4qlcFFAIH6nsaw8tu3oJr3NzjVf9rqT3rvPzzPprA5i8TbKrxEYZw9xNvrwdfKDr40vD25H6sY0HBfaAzKPQERCFuggmVU2dQu6NMO%2BWNJgV9CGPVDiwTcRNN8O7MHP9R8gyKDivtsozEGdQD1oeCvTX74jw%2FNxh7GpEXpCdVSJmWxI%2FlG%2B%2FX3ehsUCN2KR%2BkmnMFukmd8ZC%2FICiUfh%2BdLvh6yDhdVLNTJ81yI0cUgXp1FYJ3krz7wLCuqbTUNL5VXuYtFpVpIPcxZm6rn8sbCAfSgsXJqAXzME1zqMkUl1dKECQ79%2FZHyf7VAUCuNUkA7Jg9HzQH5Max9PrVNsa6KTUL2wqYCoPVt5ZLEqZEpKEvsH9OE9SjI7CjREglbCoJG%2FKUII56qc0jMDXvn2Yjba4u0fUHpMLS4%2F9IGOqUBnqAvN7cMSoqTElzNmlvyG2%2FF4s%2BCcL%2FurJEIU7YC0qKi05ksIp8K9%2By2iGKvbGH5C4m8N17yoXtY6l1DhymL3q1uf1zeey%2Flg7mm2pE4fpPDZAxg1jD0nQeybvUeenGCeh%2BI952q2qv4qaur36Cc3qeMLQzUse5yVCXcA20KUkNb8DwqGjGc8SqOUHeI8Yirw8EW5jMzADBfIQe%2B46QAyQNBksLD&X-Amz-Signature=8d6a4f2c15a60f4d4c58da7f7a2b1b7896a5add333bbb8511a70b90f3de229b0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d5b476cb-fd97-425d-b9af-bb8f62dd3b2c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PEB7WCM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225739Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGFv7AIB%2BxhaVQ9NLsLUnOfEWbpqebmz%2BJCoXWmmHQAWAiEAmHqAfE4C2dbCbfJUAlILu%2FDEuSD3NRPZwFhU3%2BNcDF8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDPrA2xfBh8%2FivKLGircA7HHvz0OZLu0isjQXrnYuTsTsq8NCOFbBc0fgfzzh9Zz9GBpEpLe5L1VUJjLCv63LP1VbWpb%2FDyQPguN1kYLPrEsCLL8Z5ZaTHMIy4Iei6WBRk8C1C25OP4m5QLI5U3Pt0hlunnBKvu26yGTJl%2FeG%2BDIsuI1jxbb9EczeeceIOPYQg1q457iy2lbHh8U%2BS%2FNBVNrFfDBsnIRKq0TISm1X8H2AXtFKE4qlcFFAIH6nsaw8tu3oJr3NzjVf9rqT3rvPzzPprA5i8TbKrxEYZw9xNvrwdfKDr40vD25H6sY0HBfaAzKPQERCFuggmVU2dQu6NMO%2BWNJgV9CGPVDiwTcRNN8O7MHP9R8gyKDivtsozEGdQD1oeCvTX74jw%2FNxh7GpEXpCdVSJmWxI%2FlG%2B%2FX3ehsUCN2KR%2BkmnMFukmd8ZC%2FICiUfh%2BdLvh6yDhdVLNTJ81yI0cUgXp1FYJ3krz7wLCuqbTUNL5VXuYtFpVpIPcxZm6rn8sbCAfSgsXJqAXzME1zqMkUl1dKECQ79%2FZHyf7VAUCuNUkA7Jg9HzQH5Max9PrVNsa6KTUL2wqYCoPVt5ZLEqZEpKEvsH9OE9SjI7CjREglbCoJG%2FKUII56qc0jMDXvn2Yjba4u0fUHpMLS4%2F9IGOqUBnqAvN7cMSoqTElzNmlvyG2%2FF4s%2BCcL%2FurJEIU7YC0qKi05ksIp8K9%2By2iGKvbGH5C4m8N17yoXtY6l1DhymL3q1uf1zeey%2Flg7mm2pE4fpPDZAxg1jD0nQeybvUeenGCeh%2BI952q2qv4qaur36Cc3qeMLQzUse5yVCXcA20KUkNb8DwqGjGc8SqOUHeI8Yirw8EW5jMzADBfIQe%2B46QAyQNBksLD&X-Amz-Signature=222da8c23e78a78157126555288b289e3d51658071a91e7fbeff73ef7fa09022&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**2-13 权限认证-分布式session替代方案**
+
+前面我们了解了Gateway组件的过滤器，这一节我们就探讨一下Gateway在分布式环境中的一个具体用例-用户鉴权。
+
+**传统单应用的用户鉴权**
+
+从我们开始学JavaEE的时候，就被洗脑式灌输了一种权限验证的标准做法，那就是将用户的登录状态保存到HttpSession中，比如在登录成功后保存一对key-value值到session，key是userId而value是用户后台的真实ID。接着创建一个ServletFilter过滤器，用来拦截需要登录才能访问的资源，假如这个请求对应的服务端session里找不到userId这个key，那么就代表用户尚未登录，这时候可以直接拒绝服务然后重定向到用户登录页面。
+
+大家应该都对session机制比较熟悉，它和cookie是相互依赖的，cookie是存放在用户浏览器中的信息，而session则是存放在服务器端的。当浏览器发起服务请求的时候就会带上cookie，服务器端接到Request后根据cookie中的jsessionid拿到对应的session。由于我们只启动一台服务器，所以在登录后保存的session始终都在这台服务器中，可以很方便的获取到session中的所有信息。用这野路子，我们一路搞定了各种课程作业和毕业设计。结果一到工作岗位发现行不通了，因为所有应用都是集群部署，在一台机器保存了的session无法同步到其他机器上。那我们有什么成熟的解决方案吗？
+
+**分布式环境下的解决方案**
+
+**同步session**
+
+Session复制是最容易先想到的解决方案，我们可以把一台机器中的session复制到集群中的其他机器。比如Tomcat中也有内置的session同步方案，但是这并不是一个很优雅的解决方案，它会带来以下两个问题：
+
+Timing问题 同步需要花费一定的时间，我们无法保证session同步的及时性，也就是说，当用户发起的两个请求分别落在不同机器上的时候，前一个请求写入session的信息可能还没同步到所有机器，后一个请求就已经开始执行业务逻辑了，这不免引起脏读幻读。
+
+数据冗余 所有服务器都需要保存一份session全集，这就产生了大量的冗余数据
+
+**反向代理：绑定IP或一致性Hash**
+
+这个方案可以放在Nignx网关层做的，我们可以指定某些IP段的请求落在某个指定机器上，这样一来session始终只存在一台机器上。不过相比前一种session复制的方法来说，绑定IP的方式有更明显的缺陷：
+
+负载均衡 在绑定IP的情况下无法在网关层应用负载均衡策略，而且某个服务器出现故障的话会对指定IP段的来访用户产生较大影响。对网关层来说该方案的路由规则配置也极其麻烦。
+
+IP变更 很多网络运营商会时不时切换用户IP，这就会导致更换IP后的请求被路由到不同的服务节点处理，这样一来就读不到前面设置的session信息了
+
+为了解决第二个问题，可以通过一致性Hash的路由方案来做路由，比如根据用户ID做Hash，不同的Hash值落在不同的机器上，保证足够均匀的分配，这样也就避免了IP切换的问题，但依然无法解决第一点里提到的负载均衡问题。
+
+**Redis解决方案**
+
+这个方案解决了前面提到的大部分问题，session不再保存在服务器上，取而代之的是保存在redis中，所有的服务器都向redis写入/读取缓存信息。
+
+在Tomcat层面，我们可以直接引入tomcat-redis-session-manager组件，将容器层面的session组件替换为基于redis的组件，但是这种方案和容器绑定的比较紧密。另一个更优雅的方案是借助spring-session管理redis中的session，尽管这个方案脱离了具体容器，但依然是基于Session的用户鉴权方案，这类Session方案已经在微服务应用中被淘汰了。
+
+**分布式Session的替代方案**
+
+To think out of box guys~让我们把session抛到脑后，看看现在流行的两种认证方式：
+
+**OAuth 2.0**
+
+大家一定用过现在比较流行的第三方登录，比如我们通过微信扫码登录就可以登录某个应用的在线系统，但是这个应用并不知道我的微信用户名和密码。这便是我们要介绍的第一个鉴权方案-OAuth 2.0。
+
+OAuth 2.0是一个开放授权标准协议，它允许用户让第三方应用访问该用户在某服务的特定私有资源，但是不提供账号密码信息给第三方应用。在上面的例子中，微信就相当于一个第三方应用，我们通过OAuth 2.0
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/034365a1-3bd6-4c75-a0b0-1588aec02e5e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PEB7WCM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225739Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGFv7AIB%2BxhaVQ9NLsLUnOfEWbpqebmz%2BJCoXWmmHQAWAiEAmHqAfE4C2dbCbfJUAlILu%2FDEuSD3NRPZwFhU3%2BNcDF8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDPrA2xfBh8%2FivKLGircA7HHvz0OZLu0isjQXrnYuTsTsq8NCOFbBc0fgfzzh9Zz9GBpEpLe5L1VUJjLCv63LP1VbWpb%2FDyQPguN1kYLPrEsCLL8Z5ZaTHMIy4Iei6WBRk8C1C25OP4m5QLI5U3Pt0hlunnBKvu26yGTJl%2FeG%2BDIsuI1jxbb9EczeeceIOPYQg1q457iy2lbHh8U%2BS%2FNBVNrFfDBsnIRKq0TISm1X8H2AXtFKE4qlcFFAIH6nsaw8tu3oJr3NzjVf9rqT3rvPzzPprA5i8TbKrxEYZw9xNvrwdfKDr40vD25H6sY0HBfaAzKPQERCFuggmVU2dQu6NMO%2BWNJgV9CGPVDiwTcRNN8O7MHP9R8gyKDivtsozEGdQD1oeCvTX74jw%2FNxh7GpEXpCdVSJmWxI%2FlG%2B%2FX3ehsUCN2KR%2BkmnMFukmd8ZC%2FICiUfh%2BdLvh6yDhdVLNTJ81yI0cUgXp1FYJ3krz7wLCuqbTUNL5VXuYtFpVpIPcxZm6rn8sbCAfSgsXJqAXzME1zqMkUl1dKECQ79%2FZHyf7VAUCuNUkA7Jg9HzQH5Max9PrVNsa6KTUL2wqYCoPVt5ZLEqZEpKEvsH9OE9SjI7CjREglbCoJG%2FKUII56qc0jMDXvn2Yjba4u0fUHpMLS4%2F9IGOqUBnqAvN7cMSoqTElzNmlvyG2%2FF4s%2BCcL%2FurJEIU7YC0qKi05ksIp8K9%2By2iGKvbGH5C4m8N17yoXtY6l1DhymL3q1uf1zeey%2Flg7mm2pE4fpPDZAxg1jD0nQeybvUeenGCeh%2BI952q2qv4qaur36Cc3qeMLQzUse5yVCXcA20KUkNb8DwqGjGc8SqOUHeI8Yirw8EW5jMzADBfIQe%2B46QAyQNBksLD&X-Amz-Signature=820f229104c7b9ab6ed08d7feb8bb3b375ff6b387f74f96ac033de9fc6a9162d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+拿微信登录第三方应用的例子来说：
+
+Auth Grant 在这一步Client发起Authorization Request到微信系统（比如通过微信内扫码授权），当身份验证成功后获取Auth Grant
+
+Get Token 客户端拿着从微信获取到的Auth Grant，发给第三方引用的鉴权服务，换取一个Token，这个Token就是访问第三方应用资源所需要的令牌
+
+访问资源 最后一步，客户端在请求资源的时候带上Token令牌，服务端验证令牌真实有效后即返回指定资源
+
+我们可以借助Spring Cloud中内置的
+
+```java
+spring-cloud-starter-oauth2
+```
+
+组件搭建OAuth 2.0的鉴权服务，OAuth 2.0的协议还涉及到很多复杂的规范，比如角色、客户端类型、授权模式等。这一小节我们暂且不深入探讨OAuth 2.0的实现方式，先来看另外一个更轻量级的授权方案：JWT鉴权。
+
+**JWT鉴权**
+
+这一小节的随堂练习我们就来实现JWT鉴权，**JWT也是一种基于Token的鉴权机制，它的基本思想就是通过用户名+密码换取一个Access Token。**
+
+**鉴权流程**
+
+相比OAuth 2.0来说，它的鉴权过程更加简单，其基本流程是这样的： 用户名+密码访问鉴权服务验证通过：服务器返回一个Access Token给客户端，并将token保存在服务端某个地方用于后面的访问控制（可以保存在数据库或者Redis中）
+
+验证失败：不生成Token客户端使用令牌访问资源，服务器验证令牌有效性令牌错误或过期：拦截请求，让客户端重新申请令牌
+
+令牌正确：允许放行
+
+**Access Token中的内容**
+
+JWT的Access Token由三个部分构成，分别是Header、Payload和Signature，我们分别看下这三个部分都包含了哪些信息：
+
+Header 头部声明了Token的类型（JWT类型）和采用的加密算法（HS256）
+
+```java
+{
+
+'typ': 'JWT',
+
+'alg': 'HS256'
+
+}
+```
+
+Payload 这一段包含的信息相当丰富，你可以定义Token签发者、签发和过期时间、生效时间等一系列属性，还可以添加自定义属性。服务端收到Token的时候也同样可以对Payload中包含的信息做验证，比如说某个Token的签发者是“Feign-API”，假如某个接口只能允许“Gateway-API”签发的Token，那么在做鉴权服务时就可以加入Issuer的判断逻辑。
+
+Signature 它会使用Header和Payload以及一个密钥用来生成签证信息，这一步会使用Header里我们指定的加密算法进行加密
+
+目前实现JWT的开源组件非常多，如果决定使用这个方案，只要添加任意一个开源JWT实现的依赖项到项目中的pom文件，然后在加解密时调用该组件来完成。
+
+**小结**
+
+这一节我们了解了分布式环境下如何做用户鉴权，目前来说应用比较广泛的三种方案就是JWT、OAuth和spring-session+redis，接下来我们就来动手实现一个基于JWT的网关鉴权服务。
+
+
+**学习Tips： 一天不练手生脚慢，两天不练功丢一半，三天不练成了门外汉。学习新技术尤其如此，如果大家在工作中没有应用这些新技术的机会（比如公司技术栈老旧），那就没事的时候读读源码，以读代练。**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/59e1d472-e2e9-4046-a13f-2533f419027b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PEB7WCM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225740Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGFv7AIB%2BxhaVQ9NLsLUnOfEWbpqebmz%2BJCoXWmmHQAWAiEAmHqAfE4C2dbCbfJUAlILu%2FDEuSD3NRPZwFhU3%2BNcDF8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDPrA2xfBh8%2FivKLGircA7HHvz0OZLu0isjQXrnYuTsTsq8NCOFbBc0fgfzzh9Zz9GBpEpLe5L1VUJjLCv63LP1VbWpb%2FDyQPguN1kYLPrEsCLL8Z5ZaTHMIy4Iei6WBRk8C1C25OP4m5QLI5U3Pt0hlunnBKvu26yGTJl%2FeG%2BDIsuI1jxbb9EczeeceIOPYQg1q457iy2lbHh8U%2BS%2FNBVNrFfDBsnIRKq0TISm1X8H2AXtFKE4qlcFFAIH6nsaw8tu3oJr3NzjVf9rqT3rvPzzPprA5i8TbKrxEYZw9xNvrwdfKDr40vD25H6sY0HBfaAzKPQERCFuggmVU2dQu6NMO%2BWNJgV9CGPVDiwTcRNN8O7MHP9R8gyKDivtsozEGdQD1oeCvTX74jw%2FNxh7GpEXpCdVSJmWxI%2FlG%2B%2FX3ehsUCN2KR%2BkmnMFukmd8ZC%2FICiUfh%2BdLvh6yDhdVLNTJ81yI0cUgXp1FYJ3krz7wLCuqbTUNL5VXuYtFpVpIPcxZm6rn8sbCAfSgsXJqAXzME1zqMkUl1dKECQ79%2FZHyf7VAUCuNUkA7Jg9HzQH5Max9PrVNsa6KTUL2wqYCoPVt5ZLEqZEpKEvsH9OE9SjI7CjREglbCoJG%2FKUII56qc0jMDXvn2Yjba4u0fUHpMLS4%2F9IGOqUBnqAvN7cMSoqTElzNmlvyG2%2FF4s%2BCcL%2FurJEIU7YC0qKi05ksIp8K9%2By2iGKvbGH5C4m8N17yoXtY6l1DhymL3q1uf1zeey%2Flg7mm2pE4fpPDZAxg1jD0nQeybvUeenGCeh%2BI952q2qv4qaur36Cc3qeMLQzUse5yVCXcA20KUkNb8DwqGjGc8SqOUHeI8Yirw8EW5jMzADBfIQe%2B46QAyQNBksLD&X-Amz-Signature=d6a63aad21975d8ffb6aadaea9c73e6596d6fc178152ba0f8cc53eb54055528b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+
+

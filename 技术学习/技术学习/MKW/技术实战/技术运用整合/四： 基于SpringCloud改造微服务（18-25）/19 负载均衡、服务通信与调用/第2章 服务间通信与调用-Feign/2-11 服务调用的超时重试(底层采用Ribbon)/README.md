@@ -1,0 +1,71 @@
+---
+title: 2-11 服务调用的超时重试(底层采用Ribbon)
+---
+
+# 2-11 服务调用的超时重试(底层采用Ribbon)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0ea14a62-b582-4bbd-875c-dc6dcaf0bb70/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664CWOIXZ4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225626Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCVLTBmaxOVlrAd6m3K6ybONRCV6Jmpxp0BzNLVT97fogIhAMKVqeyyhaf2BJq7noI%2FDt9fkI0CpwiIngudEMxq8UqGKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxtjQHJkdcDJy0TnsQq3AMYhvFGW%2BL5m40QANUvxcBguJUyipoiEGk6JTculMJHKNTEN%2BbnNFcw%2BY9Hf%2BNIwOJqqb5xrTpdTNlZ%2Bn0fAR3gduU2lcZk2UPEMuD%2F5TLJ0XOUYxG07JhojMf2W6cCPg0iAfapSZlt8xDGZJWdcaqsICK1FYK195QJRZnm28B7rQ9j0opC4EeHGxB81v2bKPlhYjfn9X95XrO9%2FslmQ%2BTwdBeUqZuAB6nzWv9%2FrxPoYKGMxo7LjyI0o%2FqSbDUD1tRKghtvVs%2FQ1iXTF28esjKf%2BKKMVvcQvR7RaG3boogbHSnh9op9x0h4BkAvyA0lRyr%2F4fkWJutY2aHJDwbXOOeyySfncwzTs5wc1YtHGQUH9K1KGH5LYxJn9I1sDQxalYybnum8v9gvwfcZiN8mvVUJ26sFvIq8Fbs4P2bay0%2BOYuE036LdjUSD%2FJ4%2FOya6oXttWbB71dfoQttGx9e1gbVPcirNAPM8oPK%2F8N1GkEydwOOUU9aZEGPM7GYSvztMLAOZL8WpEr4R94vEc09ZSB%2FtlB3DjDegR15AIl0mYD0c7dCVLsAuzvqcFmIuCVyIN2LdeEDS2p3BwjtEEJ8p5WachC4%2FCPrjFfNOL9o46z9%2FR6RxGwnQA5sQvMOHEjD%2Ft%2F%2FSBjqkAYxuZmwyRNSY7gM%2B5B6%2BoR6opRZS04wsbqb1o3jGyPhluHYIn%2FePRymJFsaWk%2FzMGvmyP5zgupPEws%2FYREvEGJEkED0WRHe55GL%2F32dRziJ0r%2Br9ruSgVoiabzwFSozsnPqit9eeB0Ko8l1xhQnFB19FZJsTvdySgQRig8bvTkBiNbrasWBSRp03WRdz53piOIL30HY1G09Uk4IjOX3aBvfjilsl&X-Amz-Signature=6cc0e263c172ac9374e0856cce546183dceccdabdca7a26561cd89529dbc5411&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7e15b3ac-8ba2-484d-b17c-988b85383556/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664CWOIXZ4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225626Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCVLTBmaxOVlrAd6m3K6ybONRCV6Jmpxp0BzNLVT97fogIhAMKVqeyyhaf2BJq7noI%2FDt9fkI0CpwiIngudEMxq8UqGKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxtjQHJkdcDJy0TnsQq3AMYhvFGW%2BL5m40QANUvxcBguJUyipoiEGk6JTculMJHKNTEN%2BbnNFcw%2BY9Hf%2BNIwOJqqb5xrTpdTNlZ%2Bn0fAR3gduU2lcZk2UPEMuD%2F5TLJ0XOUYxG07JhojMf2W6cCPg0iAfapSZlt8xDGZJWdcaqsICK1FYK195QJRZnm28B7rQ9j0opC4EeHGxB81v2bKPlhYjfn9X95XrO9%2FslmQ%2BTwdBeUqZuAB6nzWv9%2FrxPoYKGMxo7LjyI0o%2FqSbDUD1tRKghtvVs%2FQ1iXTF28esjKf%2BKKMVvcQvR7RaG3boogbHSnh9op9x0h4BkAvyA0lRyr%2F4fkWJutY2aHJDwbXOOeyySfncwzTs5wc1YtHGQUH9K1KGH5LYxJn9I1sDQxalYybnum8v9gvwfcZiN8mvVUJ26sFvIq8Fbs4P2bay0%2BOYuE036LdjUSD%2FJ4%2FOya6oXttWbB71dfoQttGx9e1gbVPcirNAPM8oPK%2F8N1GkEydwOOUU9aZEGPM7GYSvztMLAOZL8WpEr4R94vEc09ZSB%2FtlB3DjDegR15AIl0mYD0c7dCVLsAuzvqcFmIuCVyIN2LdeEDS2p3BwjtEEJ8p5WachC4%2FCPrjFfNOL9o46z9%2FR6RxGwnQA5sQvMOHEjD%2Ft%2F%2FSBjqkAYxuZmwyRNSY7gM%2B5B6%2BoR6opRZS04wsbqb1o3jGyPhluHYIn%2FePRymJFsaWk%2FzMGvmyP5zgupPEws%2FYREvEGJEkED0WRHe55GL%2F32dRziJ0r%2Br9ruSgVoiabzwFSozsnPqit9eeB0Ko8l1xhQnFB19FZJsTvdySgQRig8bvTkBiNbrasWBSRp03WRdz53piOIL30HY1G09Uk4IjOX3aBvfjilsl&X-Amz-Signature=172edee9bc28075dd7657f46e95f87466a4a541f7c341a22b10bdca1fbcb2067&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/13814e21-72ca-433c-bde4-62a077e66c63/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664CWOIXZ4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225626Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCVLTBmaxOVlrAd6m3K6ybONRCV6Jmpxp0BzNLVT97fogIhAMKVqeyyhaf2BJq7noI%2FDt9fkI0CpwiIngudEMxq8UqGKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxtjQHJkdcDJy0TnsQq3AMYhvFGW%2BL5m40QANUvxcBguJUyipoiEGk6JTculMJHKNTEN%2BbnNFcw%2BY9Hf%2BNIwOJqqb5xrTpdTNlZ%2Bn0fAR3gduU2lcZk2UPEMuD%2F5TLJ0XOUYxG07JhojMf2W6cCPg0iAfapSZlt8xDGZJWdcaqsICK1FYK195QJRZnm28B7rQ9j0opC4EeHGxB81v2bKPlhYjfn9X95XrO9%2FslmQ%2BTwdBeUqZuAB6nzWv9%2FrxPoYKGMxo7LjyI0o%2FqSbDUD1tRKghtvVs%2FQ1iXTF28esjKf%2BKKMVvcQvR7RaG3boogbHSnh9op9x0h4BkAvyA0lRyr%2F4fkWJutY2aHJDwbXOOeyySfncwzTs5wc1YtHGQUH9K1KGH5LYxJn9I1sDQxalYybnum8v9gvwfcZiN8mvVUJ26sFvIq8Fbs4P2bay0%2BOYuE036LdjUSD%2FJ4%2FOya6oXttWbB71dfoQttGx9e1gbVPcirNAPM8oPK%2F8N1GkEydwOOUU9aZEGPM7GYSvztMLAOZL8WpEr4R94vEc09ZSB%2FtlB3DjDegR15AIl0mYD0c7dCVLsAuzvqcFmIuCVyIN2LdeEDS2p3BwjtEEJ8p5WachC4%2FCPrjFfNOL9o46z9%2FR6RxGwnQA5sQvMOHEjD%2Ft%2F%2FSBjqkAYxuZmwyRNSY7gM%2B5B6%2BoR6opRZS04wsbqb1o3jGyPhluHYIn%2FePRymJFsaWk%2FzMGvmyP5zgupPEws%2FYREvEGJEkED0WRHe55GL%2F32dRziJ0r%2Br9ruSgVoiabzwFSozsnPqit9eeB0Ko8l1xhQnFB19FZJsTvdySgQRig8bvTkBiNbrasWBSRp03WRdz53piOIL30HY1G09Uk4IjOX3aBvfjilsl&X-Amz-Signature=a7a97d60e6e0ca8f4071ed4c77d34073680dfdcf240bcb6f2c04a453ac8d6250&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**2-11 服务调用的超时重试(底层采用Ribbon)**
+
+**服务调用的超时重试**
+
+前面的小节里我们学习了小清新版的Feign结构，今天我们就来学一学不怎么清新的东东，这是Feign系列最烧脑的部分：求服务调用超时的最大可能值，简单来说就是高数里的求极限！
+
+多少年后，面对这块黑板，老师将会回想起十几年前被高等数学支配的恐惧。
+
+还记得高数4的期末考试，学校为了给高数课程画上一个完美的句号，来了一次奥数屠城大考。全班第一考了90分，第二名考了63分（老师读的真的是正经大学）。老师当年39分的高数成绩放眼全班，不说傲视群雄吧，也能称得上是中流砥柱！论高数里面最简单的知识是什么，想必应该就是求极限了吧？今天，老师就带大家学习一下，Feign组件如何求服务超时的极限值。
+
+**求极值的参数**
+
+Feign接口的超时重试机制由好搭档就是我，我就是好搭档的Ribbon倾情赞助！
+
+feign-service-provider.ribbon.OkToRetryOnAllOperations=true
+
+feign-service-provider.ribbon.ConnectTimeout=1000
+
+feign-service-provider.ribbon.ReadTimeout=2000
+
+feign-service-provider.ribbon.MaxAutoRetries=2
+
+feign-service-provider.ribbon.MaxAutoRetriesNextServer=2
+
+以上参数设置了对feign-service-provider这个微服务的超时重试策略，我们从上往下看极值函数的给定参数。
+
+
+OkToRetryOnAllOperations：这个参数指定了什么HTTP Method可以进行Retry，这里为了演示方便才设置为true，表示不管GET还是POST什么都能重试。真实的生产环境往往只是GET请求可以重试，或者实现了幂等性的其他类型请求。
+
+ConnectTimeout：超时判定的第一个参数（单位ms），创建会话的连接时间。注意，这个不是服务的响应时间，而是本机和服务建立一个Connection所花费的时间，如果连接超时则直接进行重试。
+
+ReadTimeout：超时判定的第二个参数，服务响应时间。当连接建立好之后，如果对方服务没有在规定时间内返回，则直接进行重试
+
+MaxAutoRetries：求极限关键参数之一，当前节点重试次数。这里重试次数为2，那么在首次调用超时以后，会再次向同一个服务节点发起最多2次重试（总共向当前节点1+2=3次请求）。
+
+MaxAutoRetriesNextServer：求极限关键参数之二，换N个节点重试。这里N=2，就是说在当前机器调用超时后，Feign将最多换N台机器发起调用（注意，这里将和第一个参数共同作用，也就是说，在新机器上超时后，会继续重试MaxAutoRetries+1次）。
+
+**极值函数**
+
+下面问题来了，按照前一个配置里的参数，最大超时时间是多少？
+
+答案是27000毫秒，你答对了吗？计算过程如下
+
+（2000 + 1000）*（2 + 1）*（2 + 1）= 27000ms
+
+那总结一下我们的极值函数就是：
+
+MAX(Response Time) = (ConnectTimeout + ReadTimeout) * (MaxAutoRetries + 1) * (MaxAutoRetriesNextServer + 1)
+
+**小结**
+
+这一节大家学会了如何计算Feign的超时重试功能（driven by Ribbon），接下来带就带大家去代码里感受一下。
+
+学习Tips：很多做技术的同学都以为数学没有什么实际作用，其实不然。前段时间老师在学习机器学习，为了不单纯的做一个“调包侠”来来回回只会调参数，想借着推导公式来加深理解，奈何数学功底确实不扎实，推导过程一路卡壳。如果有的同学还在学校读书，高数、线性代数和概率统计还是学学扎实（尤其是线性代数），在人工智能机器学习大力发展的今天，说不定未来你就转而从事相关职位，那时数学功底就有用武之地了，多会一项技能就是多一个机会。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ed1313c1-7851-45da-9c66-e510ae090171/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664CWOIXZ4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225626Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCVLTBmaxOVlrAd6m3K6ybONRCV6Jmpxp0BzNLVT97fogIhAMKVqeyyhaf2BJq7noI%2FDt9fkI0CpwiIngudEMxq8UqGKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxtjQHJkdcDJy0TnsQq3AMYhvFGW%2BL5m40QANUvxcBguJUyipoiEGk6JTculMJHKNTEN%2BbnNFcw%2BY9Hf%2BNIwOJqqb5xrTpdTNlZ%2Bn0fAR3gduU2lcZk2UPEMuD%2F5TLJ0XOUYxG07JhojMf2W6cCPg0iAfapSZlt8xDGZJWdcaqsICK1FYK195QJRZnm28B7rQ9j0opC4EeHGxB81v2bKPlhYjfn9X95XrO9%2FslmQ%2BTwdBeUqZuAB6nzWv9%2FrxPoYKGMxo7LjyI0o%2FqSbDUD1tRKghtvVs%2FQ1iXTF28esjKf%2BKKMVvcQvR7RaG3boogbHSnh9op9x0h4BkAvyA0lRyr%2F4fkWJutY2aHJDwbXOOeyySfncwzTs5wc1YtHGQUH9K1KGH5LYxJn9I1sDQxalYybnum8v9gvwfcZiN8mvVUJ26sFvIq8Fbs4P2bay0%2BOYuE036LdjUSD%2FJ4%2FOya6oXttWbB71dfoQttGx9e1gbVPcirNAPM8oPK%2F8N1GkEydwOOUU9aZEGPM7GYSvztMLAOZL8WpEr4R94vEc09ZSB%2FtlB3DjDegR15AIl0mYD0c7dCVLsAuzvqcFmIuCVyIN2LdeEDS2p3BwjtEEJ8p5WachC4%2FCPrjFfNOL9o46z9%2FR6RxGwnQA5sQvMOHEjD%2Ft%2F%2FSBjqkAYxuZmwyRNSY7gM%2B5B6%2BoR6opRZS04wsbqb1o3jGyPhluHYIn%2FePRymJFsaWk%2FzMGvmyP5zgupPEws%2FYREvEGJEkED0WRHe55GL%2F32dRziJ0r%2Br9ruSgVoiabzwFSozsnPqit9eeB0Ko8l1xhQnFB19FZJsTvdySgQRig8bvTkBiNbrasWBSRp03WRdz53piOIL30HY1G09Uk4IjOX3aBvfjilsl&X-Amz-Signature=c1d2ced2f3f19edf28a42f3d5a94679e91fb7fbe2d0d63c5ecd19e3158694d20&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

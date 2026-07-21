@@ -1,0 +1,33 @@
+---
+title: 1-10 响应式宣言：responsive
+---
+
+# 1-10 响应式宣言：responsive
+
+现在我们就为大家一一的讲解这个响视线中的四条 on 君原则，那首当其冲的就是responsive，中文里面要把它叫做及时讲硬性。这个其实我觉得如果大家作为一个用户的话是非常容易理解这件事情的，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3091e93f-11fb-4000-a1cb-6ea811bbf015/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665OHS2N5Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230933Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCIIGWEEfNSMmf7BkhP7T14XZcy2aUa%2Ftho6mUC%2FmqQhAIgIY6Kdi%2B2PyMXQ8gkgSc%2BB1N7899YeD5z1WZ7QLLlJBgqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDD5wYS06V%2BcUMgN5TircA96sxY6%2FEhcCBhy9apsmsb%2BYnMBld3CR%2FnKu3EGKCBewyUDFNBBhgZvaFTybal111SvNt6EZ%2B99lEZNerrWvzkvb20dLltgl7AJy4QJfkFehY1EejfZIGs67nD1upWitVngKpVQEEsxA87%2F4h08WIT%2Fkj6TDjvwp5LnU4HF50AmsIqi%2BqR%2B51iyklSE6y4DNia%2B%2FzryCRgnkL98kePUHPAzafZe28ixJ8GqAeGPvSg1v7o5HlibmW3kM1odxXsnzpxAe7I0J0%2F4pkFt6vgGGsnP0yWnQOCgDERzV66XcKDGc1Z6OwL6dXboU4vUT%2FyNbKzEkDD%2FS6objwA8X0e6E6lIQBa086AiC67rjaU1RNSweYHyLyM0undUbyCCabd6kezqfAgZfnC0z8pxvUT8NUQN0qyA5UjIal%2B9QeaBPoy%2BBLDeJ7H%2BsLkfGz4mbVAS4nCPiIo%2FBfIY3WE7nWzAO00vkOWyIazY13SmTCLtJGUtkQBKWXIS987QGL7uBA8cmDKbqQ3JWEXGWf77wP1f3Zv9Ss0mKGHUZ63wJcX4xK2OIZN%2B3%2BsVbq7767VCooneZ%2FVQER%2FZ%2FrZAVI%2Bhl1SB2NL%2B1hJIi6zku58VuPMRY7LnL74P9H6YIgYsnleW7MMS6%2F9IGOqUBFcUrUdbqp1PwVzyPsxLOs9J1bm6xEukSNX33RlDqivNHfTR0p3tULGNDkyrNeIpY1NpynRG5NR73PecFNeTM4PDFeZiXVH%2BcNEg%2Bqh8kkH2AmkOSrv%2Fw1RZp%2BSWwQJrceIqxmDEptNaTEIzLNYUBRdp5xktAjWYWTYhaWrKvU5U0vO0vTqStmWJfPsiWbfdFeINh8o8GLp5deHlda1n6pyjaAAXW&X-Amz-Signature=fa6ec71ad2f91c9d08290e9f4308efa476b6e3d86146410484135746d2f52074&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+比如说你要去买一个东西在网站上，对吧？一点就巴不得马上把这个东西就一次搞定。千万不要说我点一下这个网页加载三五分钟，让我等一下，这个几乎不可能的。对，所以说你作为一个设计师的时候，你有人说你想东西的时候，你就要站在用户的角度来想问题，你就会比较容易解决这件事情。你要理解即时响应性，就是相当于说只要尽可能咱们这个系统就要给它响应，我们一一来看一下，系统在只要可能的情况下就要对用户的请求做出响应，也就是说即时响应性呢。在系统在考核指标里面前面我们有讲过，就是它的可用性或者可靠性，这就是它的一个基础，因为你都不能对它进行一个响应的话，那还谈什么可用呢？或者说你等半天，那这个可用性已经其实是下降了很多了，对吧？就像我讲的，直接点个网页，现在等个三五秒都不行，你别等三五分钟了，说这个实用性大大的降低了。
+
+
+所以说即使响应是你在现代这个 it 系统里面统称，就不管说你是互联网公司的服务，还是企业内部的用户，都是一模一样的啊。这更重要的是你如果说能够为用户或者说我们那些工具提供一个快速的响应，那就意味着说我才有办法知道这个问题的所在。这个话怎么理解呢？这个其实也很简单一件事情，就是如果说你的系统本身就花个三五分钟，对吧？前两个得到一个答案，那我现在是比如说常规的这种检测，你是不是 alive 的在线上的 online 的 worked 你都做不到，那你还谈什么？对不对？所以说这个即时响应性在现代系统里面是非常重要的，所以说它首当其冲，因为传统的很多系统设计的时候，它跟用户这个角度来想这个问题，或者系统的其他实用性不太一样，对吧？所以说在即时想迷信在新时代里面对大家的要求是比较高一点的，作为架构师或者你作为软件实现者的时候，你都要考虑清楚这一点。
+
+
+第二点所谓的响应性就是你要确保这个系统它尽可能的快，这个前面讲过，对吧？一致的响应时间，一致的服务质量，这个响应性这个怎么理解？这件事？就是对，其实前面讲快速这个事情我觉得比较好理解的，及时响应，对吧？即使没有，对吧？一致的响应时间这个东西，其实你稍微深入的思考一下，你就知道这个话什么意思。
+
+
+那比如说全国各地，那我们有这么多用户，对吧？那你是一家互联网公司提供的产品，那不能说四川的用户等 5 分钟，上海的用户等 1 秒钟，北京的用户等 3 分钟，这个你做这合适吗？那当然不合适，对吧？所以说我们要尽可能地保障系统对外提供的服务的这个 SOA 都是一模一样的，当然这是尽可能嘛。
+
+
+那所以说以此也催生了很多系统设计的这个方式方法，还能保证这种已知的响应性事件系统的稳定性，也是另外一个含义，就是说哪怕是在同一个机房里面，你也不能说我请求第一次的时候 3 秒，请求第二次的时候 300 毫秒，后面一会儿一分钟，一会儿 300 毫秒，这个东西就不稳定，我们系统的稳定性在新时代里要求是非常高的。
+
+
+因为毕竟里边的用户数、用户的群组都是不一样的，所以这个系统稳定性就是所谓的一致响应实践，对吧？那服务质量前面也已经讲过了，因为时间也是它的一个考核指标，就是从服务质量的角度来看这个问题，然后尽可能的把这个错误不说吃掉吧。这系统里面就在有些企业级应用里面特别喜欢设计应用，就是把有常规的术语，就是把错误吃掉，就尽可能地把这个错误给吞掉，不要让用户有这个有所感知。这种其实在现在来看这是蛮有争议的，因为如果说是把这个错误系统内部就消耗掉，那外面也不知道你发生了什么，所以这个其实可能并不是那么好。
+
+
+以前是为了把这个错误隐藏起来，实现一个更加平滑的用户体验，就是用户反正只知道这些等，所以说系统是不是出错他不知道，但是这种其实在现在这个来看的，这是你有争议的，对吧？因为我们如果能够把这个错误从某种程度上去返回去，那用户也许知道说我现在应该稍等一会，还是说我要再重新试一下类似于这样子。
+
+
+并且对我们前面讲的这种所谓的工具也是，那工具也时时刻刻，比如说我可以对你发起一次PIN，我可以做一下 health check，这样子我就知道系统现在的运行状况是怎样的，对吧？总而言之，这个即时响应性是我们新的这种响应式编程或者响应式架构设计的一个非常重要的原则，只要有可能，我们的系统就必须及时地做出响应。就是说确立可靠反馈的上限，提供一致的服务质量，这种一致的行为转化为简单的错误处理，为用户提供更好的、深入的这个用户反馈系统就是这样子，就是跟传统的这个思路就稍微有点不太一样，但是这就是后面我们要讲的很多用户行为，也把系统设计的一个基础。
+

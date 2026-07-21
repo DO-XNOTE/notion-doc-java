@@ -1,0 +1,52 @@
+---
+title: 6-2 定时任务 - 定时关闭超期未支付订单
+---
+
+# 6-2 定时任务 - 定时关闭超期未支付订单
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f298890e-ea38-4931-9768-d1d7cbfeae57/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666XHXXSDH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFoeitmcHHkRPy91y4VN29ZvCUrSnVCOVAt%2FKY79An1cAiAllc0G3qH%2FwzyExKc1k%2FYwJxNrpP2M6jA%2BoCr7vzXi1yqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIWtq6uzYtCs5hqNJKtwDEsB%2FsD%2BciqM0%2B%2FxCjWhsWYT%2BOZTIJNjnDyo2uKlUrbIXIjIlsAyTfGwnR4rYQp%2BEWuBKsn2UlgZoSruc%2FLiTKJy%2FtsOlrM9fvyIvqxMA%2FSP8X%2B3NYPsKU5d%2FAG4NlliUtDRb6xCjLjVUcb5yjVB80gPseQcV22uQex0N7M5I8Eo%2BHQqaRzRHV%2BIDi1g97lstm7MeTYUmxas%2Fcje2FizATplroOx41TMpYgSA1PgiOyR1RpDR62f5piybcEECIQBhiBjNFCM%2BMdbtQwRLrxp3JDTDF8188X7D1CqZmP%2BTN4nLw4X4YsZ%2F45HbBJJUZspAhHLRxQROxheF8orLHYvsMTHy8cXuB8TEDfFS32Ai1eygfbIEV0Rt2E%2FF7poGbferyKOg%2FCV2pLx%2BttbkGK2YpXT8WDKxdDpF5IqiDrkRutRDScrRmlJo0DGoXPKX2Hx%2B8sAtH%2FPMl6kaEnsHNlgQ%2Bmaica1tCYwvfvr0ao%2BNstVcdbIIUUF1%2B12AdWRT2yXKGG87IG2NjI%2BlmkKQbW%2F%2F4U%2B2GIp4XIyBfzgme0pPSvDbXdYzzua7modyfTNOPulot1B45h6M6NhAxXLlfqGltvMkm%2FzKYdoQHEPIfLfUYDkX6GB16j4AssXueNUwn7r%2F0gY6pgGUGtfsnB0knPZIpZ%2F7ELezZwy2hIytG6JB8MvepxYjhJ5U5DaG1xpZwUUgs0F%2B2xbWp0Hc1ydaVDemuuNzSo1ydwohTWEg%2Fqp%2BAj9qKmzkYRuekKjDnKRzxsiPbk5zf%2FO%2BcB6USPMVMRO%2B3ldnDlq6x5NTB0rfoxBj9bP43ikuzkuOUh0JgotmTceQRjsO7h29kgg06tinQVGx1Hnp6XQ5BH2KAPJA&X-Amz-Signature=40b4746c55d2390c2e5396f222280dda0bc6352048fc5f89ebb3435364c58b05&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上一节我们是写了一个每隔 3 秒来执行的定时任务，接下来我们就来完善一下定时任务。我们现在所要去操作的是一个订单，要把一个未付款的超期的订单改为一个取消，也就是交易关闭。在这里我们要找到对应的service，我们会使用 order service，把 order service 两个，一个是接口，一个是实现。我们都打开。先把方法去定一下。
+
+public void close order。
+
+
+我们是不需要有任何的一个参数传入的，所以我们直接加上一个注释就可以了。关闭超时未支付订单。好，我们再把实现一下。这个肯定是要涉及到一个事物了，这个事物肯定会使用一个required。OK，有一个方法，这是之前用于去做查询的，我们应该是漏掉了，把 sports 给加上。好，在这边我们就可以去做一个查询了。加上注释。
+
+
+首先我们是查询所有未付款订单，判断时间是否我们超时我们在以一天，因为我们在之前的一个支付宝支付里面，其实我们所设定的一个超级时间是 one d，这是一天。所以我们在以一天为例。时间其实是可以让大家都可以去自定义，只不过有自己的一个判断，站在这里面就可以了。
+
+
+超时则关闭交易。在这里我们的 order status 把实体我们先定一下， query order 扭出来，把相应的参数加进去。 set order status 我们是要查询所有未付款的，所以应该是一个 order status。枚举点未付款是维持配点 type 好k，随后我们就可以去做一个查询了。通过 order status map 点select，在这里直接使用这个方法把对象传进去，随后他就可以得到一个list，这个 list 其实它就包含了所有的 order status。写一下这是一个list，好在我们就要去做一个后循环了。使用后循环把 list 写过来，每一项都是一个 order status，定义为 o s。
+
+
+好。在这里面我们就要去加速去获得订单创建时间。订单创建的时候，订单它的状态就会成为一个未付款这样的状态了。所以在这里我们把一个 date 先拿到 created time 短语 o s，点 get 它有一个时间get，这个时间拿到了以后和当前时间进行对比对比。
+
+
+在这里我们提供一个方法，也就是 date 有跳。在这里面有一个方法叫做 date between。可以看到传入两个 date 类型的参数，一个是 early 早期的时间，把 create time 给传过来。另外一个就是 late 我们当前的时间。我们使用一个 new date 好写进来。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e45fbb89-eee1-432a-8f48-41ef17fe75ab/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666XHXXSDH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFoeitmcHHkRPy91y4VN29ZvCUrSnVCOVAt%2FKY79An1cAiAllc0G3qH%2FwzyExKc1k%2FYwJxNrpP2M6jA%2BoCr7vzXi1yqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIWtq6uzYtCs5hqNJKtwDEsB%2FsD%2BciqM0%2B%2FxCjWhsWYT%2BOZTIJNjnDyo2uKlUrbIXIjIlsAyTfGwnR4rYQp%2BEWuBKsn2UlgZoSruc%2FLiTKJy%2FtsOlrM9fvyIvqxMA%2FSP8X%2B3NYPsKU5d%2FAG4NlliUtDRb6xCjLjVUcb5yjVB80gPseQcV22uQex0N7M5I8Eo%2BHQqaRzRHV%2BIDi1g97lstm7MeTYUmxas%2Fcje2FizATplroOx41TMpYgSA1PgiOyR1RpDR62f5piybcEECIQBhiBjNFCM%2BMdbtQwRLrxp3JDTDF8188X7D1CqZmP%2BTN4nLw4X4YsZ%2F45HbBJJUZspAhHLRxQROxheF8orLHYvsMTHy8cXuB8TEDfFS32Ai1eygfbIEV0Rt2E%2FF7poGbferyKOg%2FCV2pLx%2BttbkGK2YpXT8WDKxdDpF5IqiDrkRutRDScrRmlJo0DGoXPKX2Hx%2B8sAtH%2FPMl6kaEnsHNlgQ%2Bmaica1tCYwvfvr0ao%2BNstVcdbIIUUF1%2B12AdWRT2yXKGG87IG2NjI%2BlmkKQbW%2F%2F4U%2B2GIp4XIyBfzgme0pPSvDbXdYzzua7modyfTNOPulot1B45h6M6NhAxXLlfqGltvMkm%2FzKYdoQHEPIfLfUYDkX6GB16j4AssXueNUwn7r%2F0gY6pgGUGtfsnB0knPZIpZ%2F7ELezZwy2hIytG6JB8MvepxYjhJ5U5DaG1xpZwUUgs0F%2B2xbWp0Hc1ydaVDemuuNzSo1ydwohTWEg%2Fqp%2BAj9qKmzkYRuekKjDnKRzxsiPbk5zf%2FO%2BcB6USPMVMRO%2B3ldnDlq6x5NTB0rfoxBj9bP43ikuzkuOUh0JgotmTceQRjsO7h29kgg06tinQVGx1Hnp6XQ5BH2KAPJA&X-Amz-Signature=77f7aa7dfe17c7edab42ca017cf4fad7edff4b3391fcd3a1b62b921c03d15dbd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+写进来之后，在这里我们是可以得到一个时间差的。时间差就是以 day 以天为单位。在这里我们就可以做一个判断，如果这个袋子大于1，其实超过了一把，其实我们可以大于等于1。也已经是到达一天了，我们就可以把订单可以关闭掉，超过一天关闭订单。在这里我们就可以在外部再去写一个方法。在这里我们可以这样子去写一个默认的一个方法 do close order，把事物给加上，这个事物嵌套使用，有快的。两个会在同一个事物里面。好需要传入一个相应的ID，这 ID 是一个 o 的ID。在这边我们来发起一个调用。
+
+
+order ID 是通过 OS 点 get order ID 传递到这个方法里面。在这个方法里面很简单，我们通过 order status，直接写一个close，我们再 u 出来， close 点 set 它的一个组件，也就是订单ID。设置好了以后， close 点set，你需要把一个订单状态给改掉。在这里我们就会使用一个关闭了，也就是 order status 枚举点关闭交易。 close 点太好，这是它的一个状态。设置好了以后，它还会有一个 set 要设置关闭的时间。关闭的时间其实也就是当前的时间。 new date 把当前的时间给写进去。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b288a2d0-636a-4ba7-b035-1a2e6dcaec9b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666XHXXSDH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFoeitmcHHkRPy91y4VN29ZvCUrSnVCOVAt%2FKY79An1cAiAllc0G3qH%2FwzyExKc1k%2FYwJxNrpP2M6jA%2BoCr7vzXi1yqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIWtq6uzYtCs5hqNJKtwDEsB%2FsD%2BciqM0%2B%2FxCjWhsWYT%2BOZTIJNjnDyo2uKlUrbIXIjIlsAyTfGwnR4rYQp%2BEWuBKsn2UlgZoSruc%2FLiTKJy%2FtsOlrM9fvyIvqxMA%2FSP8X%2B3NYPsKU5d%2FAG4NlliUtDRb6xCjLjVUcb5yjVB80gPseQcV22uQex0N7M5I8Eo%2BHQqaRzRHV%2BIDi1g97lstm7MeTYUmxas%2Fcje2FizATplroOx41TMpYgSA1PgiOyR1RpDR62f5piybcEECIQBhiBjNFCM%2BMdbtQwRLrxp3JDTDF8188X7D1CqZmP%2BTN4nLw4X4YsZ%2F45HbBJJUZspAhHLRxQROxheF8orLHYvsMTHy8cXuB8TEDfFS32Ai1eygfbIEV0Rt2E%2FF7poGbferyKOg%2FCV2pLx%2BttbkGK2YpXT8WDKxdDpF5IqiDrkRutRDScrRmlJo0DGoXPKX2Hx%2B8sAtH%2FPMl6kaEnsHNlgQ%2Bmaica1tCYwvfvr0ao%2BNstVcdbIIUUF1%2B12AdWRT2yXKGG87IG2NjI%2BlmkKQbW%2F%2F4U%2B2GIp4XIyBfzgme0pPSvDbXdYzzua7modyfTNOPulot1B45h6M6NhAxXLlfqGltvMkm%2FzKYdoQHEPIfLfUYDkX6GB16j4AssXueNUwn7r%2F0gY6pgGUGtfsnB0knPZIpZ%2F7ELezZwy2hIytG6JB8MvepxYjhJ5U5DaG1xpZwUUgs0F%2B2xbWp0Hc1ydaVDemuuNzSo1ydwohTWEg%2Fqp%2BAj9qKmzkYRuekKjDnKRzxsiPbk5zf%2FO%2BcB6USPMVMRO%2B3ldnDlq6x5NTB0rfoxBj9bP43ikuzkuOUh0JgotmTceQRjsO7h29kgg06tinQVGx1Hnp6XQ5BH2KAPJA&X-Amz-Signature=a44f7617eeb39c3c4ca0126d7c2400abeb967e8e11b5f02ad06f1057d6831ca0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+OK 了以后，在这里我们就直接可以进行一个更新了。直接点有一个 update by primary key，使用这个方法 selective 把 close 对象给传进去。这样子它其实就会做一个执行了，只不过它是在里面做的一个循环。
+
+
+
+好，现在我们就可以到定时任务里面去把 service 给注进来。 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1e749fb8-775d-47e5-95ae-e89a10ed5ba2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666XHXXSDH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFoeitmcHHkRPy91y4VN29ZvCUrSnVCOVAt%2FKY79An1cAiAllc0G3qH%2FwzyExKc1k%2FYwJxNrpP2M6jA%2BoCr7vzXi1yqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIWtq6uzYtCs5hqNJKtwDEsB%2FsD%2BciqM0%2B%2FxCjWhsWYT%2BOZTIJNjnDyo2uKlUrbIXIjIlsAyTfGwnR4rYQp%2BEWuBKsn2UlgZoSruc%2FLiTKJy%2FtsOlrM9fvyIvqxMA%2FSP8X%2B3NYPsKU5d%2FAG4NlliUtDRb6xCjLjVUcb5yjVB80gPseQcV22uQex0N7M5I8Eo%2BHQqaRzRHV%2BIDi1g97lstm7MeTYUmxas%2Fcje2FizATplroOx41TMpYgSA1PgiOyR1RpDR62f5piybcEECIQBhiBjNFCM%2BMdbtQwRLrxp3JDTDF8188X7D1CqZmP%2BTN4nLw4X4YsZ%2F45HbBJJUZspAhHLRxQROxheF8orLHYvsMTHy8cXuB8TEDfFS32Ai1eygfbIEV0Rt2E%2FF7poGbferyKOg%2FCV2pLx%2BttbkGK2YpXT8WDKxdDpF5IqiDrkRutRDScrRmlJo0DGoXPKX2Hx%2B8sAtH%2FPMl6kaEnsHNlgQ%2Bmaica1tCYwvfvr0ao%2BNstVcdbIIUUF1%2B12AdWRT2yXKGG87IG2NjI%2BlmkKQbW%2F%2F4U%2B2GIp4XIyBfzgme0pPSvDbXdYzzua7modyfTNOPulot1B45h6M6NhAxXLlfqGltvMkm%2FzKYdoQHEPIfLfUYDkX6GB16j4AssXueNUwn7r%2F0gY6pgGUGtfsnB0knPZIpZ%2F7ELezZwy2hIytG6JB8MvepxYjhJ5U5DaG1xpZwUUgs0F%2B2xbWp0Hc1ydaVDemuuNzSo1ydwohTWEg%2Fqp%2BAj9qKmzkYRuekKjDnKRzxsiPbk5zf%2FO%2BcB6USPMVMRO%2B3ldnDlq6x5NTB0rfoxBj9bP43ikuzkuOUh0JgotmTceQRjsO7h29kgg06tinQVGx1Hnp6XQ5BH2KAPJA&X-Amz-Signature=3801e242467a59d2d0a2613a9d17d0577e3f811e472aa1d66eae15e6c6141336&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+private order service，而除外的。好，通过 order service 点有一个 close order，这样子它就可以去调用相应的一个方法了。好，现在我们来测试一下，现在它其实还是一个每 3 秒会执行的。好，在这里我们是需要去重启一下服务器，不要忘记还是要进行一个 install 的。
+
+
+好。现在已经是因素做成功了，我们先打开数据库，在数据库里面我们先刷新一下，现在其实有很多的一些状态，全部都是10。一会儿在我们启动完毕以后，相关的一些状态，它会进行一个更新为关闭的状态。好，重新在这里使用一下。好，现在已经是启动了，启动之后可以看到相应的一个定时任务已经是执行了。执行完了以后，我们可以到数据库来看一下，刷新一下。在这里可以看到刚刚的那些 10 状态的一些订单，全部都已经是改成了5050，我们的一个订单的关闭好。这一节我们在这里所讲的通过一个定时任务，就可以把相应的超期未支付的订单给进行一个关闭。在这里只不过它会有一个时间，这个时间是需要去设置的，这个是每 3 秒。我们在这里可以来改一下。比方我们是以每个小时为节点去执行。我们在这里表达式选择小时从几点开始，这是从零点，从零点开始，每个小时会执行一次。这个时候我们就可以看到下方的一个表达式会发生变化，他最近的五次要去执行的一个时间，它的视力也会在这里，它是以一个一小时为区间去进行执行的。
+
+
+随后我们把表达式拷贝一下，拷贝到我们的代码里面，我们直接换一行，这一行拷贝把进行一个粘贴，这样子贴过来，贴过来，再把原来的给注释掉，再来进行一个重启。这样子。其实我们就把表达式换成了每隔一个小时进行的一个任务的执行，好在这里也没有执行起来，运行也没有任何的错误。其实使用定时任务，它会有相应的弊端，这个弊端我们到下一节来跟大家来聊一下。
+

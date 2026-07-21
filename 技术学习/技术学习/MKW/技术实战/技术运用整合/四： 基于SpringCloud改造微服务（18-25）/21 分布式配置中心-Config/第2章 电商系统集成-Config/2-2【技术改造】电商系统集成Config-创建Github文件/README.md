@@ -1,0 +1,71 @@
+---
+title: 2-2【技术改造】电商系统集成Config-创建Github文件
+---
+
+# 2-2【技术改造】电商系统集成Config-创建Github文件
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f82b6c64-f935-4e5a-addf-66fbfebf246c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VRBUF4SK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225716Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICAZWatVjvSeYdJkp0SWOnB3t1BzSLkESgNSvFRSehZvAiEApTDNPzq%2FHQcdh3Nsg1ro6NxWCqlcQdfUXA2cNO0AGg8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fp7emJ49YGZaSsXircA1IC0bN1CJGH6a7TUfEZEjqHcLH1yk5qNPznGmLapRyFvqjUhInVWeKlWHnt9X18%2FUBjFHMPZjN0C0tXQd5lM5A%2FyU%2BXyOQl2WY4VvDZUWjmuWlNyYEuWsiNKqvxmvVUIByIXHuyxaSMVm99Xn2Pjm7WmHputKazlvxor6n44g%2FyhlDuYdp1Q3jNHw2EbMZBScdoUgzBhigbeDDq3aA1yR0XwBxL1TpIK%2BZWP3jwTqSu3glLh2bPQlhzqVzjsFCZC6RW5T6cNkTA%2FHUYGmczNIryfqJxsrunfZZbLkiUabRLWN5eumkl7zP1IvNQ1Xbjwl4J42edFlnT0SU8rgwbWxlDJRnZbFhcQ3sjqGDl0KOntmSXBxbLxc4l%2BiIrFbMPDyk1vb45VAX29kxCP0Z%2BgF5MeNQjMr5ahg%2B6S47T%2BXVfbtNQlV0K3xJErCKSHxNiH%2FxDmmvspgr%2BK893K4VmfKy2doVSAfTsBHrmV9H4yE1RKF7P8XmRia6fMbOp3MPo4m07smwJ%2F0pkN3qtOdo4a%2BvxEj84pwNNlqopSJOFZJ4ONxl0ZEiAUNsZ85t%2Bm%2BW9CtV7lQdRDGKBGCFC1qXnITEULce1J8skpy%2FdDL%2BsN8YwkqIIBvNds%2FRXIrS6MLW6%2F9IGOqUBPJ1I2xVM170SUT3xGnPnLSJ8B8uPuBRml6yA%2F3NfnmEeTZVos6NCPcVgzsdd454cKnN55xOSPfdL8VrZX1bxMjuhkg%2BoaU3dbdqdpJ5cRtx7LD03I5jq9nIKkXbWdkQNOEUT%2FzyIIRQG2QK%2BzMTw9a%2BWa%2FUNvDh97C1z0CCIB0vka7qE8hQOlp6UMYfX7b5r7ZNdad6ee7bxgfxxaVs23VZvwPK1&X-Amz-Signature=ae013a02f003f21ae7eab77e1f15a2b6e820363b190b9d5fa2f593115724e9f5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c9df079d-5ebd-48fe-b6e7-0942c5f3f942/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VRBUF4SK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225716Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICAZWatVjvSeYdJkp0SWOnB3t1BzSLkESgNSvFRSehZvAiEApTDNPzq%2FHQcdh3Nsg1ro6NxWCqlcQdfUXA2cNO0AGg8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fp7emJ49YGZaSsXircA1IC0bN1CJGH6a7TUfEZEjqHcLH1yk5qNPznGmLapRyFvqjUhInVWeKlWHnt9X18%2FUBjFHMPZjN0C0tXQd5lM5A%2FyU%2BXyOQl2WY4VvDZUWjmuWlNyYEuWsiNKqvxmvVUIByIXHuyxaSMVm99Xn2Pjm7WmHputKazlvxor6n44g%2FyhlDuYdp1Q3jNHw2EbMZBScdoUgzBhigbeDDq3aA1yR0XwBxL1TpIK%2BZWP3jwTqSu3glLh2bPQlhzqVzjsFCZC6RW5T6cNkTA%2FHUYGmczNIryfqJxsrunfZZbLkiUabRLWN5eumkl7zP1IvNQ1Xbjwl4J42edFlnT0SU8rgwbWxlDJRnZbFhcQ3sjqGDl0KOntmSXBxbLxc4l%2BiIrFbMPDyk1vb45VAX29kxCP0Z%2BgF5MeNQjMr5ahg%2B6S47T%2BXVfbtNQlV0K3xJErCKSHxNiH%2FxDmmvspgr%2BK893K4VmfKy2doVSAfTsBHrmV9H4yE1RKF7P8XmRia6fMbOp3MPo4m07smwJ%2F0pkN3qtOdo4a%2BvxEj84pwNNlqopSJOFZJ4ONxl0ZEiAUNsZ85t%2Bm%2BW9CtV7lQdRDGKBGCFC1qXnITEULce1J8skpy%2FdDL%2BsN8YwkqIIBvNds%2FRXIrS6MLW6%2F9IGOqUBPJ1I2xVM170SUT3xGnPnLSJ8B8uPuBRml6yA%2F3NfnmEeTZVos6NCPcVgzsdd454cKnN55xOSPfdL8VrZX1bxMjuhkg%2BoaU3dbdqdpJ5cRtx7LD03I5jq9nIKkXbWdkQNOEUT%2FzyIIRQG2QK%2BzMTw9a%2BWa%2FUNvDh97C1z0CCIB0vka7qE8hQOlp6UMYfX7b5r7ZNdad6ee7bxgfxxaVs23VZvwPK1&X-Amz-Signature=3b92953e28972f2991fa56ced82765ed11ec1ccd83a5cb54056e97e11025dc37&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+各位同学们，大家好，那咱这一节去开始在 github 上面，我这里将示例四个比较有代表性的场景，跟同学们去过一下这里面的知识点。那我们先来创建一个文件。好了，大家是不是还记得咱在之前配置了一个 search path 那这个 search path 这里面咱是配置了一个 application 占位。那也就是说如果我接下来想给用户微服务来配置属性，那么我需要去创建一个对应的 application 为名称的文件夹对不对？所以我们这里创建的配置文件中的第一个文件路径，我们要把它指定对叫 foodie user service 那再往后呢我们来配置这样一个文件，叫 foodie user service 然后后面跟杠 DEV DEV 那它的格式我们可以用 properties 也可以用 YAML 那都是可以的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/50a1abe3-a730-4035-859a-2ad8422b774e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VRBUF4SK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225716Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICAZWatVjvSeYdJkp0SWOnB3t1BzSLkESgNSvFRSehZvAiEApTDNPzq%2FHQcdh3Nsg1ro6NxWCqlcQdfUXA2cNO0AGg8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fp7emJ49YGZaSsXircA1IC0bN1CJGH6a7TUfEZEjqHcLH1yk5qNPznGmLapRyFvqjUhInVWeKlWHnt9X18%2FUBjFHMPZjN0C0tXQd5lM5A%2FyU%2BXyOQl2WY4VvDZUWjmuWlNyYEuWsiNKqvxmvVUIByIXHuyxaSMVm99Xn2Pjm7WmHputKazlvxor6n44g%2FyhlDuYdp1Q3jNHw2EbMZBScdoUgzBhigbeDDq3aA1yR0XwBxL1TpIK%2BZWP3jwTqSu3glLh2bPQlhzqVzjsFCZC6RW5T6cNkTA%2FHUYGmczNIryfqJxsrunfZZbLkiUabRLWN5eumkl7zP1IvNQ1Xbjwl4J42edFlnT0SU8rgwbWxlDJRnZbFhcQ3sjqGDl0KOntmSXBxbLxc4l%2BiIrFbMPDyk1vb45VAX29kxCP0Z%2BgF5MeNQjMr5ahg%2B6S47T%2BXVfbtNQlV0K3xJErCKSHxNiH%2FxDmmvspgr%2BK893K4VmfKy2doVSAfTsBHrmV9H4yE1RKF7P8XmRia6fMbOp3MPo4m07smwJ%2F0pkN3qtOdo4a%2BvxEj84pwNNlqopSJOFZJ4ONxl0ZEiAUNsZ85t%2Bm%2BW9CtV7lQdRDGKBGCFC1qXnITEULce1J8skpy%2FdDL%2BsN8YwkqIIBvNds%2FRXIrS6MLW6%2F9IGOqUBPJ1I2xVM170SUT3xGnPnLSJ8B8uPuBRml6yA%2F3NfnmEeTZVos6NCPcVgzsdd454cKnN55xOSPfdL8VrZX1bxMjuhkg%2BoaU3dbdqdpJ5cRtx7LD03I5jq9nIKkXbWdkQNOEUT%2FzyIIRQG2QK%2BzMTw9a%2BWa%2FUNvDh97C1z0CCIB0vka7qE8hQOlp6UMYfX7b5r7ZNdad6ee7bxgfxxaVs23VZvwPK1&X-Amz-Signature=9a945473bb450e6dbef80cebbfc28a15fd3dc950c9b77ebd796d4048b2ea7c4a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+配置中心这里在拉取文件的时候，会把它做自动的转换。那咱接下来去更改里面的内容，我这里面将用三种不同的方式来配置它的配置文件。第一个配置，我这里加一个注释，我想配置数据库连接串和密码，那这是第一个配置。第二个配置我想去配置一个功能开关，那这个功能开关用来做什么呢？开启或者关闭注册功能。那最后我还要去配置一个谁呢？配置在 activator 里面的这个功能端点，那我们接下来分别来配置一下。
+
+
+咱先来看这个数据库的连接串还有密码，咱数据库的连接串咱起始就以 Mario DB 来开头，那下面跟谁跟一个 URL 好嘞，那接下来是他 work 那这个 URL 我们到 intelligi 里面，从咱这个用户微服务下面的 data source 里面把它 copy 进来。那因为老师这后面是把数据源分离出来了，我这里是 foodie cloud item 这个数据源。
+
+
+那同学们如果还没有去拆分数据库的话，那我们就把这一串也就是下面咱配置的这一个大数据库所有服务都在里面的这个大数据库，把它的 URL 给它 copy 一下，然后切换回我们的 github 上面，把它给复制过来。但是复制过来之前我们要注意，把它用这个括号小引号单引号给它括起来，那它是一串长的字符串。那接下来这个 passport 配置需要我们对它进行加解密，因为它是一个相对敏感的信息，我不希望它出现在 github 上面明文保存。那我要对它进行一个加解密怎么办？好，我们这里在 intelligg 里面，已经把前面我们配置的这个配置中心已经给它启动起来了。那接下来我们很简单，使用把 password 给它复制出来，使用咱的配置中心做一个加密就行了。
+
+
+好，我们接下来转战到 postmanpostman 这里，我们去到 config 加解密的地方，和咱在 demo 里面步骤是一模一样的。我们把这个加密请求发送到 20,003 这个端口上，然后它的路径是 encrypt 把这个 root 给它打到这个 body 这里，然后 header 就是使用 JSON 串。那我这里点击一个 send 这里已经出来了。加密过后的数据，为了验证它的有效性，我们把这个加密过后的数据再到解密的这个端点里面，把它复制下来，去看一下能不能解密成功你看这里解密也解密出了 root 所以说这段加密串是没问题的。
+
+
+咱验明正身之后，再到 github 里面把这个加密串给它配置下来。那同样的，咱打一个单引号，然后在这边加一个 safer 证明它是一个经过加密过后保存的数据。那这个 cipher 就相当于街头暗号天王盖地虎。那你看到这句话，咱的配置中心就要对这串文字进行个解密。
+
+
+那我们这里配置完了，接下来再来看一下功能开关，我功能开关想要开启关闭用户的注册功能对不对？所以我给他起的开关名称就叫 user service 后面我跟什么呢？我跟 registration 再下面加一个 disabled 它的值，我们给它指定一个 true 那这个开关一旦开启了，就说明咱的注册功能被关闭了。
+
+
+那这两个配置好了之后，我们就可以把文件提交了。同学们想，而我这里不是还有一个功能端点没有配置吗？不用着急，咱先把它抹掉。待会儿咱提交完这个文件之后再告诉大家它去哪里去了，我们走到这里直接提交到master 。因为这个 github 是我的邮箱注册的，所以同学们如果要做测试的话，可以自己注册一个邮箱，指向你自己的邮箱就可以了。那在配置文件当中，把老师的这些邮箱地址全给它替换过来。
+
+```java
+# 数据库连接串 & 密码
+maraidb:
+  url: 'url: jdbc:mysql://localhost:3306/foodie-shop-dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true'
+  password: '{cipher}+加密的后的字符串'
+
+
+# 功能开关 - 开启/关闭功能注册功能
+userservice:
+  registration:
+    disabled: true
+```
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b20cda5c-9a96-4725-ad75-bb6a05a68c5f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VRBUF4SK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225716Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICAZWatVjvSeYdJkp0SWOnB3t1BzSLkESgNSvFRSehZvAiEApTDNPzq%2FHQcdh3Nsg1ro6NxWCqlcQdfUXA2cNO0AGg8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fp7emJ49YGZaSsXircA1IC0bN1CJGH6a7TUfEZEjqHcLH1yk5qNPznGmLapRyFvqjUhInVWeKlWHnt9X18%2FUBjFHMPZjN0C0tXQd5lM5A%2FyU%2BXyOQl2WY4VvDZUWjmuWlNyYEuWsiNKqvxmvVUIByIXHuyxaSMVm99Xn2Pjm7WmHputKazlvxor6n44g%2FyhlDuYdp1Q3jNHw2EbMZBScdoUgzBhigbeDDq3aA1yR0XwBxL1TpIK%2BZWP3jwTqSu3glLh2bPQlhzqVzjsFCZC6RW5T6cNkTA%2FHUYGmczNIryfqJxsrunfZZbLkiUabRLWN5eumkl7zP1IvNQ1Xbjwl4J42edFlnT0SU8rgwbWxlDJRnZbFhcQ3sjqGDl0KOntmSXBxbLxc4l%2BiIrFbMPDyk1vb45VAX29kxCP0Z%2BgF5MeNQjMr5ahg%2B6S47T%2BXVfbtNQlV0K3xJErCKSHxNiH%2FxDmmvspgr%2BK893K4VmfKy2doVSAfTsBHrmV9H4yE1RKF7P8XmRia6fMbOp3MPo4m07smwJ%2F0pkN3qtOdo4a%2BvxEj84pwNNlqopSJOFZJ4ONxl0ZEiAUNsZ85t%2Bm%2BW9CtV7lQdRDGKBGCFC1qXnITEULce1J8skpy%2FdDL%2BsN8YwkqIIBvNds%2FRXIrS6MLW6%2F9IGOqUBPJ1I2xVM170SUT3xGnPnLSJ8B8uPuBRml6yA%2F3NfnmEeTZVos6NCPcVgzsdd454cKnN55xOSPfdL8VrZX1bxMjuhkg%2BoaU3dbdqdpJ5cRtx7LD03I5jq9nIKkXbWdkQNOEUT%2FzyIIRQG2QK%2BzMTw9a%2BWa%2FUNvDh97C1z0CCIB0vka7qE8hQOlp6UMYfX7b5r7ZNdad6ee7bxgfxxaVs23VZvwPK1&X-Amz-Signature=31c809f6bb5c962a3730573122e081648b0c453adaf7fa61cb22016b80211885&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那咱看到这里， food service DEV 已经创建成功了，那接下来我们创建第二个文件。好，这第二个文件叫什么名字？同学们一看就知这里面是卖的什么药了。第二个文件名称叫 foodie user service.yaml 是不是少了点什么？后面既没有杠 DEV 也没有杠 production 那它是什么含义呢？这个文件相当于 foodie user service 上它一个公共的配置。不管你是在生产环境还是在开发环境，当你去尝试拉取服务的时候，它总会到这个 foodie user service 当中把你的属性给你拿回来。在拉取这些配置的时候会使用一种 merge 的操作。
+
+
+什么叫 merge 呢？打个比方，你在 DEV 环境的配置文件当中没有配置这个 actuator 这个端点，那你把它放到了哪呢？放到了这个顶层的 foodie user service 当中，咱的配置中心在拉取 DEV 环境的属性的时候，那会自动的行使这个 merge 操作。将那些在 DEV 环境中没有配置，但是在顶层的这个 foodie user service 当中配置了的属性也给它拿到。 OK 那好我们这里就配置 activator 的这个端点信息了，怎么配置非常简单。
+
+
+我们走到 intelligi 里面看到这里是谁？是 foodie user web 的 DEV 配置项，我们往下滚滚。好，就到这里。好，这里是所有 actuator management point 那把它这些 endpoint 通通 copy 过来放到咱的页面上来去。那这就配置完了，是不是很简单。好，我们再次把它提交到 master 上面。
+
+
+好嘞，那我们看到，这里分别创建了一个 foodie user service 和 foodie user service 的 DEV 环境的配置属性，其中数据库的连接串和密码以及它的功能开关。注册功能的开关是放在了 DEV 环境配置项里面。然后功能端点 actiator 是放到了 foodie user service 当中。那我们这里转换到 postman 了，我们从 postman 里尝试去拉取一下这个文件。那咱把这个 postman 获取配置属性的这个项目名称，把它改成 foodie 杠 user service 然后后面 profile 类型改成 DEV 我们尝试去 send 一下，看能不能拉取到正确的属性文件。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/02917750-dd2c-41f1-9d0f-57ad12a71053/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VRBUF4SK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225716Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICAZWatVjvSeYdJkp0SWOnB3t1BzSLkESgNSvFRSehZvAiEApTDNPzq%2FHQcdh3Nsg1ro6NxWCqlcQdfUXA2cNO0AGg8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fp7emJ49YGZaSsXircA1IC0bN1CJGH6a7TUfEZEjqHcLH1yk5qNPznGmLapRyFvqjUhInVWeKlWHnt9X18%2FUBjFHMPZjN0C0tXQd5lM5A%2FyU%2BXyOQl2WY4VvDZUWjmuWlNyYEuWsiNKqvxmvVUIByIXHuyxaSMVm99Xn2Pjm7WmHputKazlvxor6n44g%2FyhlDuYdp1Q3jNHw2EbMZBScdoUgzBhigbeDDq3aA1yR0XwBxL1TpIK%2BZWP3jwTqSu3glLh2bPQlhzqVzjsFCZC6RW5T6cNkTA%2FHUYGmczNIryfqJxsrunfZZbLkiUabRLWN5eumkl7zP1IvNQ1Xbjwl4J42edFlnT0SU8rgwbWxlDJRnZbFhcQ3sjqGDl0KOntmSXBxbLxc4l%2BiIrFbMPDyk1vb45VAX29kxCP0Z%2BgF5MeNQjMr5ahg%2B6S47T%2BXVfbtNQlV0K3xJErCKSHxNiH%2FxDmmvspgr%2BK893K4VmfKy2doVSAfTsBHrmV9H4yE1RKF7P8XmRia6fMbOp3MPo4m07smwJ%2F0pkN3qtOdo4a%2BvxEj84pwNNlqopSJOFZJ4ONxl0ZEiAUNsZ85t%2Bm%2BW9CtV7lQdRDGKBGCFC1qXnITEULce1J8skpy%2FdDL%2BsN8YwkqIIBvNds%2FRXIrS6MLW6%2F9IGOqUBPJ1I2xVM170SUT3xGnPnLSJ8B8uPuBRml6yA%2F3NfnmEeTZVos6NCPcVgzsdd454cKnN55xOSPfdL8VrZX1bxMjuhkg%2BoaU3dbdqdpJ5cRtx7LD03I5jq9nIKkXbWdkQNOEUT%2FzyIIRQG2QK%2BzMTw9a%2BWa%2FUNvDh97C1z0CCIB0vka7qE8hQOlp6UMYfX7b5r7ZNdad6ee7bxgfxxaVs23VZvwPK1&X-Amz-Signature=a07ead4825845aae12df45d0d4c9e90667427f27afacae2156991e90f3651409&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好嘞，你看到这里已经全部获取到了，咱把这个 copy 起来放到 intelliga 里面来看，这样看得清楚一些。好，我们看这里包含了三个部分的内容，哪三个部分呢？第一个部分是我们 override 的一个属性。还记得在上一节当中，配置中心里面，咱霸王硬上弓强制配置了一个 overrise 的属性，它的名称叫 test 然后它的值是 my test 那剩下两部分，从这个名称 name 你就可以看出这个配置项它的来源是从哪里来的。比如上面这个配置项，你看它的来源是从咱的 user service DEV 当中来的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1f2295d8-fb04-4e0f-8df6-6047dd6a77ee/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VRBUF4SK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225716Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCICAZWatVjvSeYdJkp0SWOnB3t1BzSLkESgNSvFRSehZvAiEApTDNPzq%2FHQcdh3Nsg1ro6NxWCqlcQdfUXA2cNO0AGg8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDK%2Fp7emJ49YGZaSsXircA1IC0bN1CJGH6a7TUfEZEjqHcLH1yk5qNPznGmLapRyFvqjUhInVWeKlWHnt9X18%2FUBjFHMPZjN0C0tXQd5lM5A%2FyU%2BXyOQl2WY4VvDZUWjmuWlNyYEuWsiNKqvxmvVUIByIXHuyxaSMVm99Xn2Pjm7WmHputKazlvxor6n44g%2FyhlDuYdp1Q3jNHw2EbMZBScdoUgzBhigbeDDq3aA1yR0XwBxL1TpIK%2BZWP3jwTqSu3glLh2bPQlhzqVzjsFCZC6RW5T6cNkTA%2FHUYGmczNIryfqJxsrunfZZbLkiUabRLWN5eumkl7zP1IvNQ1Xbjwl4J42edFlnT0SU8rgwbWxlDJRnZbFhcQ3sjqGDl0KOntmSXBxbLxc4l%2BiIrFbMPDyk1vb45VAX29kxCP0Z%2BgF5MeNQjMr5ahg%2B6S47T%2BXVfbtNQlV0K3xJErCKSHxNiH%2FxDmmvspgr%2BK893K4VmfKy2doVSAfTsBHrmV9H4yE1RKF7P8XmRia6fMbOp3MPo4m07smwJ%2F0pkN3qtOdo4a%2BvxEj84pwNNlqopSJOFZJ4ONxl0ZEiAUNsZ85t%2Bm%2BW9CtV7lQdRDGKBGCFC1qXnITEULce1J8skpy%2FdDL%2BsN8YwkqIIBvNds%2FRXIrS6MLW6%2F9IGOqUBPJ1I2xVM170SUT3xGnPnLSJ8B8uPuBRml6yA%2F3NfnmEeTZVos6NCPcVgzsdd454cKnN55xOSPfdL8VrZX1bxMjuhkg%2BoaU3dbdqdpJ5cRtx7LD03I5jq9nIKkXbWdkQNOEUT%2FzyIIRQG2QK%2BzMTw9a%2BWa%2FUNvDh97C1z0CCIB0vka7qE8hQOlp6UMYfX7b5r7ZNdad6ee7bxgfxxaVs23VZvwPK1&X-Amz-Signature=d502d89f092b6eca9c47fee2d9e523ba3f34f77c2e9566ec0736aa3c86542a3c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那下面的配置项是从 foodie user service 所以这就是一个 merge 操作，咱刚才获取的是 DEV 环境的配置项，你看它也会把这个顶层项目 foodie user service 把这里面配了，但是 DEV 文件当中没有配置的属性，给它拉下来 merge 在一起，然后返回给咱的服务端。那同学们这一节的配置非常简单轻松就结束了。在下一节当中，我们一起来改造 foodie user 这个模块，用三种不同的姿势把它前面配置的三种类型的属性全部给它集成到这个项目当中来。 OK 同学们，那这一节就到这里结束了，我们下一小节再见。
+
+
+
+

@@ -1,0 +1,57 @@
+---
+title: 3-12 阶段复习
+---
+
+# 3-12 阶段复习
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d986e595-cc22-42c6-887b-b7fd39106151/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666MUPL2LF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225120Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDRsyhU%2Bd0l5QRVwW45cHI%2BsfX4U4aL646pqW8t0tKAGAIhAMmFJEancHyjQHtTJpmwTzHqr4XUVD%2F3OBa%2FlVcE5rZoKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyR31BooB%2FiyTAH7%2BQq3APRfV1jDRu4JVuuUwSsGRt9Yn3QIXdl2vXimj5hnwXGW%2Fu2bthJpIOV3H4oaXX71u%2FWvxOQk3hBH2EzD%2Fe2Zdhb17nNzMn70ox%2BI0ouP8Wqk3xhM0%2Fg%2Bs4z29%2B%2FwDbLx%2BJIuBnW5kNs6JvTPlcy5iB%2BZVpTyqizCRgEaJ4NH5yRK%2BLCJBcKsazZ7axrlgyzQFIEJ%2Buhv4amtYXN7VoCNJ1NxfO2XC5uYrlnU4ckcQ6dHFCfijrsjVjW8shqF2YE7IaRrL%2FPsT%2BrJbZoZ4B%2BCkpHOoNI09K3uU5459%2B6m5%2FVagm%2FY4hK%2B0poa1aBkozTXPwmMpH6NiYJhlXVAbphJrHqoGER%2Fhd7UNP3xP3vA3viq4YswO1eSXZ3YpBbxDwWrTiGtGFUYt1p7UK84G2syqUKDKYokgq1jAkiA%2Ft%2BGxX3ZpHcnBY1gOAexbIzg2LesnfoEej%2FtbhBozxxpS6X9pvtaG%2FJKdUpYAo9SZQGWwcpIz5rlceQ3yCVRMywbQ3Ph46XSOUhxdeNaNZ2KY7RBfAkqL2hlsrRsTa3PCqxQAX5mLVo28wGak6xnBVeRbyJKL4JWNC%2BvzhGwWIaByjBfITW0LJDiUqoI%2F%2BY%2F3GSq%2FG3VoH9OnrQIhzA4NpIuzD8t%2F%2FSBjqkASyijuPkhsplpo9NGRKWf25%2FrELaYwNNYepoFsxXnbEt%2FzYV6Vl57rLrKavD5m8x%2B%2FO9rD8MGpQAuJ%2FpELhxIpr%2F%2BiFbxk%2BR%2BPZ5a32KDbJ8mCCZP4om1DTlbRIRhemJ850OtS2cTsH4KBksjlRNui7Ti9V01CnjO8OOXxosWuJHbpe%2BnCOL6sNuApTXeftWlHW%2FgBWog1o7kBQ8OlwVo2aPW6HH&X-Amz-Signature=40294c1e982c8a697f5f391ad5c544cc53bb2f0e3973f4d677be7403d27efc34&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+3-12阶段复习
+那么到这里，分布式会话与单点登录部分讲完啦～这部分其实是Redis的一个扩展，基于Redis可以玩的一些内容，内容比较简单，尤其是分布式会话，可以解决分布式系统中用户会话问题。那么，咱们针对本阶段的学习做个简短的总结。咱们来看一下下方思维脑图来梳理内容：
+什么分布式会话
+Redis实现分布式会话分布式会话
+SpringSession实现分布式会话
+基于分布式会话的拦截器分布式会话与单点登录
+构建基本工程 展示用户登录 校验用户登录 校验用户登录
+创建用户会话、全局门票与临时票据单点登录
+验证与销毁临时票据 换取用户会话 二次登录
+注销会话
+1.首先我们接触了分布式会话，分布式会话基于cookie+redis实现，在相同顶级域名之下，cookie可以共享，由此当后端获得cookie中的用户数据时，也能相应的在系统中获得用户的会话。
+Tomcat
+Tomcat A系统
+session
+session
+B系统 Redis
+我们可以回顾上面这一张图，多个系统共同组成的分布式系统，由于可以结合redis，所以，共同的数据可以在不同的系统中获取，因为redis是介质，以存储数据。正由于分布式会话，我们在编写拦截器的时候，往常单体系统中直接从HttpSessin中获取，而如今从redis中获取，随后对用户身份进行校验和判断。当然我们还能够通过SpringSession来实现用户的分布式会话，其中的原理其实也是基于的redis，不论SpringSession或是Redis+cookie都能够实现用户的分布式会话。 2.单点登录，用户只需要输入一次用户名密码，既可以在多个系统登录，单点登录往往在相同顶级域名下会去实现，比如www.imooc. com mtv. imooc. com, music. imooc. com, 在这些域名下，可以直接通过上述分布式会话来实现，本身就是基于cookie+redis可以做到的，如此一来只要在其中某个站点登录后，其他的站点就无需再次登录。
+当然，顶级域名不同，[www.music.com/www.mtv.com/www](http://www.music.com/www.mtv.com/www). [imooc.com](http://imooc.com/)，其实也可以实现单点登录，这个通常称之为CAS，中央认证服务。用户是否登录的状态是保存在CAS这一站点的，这个站点也是验证校验的服务端。需要记录用户登录的状态，那么其他任何站点二次登录，都不会再让用户去输入用户名和密码，免去了这一步骤。具体的流程可以参考如下时序图
+客户端
+MTV系统
+MUSIC系统
+CAS系统 次访问
+验证是否登录 携带return 至CAS
+验证未登录 5.显示CAS录页面
+6.用户名密码登录
+7.录成功 8.创建用户会话 创建用户全局门票
+10.创建临时票据 回并携带临时票据
+2.校验临时票
+13.校验并成功 用户会话回传
+15.保存用户会话 16.显示成功
+初次访问
+2.验证是否登录 3.携带returnUrl请求CAS-
+4.校验已登录
+5.创建临时票据 回跳并携带临时票据
+7.校验临时票据
+8.校验成功 9.用户会话回传
+10.保存用户会话 11.显示登录成功
+图中的每个步骤，我们都在foodie—sso中实现，同时还配有两个前端站点，虽然MTV和MUSIC都是静态页面，但是如果是从MTV或者MUSIC的后端发起请求，也是可以做到的。其中需要注意的一点是，CAS可以不需要结合redis，因为他仅仅只是做了登录的步骤，其他的站点如果不用redis也都是没有任何问题的，所以Redis对于cas来讲并不是必须的，这一点需要注意喔~
+那么对于SSO的整个处理流程来讲，其实我们实现起来并不是很难，主要是为的理解整个流程，因为在面试过程中有可能会被问到。如果有兴趣的同学，可以去参考一下Apereo的CAS系统，是非常牛的，地址如下：
+[https://github.com/apereo/cas](https://github.com/apereo/cas) [https://www.apereo.org/projects/cas](https://www.apereo.org/projects/cas)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3a1eba29-6a1e-4e28-b153-59fb0872ad31/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666MUPL2LF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225120Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDRsyhU%2Bd0l5QRVwW45cHI%2BsfX4U4aL646pqW8t0tKAGAIhAMmFJEancHyjQHtTJpmwTzHqr4XUVD%2F3OBa%2FlVcE5rZoKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyR31BooB%2FiyTAH7%2BQq3APRfV1jDRu4JVuuUwSsGRt9Yn3QIXdl2vXimj5hnwXGW%2Fu2bthJpIOV3H4oaXX71u%2FWvxOQk3hBH2EzD%2Fe2Zdhb17nNzMn70ox%2BI0ouP8Wqk3xhM0%2Fg%2Bs4z29%2B%2FwDbLx%2BJIuBnW5kNs6JvTPlcy5iB%2BZVpTyqizCRgEaJ4NH5yRK%2BLCJBcKsazZ7axrlgyzQFIEJ%2Buhv4amtYXN7VoCNJ1NxfO2XC5uYrlnU4ckcQ6dHFCfijrsjVjW8shqF2YE7IaRrL%2FPsT%2BrJbZoZ4B%2BCkpHOoNI09K3uU5459%2B6m5%2FVagm%2FY4hK%2B0poa1aBkozTXPwmMpH6NiYJhlXVAbphJrHqoGER%2Fhd7UNP3xP3vA3viq4YswO1eSXZ3YpBbxDwWrTiGtGFUYt1p7UK84G2syqUKDKYokgq1jAkiA%2Ft%2BGxX3ZpHcnBY1gOAexbIzg2LesnfoEej%2FtbhBozxxpS6X9pvtaG%2FJKdUpYAo9SZQGWwcpIz5rlceQ3yCVRMywbQ3Ph46XSOUhxdeNaNZ2KY7RBfAkqL2hlsrRsTa3PCqxQAX5mLVo28wGak6xnBVeRbyJKL4JWNC%2BvzhGwWIaByjBfITW0LJDiUqoI%2F%2BY%2F3GSq%2FG3VoH9OnrQIhzA4NpIuzD8t%2F%2FSBjqkASyijuPkhsplpo9NGRKWf25%2FrELaYwNNYepoFsxXnbEt%2FzYV6Vl57rLrKavD5m8x%2B%2FO9rD8MGpQAuJ%2FpELhxIpr%2F%2BiFbxk%2BR%2BPZ5a32KDbJ8mCCZP4om1DTlbRIRhemJ850OtS2cTsH4KBksjlRNui7Ti9V01CnjO8OOXxosWuJHbpe%2BnCOL6sNuApTXeftWlHW%2FgBWog1o7kBQ8OlwVo2aPW6HH&X-Amz-Signature=5bd40b4100db26aad74b6017d64705d47933c0f0779452ffe41d1bc6c26b68b7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/711345e5-5acd-496e-8c7e-2f7cf5bec6af/2020-09-17_180215.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666MUPL2LF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225120Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDRsyhU%2Bd0l5QRVwW45cHI%2BsfX4U4aL646pqW8t0tKAGAIhAMmFJEancHyjQHtTJpmwTzHqr4XUVD%2F3OBa%2FlVcE5rZoKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyR31BooB%2FiyTAH7%2BQq3APRfV1jDRu4JVuuUwSsGRt9Yn3QIXdl2vXimj5hnwXGW%2Fu2bthJpIOV3H4oaXX71u%2FWvxOQk3hBH2EzD%2Fe2Zdhb17nNzMn70ox%2BI0ouP8Wqk3xhM0%2Fg%2Bs4z29%2B%2FwDbLx%2BJIuBnW5kNs6JvTPlcy5iB%2BZVpTyqizCRgEaJ4NH5yRK%2BLCJBcKsazZ7axrlgyzQFIEJ%2Buhv4amtYXN7VoCNJ1NxfO2XC5uYrlnU4ckcQ6dHFCfijrsjVjW8shqF2YE7IaRrL%2FPsT%2BrJbZoZ4B%2BCkpHOoNI09K3uU5459%2B6m5%2FVagm%2FY4hK%2B0poa1aBkozTXPwmMpH6NiYJhlXVAbphJrHqoGER%2Fhd7UNP3xP3vA3viq4YswO1eSXZ3YpBbxDwWrTiGtGFUYt1p7UK84G2syqUKDKYokgq1jAkiA%2Ft%2BGxX3ZpHcnBY1gOAexbIzg2LesnfoEej%2FtbhBozxxpS6X9pvtaG%2FJKdUpYAo9SZQGWwcpIz5rlceQ3yCVRMywbQ3Ph46XSOUhxdeNaNZ2KY7RBfAkqL2hlsrRsTa3PCqxQAX5mLVo28wGak6xnBVeRbyJKL4JWNC%2BvzhGwWIaByjBfITW0LJDiUqoI%2F%2BY%2F3GSq%2FG3VoH9OnrQIhzA4NpIuzD8t%2F%2FSBjqkASyijuPkhsplpo9NGRKWf25%2FrELaYwNNYepoFsxXnbEt%2FzYV6Vl57rLrKavD5m8x%2B%2FO9rD8MGpQAuJ%2FpELhxIpr%2F%2BiFbxk%2BR%2BPZ5a32KDbJ8mCCZP4om1DTlbRIRhemJ850OtS2cTsH4KBksjlRNui7Ti9V01CnjO8OOXxosWuJHbpe%2BnCOL6sNuApTXeftWlHW%2FgBWog1o7kBQ8OlwVo2aPW6HH&X-Amz-Signature=adea91ac94169f9ef65a323d11d5f9897419da7f1de9f1f60a1e53ea482f5dda&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/84f0cd86-49f1-43f6-8c09-801f8768887c/2020-09-17_180250.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666MUPL2LF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225120Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDRsyhU%2Bd0l5QRVwW45cHI%2BsfX4U4aL646pqW8t0tKAGAIhAMmFJEancHyjQHtTJpmwTzHqr4XUVD%2F3OBa%2FlVcE5rZoKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyR31BooB%2FiyTAH7%2BQq3APRfV1jDRu4JVuuUwSsGRt9Yn3QIXdl2vXimj5hnwXGW%2Fu2bthJpIOV3H4oaXX71u%2FWvxOQk3hBH2EzD%2Fe2Zdhb17nNzMn70ox%2BI0ouP8Wqk3xhM0%2Fg%2Bs4z29%2B%2FwDbLx%2BJIuBnW5kNs6JvTPlcy5iB%2BZVpTyqizCRgEaJ4NH5yRK%2BLCJBcKsazZ7axrlgyzQFIEJ%2Buhv4amtYXN7VoCNJ1NxfO2XC5uYrlnU4ckcQ6dHFCfijrsjVjW8shqF2YE7IaRrL%2FPsT%2BrJbZoZ4B%2BCkpHOoNI09K3uU5459%2B6m5%2FVagm%2FY4hK%2B0poa1aBkozTXPwmMpH6NiYJhlXVAbphJrHqoGER%2Fhd7UNP3xP3vA3viq4YswO1eSXZ3YpBbxDwWrTiGtGFUYt1p7UK84G2syqUKDKYokgq1jAkiA%2Ft%2BGxX3ZpHcnBY1gOAexbIzg2LesnfoEej%2FtbhBozxxpS6X9pvtaG%2FJKdUpYAo9SZQGWwcpIz5rlceQ3yCVRMywbQ3Ph46XSOUhxdeNaNZ2KY7RBfAkqL2hlsrRsTa3PCqxQAX5mLVo28wGak6xnBVeRbyJKL4JWNC%2BvzhGwWIaByjBfITW0LJDiUqoI%2F%2BY%2F3GSq%2FG3VoH9OnrQIhzA4NpIuzD8t%2F%2FSBjqkASyijuPkhsplpo9NGRKWf25%2FrELaYwNNYepoFsxXnbEt%2FzYV6Vl57rLrKavD5m8x%2B%2FO9rD8MGpQAuJ%2FpELhxIpr%2F%2BiFbxk%2BR%2BPZ5a32KDbJ8mCCZP4om1DTlbRIRhemJ850OtS2cTsH4KBksjlRNui7Ti9V01CnjO8OOXxosWuJHbpe%2BnCOL6sNuApTXeftWlHW%2FgBWog1o7kBQ8OlwVo2aPW6HH&X-Amz-Signature=6d87e3d445c6f17e820cf8d85906920e8cbe3e7696a88fdb25e5e2557b5bf150&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0ccda55d-0064-400f-84e8-a618f7422e8c/2020-09-17_180220.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666MUPL2LF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225120Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDRsyhU%2Bd0l5QRVwW45cHI%2BsfX4U4aL646pqW8t0tKAGAIhAMmFJEancHyjQHtTJpmwTzHqr4XUVD%2F3OBa%2FlVcE5rZoKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyR31BooB%2FiyTAH7%2BQq3APRfV1jDRu4JVuuUwSsGRt9Yn3QIXdl2vXimj5hnwXGW%2Fu2bthJpIOV3H4oaXX71u%2FWvxOQk3hBH2EzD%2Fe2Zdhb17nNzMn70ox%2BI0ouP8Wqk3xhM0%2Fg%2Bs4z29%2B%2FwDbLx%2BJIuBnW5kNs6JvTPlcy5iB%2BZVpTyqizCRgEaJ4NH5yRK%2BLCJBcKsazZ7axrlgyzQFIEJ%2Buhv4amtYXN7VoCNJ1NxfO2XC5uYrlnU4ckcQ6dHFCfijrsjVjW8shqF2YE7IaRrL%2FPsT%2BrJbZoZ4B%2BCkpHOoNI09K3uU5459%2B6m5%2FVagm%2FY4hK%2B0poa1aBkozTXPwmMpH6NiYJhlXVAbphJrHqoGER%2Fhd7UNP3xP3vA3viq4YswO1eSXZ3YpBbxDwWrTiGtGFUYt1p7UK84G2syqUKDKYokgq1jAkiA%2Ft%2BGxX3ZpHcnBY1gOAexbIzg2LesnfoEej%2FtbhBozxxpS6X9pvtaG%2FJKdUpYAo9SZQGWwcpIz5rlceQ3yCVRMywbQ3Ph46XSOUhxdeNaNZ2KY7RBfAkqL2hlsrRsTa3PCqxQAX5mLVo28wGak6xnBVeRbyJKL4JWNC%2BvzhGwWIaByjBfITW0LJDiUqoI%2F%2BY%2F3GSq%2FG3VoH9OnrQIhzA4NpIuzD8t%2F%2FSBjqkASyijuPkhsplpo9NGRKWf25%2FrELaYwNNYepoFsxXnbEt%2FzYV6Vl57rLrKavD5m8x%2B%2FO9rD8MGpQAuJ%2FpELhxIpr%2F%2BiFbxk%2BR%2BPZ5a32KDbJ8mCCZP4om1DTlbRIRhemJ850OtS2cTsH4KBksjlRNui7Ti9V01CnjO8OOXxosWuJHbpe%2BnCOL6sNuApTXeftWlHW%2FgBWog1o7kBQ8OlwVo2aPW6HH&X-Amz-Signature=bc074707594bf15a0d48780cd6644a5a1028c224fcb2d01895131b8ff5c019d0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

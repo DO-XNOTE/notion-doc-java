@@ -1,0 +1,178 @@
+---
+title: 3-4 天猫线的破局之道 - 双引擎回归测试框架
+---
+
+# 3-4 天猫线的破局之道 - 双引擎回归测试框架
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3efea9f2-1eda-4b9d-8a8c-739d8114eb75/SCR-20240820-lakm.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=f98e7ab7e1e624bd9376c84dba12f39314a656ebcf7cb006b46f199c22710b9d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，慕课网的各位同学们大家好，我是姚半仙，咱前面一节呢，学了三段论，这一节就要到三段论大显身手的时候了，还记得咱之前说要用它正儿八经解决什么问题？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/700471af-4f3f-42dd-8038-f2b6c264ada5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=8255144de9d850b34b3bdfb3aa7e64d3aa9c8b89383ded14d022c1175aacca3f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+一线大厂的真实业务的困境，天猫线的破局，且看如何用一招先的三段论来破解迈巴赫的困境。在第一节当中，同学们对迈巴赫团队的营销优惠计算引擎的业务有过了解，它有这样几个特性，第一个是业务极度复杂，很小的更改都会产生牵一发而动全身的效果，导致你全链路的回归。对于一些改动来说，它的测试成本往往是非常非常高的。一方面来说，对于快速变化的业务，如果把它维持在一个非常高的代码覆盖率上，这个成本是非常大的。而另一方面，如果你不去做这个自动化测试，不去维护这些测试用例的话，那你就会导致资损问题频繁发生，一些小小的资损在淘系体量的用户量的加成下，都会产生非常严重的问题。
+
+
+那咱今天呢，就**拿这个例子来开刀，从上帝视角来看一下当年的迈巴赫团队是如何来破局的。**
+
+```javascript
+回归测试（Regression Testing）是一种软件测试类型，它的主要目的是确认新添加的功能或修复的错误没有引入新的缺陷，也没有破坏现有功能的正确性。当软件中的代码发生变化后，例如添加了新的功能、修改了现有的功能或修复了bug，就需要进行回归测试以确保这些改动不会影响到软件的其他部分。
+
+回归测试的关键点包括：
+
+1. **重复性**：测试人员会重新运行以前的测试用例，以验证现有的功能是否仍然按预期工作。
+
+2. **自动化**：为了提高效率，很多组织会使用自动化测试工具来进行回归测试。自动化可以帮助快速地执行大量的测试用例，并提供一致性的结果。
+
+3. **选择合适的测试集**：并不是所有的测试用例都需要每次改动后都执行一遍。通常会选择那些最有可能受到最新改动影响的测试用例，或者是那些最重要的功能模块。
+
+4. **维护测试用例**：随着软件的发展，回归测试用例也需要不断地更新和完善，以覆盖新的功能和需求。
+
+5. **优先级管理**：回归测试通常是在有限的时间内完成的，因此需要对测试用例进行优先级排序，优先测试最关键的部分。
+
+回归测试对于保持软件质量至关重要，尤其是在敏捷开发模式下，频繁的迭代和持续集成过程中，回归测试可以帮助团队及时发现由于变更引入的问题，从而保证软件的稳定性和可靠性。
+```
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/12ee057f-458a-4f0b-ace6-0e0561fc3ab8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=67ba9d25a62167422e4e89b62a372ac3759b73aa9d7785307410dfeec3350403&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这个问题的本质是如何通过技术手段开发出一套自动测试的框架，它不仅能够非常全面的覆盖所有的线上测试用例，同时也极大的降低维护成本。听起来有点意思，那我们这里就走进三段论来分析一下问题，怎么来对它进行拆解。第一个步骤就是以大画小，看当年迈巴赫线的双引擎回归测试框架，它的顶层设计是什么样？那刚才老师说的问题的其实就可以把它抽象成这样的两个业务场景，第一个是测试样本的构建，第二个场景就是在回归用例当中，将你的改动部分和目前线上正在运行的代码部分进行一个比对，发现这其中的变化，那也就是潜在的bug。
+
+
+```javascript
+灰度测试（Gray Testing 或 Grey Testing）是一种软件测试策略，用于在产品正式发布前，在一小部分用户中进行测试。这种方法允许开发者在一个受控的环境中观察新版本的行为，并收集用户的反馈，从而在不影响所有用户的情况下，逐步验证新功能的稳定性和用户体验。
+
+灰度测试的特点和目的包括：
+
+1. **分批发布**：不是一次性向所有用户推送新版本，而是先让一部分用户使用新版本，这部分用户可能是内部员工、测试小组成员或者是特定区域的用户。
+
+2. **监控性能**：通过监控新版本的性能指标，如响应时间、错误率等，来判断是否有性能问题。
+
+3. **收集用户反馈**：收集早期用户对新功能的看法和建议，这对于后期优化非常有价值。
+
+4. **风险管理**：通过小范围的测试，可以更早地发现潜在的问题，减少全面发布后可能出现的大面积故障风险。
+
+5. **逐步扩大范围**：如果初期测试结果良好，可以逐渐增加灰度测试的用户比例，直到最终全面上线。
+
+灰度测试通常用于以下几种场景：
+
+- **新功能上线前的测试**：在新功能完全开放给所有用户之前，先让一部分用户试用。
+- **修复重大bug后的验证**：在修复了严重的bug之后，通过灰度测试来验证修复的效果。
+- **性能优化后的验证**：在进行了性能优化之后，通过灰度测试来检查优化是否达到了预期效果。
+
+实施灰度测试需要一定的技术支持，比如：
+
+- **A/B Testing**：将用户分为两组，一组使用新版本，另一组使用旧版本，比较两组之间的差异。
+- **Canary Release**：先向少量用户（如1%）发布新版本，然后根据反馈逐步增加用户比例。
+- **使用标签或规则**：根据地理位置、设备类型或其他条件来控制哪些用户可以看到新版本。
+
+灰度测试是软件发布流程中重要的环节之一，有助于提高软件的质量和用户的满意度。
+```
+
+
+在这两个用例场景的背景下，我们有这样的一个业务要求，就是无人力介入，这个无人力介入更加偏向于测试样本的构建，也就是说我如何通过一种自动化的手段，可以去尽可能的将线上的所有测试用例全部给 hold 住，那这样的话非常宏大的一个测试框架，我们就把它拆解成了两个非常独立的方向，那我们接下来再根据这两个方向逐层递进来看一下如何对职责领域进行很好的划分。
+
+
+我们看第二步，职责领域划分，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/db99fc3e-bbb8-48f4-a59b-87b596f19c80/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=048a687476f78f736e06ff236dee2f81d91884aa5fb46561bde8fd0904781c76&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这里又要开始到讲故事，咱看一下天猫线有几个角色要登场。第一个测试样本构建，咱前面提到的第一个场景对不对？这里我们把它抽象结构往下再细化一层，我们构建了这样的两个角色，分别是什么呢？第一个，金丝雀，咱同学们知道阿里系给业务部门起名字，非常喜欢用动物，什么阿猫阿狗，但是这里这个金丝雀不是一个随便起的名字，它是咱测试过程当中非常有名的一种手段，叫做金丝雀测试。
+
+```javascript
+金丝雀测试（Canary Testing）是一种软件部署策略，用于在新版本的软件或服务正式全面上线之前，将其逐步推广给用户，以便监控其表现并收集反馈。这个名字来源于矿业中的传统做法，矿工会带金丝雀进入矿井中，用以检测矿井内的空气质量。如果金丝雀健康，则表明空气安全；反之则表明有潜在危险。在软件开发中，“金丝雀”指的是最早接触到新版本的一小部分用户或流量。
+
+金丝雀测试的主要特点和步骤如下：
+
+1. **分批部署**：不是一次性将新版本推送给所有用户，而是首先推送给一小部分用户。这部分用户被称为“金丝雀”用户。
+
+2. **监控与反馈**：密切监控这些用户使用新版本的情况，包括性能指标、错误率、用户体验等。同时收集用户的反馈信息。
+
+3. **逐步扩大范围**：如果初步测试结果良好，可以逐渐增加使用新版本的用户比例，直至全面上线。
+
+4. **回滚机制**：如果在测试过程中发现了严重的问题，需要有快速回滚至旧版本的能力，以避免对用户造成不良影响。
+
+金丝雀测试适用于多种情况：
+
+- **新功能发布**：在全面推出新功能之前，先让一部分用户尝试，以评估其稳定性和接受度。
+- **性能优化验证**：在进行了性能优化或架构调整后，通过金丝雀测试来验证优化效果。
+- **平台迁移**：在从旧平台迁移到新平台时，可以使用金丝雀测试来平滑过渡。
+
+实施金丝雀测试通常需要以下技术支持：
+
+- **负载均衡器**：用于将流量分配给不同的服务器或版本。
+- **A/B Testing工具**：帮助区分不同版本的流量，并收集数据分析。
+- **自动化监控和报警系统**：实时监控新版本的表现，并在出现问题时立即通知相关人员。
+
+金丝雀测试是一种相对保守的部署策略，它可以帮助团队在不完全暴露于风险的情况下，逐步验证新版本的可靠性和兼容性。这种策略特别适合那些对稳定性要求较高的应用和服务。
+```
+
+
+用咱土话来讲，这就叫鹤立鸡群，在一片老母鸡的鸡群里面，你站的一只鹤，也就是说这个鹤是你的代码的变动部分，你要把它在生产环境当中体现出来，所以我需要这样一个金丝雀的角色来干什么事儿？第一，它是承载你新改动的业务代码的一台机器，金丝雀测试机。第二，它的边界是什么？这台金丝雀的机器将要部署在什么环境当中？注意它是在线上环境当中，我们这里给它界定叫做线上影子机。什么意思？也就是说这台金丝雀测试跟咱通常来讲，传统的金丝雀测试它是不一样的，传统的金丝雀测试是实打实的承接线上的流量。那咱这个金丝作业测试为什么叫影子机？
+
+```javascript
+影子机（Shadow Machine）在计算机科学和信息技术领域中有不同的含义，这里提供两种常见的解释：
+
+### 1. 影子机（Shadow Machine） - 在网络安全中的含义
+
+在网络安全领域，“影子机”通常指的是用于模拟真实系统行为的一种机器或环境。这类影子机可以用来进行各种测试活动，如安全测试、漏洞扫描等，而不会影响到实际的生产环境。影子机可以是物理机或虚拟机，用于模拟真实网络环境中的主机，以便研究人员可以在一个隔离的环境中进行实验。
+
+### 2. 影子机（Shadow IT） - 在IT治理中的含义
+
+虽然“影子机”一词本身并不常用作“影子IT”的直接翻译，但在某些上下文中，“影子机”可能指代“影子IT”现象的一部分。“影子IT”是指企业内部未经官方授权或支持的信息技术资源的使用。例如，员工可能会自行安装未经授权的软件或使用个人设备连接公司网络，这可能导致安全漏洞和其他管理问题。
+
+### 3. 影子机（Shadow Machine） - 在DevOps和微服务中的含义
+
+在DevOps和微服务架构中，“影子机”可能指的是用于负载平衡和A/B测试的一种技术。在这种情况下，影子机是指一个或一组服务器，它们与生产环境并行运行，但只接收一小部分实际流量。这种方式可以让开发团队在不影响大多数用户的情况下测试新功能或版本。
+
+具体来说，在微服务架构中，影子机可以用来：
+
+- **测试新功能**：在不干扰主流量的情况下，将一小部分请求路由到新版本的服务上，以测试其稳定性和性能。
+- **数据收集**：收集新版本服务的实际运行数据，用于后续分析和优化。
+- **故障注入**：在测试环境中模拟故障，以评估系统的健壮性和容错能力。
+
+如果你有具体的场景或者需要进一步解释，请提供更多背景信息，以便给出更准确的答案。
+```
+
+这里等老师稍后跟大家揭晓。这个影子很有意思，我们再往下看，它的作用是什么呀？作用就是执行真实的流量，跑出一个测试结果，这就是金字雀的使命。
+
+
+再来看一下，对于测试样本构建还有一个角色叫做数据工厂，从这里我们就可以看出点意思了，这个数据工厂它的角色是什么呀？咱们知道你要测试需要数据对不对？那这个数据从哪里来？我的朋友们自己写吗？no，那就成了人工测试。我们前面说到要自动化测试，很简单，数据从线上来，从线上用户的真实流量把它进行采样。因此我们这个数据工厂，它承担的实际的角色实际上是一个采样器，那它的边界是什么？把这个采样器部署到哪里？两个地方，第一个网关层最直接的地方直接导用户流量。第二个地方，所有线上服务的机器，我在这些机器当中部署一个线上数据工厂插件，它会自动的将你的流量进行采样，并且把它导给金丝雀机器，所以它的功能呼之欲出， copy 线上百分比的流量到这台金丝雀机器。所以同学们知道为什么这台金丝雀叫做影子机吗？因为它是 copy 线上流量，而并不是真实的去承接线上流量，也就是说线上流量我们还是有线上正常的机器来执行的。而我把你这个流量复制一份导入到金丝雀里面，其实只是利用了你真实流量的业务多样性，跑出我想要的测试结果。
+
+
+从这两点我们是否就可以解决测试样本构建的问题？它是来源于真实流量，因此它的测试场景非常的充分，你跑的时间越长，你的测试场景也就越充分，越容易暴露出代码中潜在的问题。提到暴露问题，**怎么来暴露第二个角色？前后比对也是咱前面做顶层设计中的拆解的方向。前后比对，我这里需要什么角色来承担呢？数据比对工具**，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/207cec9a-9c99-44d6-9e4c-1ac286a78ea1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=460025e91549f0e1be636a3fda3d03c3dd633a3224e1bcff91f404bbb89c1002&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那它的角色定义其实就是 response 比对齐你的 API 跑出的结果，我要对你进行比对，怎么来比对？在哪比对？同学们就在数据工厂这里比对，所以同学们可以看出这个数据工厂责任重大，它不仅做一个导流，还做一个数据收集，他要去收集这个流量跑出的真实数据，以及 copy 的这部分流量到金丝雀里面跑出的数据，把这两个数据喂给谁？输送给这个数据比对的工厂，然后怎么样？这个数据比对工厂就会去比对线上真实的业务结果，同金丝雀执行的业务结果之间的不同。
+
+
+找出每一个不同的字段，每一个字段当中不同的数值，这样你就能去甄别出来你的代码改动引发了哪些回归的问题。同学们，从这样的一个职责领域划分，那你脑中是不是已经有一幅架构图呼之欲出？我们接下来往后看三段论的最后一步，分层构建细化方案。同学们，老师这里依然点到即止，往下的方案怎么细化，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9f5afb74-da72-4a22-8f4d-b81b1d2de17b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=bff989b6b9192964d6d1471864534f41d9b3aa2c8a355b0173a6b75b7d673b31&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+就要看同学们八仙过海各显神通了。老师这里引进门怎么来构建这个细化方案。第一个线上机器123，这全是正常的线上在跑的老代码的机器，那鹤立鸡群，金丝雀在哪里？最后一个，我把自己的新的代码改动部署在一台金丝雀机器上，这台金器作为一个影子机，它并不承接任何网关的流量，所以咱之所以叫它双引擎回归测试框架，这个双引擎就是在这里，正常的机器和金丝穴机器就相对于两个执行的引擎，听起来真的很平淡无奇。
+
+
+但是起名字是个学问，你看天猫线起的名字，双引擎测试回归框架，就冲这个名字，当年估计就有一位高 p 升了上去。所以同学们起名字非常重要，你的项目名称如果起出来让别人一听，他不知道你是干什么的，那你这个项目名称就起得非常的成功，我们接着往下看，线上机器有了，接下来怎么办？我的整个集团的业务是不是有一个最外层的网关？这个网关做什么事情啊？承接用户的流量，那这个流量走到网关这里分道扬镳，扬道是它正常的访问流量，它依然会导到线上机器上，但是它这还有一条线，同学们看到吗？在网关层我们做了一些手脚，咱这个采样器会 copy 一定的流量， copy 多少？通常是 0. 01% 到 1% 之间的一个数字，因为咱这个金丝雀同学们只有几台，那你不可能 copy 太多的流量，会把这个金丝雀给压崩的。
+
+
+核心链路层一个集群多则上万台机器，那你上万台机器都 copy 个1%，那你一台是肯定扛不住的，所以我们这里的数字尽可能的去匹配你单台机器可以承载的访问量的压力。采样器这里采好样之后，把流量导入到金丝雀里面，同时这个采样器也就是咱的数据工厂要把执行结果发送给数据比对的工具，哪些执行结果？两个对不对？一个是网关层正常执行的结果，第二个是咱金丝雀测试这里返回的一个结果，而这个数据比对非常的方便，它其实就是基于 doom 数或者是 JSON 的比对，这数据比对只是单纯的去发现你这两个 response 之间的不同，那如果你上了一些新的业务，你可能多了几个字段，那这是你期望的怎么办？因此我们对这个数据比对工具还有一些额外的要求，就是说我们可以从一个管理的界面来手工的标记某些字段，不需要进行测试，这样的话避免一些误报。
+
+
+那这是一种架构模式。还有一种咱们把这个采样器放到哪？采样器放到每一个 Server 这里。123，我在集群的具体的机器上面来采集流量，把它导入到近丝雀里面，这是两种不同的方式。到这一步，一个清晰的双引擎回归测试框架就跃然纸上。接下来的技术方案同学们可以自己去思考，进行细化，比如说网关层怎么来导流量，用什么技术手段，你的采样工具怎么对这些结果进行线性采样。还有一个是金丝雀的机器怎么来标记，如何让网关层不把流量直接导入到金丝雀机器，这都是同学们在细致的技术方案上将要考虑的，但是围绕着这整个大框架，那这套方案的主体架构就通过我们的三段论已经搭建完成了，剩下的只是让同学们怎么样添砖加瓦去完善这套架构设计，同学们神奇不神奇？用一些方法论就可以把一个完全摸不着头脑的问题从云端落到地上。
+
+
+**所以从这个例子中，同学们可以看到这样一个现象，任何困难的问题，或者说大多数看起来很困难的问题，其实都是由廉价的技术手段把它组合完成的**。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/219ce29a-ff6e-4dd8-807a-fb2f87d2021d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=8441fe1bff36db8d12d5674d7ce98801f5a53599deb82d374f618bfc0c6a1867&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+就像前面一个例子，我们并没有用到很高级的技术手段，它的每一个小的问题点都可以用现在已知的技术把它给完成掉，***并且这些小的功能点逐渐汇聚成了一整套完整的解决方案。所以这个三段论有点神奇了，老师就靠着这三招先混得如鱼得水。***所以同学们再跟老师一起去回顾一下这三段。
+
+
+第一，以大画小，做顶层设计，做方案的抽象。第二，职责领域划分，对你方案的抽象进行进一步的拆解。最后分层构建，细化你的技术方案。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7bb6faab-394e-45b4-9732-4199697745ff/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662AVRBYFU%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230336Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCMFTKlwK2YPUoHNOjYggH6K1OSL%2BrHDq4o2PUqrwS%2B3gIgG8QMXgCcqsBmBfdtXeAPAfj1M6riAVRihI0K16%2FymBMqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDP7DidWT0oaZRoaOmCrcA9Bw6zrXAjNWhalhlsmof35WUJQlhqGAUOQnsOy2x6sKqb4xf8FhCD68ugHC3q0DQz5g6V%2Bu8kWMAvOYSdW0gwwc7L4%2B9oS5uXBFTDoa4qYtU8XdkjipAeAA4Rlj4NddmIek78h1xNInFNCz8q88NhfsZAelGoIxlYOiP9%2BXIyUczr1KH4kExphZ2TJ5WUr11FNd%2FxYrIAesRBlGgznUfS%2BbHW4AzIAJqV0ui9VdkPEvA2jcwpRF2msIqSNRfKyan5kqdLer0tFVzQ1V42M8RJhunhNDr50Uh6ZggAzzggmcNFToJct%2FeL6zYD96LfnN%2FqeIRlqX5PHxOFD%2B6bhQ3Gn%2FS8z2MjJ5a42kX81K%2Bnl2e2A84Q6VUnyCWFihrILvz9eZ8Jaa3LanPXbs0CrZBokEmVXF9fcajoT06D15d1PqiDreTFHuNL66PE9TXGLeuUJBBWLhehAq9fFd0B%2FCNWnFsFguWZV8kdTYkWg6GJxirkOuoUjGHlXjGorc0segNHUUvIlsC7w6tYqXTClIyuqaUH54sSuQ04l4Zp%2F9WrbB42wusE0TwRZLmZXZcxVaislLPqHUfqB1ebio%2B1tLlr7yeoJx04hsj2imWQLz6t3eEBF2vb1MYKp6ia%2BNMP%2B5%2F9IGOqUBQmZ%2F3MqU3MTJLU6W%2F5brHaHDuBRPCIBvcLtovQxnj1HrOSiW%2BOV1cFC4L4lYtyjgO2t6hUpHFefXydiXJZ7TWiyzvJgXqW0k%2Fu6Mq715IE%2BGtbg1f%2FvgOEw15KoiCxM7cr4HA%2Bo2b7C8EHTirUAadkykG3KerVgbf5Z1w48vNgQ2Dghu6dC4nUZ9KFTZ83bjfQRbg50C13ICcJfJAMhWaj5fVkdQ&X-Amz-Signature=a619528f518869077d338935f29572437f32da64c41adfc1ebd9dbe7e7e60ad2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**其实这三个领域大家可能觉得最难的是最下面的，其实反而不一样，最难的是在最上面。最后一个其实是技术层面的实现，那只要你的知识领域够宽，其实技术层面并没有什么太大的问题，反倒是上面，上面非常依赖于你思考问题的方式，你拆解问题抽象问题的经验，上面是你作为架构师积累的架构之道的提列，下面是你作为架构师积累的实打实的技术，也就是术。作为一个架构师，你如何关注底层技术，也就是架构之术，**并且又着重于修炼你自己的架构之道，这才是成为一个合格架构师的发展方向。同学们，这一节就到这里结束了，如果大家觉得好像领悟了点什么，别忘着到网站上给老师点赞，那我们下一小节再见。
+
+

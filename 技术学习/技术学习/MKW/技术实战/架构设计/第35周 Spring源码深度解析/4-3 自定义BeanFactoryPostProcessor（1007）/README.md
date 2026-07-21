@@ -1,0 +1,46 @@
+---
+title: 4-3 自定义BeanFactoryPostProcessor（1007）
+---
+
+# 4-3 自定义BeanFactoryPostProcessor（1007）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/754dd28c-626b-4b28-94bd-d65cbb545235/SCR-20240803-rymd.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VR3XIW56%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T232026Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDDKm4d%2BWBsXE4D7%2FmDBFsxn5BdVGXMQnZTzfSf4i64BAiEA5dXtdTCzBMc3H%2FaaVcqyRZFvyoxFwDmkGesKSJmWRbwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDx4dx94KfPGZ3OptSrcA9kLymEHYPAp%2FPpcAqBLnL263C8L9fFJ%2BBgYWtgaTcpfxUpLE5lS%2Ff2Qu9RYZ9Ha%2FtxBy7l8nWFWhFvIAus0AxKhNFeMY6Zq5lDG2pwe9Ud4vRCoSkN2NcFo67Vsf0%2FgxmwfYcdgqEFRSpem1T1uUSzQy5OhjjGYAnJbDfoIUs3tThXBQZy%2BNLm%2F5zEDaK3fAjzO0KFvWJqfYPxtXkW0VXIyBY2M%2FusiRq3vCeFn5mBpUjjmgbLYqLGhdiR4w4%2BHMHcd24B3EhCT6Y1EMbujk3kPHpwMHk1%2Bo44NyhVg%2BXAjXOoXnZ9%2BJbGVmWYu1DtLEZb8IPslX8cufHG4CA2TtYPSEFygGtsvqFOfsApLdDc4%2BQgvPn4vjtF4QvBaIjqIQ%2BHHtMKbHZ0oP37dv6SR097Po99UUtKQWBkgLpmgxETXXlg2feGyOtN5TUFbaIkh7EOGuetDYnkx0wef69J8T88fUWonDa%2BgJ3ToWWDWVSkDunXtM0GZvrDMf1y1Loo5eP0uDiNA5rip52W8zzxl%2Bnw9sHc%2F8TsOVFkhRpdcLthwJDfKlLuBdgmnCZGjwlc0br8CKJEzBEFc%2FdGj%2FhFZxpEH36cHAgBl8MK%2BdL77qwxpnMecMaIcDLYuhZGuMK3G%2F9IGOqUBfjiPxVoHSLdQ%2F3rKlc9SFVm9YHVPT7vDo6rIkbyrU4vCMyf%2FROg7cAMmttSu5O18FD7iqDYj58ju0ddXeYfCafmbDvh3tJDORdyH18p%2BdEfp7KAxWKU%2FfPrBQdVRubYZi57Qd4GwxayXPyZwkR4UHv3AJysQzlLduit42CdV3b1X9oEs4tx78bdQYEBdeFrI0BcJMG9KHDj2PCX%2BmbH0wEQWQvZc&X-Amz-Signature=887ce6b9c880afe3f580f64ccaf3ceabb4e920100834476d1615395e9dc96b05&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bea457c8-1a69-42f3-91ed-b50cd9a927ae/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VR3XIW56%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T232026Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDDKm4d%2BWBsXE4D7%2FmDBFsxn5BdVGXMQnZTzfSf4i64BAiEA5dXtdTCzBMc3H%2FaaVcqyRZFvyoxFwDmkGesKSJmWRbwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDx4dx94KfPGZ3OptSrcA9kLymEHYPAp%2FPpcAqBLnL263C8L9fFJ%2BBgYWtgaTcpfxUpLE5lS%2Ff2Qu9RYZ9Ha%2FtxBy7l8nWFWhFvIAus0AxKhNFeMY6Zq5lDG2pwe9Ud4vRCoSkN2NcFo67Vsf0%2FgxmwfYcdgqEFRSpem1T1uUSzQy5OhjjGYAnJbDfoIUs3tThXBQZy%2BNLm%2F5zEDaK3fAjzO0KFvWJqfYPxtXkW0VXIyBY2M%2FusiRq3vCeFn5mBpUjjmgbLYqLGhdiR4w4%2BHMHcd24B3EhCT6Y1EMbujk3kPHpwMHk1%2Bo44NyhVg%2BXAjXOoXnZ9%2BJbGVmWYu1DtLEZb8IPslX8cufHG4CA2TtYPSEFygGtsvqFOfsApLdDc4%2BQgvPn4vjtF4QvBaIjqIQ%2BHHtMKbHZ0oP37dv6SR097Po99UUtKQWBkgLpmgxETXXlg2feGyOtN5TUFbaIkh7EOGuetDYnkx0wef69J8T88fUWonDa%2BgJ3ToWWDWVSkDunXtM0GZvrDMf1y1Loo5eP0uDiNA5rip52W8zzxl%2Bnw9sHc%2F8TsOVFkhRpdcLthwJDfKlLuBdgmnCZGjwlc0br8CKJEzBEFc%2FdGj%2FhFZxpEH36cHAgBl8MK%2BdL77qwxpnMecMaIcDLYuhZGuMK3G%2F9IGOqUBfjiPxVoHSLdQ%2F3rKlc9SFVm9YHVPT7vDo6rIkbyrU4vCMyf%2FROg7cAMmttSu5O18FD7iqDYj58ju0ddXeYfCafmbDvh3tJDORdyH18p%2BdEfp7KAxWKU%2FfPrBQdVRubYZi57Qd4GwxayXPyZwkR4UHv3AJysQzlLduit42CdV3b1X9oEs4tx78bdQYEBdeFrI0BcJMG9KHDj2PCX%2BmbH0wEQWQvZc&X-Amz-Signature=15c0bbc7350ccd7c9b64912887cc06c5db193f111208ded49bbb02ce683c162f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+同学们大家好，这一节我们来介绍一下 spring 二次改造中自定义 be in factory post process 的内容，我们来回顾一下提供的功能，主要是整个 Bing 容器的入口，我们可以通过容器对象，我们对容器对象的对象，那么在市场这个并没有去对于我们只是把这些加载到这种过程，那么接下来那么接下来通过实例来去。处理过程。那么我们再回到工程，在这里面我们创建一个我们的，我们用 spring process。
+
+
+好，这里面这应该实现对应的接口，好，这里面有一个默认的实现去实现。好，那么我们那么我们这个 customer 定义完成了，那么接下来，那么接下来做什么事呢？对于这种情况下，对于我们对于功能的Demo，它的一些数据接入是我们在我们可以这种情况在线上是推荐使用的，那么我们可以确定什么事，我们可以在这个 case 里面去，用，到了哪些适合使用的话，我们可以在这篇日志。那么那么我们对于我们提供的一个那么区分度一些处理。
+
+
+首先呢进行一个重命名，传来命名，把它命名为 Demo memory，我们简单看着看一下，好，我们现在这个demo，同时呢我们把这个实现，我们抽取出这个实现，我们抽取出一个demo，这里面去选择repreact，这里面我们去抽取。我们去抽取接口，这里面抽取接口，看到这里面我们可以看到指定一下，我们就是名称demo，好，我们就是demo，我们DAU，好，我们选 DAU 接口好，我们选中接口的方法来咨询这个好自信。选择题化。之前我们再重构完成。
+
+
+好，那么现在的话我们那么现在的 demo 同时实现了和 demo do，我们可以看到这个是我们抽权，那么同时我们那么这次我们可以去对应的是我们对应的是 DB 的因人， DB 的不支持，当然因为我们对这个 DB 的可以对这个 DB 的做一个特殊的处理。
+
+
+好，那么对于这里面我们让他去，那么对于这里面我们让他去实现 demo deal，好在这里面我们是虽然把这个 b 在这里，我们是虽然把这个b，所以我们可以在这里面调用的，可以在这里面就让它，当它调用的时候我们就让它抛出来。我们是当前是不支持当前这个厂抛出来。
+
+
+好，所以说我们虽然创建了一个这个，所以说我们首先创建了一个这个 d o，但是他们这样的话，我们已经把这个 Demo memory，我们现在要做的事情是我们去判断，我们现在要注的事情是我们存在这个 in memory 相关的一类存在这个英文当前这个类型，当前这个类是已经不推荐使用。
+
+
+接下来我们来去这里面去做一些，我们来这里面去做一些，那么在这里面，那么在这里面，首先我们需要这个里面所有的这个 BD 文件去获取过来，我们去 get 我们所有的BP，我们所有的badcase。好得到这个病 delay name 我们要做一个什么事情？我们需要通过这个 Bing deep name，我们需要通过这个 bin deep name 去循环遍历获取到它对应的类型里面是name。
+
+
+好，那么我们要做的事情是通过去获取一下它的tap，那么我们要做的事情是通过来去获取一下它的type，这里面我们能得到一个对应的 being type 的一个，这样我们一个内心里面我们能得到一个对应的 being type 的一个，得到这个类型以后我们就需要一个判断了，我们判断一下当前这个他们类型的查询以后我们就需要做判断了。 demo 我们判断出来，但是这个如果他们类型的话是跟这个指数去警告一下 demo deal in memory 是一致的，如果是相同的话，我们材质输出的应该警告一下。首先是 type 不等于null。
+
+
+好，我们这里面也是通过这里面去把我们的日志，log。好，那么这里面也是通过这里面去，这里面我们打印制的时候，我们可以打印一个警告log，我们警告的内容是我们指定一下这个 b 的时候，只能我们警告的内容是我们指定一下这个 Bing 的第一位环境称号，这个只能 Bing Tab 的输出一下。好，这样就完成了这个好，的操作。那么未来我们有一个我们可以对于，正常的输出，进行一个输出，那么对于正常的输出我们的 simple name，这样我们看起来会更简洁一些，我们这里面。
+
+
+好，这样完成这个的话，我们去进行我们的代言。特斯在这里面有一些内容是跟我们这个代言特色 customer s 是类似的，我们可以快速的把这些代码进行一个重用。在这里面有一些内容是跟我们这个 customer being post process 是类似的，我们可以快速的把这些代码进行一个重置，里面把对应代码复制过来。
+
+
+好，我们从这里面把对应代码复制，这里面跟 customer being put the process 相关的内容我们可以清理掉。同时我们这里面也不关心这 model labelable，这里面我们需要 customer 并 put by size 相关的内容我们处理一下，同时我们这里面也不关心这 model labelable，这里面我们需要，我们也是把不相关的内容我们处理一下，好在这里面其实我们并不关心里面的bin，我们可以把 bin 的内容去掉。
+
+
+那么我们要关心的内容是什么呢？我们关心的内容是我们对应的Bing，在这里面内容其实我们并没有关系，里面的 bin 我们其实只关心这个输出，那么我们要关心内容是什么呢？我们关心的内容是之前我们对应的这段内容，他又没有执行，我们其实只关心这个日志的输出能打这里面的内容，执行之前注意一下我们对于，这个，那么我们需要通过，可以直接基于那个，去添加，那么我们需要通过 context 里面的结果，在这里面我们去 new 一下这个customer，我们可以看到我们去那么同时我们通过打印出了 Demo deal in memory support 应用新DEV，也就是我们把我们可以看到当前这个容器里面这些b，这是同时我们这里面去打印出来一个应用场景。牵强，只是我们大家经过碰到相同的这些业务逻辑的时候，会选择对应对于这个运行customer，那么我们对于应用场景的内容，当然这个应用场景也有什么，我们下期章节再见大家。
+
+

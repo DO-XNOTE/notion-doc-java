@@ -1,0 +1,97 @@
+---
+title: 2-3 Sleuth体系架构和调用链路模型
+---
+
+# 2-3 Sleuth体系架构和调用链路模型
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/45c81d90-5e63-4577-bfed-3fb2d9ab9feb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231353Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=ed5f4383496e02591497bdec9d4848f00668ffb761b28bafeb232eaf7453684e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0dc716b8-7685-4d38-ab6f-fc5b075f4998/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231353Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=347350ede1e292b540ed5091cc09ccca0459ccda4bad7b65470d6c8a427976fb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+哈喽，幕后的各位同学们，大家好，我是姚半仙，咱们这一节就来深入的从理论的概念上面来对 Sloth 的做一个研究，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/aa5d41df-8d0e-4df8-b752-43cc61d28f8c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231353Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=cfc9f33bc8c431c66a88372b8a81bef871c452accc41c0064612487f15207c42&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+来了解一下它的架构体系以及调用链路的模型是如何来搭建的。那么首先我们来去了解一下思路斯在咱的微服务体系结构当中是一个什么样的运作模式。那我们说throughs，这里实际上它的功能主要是往日志文件当中打标，那么所有集成了 sloose 的组件，它们都要输出log，对吧？这里 sloth 就会将自己特定的一些标签来打入，通过 log 组件打入到它具体的 log 文件当中。
+
+
+那我们假如在这幅图当中有三个组件，这三个组件分别是份组件、 MQ 组件，还有一个份组件，那这三个环节分别是我一次方法请求当中需要经过的三个不同的组件，那它们之间有一个上下游的先后调用的关系，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4b46aba1-5a64-408f-b1ec-ee3e832d26f3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231353Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=0c8b5f3e17659ca0833b27a0c5e126ef234af079ace3975fb187f7fba3b27253&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那实际上我们在真实的项目当中几乎看不到有 MQ 直接调用份组件，那我这里把这 MQ 放上来，实际上就是给同学们做一个示例，就是说 sleuth 这里可以在各个不同的位赋组件上面去集成。那不光是MQ，还可以在像网关层、 GRPC 层、RX、 Java 等等各种形式的组件它都可以继承。那我们假设这就是一个服务间上下游之间的调用链路，你中有我，我中有你。
+
+
+我们首先来看一下 sleuth 在每一行组件的 log 里面，它究竟会打出什么样的日志？比如这第一个，它这边第一个份组件，它是源头这边分别打出了三个不同的信息属性，第一个叫做trace，第二个叫做span，第三个叫做parent。那从这三个属性的名称当中，同学们应该可以猜出 123 了，这个 trace 其实是一个 trace ID，通常我们也会把它叫做 global trace，它是当前调用链上下文当中一个唯一的ID。这个 ID 在我们调用请求一开始，直到整个调用请求结束，这是一整个过程当中，但凡这个调用请求上的所有节点都有相同的一个链路ID，所以它才会被叫做 global trace ID。
+
+
+OK，那 span ID 又是什么呀？ span ID 实际上可以把它理解作单元ID，我们在一次调用链路当中肯定会去访问不同服务器，肯定会发起一些服务的调用。比如说像我们这里份组件调用MQ，再调用份，那它实际上这里就跨了两三个不同的组件，那么每一个服务调用，实际上我都可以把它理解为一个独立的单元，也就是说我们的 sluice 组件会同时为每一个独立单元发起生成一个 span ID，独一无二的单元ID。
+
+
+那与此同时我为了标记当前单元调用它的上游是谁，那我这边还需要记录一个 parent ID，就是我来自于上游调用方的 span ID，我会把它记到这里，那由于咱这个当前请求是整个调用链路当中的起始，它是第一个节点，所以它这边没有爸爸，它的 parent 就是空。
+
+
+那么如果我们往下看中间的这个 MQ 组件，那你可以看到它的 span ID，诶，单元 ID 生成了一个新的A2，那么它的 parent 就指向了谁这里，那指向了A1，OK，那我们再来看后面一个组件，它这里你看 global trace 还是 a b c，它的 span 就会生成一个新的单元 ID A3，然后 parent 指向 a two。
+
+
+所以我们 sloose 的作用过程当中，就会通过这种链路日志的打标功能去标记哪些应用，哪些日志是处于同一个调用链，哪些日志与日志之间是处于一个先后不同单元的调用关系。OK，那咱看完了这个大致的工作流程，接下来我们再来深入地看一下咱 sloose 在不同组件之间调用它的打标的这个过程，它究竟会打上什么样的内容？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2bd559f0-1cb6-4089-91ed-cfa74fdeca5a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231353Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=9403049ef6a61767ef31c14494f5a64606285562ba9e07bef00d8f35d9d828a9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那咱前面说过，像这个去 trace ID，就是从头到尾一个 global 的 trace ID，不管调用链路途经了多少的节点，它们每个节点都会有同一个ID。
+
+
+span 是 sluice 下面的一个基本的工作单元，每一个单元也有一个独一无二的ID，这是咱前面一幅图当中跟同学们来讲过的。OK，那在 chase 和 span 之下，其实我们还有一层结构，这个结构我们在图上找一下，它叫做什么呀？叫做annotation。那这个标记是标记哪些内容？同学们，看我现在打勾的这些内容，在这个 span i d 下面的这些小标签描述，这个就会被叫做annotation，那一个 span 它其实可以去包含多个annotation，那 annotation 是什么含义？那从这些描述当中，同学们应该可以看出，它其实是表示一个特殊的事件。
+
+
+比如说我们这里有一个叫 S2 server received，那它其实在 span 当中就会被缩写为S2，那它是标记什么呀？标记服务端收到了来自客户端的调用。与此同时我们还有一些其他的事件，比方说 SS Server send，那它这里是表示说我客户端发送了一个调用请求。还有像 client received，咱这边有没有找到这个 client received？就是说咱的客户端收到了服务端发来的这个response，OK，与此同时，我们的每一个annotation，它也有一个时间戳的字段。
+
+
+那么我们这样就可以帮助我们的开发团队来分析一个span，一个单元，它内部每个事件，它的起始还有结束事件。这里我们选择的是 spring Claude 官网的一幅图，向同学们来展示chase， SPAM 还有 annotation 它们之间的这个关系。可以说 sleuth 基本上是武装到牙齿在整个链路过程当中的所有环节开始，结束，中间周转，它都会通过 global trace ID， span 还有 annotation 记录下，捕捉下所有的状态变化以及时间开效
+
+。
+OK，同学们可曾知道它 slodes 是如何在上下游当中不同的组件里去穿插这些 trace ID？ span ID 还有 annotation 的吗？它其实际上就像我们发送 HTTP 请求，我们会在 header 当中去包含一些信息，那么 smooth 这边的做法和咱在 HTTP 请求当中的做法其实是相似的，它会在各个服务的调用方这里，通过一种类似 header 的机制，把它自己的一些parameter，也就是参数给它传递进去。那么 solution 这里的几个比较重要的参数是这几个，跟同学们列下来看一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/679c76a8-8cf5-4c90-9b1d-29b208e62024/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231352Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=7e7760734a0553bb90fc7e0e188c28488d41b1626b015305ba2c1331b905168a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+第一个， X 杠 B3 杠 chase ID 那这个名称大家不要觉着奇怪，这已经几乎成了一个事实约定，基本上各种链路追踪组件都会以这个打通来做自己的 chasing 打标。OK，那这个 trace ID 就是咱前面说的链路全局唯一的一个 global trace ID，下面自然就是咱的单元ID， span ID 以及我的前后调用。
+
+
+链路关系的指向是通过这个 parent span I d 指向前一个调用，那最后 x span export 这里是什么意思？同学们在后面就会学到smoothed。还有一个概念叫做采样率，也就是说我们基于各种原因的考虑，比方说我的存储开销的考虑，我并不会把所有的日志文件全部采集采样出来，那么因此我们就可以去配置一个采样率，比方说我采样 80% 的日志文件，剩下 20% 我就不给它采样，不做记录。这就是通过 span export 这个属性来去决定的。如果它是true，那就代表着我当前这条记录被采样成功，如果它是false，这条 log 文件不需要做采样。okay， smooth 这里最关键的 4 个属性就在这边了。
+
+
+接下来问题又来了，这些属性是属性不？没错， smooth 又是如何在各个组件当中来传递的？咱前面提到它是类似于 header 的机制，但是这种机制在不同的中间件里，在不同的组件里，它的方式方法肯定是不一样的。那 sloose 这里如何来完成？实际上同学们如果来去观察它的代码，其实 sloose 这里采用了一个非常不讨巧的一体力活愚公移山，它采用了一种叫 Adapter 机制。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bc7cfad7-42ed-4a7e-90b9-5633f63860d7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231352Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=bc374e4b0efb5dc393fdf9dbd4309ee0336e80e7089e97ae8b0ddbed1f646ad3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+同学们如果了解设计模式，应该也知道 Adapter 其实是设计模式当中的一种，那通过与各种不同的组件之间，那我可以开发出一个适配器，去提供统一的接口、传递方法、调用等等。
+
+
+我们来看右边的这幅图，右边这里是 sleuth call 组件，它的这个包名的分布，我们可以看到它在 instrument 里面，这里有很多耳熟能详的包名，比方说 high streaks，那 g r p c messaging，还有 COS Reactor， Redis RPC 等等。那在这里面 sleuth 为每个组件，它就开发了它对应的Adapter，比方说像我们的份组件对应的包就在这里，这里有个小小的 Web 包，在这下面我们可以找到份组件对应的 Adapter 是倍记。
+
+
+那么从这里我们可以看到每一个组件，甚至包括像 Zoo 网关层 Adapter 都给它开放了对应的适配接口，因此可以说咱的 smooth 框架是咱 spring Claude 整个体系架构当中最累的一个组件，干了非常多的苦力。OK，那以后如果同学们想到我还有一个新的技术栈生成，那如果想要接入sloose，实际上也需要 sloose 的。这里与时俱进开发相应的 Adapter 适配器，解析咱 header 当中的前面说过的 4 个属性。OK，那我们看完了 sluice 它底层的实现模式。
+
+
+这里并没有引用任何 sleuth 的 login 组件，我们引用的都是像 lock for g，lockback，S，l， four j 等等。这边问题就来了， smooth 它就需要找到一个切入点，一个契合点，让底层的 log 组件可以获取到我当前 smooth 在链路当中追加的这些属性信息。而且这里还有一个需求，就是说我的业务层代码，我不希望对它做任何改动。我原先怎么样打 log 使用 log info，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d58cefb5-eb5e-4d60-a586-3e8a2cfefe9f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664ZDGJUGY%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231353Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAn64KqbFaeetkVtEYEN%2B5vPUxRjY9%2Bpahe3KbdihlT2AiArSJ4LUcVB6mbPUFvdR8BSAc1aUkyEN2pKs3EGJPMMSyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMy2HlbmmMpkHgXZ4NKtwDEN7EhmejGE4WzFlTHV4vmButAbQSZTxUUW79D2bznOCXo2h4IjePG8PezuuCBTV%2Bhbp2LdkgV%2BbI37h9ckXoUAqKOxJpsme%2B6V3x382Q2OIN%2B6HI%2B9VWP9VPIrDryZzY2Cot6RJzagfgCo1yUn4f9WfRKGhZNleJcFf3IYoSNAbI6nFbcn9Kzv04DN8Ih3ZA%2FLNiQnG2HZflIlZkkIsQrIyF5k2JAGmnTal5sfmj8koI46c%2B%2FpEv9RErrsXCubCbjTGTF6ApbkEwX79MuJG8o7jbCKXACgka2RGb9patM4BsUtwI4GukuQk0d2uSouU8PF4QZ4Rxl%2Bq%2Bd2Q784vy5FXB2oTSD0syDf5dWnFP7KkqCPrN3MHJOE9b2YyvcUW4BzZmFe160vMZouJ7wlRH%2Fkj0YKr3hF710r6WKYW7KnAduc3YRnCSbzqHqmpTibB9YPyd0ugM5w3lPaWi%2F6HXJ3RcfYAJiMEordP3tsPa3aKvbgEhw%2Bu%2B7MQAOatbznxiLFNjKB1NgV4AYmV8nu8MIcCueA0ii9CuLAh0axmfdbxhBddrJQZ3Kur3kqfCJmRxnsxdtwhDef5NYGCsx%2Fzp7%2B33awoLCb8Vv2Ocoo2vq177he9W9OYnyTr%2FR6cwt7j%2F0gY6pgHpRpCGgCj03de206N5W5dX%2FJbQzsSUH27%2FcNTeFJ3kva1JKj8Fix6t9QNjUo1Zvn4eJ4%2BowfRK%2Fh9m0naeELFJv%2BZbgqVQcEn99DQeMInzDWlfJhNquYbHY4Qa%2F45Le1%2FmN4nM%2F4DhFpgqpsUTEukgYKvOjcl3zqlK4ftWHeh8H87G19fZmd0lVhI9FWswUs0XSmvDkmH%2BEulkP6Un91WulpyWhZMX&X-Amz-Signature=9de1e032e80f51d2f51e15029173055951c827953fea8b6a5856422eb95dddbc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我后面集成了这种功能之后，我还是用这种方式来打，那这个怎么来办到？如果咱同学对 log 组件有过深度定制，或者有过源码研究的同学应该会比较熟悉 log 组件，它的底层使用了一个 lock pattern，加上 MD seed 这样一种机制去输出信息。那我如果看一下 log 组件打印信息到文件的过程，我们就知道当一个 log info 这条日志它打入到了 log 组件当中之后，接下来 log 组件会将这个写入日志的动作，把它封装成一个 log event 事件。
+
+
+OK，这个事件它具体底层的表现形式实际上就是由 lock pattern 还有 MDC 来共同定制的。那 lock pattern 这里大家都非常熟悉，它可以去定义你的 log 的格式，你日期怎样输出，你对应的日志级别，输出在哪个位置等等。那么我们这里实际上就可以通过 lock pattern 决定你 log 的输出模式，那因此 log pattern 在这个过程当中它是主要负责日志输出格式。
+
+
+那 MDC 这里决定了什么呢？它这里就决定了你的日志要输出什么内容。那它的底层是使用的一个叫 inheritable THREAD local 来实现的，一个可继承的 THREAD local，它可以在当前 THREAD local 下获取到父类的，虽然 local 的信息上一个父线程的信息。所以说在 MDC 里我们可以去携带你当前线程当中的上下文信息。它的底层如果同学们看源代码会发现它底层实际上就是一个 map 结构，我们存储了很多 key value 的值。
+
+
+那咱的 slodes 就是来借助 spring 的 AOP 的机制，在方法的调用的时候配置了切面，然后这个切面的逻辑里，我把链路追踪的数据加到了咱的 MDC 当中，这样一来，我们在打印 log 日志的时候，就可以从 MDC 里获取到这些纸，然后填入到我对应 lock pattern 里面的占位符。
+
+
+所谓的占位符实际上就是前面咱跟同学们看到的一串很奇怪的header， X 杠 B3 杠 trace ID 这类header，我们可以把它加到日志文件当中的 lock pattern 里面。这样的话，当 MDC 里有对应的值的时候，我们的日志组件就可以把这个值最终输出到 log event，进而把 log event 转化成最终输出到日志文件当中的一条日志信息。
+
+
+OK，这一节的内容就跟同学们讲到这里，如果大家对咱 smooth 的底层机制比较感兴趣的，老师建议大家开启 debug 模式，在本地走一遍 sloth 的流程，了解一下咱的 MDC 还有 log format 是怎么样工作的，这就是最直接最有效的学习源代码的方式。OK，同学们，那这一节就到这里了，在下一节里，我们将跟同学们一道去介绍 sloose 的几个好兄弟，看一下咱的生产环境当中通常会使用哪些组件来搭配smooth，共同完成咱的链路追踪的需求。OK，同学们，我们下一小节再见
+
+

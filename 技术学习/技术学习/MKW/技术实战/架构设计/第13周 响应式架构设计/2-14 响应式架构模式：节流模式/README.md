@@ -1,0 +1,18 @@
+---
+title: 2-14 响应式架构模式：节流模式
+---
+
+# 2-14 响应式架构模式：节流模式
+
+节流模式相对来说比较简单，你听这个名字你就知道在含义。节流是什么。我们经常讲一句话，开源节流，开源就是多一点收入，竭力去少花一点这个东西少花一点什么意思？虽然生产的多，但是你不要给那么多，就这个意思，所以大家应该是知道这个节流模式是什么含义？说它要解决什么问题，还是跟前面差不多，如果作为生产者，在生产力超过消费力的时候，应该如何来控制这个系统？这就是它的解决问题，是不是跟我们讲的被压产生的条件非常接近，但是它解决的问题的方式略有不同，它怎么解决呢？根据与其他服务的约定来限制服务自身的输出率。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/874f298d-225f-40cd-89d9-18141bae1699/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466T3WWAI2D%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230950Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD333OMIjcdCGxMU6cqSIA7e9YpwxfLY%2FYD6GxrBv9g2AIgJRmRgtgq2xw%2BrfxPa%2FgcNmMY3tzFyZSiCzrZ%2FpuaxbsqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGKZsU7bmZbpwl3xdSrcA7xDSzdlAZFhk%2B%2FkuhPEU7zzGmgvOx8Gnp%2Bq%2FqpvOOdS2vJke2Tu5xdIlbdtXUDB87gbLWjRoYJfo%2BPwP149MfzfbIkh4C3BD4tRAShyo7JPZEN0xeNfe9%2FF26ubz8P7YFAlRn9WkkGWa3WTEaqNVlC7DcHQozeLfKORBtn4xCacfIW3tpQL4pAQ8iGsx6hpq%2FQssK0u%2BDxiW6pET%2Fguh3ylUNQ7jvTKLeGAnITx73DKqDDvHlQb3MshdqF5s3yhkCd3L8HFd2F1fVd%2FUt1wuKh%2FgdleXEinphSxzs5mLHuAiEXixfopTqMyS3Bw9NZV3s163OIE%2F2%2FRkKr9qOdCRvVGSdrRRkdD0%2FhqsKXOhVpC%2FCyaSMqGbxmc5clNIHXGuFGH2rMNPkrRpnGuUdsyMYFL8WFT4qknf8l8kP5i1vK109dN1ZVXk4nT%2FykzCf7d1OvrGHc90IeaDK6ZZI4utvYk2xhn382Y%2BSzm0V6R8lFzOrYmvqDINYNs4qlFOuDPaojUnYgdmkUhotcHPKfWCJz5simXG3MyLYNt4zRui900cUhPS1G3OREYa7DijFCgaYXHrtkyXPRB5prR0GCnuOpQwEQj4wYEkOHTFtR1i4c%2F9oPlrMg4dwFNiqOSMNm3%2F9IGOqUBBalfA2LYrI8OfKJ6TG7I0OZWlP4hnhvyLBP4%2FNgVrme%2FtZZbgCxwW0ybSZIVKWHClK84rwAE5uoCLfnkJNULVb7pY5NyxMo7iqOFdjhf%2FuRG%2BX2MKqKQDujO8lOlC1FEEa21cscYzN8I1qKT12s4sb224UlAM4xWidLLNRLaW3ssHNgVsvMBGsCRR1l0JwYaWoFJuzR3le7wDVFfBzJLETKapkrR&X-Amz-Signature=49604230efbf168a0b8c8ecb1c477628810bfa4fac1d271f1ca8bcc06dc7c6d7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+记不记得前面我们画的那幅图不同的subscriber，它可以根据自己的处理能力，像 publisher 定制需要多少这样一个处理能力给我多少消息？比如说 a 系统作为 consumer subscriber，他说每秒我能处理 1, 000 条，那它向 publisher 定制的就是 1, 000 条。那就是说 publisher 不管它每秒产生多少数据，它都只会让它消费 1, 000 条。 b 很强劲，每一秒我最上限可以处理 10 万条，那就这样子，如果说只要没超过 10 万他都会发送给，超过 10 万他一样不会给他。
+
+
+就是这样的道理，针对不同的消费者，不同的场景升值，它会给它不同的输出，以此保证整个系统的稳定性，不会产生变压，不会让消费者crush，就是做到这样一个效果就可以了。其实它就是限制模式对整个系统的一个限定，它实现了服务的协作，用户通过自己的承诺不超过给定速率来保护服务。简单来说就是前面讲的那个例子，你有多少能力你就要多少数据，不在你的能力范围之内的你通通不要。相当于两个系统之间有一种约定，就跟你定了一个 contract 一样，你定义了这种协议以后，你们双方就要遵守这个协议。
+
+
+consumer 说我不能每月超过 10 个，那你就不能给我 11 个。就这样子它也不会产生备压，因为它这样子就不会导致它的 consumer buffer 溢出，因为它根本就不会超过运算能力的上限，所以就是这个原理。这种相对来说是比较好理解的一个节流模式，它的所有场景就是为了处理一种可能出现被压的场景，就这么简单，只要你上游可能产生的速度超过下游消费的速度，那么节流模式也是一种选项。
+

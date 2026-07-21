@@ -1,0 +1,27 @@
+---
+title: 2-13 响应式架构模式：丢弃模式
+---
+
+# 2-13 响应式架构模式：丢弃模式
+
+什么是丢弃模式？其实从字面上理解就对了，所以说它要解决的问题是什么呢？如果用户的请求就是当前系统的访问量已经超过了系统的负载能力时，系统应该如何应对？比如你的系统当前的并发量 QPS 大概就是每秒承受 1, 000 个并发用户，现在突然间有 10 万用户涌进来，你应该怎么办呢？就是这样子，这种其实业界都有很多标准答案，丢弃模式只是其中的一种。
+
+
+总的来说这种超过系统负载能力的处理方法都是有标准答案的，那我们来看一下丢弃模式它到底怎么来应对这种系统超限的问题？简单来说就是丢弃请求，因为它觉得丢弃请求比无法控制的失败更可取。因为丢弃请求只会让一部分用户无法响应，但是已经到了东西上的没有被丢弃的，它其实是可以正常处理的。以前面的例子为例，好了，假如说我们丢弃掉后面的 99, 000 个用户，至少前面的 1, 000 个用户是可以被好好的服务的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/88906cab-451c-4c47-88ea-cb420282e402/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YKSRXHVO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230950Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCID995VOkkZ93RCuEWxLbY7Adk%2BssKeK05UbfqlMWPgvqAiEAgzatOJz7eRvOSb1oQhkExAxxiljmv%2FiGfjm4juPgO%2BEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEvGeHhp8u05y5s3pircA9jsvfStOyVtwrWdOURtK%2FH6t1Xc9ThORuevBnN2bZ7o01i%2Bh7StKInOeX3elGSwbTyzf%2B0sIQX9EOxQrpcmw0NDF%2F1Hp%2FPq5Juc%2BNTe%2Futi1IQJmEnHxyy83i13oVnCpT%2FK15R4IrAKGm5wpLlAVcHP%2B47IzBhU9VblJbVaCMCMFxzLIXSOVQDi2kpeFkDDMDuTQhMZeafYYU2jvv5g61Y9B0Z%2BpZOSC%2B853hE2nOipw3vBSODy1TQFxvjuuaA%2BwcvzvpaOTbOORPl0Pdy6EtRZceZsdJWTvMckx0fr%2FxlO6Z%2F9irfbcwyID0kROhltrZcIwpMfNY%2BZfoxuaRsZRjH8XimwqtLZhin5nyNHGjUYqTPr%2BwIUCTuKwZZdcQNkf9Z%2FYoeRuyUe9IO92Qy9c45fCM7myTeAuoaSlk9Mhws717zTjEV604BW8q7RgDdC3SmjBERXR4GS0jcg1gUf25HzP5CR%2Fc%2Bwd2jFww%2BDDkbcPx8bIKKrgkaceMryKhpnc3fisWILRkHeaKZC%2B0bvlam7xFyAn2sz9%2B%2F%2B%2FsBUeAByfOfiABTTwKuscfk3pCkR1PMyd8%2F8XW5k3RVM15KwqaxV37ouGChpe0OIW1d1fUEthMxxKEJQdtRSPoomMLW6%2F9IGOqUBfVvIGTZm2uOof5iUM2xVbS91d6AwW7ru%2F8UDeqtDeFTxAKStbGQN5HAqYM8EUoscXva%2BPB7st96GSzW%2FTqZNWEqH%2BuO%2Fv7om9jLvkmb15vw2C7z%2BvIpUdGsd%2BORPojf3GaRyuRO0a4xx8PKynblAIjSIULGS8%2F7x246xShQ%2BHlpM8G383r1kWsOmW%2FBB%2BJX64gs1yCKCDp2v2owtvRh35tRIc0lc&X-Amz-Signature=52955567ca0de3f8dfeb5420e9e2ea151e5a32de5816ef7d86ba99a5421ab4b9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+但是如果说你没有采用这种对齐模式，整个 10 万用户都是没有得到任何服务的，这种其实就是一种降级策略的事，我不知大家知不知道降级策略是什么？所谓的服务的降级，这分布式系统而是非常常见的一种手段，也是一种应对系统负载过高的很好的策略。什么是服务降级呢？服务降级就是指当服务器所承载的压力超过了它所能应对的上限，那么这个时候不管你是什么样的系统，不管你是一个这种响应式的系统，还是一个其他的什么系统，理论上应该降级策略，就是把自己无法负担的部分请求丢弃，或者放弃系统的一部分功能，这就叫服务降级。这种丢弃模式和服务降级其实都是相同的效果。
+
+
+服务降级也罢，还是丢弃模式也罢，他做的事情的目的都是为了保证核心的这些功能是可用的，只能在指定的条件下提供降级的功能，并且服务可以预见到一种机制，只要达到这种条件就启动降级功能，保护系统资源，不要让系统完全的宕机，这就是降级策略或者丢弃模式，它要做的事情，降级也把一般叫丢弃，把它的目标都是保证核心服务可用。
+
+
+这个我在别的例子当中也讲过，例如说系统有 100 个功能，但是现在请求来的时候，你发现超过系统的负担上线了怎么办？那我们在系统之前预定的一些策略，比如说a、b、c，URL，a，这个是我必须要把它核心功能，比如说是支付功能，我一定要保那 b 和 c 都算是相对边缘的功能，那这种服务我全部拒绝，直接丢弃。实现服务降级，同时让核心功能支付功能，因为这对企业是最有意义的，在这种情况下，当然是，所以说它要保它。这就丢弃了一些，嗯流量，但是保证了核心业务它是可以的。
+
+
+降级的策略有很多种，像这种丢弃模式其实就属于一种屏蔽策略，它就屏蔽掉某些我不想要的返还量，就这么简单，会设定一个上限值，是我们守的这个条件，我们系统有很好的监控。比如说我们指定某指变到了什么值的时候，就会触发一种什么降级策略。举例来说，比如 CPU 超过 75% 的时候，系统要报警，同时要把有些服务给屏蔽掉，然后有些请求就直接给它丢弃掉了，就这个意思。所以说这丢弃模式，你如果之前对服务的降级策略有所研究的话，你理解这个丢弃模式你一点都不会困难，而且绝对是理所当然的。
+
+
+说直白一点就是放弃一些周边功能来保全核心功能，让整体系统不会被这种超过自己所能服务的上限的流量给冲垮，至少保证核心功能它是可以运行的，就是达到这样一个目的，只要是有系统过载的这个情况，就是它的适用范围。您你只要发现系统过载，你监控到达到你的上限值或者你的阈值，那你就放弃一部分请求，让整体系统能够处理。当这个峰值过去以后，你慢慢这些功能又可以开始恢复过来，当然这些都是要根据你定义的策略和你的监控指标来共同打造一个效果。比如 CPU 负载从 85% 降到30%，那自然而然这个成立的条件就不存在了。所以说你又可以把这个系统注册的正常状况服务从降级模式变成一个正常模式。如果说你觉得这个丢弃模式听上去有点不是那么清楚的话，那我建议大家去找一下服务降级相关的资料看一下，你就会非常理解这个丢弃模式所要解决的问题。
+

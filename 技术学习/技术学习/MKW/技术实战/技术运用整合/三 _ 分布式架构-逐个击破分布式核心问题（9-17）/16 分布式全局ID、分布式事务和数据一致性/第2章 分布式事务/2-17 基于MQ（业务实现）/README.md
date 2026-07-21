@@ -1,0 +1,26 @@
+---
+title: 2-17 基于MQ（业务实现）
+---
+
+# 2-17 基于MQ（业务实现）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/95d22399-1c2a-4d17-a980-cd2114c82f34/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663N4LJ7MK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225439Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGsgKYfLbsik%2FeqK%2FJKN4tpHCBLcuEGQmKOPN2%2BzH4SzAiEA%2B1llpFO%2FBDCf2Ylg7DHEi7q72slKpnJMXXv0HrKleHwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAj8TsyCW8Sq0jzycSrcA23PnXrZi2sNC8jVi6DzMvAXtnPe7tfaobXZ31OTjkGntKPSRiUBbEKep6pP2HHsCNVy0k8b2sBpqYYmrdTUGfOlLAP6Jcm%2B2I5RE0GoIqg%2B5UxuRT4GAsAfLMWPU2QEejjrEVJ%2F%2FFjc6E6QM%2B5hnw%2FtXj4PnvxnmlMeY%2BumebRucdgYsHAwDEPMxIAJwjEg%2FrIFVV6lYEMl5tAgMwf1OIMWBo6KREWGcgLSNHio4nZ802gPLzNQV3rpc7IdFxtGg53G69rqQi0BebCC6hfzXJLb9T5Jdnrz0KUBzbbhK7OzjKbHYpazXjy8R9xnfRVKcg4nbApIVm3eaG5RXdVtU00CvnX3w6YT%2BBO62ajb4sgEL98ZhN2mHroRY01B0FPNBtj%2BD%2BWwGvtzX3ou%2F50KzrKZuUCi864c9PELBjEVHNaxmE8awlDU9TwV1JC5vO1I%2FfW0k82gWxfzDgNFClVqMtboU8OLqus3yArQQOhdHdR1xBrq%2FB8cFojnVvOvRiMObVZq8eumL4cGJf2u5JjPww%2BfHtRBRyvC3lnTDAiaziLRsP4vQQHrjxzf4q0KHM8A1G%2ByWfs6QW%2F%2BVSATWAa9d4fW%2FYmn%2FpuHJ%2BTugvSHVEGaLi0o5yV2Re77FWABMJG4%2F9IGOqUBNvXomOVjXWxu8gMCSz5OnFzU4NANL00Ubqbw3hZzTac5t264VcHL4VuP1lKwaQKRNRsP1g9GnWAr3%2BTlGKHwsyxCxJ1n8YGu%2F26q19ajtLvzuUps6sC3Y3ciFoBiFeAtnq9ULBhxMYt8hQRkOu8nGImUk%2FFoeIt5sB7wsRA2Gn8Fm33wEPxo%2Bts5iiX5hbGtb95rtKwXM36siGXFiZx5A6kjSM5W&X-Amz-Signature=dc1192ac68a230bc5adb3db4c320ebedeeff4e252944952c31f6fac5fa1162ef&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/734c52ae-54db-4d92-9f2b-56fbe045e351/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663N4LJ7MK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225439Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGsgKYfLbsik%2FeqK%2FJKN4tpHCBLcuEGQmKOPN2%2BzH4SzAiEA%2B1llpFO%2FBDCf2Ylg7DHEi7q72slKpnJMXXv0HrKleHwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAj8TsyCW8Sq0jzycSrcA23PnXrZi2sNC8jVi6DzMvAXtnPe7tfaobXZ31OTjkGntKPSRiUBbEKep6pP2HHsCNVy0k8b2sBpqYYmrdTUGfOlLAP6Jcm%2B2I5RE0GoIqg%2B5UxuRT4GAsAfLMWPU2QEejjrEVJ%2F%2FFjc6E6QM%2B5hnw%2FtXj4PnvxnmlMeY%2BumebRucdgYsHAwDEPMxIAJwjEg%2FrIFVV6lYEMl5tAgMwf1OIMWBo6KREWGcgLSNHio4nZ802gPLzNQV3rpc7IdFxtGg53G69rqQi0BebCC6hfzXJLb9T5Jdnrz0KUBzbbhK7OzjKbHYpazXjy8R9xnfRVKcg4nbApIVm3eaG5RXdVtU00CvnX3w6YT%2BBO62ajb4sgEL98ZhN2mHroRY01B0FPNBtj%2BD%2BWwGvtzX3ou%2F50KzrKZuUCi864c9PELBjEVHNaxmE8awlDU9TwV1JC5vO1I%2FfW0k82gWxfzDgNFClVqMtboU8OLqus3yArQQOhdHdR1xBrq%2FB8cFojnVvOvRiMObVZq8eumL4cGJf2u5JjPww%2BfHtRBRyvC3lnTDAiaziLRsP4vQQHrjxzf4q0KHM8A1G%2ByWfs6QW%2F%2BVSATWAa9d4fW%2FYmn%2FpuHJ%2BTugvSHVEGaLi0o5yV2Re77FWABMJG4%2F9IGOqUBNvXomOVjXWxu8gMCSz5OnFzU4NANL00Ubqbw3hZzTac5t264VcHL4VuP1lKwaQKRNRsP1g9GnWAr3%2BTlGKHwsyxCxJ1n8YGu%2F26q19ajtLvzuUps6sC3Y3ciFoBiFeAtnq9ULBhxMYt8hQRkOu8nGImUk%2FFoeIt5sB7wsRA2Gn8Fm33wEPxo%2Bts5iiX5hbGtb95rtKwXM36siGXFiZx5A6kjSM5W&X-Amz-Signature=17a58669a9e4b07a68ff0a36dc7153bb2a633939557264ada023ca440746a167&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+通过前面的学习，我们知道 my cat 它是默认开启了分布式事务的对吧。那么这个天天失货的项目，咱们在前面已经做了分库分表的操作，咱们的项目也已经直接的连接到了 my cat 那么理论上讲咱们的项目就是支持分布式事务对吧？那么咱们怎么去验证一下呢？首先咱们还是打开这个 navicat 咱们在之前做分库分表的时候，是把 order 的这三张表给拆分了对吧？在实际的数据库当中，131的数据库是拥有所有的表的对吧？然后 132 的数据库只有 O 的这三张表对吧？然后咱们再打开 132 数据库的这个 O 的表，看看这个订单咱们之前还有印象吗？咱们分别使用两个用户去下订单了对吧？一个是慕课，他的订单是分配在 131 这个数据库上的，对吧，这些都是慕课这个用户下的订单。然后咱们又使用了 test 用户， test 用户的订单都是分配到了 132 上。那么这个测试咱们怎么去做呢？咱们使用太词的这个用户去下订单，然后再扣减库存。成功以后，咱们抛出一个异常库存是在哪个数据库是在 131 数据库对吧？咱们下单的过程要在 132 数据库，因为咱们使用的是 test 用户对吧，下单的过程咱们要在 132 的数据库当中去创建订单，然后在 131 的数据库当中去扣减它的库存。对不对，这个是一个正常的操作对吧？然后咱们再扣减库存，成功以后抛出一个异常，然后看一下它两个数据库这个数据是不是都回滚了，如果都回滚了，就证明咱们的分布式事故是有效的对吧？这个就是咱们测试的这么一个思路。
+
+
+好，咱们再回到 idea 当中找到下单这一个过程，打开这个 order controller 对吧，然后找到创建订单的方法往下看。咱们这里边这块已经是插入订单了是吧？插入订单，然后再循环的去插入奥德艾特姆对不对？看到这块是插入奥德艾特姆是吧？插入奥德艾特姆成功以后要去更新库存。如果咱们使用太词的用户登录的话，它前面插入订单和插入 order item 是不是都是在 132 的这个数据库当中去操作对吧？然后后边扣减库存的这个操作是在 131 的这个数据库对吧？因为这个商品表在131，那么在它扣减完库存之后，咱们这块手动的去抛出一个异常， one time exception 分布式事务测试对吧，抛出一个异常，然后咱们再去数据库当中去检查 order 表有没有生成记录，在检查库存有没有正常的扣减。
+
+
+如果既没有扣减库存，也没有生成订单，那么咱们的分布式事务就是成功的对吧？现在咱们加了这么一个异常对吧，然后启动一下这个项目，好，启动成功了是吧？然后咱们再把前端 Tom cat 咱们给它启动起来，进入到 Tom cat 的并不弄，然后双击一下斯达拉布点 bat 好也已经正常启动了是吧。然后咱们打开浏览器，刷新一下天天吃货的这个首页。然后咱们登录咱们就用这个 test 用户是吧，他的订单是分配到 132 数据库的对不对？咱们登录一下，然后咱们，选择一个商品，咱们看看这个商品库存是 230 件对吧。然后咱们加入购物车，进入到购物车，选中商品去结算。
+
+
+咱们看到在这个链接上有一个这个商品规格的 ID 是吧，咱们给它复制一下，去数据库里边去查询一下它的库存咱们刚才看到的是 230 件。对吧？咱们打开这个数据库，库存是在 131 的数据库当中，然后找到 item spec 这张表对吧，双击打开，然后筛选一下 ID 好，找到了这条记录是吧。然后咱们看一下 stop 这个字段，它是 230 个。
+一会咱们下订单，咱们继续选中一个支付方式，然后选择提交订单页面没有反应是吧？咱们回到 idea 当中看一下最后的日志报错了是吧，看看报的什么。错，就是咱们写的这个异常是吧。分布式事务测试这个异常。然后咱们检查一下这个订单检查一下 case 的用户，他要分配到 132 的这个数据库对不对？咱们刷新订单没有生成对吧？然后咱们再去这个商品规格这个表当中，然后再刷新一下库存也没有扣减。那么说明咱们的这个分布式事务是成功的。在咱们的这个项目当中，由于在 my cat 里边配置了这个分布式事务，所以咱们天天吃货这个代码当中是不用做过多的操作的。好了，这一节的视频到这里就告一段落了。
+
+
+
+
+

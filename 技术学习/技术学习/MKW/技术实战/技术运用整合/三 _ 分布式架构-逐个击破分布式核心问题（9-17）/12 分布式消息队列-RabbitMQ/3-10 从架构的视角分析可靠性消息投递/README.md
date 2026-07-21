@@ -1,0 +1,82 @@
+---
+title: 3-10 从架构的视角分析可靠性消息投递
+---
+
+# 3-10 从架构的视角分析可靠性消息投递
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/211b4e3f-1f50-4701-b1f8-a0db7977df03/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663KLQJ557%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225303Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDh5WyUgIwviQXre6FqhtaP3%2BZNl3QPyaB5D0b6gz9QmQIgfj22B4sw8wQEUAo1MhbfBjqOoJwctDNUmF72Tz500tQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLojvQL8x6v7JUJ43SrcA7LHexza58HKfmUujPh58ucyyrFT4plbE8GjPiiDvKt3EoziBeVwHBG7imLhBAQUE%2FkN0oiyVfq2sXUV%2BnmhLyL%2Fhtt2g7sR3t95bfpO%2FyCKPyC%2FuXUFzIZbo7w%2FFZJX3HW3qTVmRhQ1QE4%2B5JntBjrZDaJOC34oDHr7PA04yGQucOvVrguF12vmElmz%2BDiO0Kjiy7AhfaF5WGF8Hr27C3k1%2F5Sv9T8EN78BJLaNnFLOIqF%2FbzCYn%2F1UAVJ058xyivdpDW4idFhSskTcXL0u2aeKTD%2BzMld4q656VMOmaBSL752z0veA1nkTkRWePjiGJeaxNumLNEkqD0GlDqZnq0XTj02t7A3hEsPHFYk1Pbn7UVwrG6B6yV7YNXABNJdJzRNGhQ4ZrC62l%2Fefd0atvfBAZDCZ0U48bQmEiWX8OAL%2B1HXn1C9m3NqW47tTQ2kvaaQRIrDObu0a9tck8stkHu4c5t65xksfnvMVT%2B16RcYi1pxk%2BPY2KC4hD3r4sYrPTWM0mxiBlxo3fcDEMh%2F9u7jg%2BwDbDvY%2FBF7K1b%2BP3qDG30A%2BVJokFsqvibhQEND23XOmdDn8FU8OQZgOkzVXpeHERzCqqy5TDnKePiwcxo8CEGqseZ%2B7scP3rHRHMMS6%2F9IGOqUB8kYtUxxxQxR%2Frhix8waG4rbR%2BCyjpVVVj8xv0dNY7drd1%2BrlHe99apeRJ1ktvGibBcGUFDqwnwkWgfd7KjHYRCOBHFCCYoDnjcazVOyf6CeJSeMJt16FnjSXq14DQ4je39LoqyAU9xQLr2Z%2BHzReZJrxj7OwacvInzO%2BYaNl29aQlVou0KnyQbqf4FbSuw9x9Tolhs9PpfVeiD7RmhwBOvajvfLy&X-Amz-Signature=fc79f64a55162c009829ea09ec324f52ebabbd0cfeeed4885390e6f0eb709ad3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/04663503-7b41-4aee-b44f-d5954185c05c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663KLQJ557%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225303Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDh5WyUgIwviQXre6FqhtaP3%2BZNl3QPyaB5D0b6gz9QmQIgfj22B4sw8wQEUAo1MhbfBjqOoJwctDNUmF72Tz500tQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLojvQL8x6v7JUJ43SrcA7LHexza58HKfmUujPh58ucyyrFT4plbE8GjPiiDvKt3EoziBeVwHBG7imLhBAQUE%2FkN0oiyVfq2sXUV%2BnmhLyL%2Fhtt2g7sR3t95bfpO%2FyCKPyC%2FuXUFzIZbo7w%2FFZJX3HW3qTVmRhQ1QE4%2B5JntBjrZDaJOC34oDHr7PA04yGQucOvVrguF12vmElmz%2BDiO0Kjiy7AhfaF5WGF8Hr27C3k1%2F5Sv9T8EN78BJLaNnFLOIqF%2FbzCYn%2F1UAVJ058xyivdpDW4idFhSskTcXL0u2aeKTD%2BzMld4q656VMOmaBSL752z0veA1nkTkRWePjiGJeaxNumLNEkqD0GlDqZnq0XTj02t7A3hEsPHFYk1Pbn7UVwrG6B6yV7YNXABNJdJzRNGhQ4ZrC62l%2Fefd0atvfBAZDCZ0U48bQmEiWX8OAL%2B1HXn1C9m3NqW47tTQ2kvaaQRIrDObu0a9tck8stkHu4c5t65xksfnvMVT%2B16RcYi1pxk%2BPY2KC4hD3r4sYrPTWM0mxiBlxo3fcDEMh%2F9u7jg%2BwDbDvY%2FBF7K1b%2BP3qDG30A%2BVJokFsqvibhQEND23XOmdDn8FU8OQZgOkzVXpeHERzCqqy5TDnKePiwcxo8CEGqseZ%2B7scP3rHRHMMS6%2F9IGOqUB8kYtUxxxQxR%2Frhix8waG4rbR%2BCyjpVVVj8xv0dNY7drd1%2BrlHe99apeRJ1ktvGibBcGUFDqwnwkWgfd7KjHYRCOBHFCCYoDnjcazVOyf6CeJSeMJt16FnjSXq14DQ4je39LoqyAU9xQLr2Z%2BHzReZJrxj7OwacvInzO%2BYaNl29aQlVou0KnyQbqf4FbSuw9x9Tolhs9PpfVeiD7RmhwBOvajvfLy&X-Amz-Signature=3734d3ee347f15c898e97121ff717f762d2ba2cfd88b04bd10cbeb4df0973842&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那接下来我们开始进入下一个就是可靠性投递的一个这个实战，**那其实关于这个可靠性投递它其实非常的重要，也是我们整个这个基础组件封装中的这个重点中的重点。**所以说我们要先通过几幅图来跟大家一起把这个概念先过一遍，然后接下来我们再开始编码好这幅图。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/29e641d9-e03d-4d36-9906-798643e4a3d9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663KLQJ557%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225303Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDh5WyUgIwviQXre6FqhtaP3%2BZNl3QPyaB5D0b6gz9QmQIgfj22B4sw8wQEUAo1MhbfBjqOoJwctDNUmF72Tz500tQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLojvQL8x6v7JUJ43SrcA7LHexza58HKfmUujPh58ucyyrFT4plbE8GjPiiDvKt3EoziBeVwHBG7imLhBAQUE%2FkN0oiyVfq2sXUV%2BnmhLyL%2Fhtt2g7sR3t95bfpO%2FyCKPyC%2FuXUFzIZbo7w%2FFZJX3HW3qTVmRhQ1QE4%2B5JntBjrZDaJOC34oDHr7PA04yGQucOvVrguF12vmElmz%2BDiO0Kjiy7AhfaF5WGF8Hr27C3k1%2F5Sv9T8EN78BJLaNnFLOIqF%2FbzCYn%2F1UAVJ058xyivdpDW4idFhSskTcXL0u2aeKTD%2BzMld4q656VMOmaBSL752z0veA1nkTkRWePjiGJeaxNumLNEkqD0GlDqZnq0XTj02t7A3hEsPHFYk1Pbn7UVwrG6B6yV7YNXABNJdJzRNGhQ4ZrC62l%2Fefd0atvfBAZDCZ0U48bQmEiWX8OAL%2B1HXn1C9m3NqW47tTQ2kvaaQRIrDObu0a9tck8stkHu4c5t65xksfnvMVT%2B16RcYi1pxk%2BPY2KC4hD3r4sYrPTWM0mxiBlxo3fcDEMh%2F9u7jg%2BwDbDvY%2FBF7K1b%2BP3qDG30A%2BVJokFsqvibhQEND23XOmdDn8FU8OQZgOkzVXpeHERzCqqy5TDnKePiwcxo8CEGqseZ%2B7scP3rHRHMMS6%2F9IGOqUB8kYtUxxxQxR%2Frhix8waG4rbR%2BCyjpVVVj8xv0dNY7drd1%2BrlHe99apeRJ1ktvGibBcGUFDqwnwkWgfd7KjHYRCOBHFCCYoDnjcazVOyf6CeJSeMJt16FnjSXq14DQ4je39LoqyAU9xQLr2Z%2BHzReZJrxj7OwacvInzO%2BYaNl29aQlVou0KnyQbqf4FbSuw9x9Tolhs9PpfVeiD7RmhwBOvajvfLy&X-Amz-Signature=fef62242fe0e4fdec7824d0acfd96da5bdc6c8f6874a2d0886b34cdd8466ff5c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+其实你可以认为分两个角色，一个是蓝色的这个框的角色，还有一个是红色的框的角色，那我们单纯的去看蓝色跟红色这两个框，先不考虑最左半边的这个一大堆的这些图形。那其实关于蓝色跟红色这个机制是什么呢？它就是我们上节课跟小伙伴们一起写的那个确认消息，这是我们 v m q 天然支持的，当我发一条消息到 broker 的时候， broker 存储完了之后，会给我一个 a C k 应答，我们收到这个 a C k 应答就是我们的producer，他自己有一个 callback listener，他去判断这个 ack 到底是成功了还是失败了。如果是成功了，那就OK。如果是失败了，他比如说 a C k 返回的是false，那我们可以做一些其他的处理，这个就是 config 消息确认模式。
+
+
+当然对于这个消息确认模式其实还有很多弊端。什么弊端？最简单的例子，当我们消息比如说布鲁克繁忙的时候，**他给我回的 ACK 是false，这个 false 的原因可能不是因为说 broke 磁盘满了，是可能因为他处理不过来了，那我们可能要稍后我们再把这条消息推过去，那这个可能得掺杂着一些自己要做一些重试的逻辑。**
+
+
+那这是第一种情况，那第二种情况，**比如说我们把消息发到 broker 了， broker 也存储了，然后 broker 给我们 confirm 状态。但是在给我们 confirm 状态的时候，由于它也是网络的 TCP 请求，可能中间网络发生闪断，我们 producer 的这个 listener callback 没有收到 broker 给我们应答的这个ACK，那怎么办？那这条消息是不是永远也没法确认了？那这个时候我们的确认消息就没法满足我们的可靠性投递的这个需求了，那我期望的是，当我把一条消息发出去，我就认为这条消息百分之百的是 OK 了，是已经能跟我的业务保持一致了，但有些极端情况下还避免不了。所以说我们整个的这个基础组件的这个封装的这一块，最重点的就是关于可靠性。**
+
+
+那怎么去说我能保障一条消息百分之百的能够发送到这个 MQ 呢？那其实这个**可靠性的概念从我的角度理解，你可以认为你的业务的一条数据跟你的这个消息是一个强一致性，或者说是一个原子性的，只有这两个能保证一致，才能够保障一个可靠性**。这个怎么去理解呢？比如说我们举一个简单的例子，当我们把订单创建成功了之后，我要通知给下游的系统去做剩下的事情。那我期望什么呢？我的订单一旦创建成功，然后我发送一条消息到我们的MQ，然后 MQ 就相当于我要给我的下游系统告诉他，我订单已经创建成功了。那我期望我创建订单成功，跟你发消息给下游系统，他们两个能够保障一个强一致，那这个过程 config 肯定是不行的。
+
+
+为什么？因为可能有一些情况，刚才我已经说了网络发生闪断，那 broker 给我们的 ACK，我的这个 producer 没有收到，所以说关于可靠性这个事情是需要我们自己去做一些事情的。那我们来看一下整体这幅图，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b5ae03b7-330a-4096-bf0a-cd873c7af945/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663KLQJ557%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225303Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDh5WyUgIwviQXre6FqhtaP3%2BZNl3QPyaB5D0b6gz9QmQIgfj22B4sw8wQEUAo1MhbfBjqOoJwctDNUmF72Tz500tQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLojvQL8x6v7JUJ43SrcA7LHexza58HKfmUujPh58ucyyrFT4plbE8GjPiiDvKt3EoziBeVwHBG7imLhBAQUE%2FkN0oiyVfq2sXUV%2BnmhLyL%2Fhtt2g7sR3t95bfpO%2FyCKPyC%2FuXUFzIZbo7w%2FFZJX3HW3qTVmRhQ1QE4%2B5JntBjrZDaJOC34oDHr7PA04yGQucOvVrguF12vmElmz%2BDiO0Kjiy7AhfaF5WGF8Hr27C3k1%2F5Sv9T8EN78BJLaNnFLOIqF%2FbzCYn%2F1UAVJ058xyivdpDW4idFhSskTcXL0u2aeKTD%2BzMld4q656VMOmaBSL752z0veA1nkTkRWePjiGJeaxNumLNEkqD0GlDqZnq0XTj02t7A3hEsPHFYk1Pbn7UVwrG6B6yV7YNXABNJdJzRNGhQ4ZrC62l%2Fefd0atvfBAZDCZ0U48bQmEiWX8OAL%2B1HXn1C9m3NqW47tTQ2kvaaQRIrDObu0a9tck8stkHu4c5t65xksfnvMVT%2B16RcYi1pxk%2BPY2KC4hD3r4sYrPTWM0mxiBlxo3fcDEMh%2F9u7jg%2BwDbDvY%2FBF7K1b%2BP3qDG30A%2BVJokFsqvibhQEND23XOmdDn8FU8OQZgOkzVXpeHERzCqqy5TDnKePiwcxo8CEGqseZ%2B7scP3rHRHMMS6%2F9IGOqUB8kYtUxxxQxR%2Frhix8waG4rbR%2BCyjpVVVj8xv0dNY7drd1%2BrlHe99apeRJ1ktvGibBcGUFDqwnwkWgfd7KjHYRCOBHFCCYoDnjcazVOyf6CeJSeMJt16FnjSXq14DQ4je39LoqyAU9xQLr2Z%2BHzReZJrxj7OwacvInzO%2BYaNl29aQlVou0KnyQbqf4FbSuw9x9Tolhs9PpfVeiD7RmhwBOvajvfLy&X-Amz-Signature=6e01b24648966866ef03ea909bda3567272dd90f7b13e8e3e6d8689ed858f0bc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这幅图我们就拿这个下完订单为例，上完订单，比如说 Step 1 下完订单了，那这个有一个 biz db，比如说我们从这个 o 的表里边去插入一条订单的信息记录。 Step 1，插入完订单的信息记录，接下来我要发一条消息给我的broker，然后 broker 通知给下游系统去做相应的事情。那这个时候我为什么在这里边还有一个红色的叫做 message DB 呢？那这个就表示说我还要插入另外的一条日志表里的一条记录，也就是说我期望这个 biz db 跟这个 master db 它们能够保障一个原子性。
+
+
+如果说这两个数据库是同源的话，就同一个数据源，那我加一个事务就能够保证他们两个强一致了，就是同时成功，同时失败，不成功就回滚呗。如果说第一步 OK 了，那结果给我返回的是操作数据库，两条记录都插入成功，就是说我的这个业务的这个 order 表以及对应的这个，我要发数据了，发 MQ 了，这个记录都成功。然后第二步 step two 再去发message，然后发完 message 之后，我的 broker 收到了这个message，给我回confirm，如果给我回 confirm 成功了，然后我再去更新一下这个 message DB 里的状态。
+
+
+注意，**最开始我们第一步 Step 1 的时候，刚插入进去的时候，我们的 state 状态，比如说等于0，就是说消息发送状态等于0，表示说已经发送待确认。那当我们伯克给我回送应答 config 的时候，我们会把从 0 的状态就是 message DB 里的那个状态从 0 改成1，表示什么呢？伯克已经收到了已确认，那假设说这种情况网络发生闪断了怎么办？网络发生闪断了，也就是说我们的 message DB 里的那个 state 状态一直是0，那我们可以自己做一些补偿兜底的一些策略，比如说当我们把一条消息发出去之后，就是以我们 message DB 落库为准，当前那个时间，比如说它已经超过 5 分钟，这个 state 状态还是0。**
+
+
+**那我就认为什么呢？可能我们的博客没有收到应答，可能出现网络闪断等等其他的原因了，那这个时候我们通过定时任务把一些要发送，但是没有博客确认应答成功的消息，把它抓取出来，然后再做一个 resign 重新投递，就是这么一个过程，就是一个补偿性。那在这里我举个例子，比如说第三步的时候，网络突然之间出现闪断，我们的 producer 的 listener 并没有收到这个ACK，那这个时候超时超过了 5 分钟了，我们会从这个 message DB 这个里边去，每隔一段时间去抓取超过 5 分钟 state 的状态，还是待确认的消息，然后重新投递，重新去 reset Step 6 是reset， Step 5 是做一个定时任务的抓取。**
+
+
+**然后重新投递之后，结果又发现假如说重新投递了好多次，它一直都是失败，网络一直是有问题，闪断那种极端情况。所以说在这里我们可以做一个 retry count，也就是说最大努力的尝试的次数是 3 次，比如说你已经重新投了 3 次大于 3 了，那这个时候我就认为你这条消息就是失败了，那我怎么办？**我就把 retry count，如果大于3，我就把 state 制成2，就表示最终消息发送失败，就是待回滚，就是已经需要回滚了，那这个时候怎么去回滚？无非就是说我抓出来之后我不重新发了，我是要把我自己的 message DB 跟我的 biz 业务 DB 里的数据做一次回滚，就相当于这个订单就没有创建过，这样的话就能够保障一个一致性了。
+
+
+**那其实有很多极端的情况，就比如说恰巧我们发送第三次的时候，这边布鲁克收到消息了，但是没有获得ACK，就是第三次的时候我去 reset 发消息，然后 broker 收到了，回 ACK 的时候这断了没收到，其实 broker 已经收到了，然后那边 consumer 已经处理消息了，但是这个时候我没收到。**
+
+
+**那我的 retry count 已经大于3，那就说明一种极限情况下了，这种极限情况下可能会导致什么呢？我们自己把 biz 的状态回滚了，但是 consumer 那一方我的下药系统可能已经处理成功了，所以说在这个时候即使是失败的消息，你也要做一个备份，这个不能删除的。然后最后做一次什么对比，做一次check，可能就是你 b i z 的库要跟我们的这个下游系统的这个一些数据做一些一致性的一些校验。**
+
+
+到底说这条消息我这边处理失败了，那你那边到底处理成功了还是失败了？如果你那边已经处理成功了，那我这边这个状态我开始已经把它回滚了，回滚掉了。其实这个回口调我可以用逻辑的方式，比如说就更改一下培训状态，表示订单已失效。然后假如说我已经发现我的下游已经在运作了，那怎么办？那到底是说你把这个订单再重新重置回可用的状态，还是说已失效的状态？那这个就看你自己的业务逻辑了。
+
+
+理论来讲，像我们这边我们是以其中的一方为准，我们是以其中的这个订单的这个中心为准。如果说当出现很多极限情况下，那我们下游的系统都是要跟订单去做一个一致性的这个对比的，如果说跟订单那个系统不一致，那么下游系统就做回滚。但是如果还有一些业务下面，比如说做物流了，已经发货了，根据你不同的业务，那你可能订单这里边还要重置为可用的状态，所以说这个看具体的业务，所以说任何的设计都不能够保障这个事情。它可能是说从这个技术的角度来讲，它能够最大的去帮助我们系统的一个可靠性、一个完整性，但是说总会有一些极端情况发生的。
+
+
+那我们举个例子，老师我重试 3 次它失败，那你重试 3 次失败，你把它设成重试 5 次，或者重试 8 次 10 次，那这个概率就特别小了，这个概率你说我重试了 5 次 8 次，这个布洛克一直都是闪断吗？那这个概率是特别特别小，那这个时候，那我们其实完全可以忽略，那偶尔一天可能几百万单，可能有一单两单出现这种情况，然后最终我们做一个业务的一个预警，我们通过一些告警的机制，然后去两方面去做一个check，然后就把这个数据用人工的方式就可以解决。
+
+
+**所以这个是我们不需要说特别关注的，很多时候有一些特别微小的概率事件，你把它做的特别复杂，那这个是增加了你的系统的复杂度，那这也是从架构设计的角度出发，我们去能够尽最大的努力的保障我们系统在 99. 9% 的情况下是 OK 的就可以了。**剩下的极端情况我们自己人工处理，但是你一定要想到，比如说我们从事第三次的时候，罗克突然之间断了，然后我们这边重试三次以后，这个 state 状态就制成 2 了，就认为失败了。但是这个实际上这个 broker 数据已经发过去了， consumer 已经正式消费了。然后我们支撑 2 的时候就认为这个订单失效了，但是下游还处理成功了。就这种极端情况我们其实真正的时候已经遇到过。
+
+
+好了，这是第一点，跟同学运营去讲一讲可靠性投递的事情。那其实还有一种情况，比如说老师你说你这个 biz 的 db 跟 message db，这是两个数据库，你必须得要求同源，他们才能保证是一个事务。但如果说像高并发的情况下，我们可能都不会去加事务，那怎么办？那很简单，就是在你 biz db 里边你加一个状态state，就是相当于一张表，就相当于你发消息之前你入你自己的这个订单数据的时候，你就额外加一个字段 state 等于 0 就好了，然后回过来 broker 给我 confirm 的时候，你去找订单那个主键，然后把这个 state 改成一，这样的话相当于我们一共就是一个数据库，一张表对于一张表去操作，完全不用去加事务。这样的话就更简单。
+
+
+当然其实就是说你想要单机并发能力要能够很高的情况下，那我个人觉得什么呢？你的单机变化能力你想扛住很高的情况下，比如说你想扛住一两千、两三千，那这个你加事务肯定是实现不了的。你加事务他就认为数据库他肯定要做排队，然**后排队的就肯定会阻塞，它会影响我们的吞吐量。**但是其实你反过来想一想，现在我们的这个一些这种分布式的概念都非常非常普及，我们完全可以去做一些分库分表的策略。
+
+
+我们这个 RDS 数据库实例可以去搞多个不同的库，我们完全可以去做这个分库分表的拆分，那这样的话就缓解了我们这个高病发生的压力。比如说 100 张表不够的话，那我分 200 张表，那一个数据库不够，或者说这个两个数据库不够，分 4 个数据库，分 8 个数据库，分 10 个，我就把我们的这个负载去做一个均衡，无非就加几个节点，加几个机器。后边如果说真的有需求，我们的并发特别高，那可能连这个关键性数据库最好就不要用，因为它太影响我们的性能了。
+
+
+所以说我们也是针对于不同的场景选择不同的手段去做的，就是技术这个东西，没有说绝对 OK 的，只有说相对来讲契合你场景。比如说我们平均的并发可能就是不到一千几百，就整体服务可能每一秒钟都几百，整体的量还是挺大的，高峰期的时候可能 QPS 到 1 万多、 2 万多，甚至是说更多一点**，那其实呢，就是你怎么去设计你的数据库，其实是相当于以你的上限为准的，就是以你最高峰期的那个时段你的整个应用服务的承载能力为准，你肯定不能以下线为准。**那这个就是对于可靠性消息的这么一个设计，那在这里我选择的就是说我使用同源的数据库，然后 message DB 里面加一张表，比如说叫做 broker log。那大体上我已经把这个概念跟小伙伴们去说清楚，其实在做设计的时候，我更希望小伙伴们能够对整个架构设计有一个更深入的理解。
+
+
+接下来往下看，其实这块就是说消息的确认模式，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/83379270-d598-4223-81e1-9f9f4685c818/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663KLQJ557%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225303Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDh5WyUgIwviQXre6FqhtaP3%2BZNl3QPyaB5D0b6gz9QmQIgfj22B4sw8wQEUAo1MhbfBjqOoJwctDNUmF72Tz500tQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLojvQL8x6v7JUJ43SrcA7LHexza58HKfmUujPh58ucyyrFT4plbE8GjPiiDvKt3EoziBeVwHBG7imLhBAQUE%2FkN0oiyVfq2sXUV%2BnmhLyL%2Fhtt2g7sR3t95bfpO%2FyCKPyC%2FuXUFzIZbo7w%2FFZJX3HW3qTVmRhQ1QE4%2B5JntBjrZDaJOC34oDHr7PA04yGQucOvVrguF12vmElmz%2BDiO0Kjiy7AhfaF5WGF8Hr27C3k1%2F5Sv9T8EN78BJLaNnFLOIqF%2FbzCYn%2F1UAVJ058xyivdpDW4idFhSskTcXL0u2aeKTD%2BzMld4q656VMOmaBSL752z0veA1nkTkRWePjiGJeaxNumLNEkqD0GlDqZnq0XTj02t7A3hEsPHFYk1Pbn7UVwrG6B6yV7YNXABNJdJzRNGhQ4ZrC62l%2Fefd0atvfBAZDCZ0U48bQmEiWX8OAL%2B1HXn1C9m3NqW47tTQ2kvaaQRIrDObu0a9tck8stkHu4c5t65xksfnvMVT%2B16RcYi1pxk%2BPY2KC4hD3r4sYrPTWM0mxiBlxo3fcDEMh%2F9u7jg%2BwDbDvY%2FBF7K1b%2BP3qDG30A%2BVJokFsqvibhQEND23XOmdDn8FU8OQZgOkzVXpeHERzCqqy5TDnKePiwcxo8CEGqseZ%2B7scP3rHRHMMS6%2F9IGOqUB8kYtUxxxQxR%2Frhix8waG4rbR%2BCyjpVVVj8xv0dNY7drd1%2BrlHe99apeRJ1ktvGibBcGUFDqwnwkWgfd7KjHYRCOBHFCCYoDnjcazVOyf6CeJSeMJt16FnjSXq14DQ4je39LoqyAU9xQLr2Z%2BHzReZJrxj7OwacvInzO%2BYaNl29aQlVou0KnyQbqf4FbSuw9x9Tolhs9PpfVeiD7RmhwBOvajvfLy&X-Amz-Signature=186f560d96b781c0c1646e018c57f42cf2f077f929bf01a54e5441f88e522242&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这个业务的 Biz 就是你执行业务的这个service，业务的 service 我们把它封装一个 component 组件，叫做 producer component，它做什么事情？第一步，第二步是不是 BSDB 跟这个 message DB 它们同时的去做一个原子性的落库，当然我这里别变成 Step 3 了，就是发一条消息，然后第四步是给我做一个confirm，我的 producer component 去做确认，然后第五步去更新那个状态。然后当我们有一些中间状态的时候，就是说消息的 state 状态可能一直是0，属于待确认的状态，如通过定时任务去把它抓取出来，然后再重新的去发过去。那其实这幅图跟我们上浮图也差不多，只不过画得更简单的一些。好了，那这节课呢，我们讲的都是一些设计上的理论的概念，下节课我们开始进行确认，就是可靠性消息的一个什么呢？一个真正的编码实现，感谢小伙伴们收看。
+
+

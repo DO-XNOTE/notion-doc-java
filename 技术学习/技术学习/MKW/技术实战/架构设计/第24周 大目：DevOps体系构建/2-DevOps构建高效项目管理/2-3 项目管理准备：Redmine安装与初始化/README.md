@@ -1,0 +1,147 @@
+---
+title: 2-3 项目管理准备：Redmine安装与初始化
+---
+
+# 2-3 项目管理准备：Redmine安装与初始化
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2b6fae6e-ce1f-4103-bebe-68ce73c80ed2/SCR-20240802-ncbp.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=62de0bb94da39bf3d3d0acf732c381c9acdeb3ee8e7d35713ce2bc607df55b11&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/161f2a96-a19b-41ff-b712-1ac3fa783421/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=fe0ff5a2c23a378f9b61e53983704470a8bc2e142ea848fe661aab66e1ecb24a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+```java
+以下是在CentOS 7上安装Docker的步骤：
+
+1. 卸载旧版本的Docker：
+    - `sudo yum remove docker docker-common docker-selinux docker-engine`
+2. 安装所需的软件包：
+    - `sudo yum install -y yum-utils device-mapper-persistent-data lvm2`
+3. 配置Docker稳定的存储库：
+    - `sudo yum-config-manager --add-repo <https://download.docker.com/linux/centos/docker-ce.repo`>
+4. 安装最新版本的Docker：
+    - `sudo yum install docker-ce`
+5. 启动Docker服务：
+    - `sudo systemctl start docker`
+6. 将Docker服务设置为在系统启动时自动启动：
+    - `sudo systemctl enable docker`
+7. 验证Docker是否已正确安装：
+    - `sudo docker run hello-world`
+
+现在，您已在CentOS 7上成功安装Docker。
+
+以下是在Docker上安装Mariadb和Redmine并初始化Redmine的步骤：
+
+1. 在您的系统上安装Docker。
+2. 使用以下命令从Docker Hub拉取最新的Mariadb和Redmine映像：
+    - `docker pull mariadb`
+    - `docker pull redmine`
+3. 在您的系统上创建一个目录以存储数据库文件，例如：
+    - `mkdir -p /opt/mariadb-data`
+4. 使用以下命令运行Mariadb容器：
+    - `docker run --name mariadb -v /opt/mariadb-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -d mariadb`
+5. 在您的系统上创建一个目录以存储Redmine文件，例如：
+    - `mkdir -p /opt/redmine-files`
+6. 使用以下命令运行Redmine容器：
+    - `docker run --name redmine -e "DB_TYPE=mysql" -e "DB_HOST=mariadb" -e "DB_NAME=redmine_production" -e "DB_USER=root" -e "DB_PASS=root" -v /opt/redmine-files:/usr/src/redmine/files -p 3000:3000 -d redmine`
+7. 在Redmine容器内运行以下命令初始化Redmine：
+    - `docker exec -it redmine /bin/bash -c "cd /usr/src/redmine ; rake db:migrate RAILS_ENV=production"`
+8. 在Web浏览器中输入`http：//localhost：3000`并使用默认凭据登录即可访问Redmine：
+    - 用户名：`admin`
+    - 密码：`admin`
+
+至此，您已成功安装并初始化了Docker上的Redmine。
+
+
+修最新的密码： redmine12
+```
+
+
+大家好，我是大木。从这节课开始，我们花几节课的时间去探讨如何用 readmine 管理项目。这一节我们会探讨如何安装以及初始化 read man。在这里我准备了一个 Docker compose 文件，用这个文件就可以快速的部署一套 readmine 了。如果同学们不想使用 Docker 的方式，而是希望手动部署，可以参考一下这两篇文档。
+
+[https://www.redmine.org/projects/redmine/wiki/RedmineInstall](https://www.redmine.org/projects/redmine/wiki/RedmineInstall)
+
+[https://www.jianshu.com/p/44a4e5c01b41](https://www.jianshu.com/p/44a4e5c01b41)
+
+
+
+第一篇是官方文档，第二篇是中文文档。简单说明一下 Docker compose 的配置。从中可以看到整个 roadmap 包括了两部分，一是 readmine 的代码，它是基于 Ruby 去写的,二是Mariadb。当然了，你也可以使用 MySQL, PostgresSQL 或者是 SQLserver。使用方式可以参考文档
+
+[https://hub.docker.com/_/redmine](https://hub.docker.com/_/redmine)
+
+搜索一下 SQLserver，如果使用 MySQL，可以使用这个环境变量
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/fe872bb9-7fbd-4138-a71f-457ac56957ba/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=9bbdb9973d7b9d6414aa32bc370334bb81b625d2f4b6db579b0261cf8b1c2276&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+，如果使用的是 PostgreSQL，用它
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/11174270-d126-465b-ba74-1e49c23979ba/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=f0319d9178fdfe2f91b796892b3abce26e25e0456e2d77ae05d369b3fd5cf788&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+，如果用的是 SQLserver，用它。整个配置也非常简单。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bb7c0aa3-5db8-48e4-aa3d-b57aafb57c11/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=ec9448f090e121364896fafbc8b8cd399f189bb0f869b5fb312f59be616dff05&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这一读，肯定变量用来让 redmine 连接上门 MariaDB。只要连接上门 MariaDB， redmine 就可以部署了。部署成功之后，访问 logo host 9800，就可以看到 read man 的首页。如果你想使用其他的端口去访问，可以修改端口。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1b5094db-206e-463a-a17b-58aabd867095/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=a9d8938dd24cac1ac6fbd05f58c2118dd5fd56fc2aa7bf963a4f8a38a65c0715&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b93a0ac2-11e4-487f-9ba2-cdb58ff9084c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=6f397814ea0975552e64b7c4ec6818ca99e7f48f568004055afc769f2064a034&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/45a7d0d4-db86-45fb-bd77-9748724c5f18/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=28283e2d40ce08a8662ca8430e3ad169f265ab64abe1bb190f69085060e866f0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+此外，对于 redmine，我们还设了一个volumes，用了把 docker compose 目录、当前目录下的 plugins 目录挂载到 Redman 的 plugins 目录。那 plugins 的话是 Redman 的插件目录。使用插件可以让 read man 更加强大。就目前来说，我们根本没有这个目录，所以容器里面的 plugis 目录是一个空目录。
+
+
+MariaBD 也有一个volumes。用了把当前目录的 DB data 目录挂载到 Mario DB 的目录，这是 Mario DB 的数据存储目录。我们来部署一下。首先将目录切换到 Docker compose  所在的目录 CD readmine，使用 docker-componse up 启动。 redmine 启动过程大概需要 1 分钟左右，我们稍等一下。启动好了。
+
+
+访问 localhost 9800，点击登录，输入账号 admin 密码 admin 登录弹出重置密码的界面，我们输入新的密码，旧密码新密码。再注意一次。应用重置完毕。现在我们就得到了一个空的 redmine 。主页是空的，工作台空的，项目空的，我们需要进行初始化。点击左上角管理，开始初始化。首先点击项目新建项目来创建项目。我们叫第一个测试项目，可以写上一些描述。我们的第一个测试项目，填入标识 first 创建。
+
+
+再次点击管理，点击问题状态，用来描述问题的状态，比方需求的状态，缺陷的状态等等。点击新建问题状态，我们创建几个状态，新建，处理中，已解决，无需解决，关闭。大致表达的意思是这样的产品经理或者是测试人员创建问题之后，起初的状态是新建，当问题被开发人员认领或者是分配给某个开发人员之后，由开发人员把它设置成处理中，当开发把问题解决了之后，就改成已解决。如果发现设计就是这样，你给我提了一个问题，但实际上没有问题，就改成无需解决。最后，当测试人员或者是产品负责人验收之后，就改成关闭。当然了，这里只是建了几个比较通用的状态分类。实际项目中，你还可以根据项目的管理习惯以及参与的人员角色，创建适合自己项目的状态分类。
+
+
+定义好问题状态之后，来配置跟踪标签。跟踪标签指的是问题的标签，可以用来描述问题的用途。点击新增跟踪标签，我们来创建需求、功能、支持以及缺陷。这 4 种标签。加入名称默认的状态，也就是当问题创建之后，默认的状态是什么。新建并勾选项目，从而把跟踪标签关联到项目上。创建功能默认的状态也是新建勾选项目创建。支持比方客户要求线下去支持一下新建勾选项目创建。缺陷比方有 bug 了，就可以提个缺陷。
+
+
+创建跟踪标签初始化完成之后，点击枚举值来初始化枚举。首先文档类别我们可以随便写一个比方功能说明，你也可以创建其他的枚举问题。优先级我们设置高中等的优先级是默认值创建。还有d，活动可以理解成项目中的事项类型，比方开发、技术调研、测试等等。我们创建一个开发，其他的活动我们就暂时不创建。接着需要初始化角色和权限，点击新建角色，这里创建 3 种角色开发测试以及产品经理开发勾选权限。简单起见，我们全选所有权限，实际项目里面应该按需分配。
+
+
+点击创建通利创建测试以及产品测试全选创建产品经理。全选创建角色。创建完毕，点击用户创建 3 个账号。比方 dev 小王，名字是小，姓氏是王，邮箱小王 at 叉叉 .com。选择语言简体中文设计密码。点击创建b。继续再创建一个测试账户。比方 test 小周，填入邮箱，输入语言，加入密码，最后加入产品，小李小米。比如邮箱，标语言，这是密码。
+
+
+创建。当然了，在创建的时候还可以勾选管理员，这样表示用户他是一个管理员，他就可以看到这里的管理菜单。这里我们创建的几个用户都不去勾选用户。创建完成之后还需要配置工作流程。这里我们为所有角色所有的跟踪标签配置它的状态流转。点击编辑，弹出了很多的选项，让我们勾选了之后表示这个状态是能够流转的。这里我们全选页面上的所有选项。全选全选。这样表示问题的状态可以任意的互转，从而给操作人员更多的灵活性。
+
+
+点击保存，检查一下。点击需求，编辑可以看到确实全选了，这里建议大家都去检查一下，因为之前我有遇到过配置不生效的问题。编辑，OK，没有问题。点击左上角项目进入到项目里面。点击配置，我们需要把人员和项目关联起来。点击成员新建成员勾选刚刚创建的用户以及角色。小李小王小周产品测试开发新增点击版本可以创建项目的版本，比方 V 1. 0 可以写一些描述。 0. 第一个版本创建完版本之后，点击问题跟踪，可以选择一下默认版本，这样以后在创建问题或者修改问题的时候比较方便一些，不需要手动去选择版本了。保存在问题类别里面，可以配置问题的类别。比方类别1、创建 baby 2、创建在版本库里面，可以关联项目的代码库。点击新建版本库，从中可以看到 read man，它支持各种各样的版本库管理。这些选项是哪儿来的？可以在这里看到。点击左上角管理配置版本库，你可以结合项目的情况去合理勾选。目前来说我们只有 c v s 不支持，而 s v n h g e z r heat 都是支持的。我们这里以 get 为例，取消勾选其他的选项，保存回到新建版本库。刷新，可以看到只剩下 Git 选项了。该怎么样把 read man 和 Git 仓库给关联起来？像这玩，首先用 Docker PS grab 一下 redmine，用 Docker Exec 杠 IT 跟上容器ID，并把手进入到容器内部。在任意目录专门用来存放代码。比方在当前目录之下，创建一个目录， make a d r hit code，进入到 Git code 里面去 close 一个 Git 仓库 Git clone。比方就这个仓库，拷贝链接粘贴，加入账号，可能完毕。进入到 d 的参观目录，输入 p w d，复制当前目录。
+
+
+来到 read man 粘贴。需要注意，这里的酷路径指的是 get 仓库的点 get 目录，所以还需要在后面加上点Git，点击创建，点击版本库。这个时候就可以看到代码的提交情况了。你还可以点击提交记录，查看差别，看到每一个提交做了什么事情。现在 read man 就初始化完毕了，下一节我们将来探讨如何用 redmine 管理项目。这节课就到这里，谢谢大家。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/afb07f59-356f-4243-8b7b-c1a1fcdee132/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=4ce3e1b33638672be211efe24e3b0daf86a131eaef07884046ff3fb352fdca96&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f5ba3e33-5a76-47d7-a5bc-2eb0be789404/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=6be17124c63ddc3c248b4d8ecf3c9bdceba905c0708e5dc4e186f1661b44a9be&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cd321e71-b130-4df7-b1e3-d72b527f3a88/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=dcd2b8d59b07adb07da38286f8dce27e23c693ab89f2b57cc1cccb0c8ca71945&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6962b9c0-d957-4135-8bc6-5f27318dd3d7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=06e2ace403df9835a338a3d0c2b4583d7415217829f4254079f59f0b75cc4729&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/73a67927-d41c-4415-9954-c6ede375da76/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=e5a6df825453f6c101b8d7f8ca9a60c9778463a859bcab93a26b331a584cc097&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/03058976-9e9e-4efc-a21c-332b598a2d05/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665FSDUMRL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231518Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFEOTVoVbOcTjnsN6AfHX6ZRqkrMSl9b4S2GlkBkRewGAiEAvC5pN8XQnwtmmkEjQuM%2BObZyE1XavrQyDF0%2FaWhS9FEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPsPvKVwTaFnIfKeCCrcAwIKNgOu14cZNcfIqrwzx1NipYYPoAHWn0Zmz6NXVaZ2crj6JAUEgJo61GVNckLasEY23FeLnc7xYussUPl%2BVogMWqDNAOZ%2Bp2Myyms2JDaRZ0iMnB%2F4E4aY58korn8or5rulPprDRCervSm6iTWnQU%2BDid9PJ5jJd7AW6xsMaB5amySi3Z24KQtyaEGeDNAWFtntzoxn%2B%2FEmOnrsGlSpUtHRHxbE2o1tILFkGcUDRHae32O%2FVLWffILYEV%2BxiUz92IM0hKSsIBd89njswm4JRaru5VsWzwL7Tu%2BK%2BWDCWRARCYUD1J2BQ%2FuF4tMR8hLW6lkkYhqM%2Fm%2FE60OBBVPkFswe6IqY4JbvI3LBp8AxvCEedQQjz1FwqBtP8GX8LxJG5kW%2FaguEeZ17oNuGabyUdZpuCbnQkfTXeNC2NGQJCcq2V3MVaGSN1FVkPZVB%2BqLR75ooIz8eHhej%2Fylee1Ut4IaAM%2B1GYtpnKQQ2oAyF96g0juxiq05biEzC5qQosWKAc5gkIXydWwrB8boTzdKSTC%2BtjL7AgP2Lm1T2k9PUHFPKG1NWkY40vb2%2BDVwZnTwq0JixB5FdPsn7KYWYu%2BnZlajkmrgylNVU4tRA8ktKwkcZhQmR%2B6%2FFKO%2BrrCTMMW5%2F9IGOqUBB7gGBPIRVprnyyMMlMYxcjQvzKPPbb1M0UQOFPMF7kjMCfI5Dkn4ljBN%2F74v89JFyiqsyQ8nKoJTO0dTTJVdWT2cHs7GzMOnd%2BdgeD6H5ZlRJ6FgdUmIp%2B2Pdh5Jqcp9ksM2JfXb9mPh%2B1dgNoZ34PHgYEvbrnnXE2DUWjpcfdUrUjgSt1TwJTlMvbL1k%2FRkxliD%2BivFpfm7Y%2BOG4O5scWehRzym&X-Amz-Signature=0169461ef152ac831addb9f52b5f1f9a2d7bb3ba93c8f2b840db924102c10bef&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,59 @@
+---
+title: 2-16 基于MQ（配置生产者和消费者）
+---
+
+# 2-16 基于MQ（配置生产者和消费者）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/08e7a261-14d6-4f20-96e8-5cec957f1514/SCR-20240808-fppj.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665JHKM74L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225439Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCKyeEXcwfFrRQBU4KQ8kzewN70a6Jfo6%2FQLFKSw863QQIhANtqEBX0gVbChpWOkTTfuSo56pCw2oDJ6BwS9nMb8G2RKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw0lHYdC%2FHyzkCct3cq3ANWy%2BjLgI9XIjAzagnQ1qEDkpOhLsleKto6cttln48O%2FXgi4aubuCGOdtmIbsbynnym0BVUU6lzTezg%2B92YWMPx4aKP7YpzZBjKKzNMMAN7oOSXHb4ATSRevQZdv1IIcWV0uCYAgJvTftI%2Bdi4N31TqpHPW5VeAs%2BN6jGwxS02cp8wtxXCsqxUDdgM1XF5oH8k9zeHofXwv3YODSn96lsle4P4lXf3ToT%2FsACtpOsZdFpqiyS%2BaKX80q3zp%2F5LMO3b5NuS3BYS8XPwz8Wipi1M704qnk5rzNjkCFZt8ZXsXwWmUqwZdFn6TiyjLwPLfRY000gL8jgw%2BDiTO55pmtpWxYPw6VpPIn1jd0DRgsYEkeqUU30P8VHpS%2FoP%2BTLCzku92CYou0KAc6qcWuOeunl5OpaoF%2BUeLlS4FH7h%2BjjZHVsCYB0SJbI7cWdJb%2BAsP1fOrPplNcoSoyakejgFyp%2Bb6QMNbtrozyu8A3zeC98smCHGm8dS1F%2F6gOkNhvIuvni7%2FnRB%2Frw3lvHTtDMREYFOMbTzlOgLxAysRevBjssp7cwLcijrtB32TxGAvjsL3t%2FmJg8NCUhr5JU6SxG77zNmChCQwEfCMuKcoxGSviDEeI0Br4jbd6cR63pEsKjCiuP%2FSBjqkAeGEUI7e6a53Ynbr%2BfuSfYt9OgsWBvODFaZpBjFg1aYR4Ptb2rciKaJRho6rAi16a1bBqr%2BaDoG9o%2Fj3fXsV89JapD8zE5o469B%2B8h46SAej%2FjJazL4HOOu4ym6hl8E3y0eM4OA4ePlwakG2qHZzRW79jAqnfDUr2L6F79aYMDE%2BvcRtnEODUgiixHrRg2N4MfzrVOGQP9h9CKvHNrndxcZ5Ga0G&X-Amz-Signature=52d9d3fcd0237317c2c8fa2c3c9c35a381c1b17ab8298656f0d766b0c26fb0bb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，接下来咱们回到项目当中，打开 idea 进入到前一节咱们使用的 TCC demo 项目。在这个项目当中咱们已经有了两个示例是吧，一个是提供事务补偿接口，另外一个是基于本地消息表的分布式一致性的方案。接下来咱们要在这个项目当中再加入基于 MQ 的分布式一致的解决方案。在具体编写程序代码之前，咱们要把这个 rocky 的 MQ 的客户端给它引入进来是吧还是打开这个浏览器。
+
+
+进入到 mvn reposity 后，咱们搜索一下 RocketMQ 标题的 MQ 点击搜索这块有一个 RocketMQ client 四点五点二，咱们点进去选择最新的四点五点二版本，把下边的这段依赖给它复制一下，粘贴到咱们的项目当中。然后刷新一下 Maven 咱们看一下，这个版本是四点五点二，是不是和咱们下载的这个 RocketMQ 版本是一致的对吧，咱们看一下，这块下载的也是四点五点二的这个版本，这样是最好的。咱们的客户端的版本和他 RocketMQ 服务端的版本是一致的。
+
+
+接下来咱们再回到标题的 m1 号的官网，看一下这个客户端他怎么用是吧，咱们还是进入到这个目录当中找到 simple example 也就是它的第一个实例。最简单的这个实例，咱们使用这个实例就可以完成基于 MQ 的分布式一致性的这个方案。咱们点击咱们往下滑动，看一下它的步骤。
+
+
+第一步，添加依赖。这个咱们已经做了是吧，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/44e9059e-6b20-4d9f-9780-a0a4f965071c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665JHKM74L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225439Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCKyeEXcwfFrRQBU4KQ8kzewN70a6Jfo6%2FQLFKSw863QQIhANtqEBX0gVbChpWOkTTfuSo56pCw2oDJ6BwS9nMb8G2RKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw0lHYdC%2FHyzkCct3cq3ANWy%2BjLgI9XIjAzagnQ1qEDkpOhLsleKto6cttln48O%2FXgi4aubuCGOdtmIbsbynnym0BVUU6lzTezg%2B92YWMPx4aKP7YpzZBjKKzNMMAN7oOSXHb4ATSRevQZdv1IIcWV0uCYAgJvTftI%2Bdi4N31TqpHPW5VeAs%2BN6jGwxS02cp8wtxXCsqxUDdgM1XF5oH8k9zeHofXwv3YODSn96lsle4P4lXf3ToT%2FsACtpOsZdFpqiyS%2BaKX80q3zp%2F5LMO3b5NuS3BYS8XPwz8Wipi1M704qnk5rzNjkCFZt8ZXsXwWmUqwZdFn6TiyjLwPLfRY000gL8jgw%2BDiTO55pmtpWxYPw6VpPIn1jd0DRgsYEkeqUU30P8VHpS%2FoP%2BTLCzku92CYou0KAc6qcWuOeunl5OpaoF%2BUeLlS4FH7h%2BjjZHVsCYB0SJbI7cWdJb%2BAsP1fOrPplNcoSoyakejgFyp%2Bb6QMNbtrozyu8A3zeC98smCHGm8dS1F%2F6gOkNhvIuvni7%2FnRB%2Frw3lvHTtDMREYFOMbTzlOgLxAysRevBjssp7cwLcijrtB32TxGAvjsL3t%2FmJg8NCUhr5JU6SxG77zNmChCQwEfCMuKcoxGSviDEeI0Br4jbd6cR63pEsKjCiuP%2FSBjqkAeGEUI7e6a53Ynbr%2BfuSfYt9OgsWBvODFaZpBjFg1aYR4Ptb2rciKaJRho6rAi16a1bBqr%2BaDoG9o%2Fj3fXsV89JapD8zE5o469B%2B8h46SAej%2FjJazL4HOOu4ym6hl8E3y0eM4OA4ePlwakG2qHZzRW79jAqnfDUr2L6F79aYMDE%2BvcRtnEODUgiixHrRg2N4MfzrVOGQP9h9CKvHNrndxcZ5Ga0G&X-Amz-Signature=34d5f1b7785e19eea76fc0bb0f25b1a3118876c97f6f018ecbc1620131350e51&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+然后再看一下。第二步，发送同步消息。发送同步消息，咱们就用这个方法去发送咱们的消息，咱们看一下这块他怎么去使用这个生产者，咱们看一下这个闷函数。首先要定义一个生产者是吧，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/412e0d16-5258-43db-ba80-f7cdce1056bb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665JHKM74L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225439Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCKyeEXcwfFrRQBU4KQ8kzewN70a6Jfo6%2FQLFKSw863QQIhANtqEBX0gVbChpWOkTTfuSo56pCw2oDJ6BwS9nMb8G2RKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw0lHYdC%2FHyzkCct3cq3ANWy%2BjLgI9XIjAzagnQ1qEDkpOhLsleKto6cttln48O%2FXgi4aubuCGOdtmIbsbynnym0BVUU6lzTezg%2B92YWMPx4aKP7YpzZBjKKzNMMAN7oOSXHb4ATSRevQZdv1IIcWV0uCYAgJvTftI%2Bdi4N31TqpHPW5VeAs%2BN6jGwxS02cp8wtxXCsqxUDdgM1XF5oH8k9zeHofXwv3YODSn96lsle4P4lXf3ToT%2FsACtpOsZdFpqiyS%2BaKX80q3zp%2F5LMO3b5NuS3BYS8XPwz8Wipi1M704qnk5rzNjkCFZt8ZXsXwWmUqwZdFn6TiyjLwPLfRY000gL8jgw%2BDiTO55pmtpWxYPw6VpPIn1jd0DRgsYEkeqUU30P8VHpS%2FoP%2BTLCzku92CYou0KAc6qcWuOeunl5OpaoF%2BUeLlS4FH7h%2BjjZHVsCYB0SJbI7cWdJb%2BAsP1fOrPplNcoSoyakejgFyp%2Bb6QMNbtrozyu8A3zeC98smCHGm8dS1F%2F6gOkNhvIuvni7%2FnRB%2Frw3lvHTtDMREYFOMbTzlOgLxAysRevBjssp7cwLcijrtB32TxGAvjsL3t%2FmJg8NCUhr5JU6SxG77zNmChCQwEfCMuKcoxGSviDEeI0Br4jbd6cR63pEsKjCiuP%2FSBjqkAeGEUI7e6a53Ynbr%2BfuSfYt9OgsWBvODFaZpBjFg1aYR4Ptb2rciKaJRho6rAi16a1bBqr%2BaDoG9o%2Fj3fXsV89JapD8zE5o469B%2B8h46SAej%2FjJazL4HOOu4ym6hl8E3y0eM4OA4ePlwakG2qHZzRW79jAqnfDUr2L6F79aYMDE%2BvcRtnEODUgiixHrRg2N4MfzrVOGQP9h9CKvHNrndxcZ5Ga0G&X-Amz-Signature=cb5146df54fe350541b29c25e3816a82757dcb2f9ab618878e3b9b024f6b32b6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+定义一个生产者，这里边生产者的构造函数要写一个唯一的生产者的组名是吧，生产者的组名要唯一，然后指定 name server 是吧，在咱们的示例当中也是 local host 9876 对吧。然后执行的是 producer start 对不对？然后后边就是消息的发送，最后还有一个啥子藏是吧？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f02c41a1-d771-4696-acab-08b442c34501/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665JHKM74L%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225439Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCKyeEXcwfFrRQBU4KQ8kzewN70a6Jfo6%2FQLFKSw863QQIhANtqEBX0gVbChpWOkTTfuSo56pCw2oDJ6BwS9nMb8G2RKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igw0lHYdC%2FHyzkCct3cq3ANWy%2BjLgI9XIjAzagnQ1qEDkpOhLsleKto6cttln48O%2FXgi4aubuCGOdtmIbsbynnym0BVUU6lzTezg%2B92YWMPx4aKP7YpzZBjKKzNMMAN7oOSXHb4ATSRevQZdv1IIcWV0uCYAgJvTftI%2Bdi4N31TqpHPW5VeAs%2BN6jGwxS02cp8wtxXCsqxUDdgM1XF5oH8k9zeHofXwv3YODSn96lsle4P4lXf3ToT%2FsACtpOsZdFpqiyS%2BaKX80q3zp%2F5LMO3b5NuS3BYS8XPwz8Wipi1M704qnk5rzNjkCFZt8ZXsXwWmUqwZdFn6TiyjLwPLfRY000gL8jgw%2BDiTO55pmtpWxYPw6VpPIn1jd0DRgsYEkeqUU30P8VHpS%2FoP%2BTLCzku92CYou0KAc6qcWuOeunl5OpaoF%2BUeLlS4FH7h%2BjjZHVsCYB0SJbI7cWdJb%2BAsP1fOrPplNcoSoyakejgFyp%2Bb6QMNbtrozyu8A3zeC98smCHGm8dS1F%2F6gOkNhvIuvni7%2FnRB%2Frw3lvHTtDMREYFOMbTzlOgLxAysRevBjssp7cwLcijrtB32TxGAvjsL3t%2FmJg8NCUhr5JU6SxG77zNmChCQwEfCMuKcoxGSviDEeI0Br4jbd6cR63pEsKjCiuP%2FSBjqkAeGEUI7e6a53Ynbr%2BfuSfYt9OgsWBvODFaZpBjFg1aYR4Ptb2rciKaJRho6rAi16a1bBqr%2BaDoG9o%2Fj3fXsV89JapD8zE5o469B%2B8h46SAej%2FjJazL4HOOu4ym6hl8E3y0eM4OA4ePlwakG2qHZzRW79jAqnfDUr2L6F79aYMDE%2BvcRtnEODUgiixHrRg2N4MfzrVOGQP9h9CKvHNrndxcZ5Ga0G&X-Amz-Signature=928f9d24007be661d9231d2dc1c0f54c4596db3bb810bddae9871536447dbb71&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么在咱们的项目当中，咱们是不是也要这样写啊？因为它这种写法是基于 man 函数的对吧？那么如果咱们在这个支付的方法当中，如果也这么写的话，那么你每一次支付成功是不是都要初始化一次？生产者对吧？这个生产者的初始化步骤，咱们可以给它写成伴随 spring 去启动，也就是说给它实例化一个生产者的 bin 是吧，这样是不是就可以了？咱们先完成这个生产者的初始化，咱们进入到项目当中，在这个 config 目录下，再给他写一个 RocketMQ config 是吧。在这个类当中，咱们主要是完成生产者和消费者两个客户端，它的 in 的初始化。咱们在这里面新建一个类，新建一个 Rocket MQ config 对吧，它是一个配置类对吧，咱们在类上也要打一个 configuration 这样一个注解。然后里面要写他的生产者 public 咱们来看一下这个示例 default MQ producer 是不是。那么给它粘贴过来方法的名字咱们就叫做 producer 就可以了。
+
+
+引入一下这个类，然后里边就是它的实例化的步骤是吧，咱们看一下实例化的步骤，直接 new 一个，然后指定一下类目，serve生产者组的名称咱们叫什么呢？叫做 payment 黑门的 group 好吧，然后 name server 就是 local host 9876 这个咱们也不用动，然后就是它的 star 的方法是吧。咱们来看一下这个示例，开始的时候有 star 的方法，然后结束的时候有啥子荡是吧。那么在咱们的 spring 项目当中，这个 SARS down 和 start 是不是要跟随着 spring 容器一块启动和销毁是吧，这个咱们就直接指令它的 init method 和 destroy method 了是吧对吧，咱们直接 return 一个 producer 然后具体的 star 的方法和啥子藏方法，咱们在这个 bin 的注解当中给它指定第一个 init method 是吧，咱们指定的是 start 还有一个 destroy 是吧，destroy method 指定的是指定什么 shut down 是吧，怎么给它复制一下粘贴过来，这样是不是就可以了？ producer 就已经配置完成了是吧。
+
+
+接下来咱们再看一下他的消费者如何配置，咱们再回到他的官网看一下消费者的示例。第二步是异步发送消息是吧，这个咱们就不用管它了。咱们用第一个，这个同步发送消息的这个示例就可以了。然后还有单边的模式对吧。最后消费这个消息消费消息首先也要创建一个消费者是吧，然后指定一个消费者的唯一的组的名称，也需要设置内部 server 对吧，然后还有他订阅的 topic 主题。最后是一个 message 的监听器，是不是通过这个监听器里边咱们可以接收到消息。然后 consume message 是吧？消费这个消息对不对？然后这里边也有四大的方法，但是他的 N 的方法并没有写是吧。那么这一段他一直会监听这个队列当中的消息，应该也有一个啥子藏方法，咱们一会儿也写一下，让它跟随着 spring 一起去启动对吧，咱们把这个给它复制一下 push consumer 是吧，消费者回到项目当中，咱们再创建一个消费者这么一个 in 是吧，引入一下就叫做 consumer 然后里边是它的实例化的过程，咱们把这一段给它复制一下，粘贴到这里边来。第一个唯一的消费者的群组是吧，怎么也给他起一个。
+
+
+payment consumer group 好吧，然后内幕 server local host 9876 订阅
+
+的主题发送的时候，咱们这个主题是写到了这个 message 当中对吧，订阅的时候是要订阅这个主题的，咱们那个主题就叫做payment 。好吧，然后这里边有一个错误是吧，咱们把这个异常直接给它抛出去，咱们再介绍一下看。下面就是消费者注册这个监听器的地方，咱们这块给它复制过来。然后配置到这个配置类当中，咱们把这些都要先给它引入一下，这些空空的给它引入进来，这样是不是就可以了？咱们消费者的这个业务流程都会写到这个 consumer message 在这个方法当中是吧。但是一般的情况下，通常咱们是不写在这个配置类当中的，因为咱们的这一个类是一个配置类是吧，咱们把这个业务逻辑写到配置类里边显然是不合适的。所以这一块咱们不写这个业务逻辑，所以这块咱们要给它剥离出去，把这个业务处理逻辑挪到外边去。
+
+
+这块咱们先记住，这块有一个接口是吧，咱们看一下，它是一个 message listener 是吧，咱们这块通过方法的注入，把这个 message listener 给它注入进来，然后给它写到这个地方是不是就可以了是吧？咱们在这里边给它租进来。
+
+
+message listener 是吧， MQ 里面的名字叫做 message listener 然后这里边快递 fire 注入是吧，把这个 message listener 给它注入进来。待会这个 message listener 的名字咱们一定要起对是吧和这个快捷范儿这个名字要对应起来，然后把它塞得进来。这个方法废弃了是吧，咱们看一下，咱们还是用这个。
+
+
+message listener can currently 是吧引发的，用这个方法它并没有废弃，把这个类给它改一下，这样是不是就？可以了是吧，咱们再看一下这个示例，监听器写好以后就要写这个 star 的方法对不对？咱们这块儿这个 star 的方法，咱们直接指定它的 init method 这块写个 bin 然后 init method 是 start 然后 destroy methoddestroy method 让我们看看有没有。进入到 consumer 的源码找一下，咱们往后面找一下。有 star 的方法是吧，也有 shut down 这个咱们 destroy method 给它指成 shut down 这样在这个 spring 容器关闭的时候， consumer 也同样进行关闭了对吧。
+
+
+这样咱们这个消费者也写好了，咱们看一下这块报错了是吧，他说并没有找到 message listener 这个 bin 对吧，一会咱们给他写一个这个 bin 是不是这块报错就可以了对吧？好，到这里，这个 RocketMQ 的生产者和消费者就已经配置好了，这一节到这里就告一段落。下一节开始，咱们要正式的使用 MQ 去处理分布式事务，感谢大家的收看。下一节再见。
+
+
+
+
+
+

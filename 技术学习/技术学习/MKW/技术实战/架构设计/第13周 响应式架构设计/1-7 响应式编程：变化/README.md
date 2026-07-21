@@ -1,0 +1,22 @@
+---
+title: 1-7 响应式编程：变化
+---
+
+# 1-7 响应式编程：变化
+
+响应式变成了第二个要点，传播变化是什么意思？所谓的传播变化，第一个是比较有明显一点叫观察流的变化，就跟前面讲的咱们这个观察者模式有点接近，对吧？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ad2d1995-7cb4-4b67-9a22-83cb36c8f9c7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667ZHKNHB2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230931Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBLD4GC6aTIGge1HnJQOh2UgbT0tdb5FaVURbrhmRv4PAiEApibaxaYFSLjxcTv3j3VE2ksXeXvzcl8CNAseUJEBRXUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCL%2Bzk%2BqxsJlsjHnvircA1NmdnC50uk4toJUd%2B2JXivshePUohbT9PQuHTme44Zhi9bPC8oCgoBDuQcdKXAm2aRhOsLo2h6BS5i4zsU9AdAAjozY02rlKOdURKMzdyXlP56kmsA8P4764NzlZAEy2br2UY7ewAG1DGbNjcBXW7q1GxAmXjNHB0VWffEjEtHAMWJMgZFMShBHEiy81BuHUGiuybkx5u9Ttk4CYutoOI2iO%2Be7t7zHRdMITA0H92rWURsyp2CPZZJm5EZ5gQnIF5AUByptW6LpiNow4uZ2VJsuDVNLuKRKwyX6MWmQIT4j501IxCJNJnqDQraMTC4wom5aNzOqTTCdmfV%2BRq4ixK%2BxOBTIYMsDCLVsIKhZge5V%2FBdhCfPtylNGsZk6ZEPSwNVvNx0sf9oFdD6LvhVVZvo2BwGe7Pq6VLo%2FeuvqusjNZzMN%2Fa%2BcehvYfL2MQ0fJ9cyJBP6m1buXlJT%2Fq8nvNAEvqDH3I%2FZudq9eFWbDzftqepKpfHgOR9MVv0a0mMOJETKvOzT70daFrBS7qEOCodbIiRGPCVy1%2BNBC2KJ7lWvp6fpvMefOyZ%2B7DEmW5bkxZrCuPYsh0jT1bIMScrWYeTbn%2B9aoVCopzQiFFDIT7tfmMBlY5jJBq40VzEX%2BMJy6%2F9IGOqUByrOyLaY7g8dqWqD39atwWJuJbcHpqvJhMK2dsTamfqO65R7VlsmY3wgXCQOHWS%2BWRafG7K6J0lP4MQWfifwJ05LmsFvmttxOPid9x9GDVwNAKZAMiROYglcw4iBEGXfUsR2r2WlcAAgwAMK9j67S8akasmKVJ7629myNpS8lh9a%2Fel7FHbl%2FPsAdfMJvR5ic9TfKEicdjJBYSgeFaeyTz%2FtgNEqB&X-Amz-Signature=58ca77df464691aaf1ba8db6b73315aabdd503cb26332b45364cd78f5be58f08&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+它其实是什么意思？就是将硫的这个变化转化为数据或者事件，比如说如果说硫中有一切的元素要被消费，或者说你要去操作它，对吧？但是你直接去操作它的话，前面讲过流本身它并不是存储数据的，对吧？所以说你只能通过一些操作手段来操作这个元素，那你要抽出这个元素它是什么呢？大致基本上就可以分成两种类型，一种就是单纯的是一个数据，比如说以 Java 的这个集合类来讲的话，就比较简单一点，对吧？你把这个集合内里面的内容，那就是元素直接读取，那使用传统的操作方式，如果说你使用小恩式编辑的方式，把它变成一个流，那你直接通过流来操作这个元素，那这个时候你所操作的流里面的东西，其实它的数据变化的就是个数据的变化，对吧？另外一种简单言理解的就是一种事件，就是一直比如说像是一个我们要监控一个 HCP 的端口，对吧？而且把它变成一个流利操作，但这个流平时什么东西都没有的时候，也不存在什么数据什么之类的，对不对？那这个是没绑定它的某一种事件，比如说 port is open 或者 connection is establish，而这东西就是一个事件，只需要跟这个事件，那绑定了一种处理操作方式，对吧？这就是事件，就是在这个流的变化。
+
+
+因为之前你本来是什么动机都没有，突然出现有一个客户想来跟你连接，这就是一种变化，这种变化被我们转化成一种事件，然后通过这个事件跟他要对应的操作进行一个绑定，同时就可以对它进行一个处理，对吧？可以通过这事件的一系列属性拿到想要的所有的信息进行一个处理，所谓的这就是所谓的观察流的变化。然后就是前面讲的这个数据或者事件到底你的核心点在哪里？对不对？我们前面举的例子就是如果说你整个流股中的元素，你要操作的是数据，那么你就直接去读句这个数据进行一切的操作，这个是流里面的元素的不同而已，对吧？本身，对，都是一个流，只不过流里面的元素有可能是数据，也有可能是事件。对于事件来讲就是前面讲的，你可能更多的时候处理的时候对这个事件进行一次响应是一种做法。另外就是你直接在绑定这个事件的时候，你可能就已经给他绑定了，他对应的操作就是事件的绑定这样子方式，系统都要做出一个响应。
+
+
+另外一种是解决数据，要读到一个数据，把它搭建什么一系列的操作，这也是一种响应，最终得出一个结论，对不对？最后这个响应式编程里面相对来说怎么讲这个流式这种做法操作它是实时的，因为我们时刻观察着这个流的变化，对不对？这个变化它是时时发生的，我时时可以读取的。但是如果说你是像传统这种方式，可能相对说就不太一样，因为你有可能是要去等待它的这样，或者你的循环读取一个什么东西这样一种方式，这中间可能都会有一些间隔什么之类的。而对于我们这种来讲的话，流实时的一个变化就在于说它可以实时对你当前系统做出一个反馈。大家这么理解好了，比如说你在那网页上两个不同的菜单进行联动， a 菜单一旦发生变化，那 b 菜单也发生变化，其实这就是一种流失操作。
+
+
+有没有想过这个问题？就比如先根据你选的这个地区一选，选好之后下一个要选具体在哪个更细节的哪个区域，这样子其实就是一种，对不对？这种是一种简单的流式，叫做因为前面的一个事件或者流里面得到一个反馈，我们就去消费这个事件，根据它来做出一个响应，这是一种优势。
+另外就是你在 Excel 当中，你去操作一个东西的时候，也是一样的道理，对不对？你前面的数据做了一个公式计算，比如说 a 加 b 乘以 3 = 1 个值，对吧？当你在这个 Excel 里面一定拉所有的结论全部都会出来，对不对？这其实也是一种优势，因为你 Excel 里面所有的这个数据都会把它作为一个输出在这个流里面，对吧？我们要去消费这个流程的一个变化，然后把它应用到所谓的 apply 到这个计算公式上面去，那得出有这个结论。这都是实时变化的，而不是说一个一个的往下走什么的。所以说这个传播变化就是流式响应的走，或者说在响应这边中的一个传播变化，就是直接可以捕捉到系统任何一个变化，而且是时时不做，时时做出响，这也是我们的响应式编程的一个好处，对不对？
+

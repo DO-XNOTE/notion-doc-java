@@ -1,0 +1,83 @@
+---
+title: 1-1 Netty最佳实战_项目整体业务与技术实现分析
+---
+
+# 1-1 Netty最佳实战_项目整体业务与技术实现分析
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6d6e1381-c96d-4c70-aea2-d0c887febaef/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663S7HLM3F%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230012Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUV5tTaWjUM1OHTVxeEcqowwRa4yzR09iHoa%2FIjTFmhAiEA9ao3cfS3AFtLPAz18OUh3kJMDkhBDryfAow2b2KE1SQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDGTZHKpVpHsJcuINCrcA7q31o6LdstlQX6AGJwJWHS295N0ZVtSExzBK4ucFiEKJFYQo84AmU4fZonDBH6sgwsERjlO1lgXfKB4J4OXMmHkltq48eRJOlA%2BMhZ7E1c0oVo924QBcZOQNYBvJGpC93BdRUXwt5%2FpFv8R0cYFeGI70edClaR%2B7chIlez2cHJAPIVUoQ0OOMdi9PL86vETi5iqP1yU8l%2BuPA5wwiFXCGKBi2KhOPOWedFlWh7Aoz7oRR%2FI6ZmO6HfXffsGbvMiUdlo7qSEmuUZv1ixwAeaUuGQEVq3WddjPl2XWkmNeYeTXJUZPw2gJ67M%2Br%2FIT7IRlMtBbri%2B7O0vZ7iwWDA9cRURcmveE%2F6npfXSzchzp9p%2BoNPWVFfuGQ5tvMQlvwOXMk%2FaFZHAWGYSlWcY7pFUqKBCioclEC55K4d9TH2GXkaqbl%2Bu6fM6Jkt%2FQ2SCVHh8tFKmV899%2BMweeG6pwnGXTWWPWjmX47OVmNYfQay7OvdWWBCfz53hK3FPId5TLvdENg9Mk5eYOUAerVSJuDh2zh7oePfjso6RjxG94YJf2gCAKZGC3x5Ktvs1nkZxRctO4Z19bAhAsw%2B0BM5U%2B%2FU083BiXoGsSFQoC9Lz22bdy%2BCzk5m%2B9Rvqss2qI7%2BZMPG6%2F9IGOqUBQ74Ccd0TiT8QFNft9oUIqw3xYccAdD5j9Lhk5wYyfNJwR8F6K3aKzUdJghoavX0cK8yQarWcNNcaRu9espDLREyXblx2z7oSxW3X9y%2FVOakjgEpfaDGkDa9WqNmfqyH7CWuGGH%2F8PNPfpgPx2oJLVlKgOLhBF9MJxRD1HBbcmUdLDY%2BaZgeSbSyAxZ9u%2FpgaqFqvnH7tN47CGcrgzCNqzN3XywZ5&X-Amz-Signature=8af7768c3e390b482f8f7a0d778dfb0c9e1c54767ab95b40050eb3ec8eebecac&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9dd69c00-8df0-43b5-b42e-299e9169f705/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663S7HLM3F%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230012Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUV5tTaWjUM1OHTVxeEcqowwRa4yzR09iHoa%2FIjTFmhAiEA9ao3cfS3AFtLPAz18OUh3kJMDkhBDryfAow2b2KE1SQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDGTZHKpVpHsJcuINCrcA7q31o6LdstlQX6AGJwJWHS295N0ZVtSExzBK4ucFiEKJFYQo84AmU4fZonDBH6sgwsERjlO1lgXfKB4J4OXMmHkltq48eRJOlA%2BMhZ7E1c0oVo924QBcZOQNYBvJGpC93BdRUXwt5%2FpFv8R0cYFeGI70edClaR%2B7chIlez2cHJAPIVUoQ0OOMdi9PL86vETi5iqP1yU8l%2BuPA5wwiFXCGKBi2KhOPOWedFlWh7Aoz7oRR%2FI6ZmO6HfXffsGbvMiUdlo7qSEmuUZv1ixwAeaUuGQEVq3WddjPl2XWkmNeYeTXJUZPw2gJ67M%2Br%2FIT7IRlMtBbri%2B7O0vZ7iwWDA9cRURcmveE%2F6npfXSzchzp9p%2BoNPWVFfuGQ5tvMQlvwOXMk%2FaFZHAWGYSlWcY7pFUqKBCioclEC55K4d9TH2GXkaqbl%2Bu6fM6Jkt%2FQ2SCVHh8tFKmV899%2BMweeG6pwnGXTWWPWjmX47OVmNYfQay7OvdWWBCfz53hK3FPId5TLvdENg9Mk5eYOUAerVSJuDh2zh7oePfjso6RjxG94YJf2gCAKZGC3x5Ktvs1nkZxRctO4Z19bAhAsw%2B0BM5U%2B%2FU083BiXoGsSFQoC9Lz22bdy%2BCzk5m%2B9Rvqss2qI7%2BZMPG6%2F9IGOqUBQ74Ccd0TiT8QFNft9oUIqw3xYccAdD5j9Lhk5wYyfNJwR8F6K3aKzUdJghoavX0cK8yQarWcNNcaRu9espDLREyXblx2z7oSxW3X9y%2FVOakjgEpfaDGkDa9WqNmfqyH7CWuGGH%2F8PNPfpgPx2oJLVlKgOLhBF9MJxRD1HBbcmUdLDY%2BaZgeSbSyAxZ9u%2FpgaqFqvnH7tN47CGcrgzCNqzN3XywZ5&X-Amz-Signature=f2e58b8e5607216b7fca86d6b5bf3e043fda666b78d10d9eafdc252b4bcbd3b7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+OK 小伙伴们大家好，从这节课开始，我们就开始进入 Nike 项目的一个最佳实践。对于 Nike 项目，我们来首先简单介绍一下我们要做什么事情。我们已经学过了 Nike 了，现在我们想对 Nike 的，我们必须要有一个生产环境中，在真实工作中怎么去使用Nike，包括net，怎么去跟我们现在非常流行的 seven boot 框架进行一个整合。
+
+
+我们要做的事情就是一个数据的可靠性，通进场景的架构设计与分析。当然，老师在这里先把我们整个的项目的 4 大核心点跟小伙伴们说清楚。首先第一点就是我们要保障数据的要求，实时性非常高，而且我们的高性能有可能是异构系统的，可能你是Java，可能是 c sharp 或者是 C + + 等等。你要保证一个异构系统。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e1342f07-b440-4101-ad4a-58c58f4d9462/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663S7HLM3F%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230012Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUV5tTaWjUM1OHTVxeEcqowwRa4yzR09iHoa%2FIjTFmhAiEA9ao3cfS3AFtLPAz18OUh3kJMDkhBDryfAow2b2KE1SQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDGTZHKpVpHsJcuINCrcA7q31o6LdstlQX6AGJwJWHS295N0ZVtSExzBK4ucFiEKJFYQo84AmU4fZonDBH6sgwsERjlO1lgXfKB4J4OXMmHkltq48eRJOlA%2BMhZ7E1c0oVo924QBcZOQNYBvJGpC93BdRUXwt5%2FpFv8R0cYFeGI70edClaR%2B7chIlez2cHJAPIVUoQ0OOMdi9PL86vETi5iqP1yU8l%2BuPA5wwiFXCGKBi2KhOPOWedFlWh7Aoz7oRR%2FI6ZmO6HfXffsGbvMiUdlo7qSEmuUZv1ixwAeaUuGQEVq3WddjPl2XWkmNeYeTXJUZPw2gJ67M%2Br%2FIT7IRlMtBbri%2B7O0vZ7iwWDA9cRURcmveE%2F6npfXSzchzp9p%2BoNPWVFfuGQ5tvMQlvwOXMk%2FaFZHAWGYSlWcY7pFUqKBCioclEC55K4d9TH2GXkaqbl%2Bu6fM6Jkt%2FQ2SCVHh8tFKmV899%2BMweeG6pwnGXTWWPWjmX47OVmNYfQay7OvdWWBCfz53hK3FPId5TLvdENg9Mk5eYOUAerVSJuDh2zh7oePfjso6RjxG94YJf2gCAKZGC3x5Ktvs1nkZxRctO4Z19bAhAsw%2B0BM5U%2B%2FU083BiXoGsSFQoC9Lz22bdy%2BCzk5m%2B9Rvqss2qI7%2BZMPG6%2F9IGOqUBQ74Ccd0TiT8QFNft9oUIqw3xYccAdD5j9Lhk5wYyfNJwR8F6K3aKzUdJghoavX0cK8yQarWcNNcaRu9espDLREyXblx2z7oSxW3X9y%2FVOakjgEpfaDGkDa9WqNmfqyH7CWuGGH%2F8PNPfpgPx2oJLVlKgOLhBF9MJxRD1HBbcmUdLDY%2BaZgeSbSyAxZ9u%2FpgaqFqvnH7tN47CGcrgzCNqzN3XywZ5&X-Amz-Signature=7c780b56b635fcde89e795f404c98cf6fd333433596dc44e26984cb2e42df6d4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+从第一点上我们就知道，我们的技术选型一定要选择能够跨语言的，序列化的，编解码的框架。在这里老师给大家推荐的也就是我们现在接下来要用的就是我们的 Google 的Photobuffer。OK，我们现在已经定好了，我们现在使用序列化框架是 Google 的 per buffer。 OK 好了，接下来我们再看第二一点。
+
+
+第二点就是我们需要保障什么？不同的业务请求对应着不同的实际的处理类实际的实现。也就是比如我数据可能是对 user 类 user 模块进行操作的，你不可能去把它给我，去把请求发给其他的模块，发给一些group，一些 rule 权限等等，或者其他的模块儿，你 user 模块儿定下来之后，我要针对于 user 下面。比如我要进行新增一个对象，对不对？我觉得调用 user 下面的 save 方法，而不能调用 user 下载的 update 或者其他的方法。 OK 也就是我们要做不同的业务，以及不同的实现的这么一个事情。
+
+
+第三一点，我们要保证什么？这也是实际工作中非常重要的一点。我们要有一个负载均衡的策略，在这里注意我们要实现的是一个 TCP 级别的负载均衡。 TCP 级别怎么去做负载均衡？在这里后面我会详细跟小伙伴们把整个的环境搭起来，当然这个环境在我们之前可能已经学习过了，在这里老师提前说一下，无非就是我们的 h e proxy 加上我们的 keep live 的，到时候老师把环境准备好，给大家讲一讲配置文件，做一个演示就可以了。
+
+
+好了，最后我们需要保障的一个数据的可靠性的支持，不允许数据丢失。在这里老师会把整个不允许数据丢失的一个思路跟小伙伴们进行一个全方面的讲解。好了，也就是我们要做的一个真正的实战。说白了，整个项目主要的目的就是为了让同学们在真正的生产环境上能够去使用好 Nike OK，使用好 Nike 的前提，我们要保证这 4 点。接下来我们来看一幅图，这幅图充分的说明了我们整个的业务场景的一个比如高可靠性的架构的设计与分析。哈，我们来看这幅图，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/39a326a6-f5ba-43c0-9273-1cb57e441411/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663S7HLM3F%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230012Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUV5tTaWjUM1OHTVxeEcqowwRa4yzR09iHoa%2FIjTFmhAiEA9ao3cfS3AFtLPAz18OUh3kJMDkhBDryfAow2b2KE1SQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDGTZHKpVpHsJcuINCrcA7q31o6LdstlQX6AGJwJWHS295N0ZVtSExzBK4ucFiEKJFYQo84AmU4fZonDBH6sgwsERjlO1lgXfKB4J4OXMmHkltq48eRJOlA%2BMhZ7E1c0oVo924QBcZOQNYBvJGpC93BdRUXwt5%2FpFv8R0cYFeGI70edClaR%2B7chIlez2cHJAPIVUoQ0OOMdi9PL86vETi5iqP1yU8l%2BuPA5wwiFXCGKBi2KhOPOWedFlWh7Aoz7oRR%2FI6ZmO6HfXffsGbvMiUdlo7qSEmuUZv1ixwAeaUuGQEVq3WddjPl2XWkmNeYeTXJUZPw2gJ67M%2Br%2FIT7IRlMtBbri%2B7O0vZ7iwWDA9cRURcmveE%2F6npfXSzchzp9p%2BoNPWVFfuGQ5tvMQlvwOXMk%2FaFZHAWGYSlWcY7pFUqKBCioclEC55K4d9TH2GXkaqbl%2Bu6fM6Jkt%2FQ2SCVHh8tFKmV899%2BMweeG6pwnGXTWWPWjmX47OVmNYfQay7OvdWWBCfz53hK3FPId5TLvdENg9Mk5eYOUAerVSJuDh2zh7oePfjso6RjxG94YJf2gCAKZGC3x5Ktvs1nkZxRctO4Z19bAhAsw%2B0BM5U%2B%2FU083BiXoGsSFQoC9Lz22bdy%2BCzk5m%2B9Rvqss2qI7%2BZMPG6%2F9IGOqUBQ74Ccd0TiT8QFNft9oUIqw3xYccAdD5j9Lhk5wYyfNJwR8F6K3aKzUdJghoavX0cK8yQarWcNNcaRu9espDLREyXblx2z7oSxW3X9y%2FVOakjgEpfaDGkDa9WqNmfqyH7CWuGGH%2F8PNPfpgPx2oJLVlKgOLhBF9MJxRD1HBbcmUdLDY%2BaZgeSbSyAxZ9u%2FpgaqFqvnH7tN47CGcrgzCNqzN3XywZ5&X-Amz-Signature=3a20925a5240809c296e066fd0cb64006ebf33293659c95da6b5a19e1b6d3167&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们从左边是我们的 NET client，右边这边是我的 NET server 对吧？ Native client。它要做一个实时的数据的推送给我们业务方，业务方自己。比如他把数据推过来之后，他自己先做什么，先做一个数据入库，数据入库他就要给我们做一个什么事，做一个幂等性的校验。也就是假设我推出来两条一样的数据，你一定要做幂等。你可以采用数据库主键，或者是其他的相应的这种分布式的，保证能够一致性的东西去做。
+
+
+落户成功之后，我不去做任何业务处理。在这里小伙伴们记住，真正高并发场景下，一个数据的传输，传过来之后，我不去对它做任何的业务处理，我直接返回一个 a C k 给我们。对应的感叹端也是。发送方收到了 a C k 之后干什么？收到了 a C k 之后，要更新一下你自己的业务，表示我的另一方已经收到了。说白了，我举个例子。实时推送怎么去做？最开始我们的可看端，比如我们生产出来一个 l 的订单的订单，它肯定是要落库的对不对？对于 client 端的服务而言，落完库之后要打一个标记，比如默认等于0，表示正在推送中，把它推送过去。
+
+
+当我们服务端收到并且给我们 response 响应的时候，得到 a C k 的时候，我们需要把状态做一个更新，比如从 0 更新成1，表示已经成功了，当然后面会有一些中间的状态，比如我的数据落库成功了，回来的时候它出现的一些异常或者其他的一些问题。这个时候就导致我们数据库，我们的业务方就是我们的 clan 端，可能会有一些数据状态，它一直是零。这个时候我们要做一个定时任务的补偿，做一个超时的处理，比如最多推送三次之后对不对，我如果还没成功，我就交由人工去处理，或者是落入失败表，这都可以了。
+
+
+但我相信这个逻辑其实跟 MQ 其实是一样的，对吧？同学们可以想象一下，我们在之前在分布式架构设计的时候，学到 MQ 的时候也是一样，我们也会要存一个中间状态，对于中间状态做一些定时的扫描，把一些已经不符合我预期的数据再定时抽取出来，再重新推送给我们的服务方。
+
+
+OK 在这里边整个编程模型我们要考虑的问题。其实这个问题倒是很简单，为什么？因为这个问题对我而言，我们之前已经有了 MQ 的基础，所以后面老师会把真正的业务实现交由小伙伴们自己去完成。我们现在主要实现的是两件事情，第一件事情就是什么，我们怎么去定义我们的数据结构，这是最重要的一件事情。第二件事情，我们怎么去跟我们的 spring 整合起来，就是我们的 net 框架，怎么去跟 spring boot 做一个整合，做一个集成。第三件事情是什么？我们怎么样能够让它 net 不同的业务对应着不同的实现，不同的处理。
+
+
+OK 就是这么三件事，我们带着这 3 个问题来跟小伙伴们详细的去分析一下。在这里，老师打开一个画图工具，我们一起来简单分析一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1a2af0b0-009b-437f-bcdd-768319a3f533/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663S7HLM3F%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230012Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFUV5tTaWjUM1OHTVxeEcqowwRa4yzR09iHoa%2FIjTFmhAiEA9ao3cfS3AFtLPAz18OUh3kJMDkhBDryfAow2b2KE1SQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDGTZHKpVpHsJcuINCrcA7q31o6LdstlQX6AGJwJWHS295N0ZVtSExzBK4ucFiEKJFYQo84AmU4fZonDBH6sgwsERjlO1lgXfKB4J4OXMmHkltq48eRJOlA%2BMhZ7E1c0oVo924QBcZOQNYBvJGpC93BdRUXwt5%2FpFv8R0cYFeGI70edClaR%2B7chIlez2cHJAPIVUoQ0OOMdi9PL86vETi5iqP1yU8l%2BuPA5wwiFXCGKBi2KhOPOWedFlWh7Aoz7oRR%2FI6ZmO6HfXffsGbvMiUdlo7qSEmuUZv1ixwAeaUuGQEVq3WddjPl2XWkmNeYeTXJUZPw2gJ67M%2Br%2FIT7IRlMtBbri%2B7O0vZ7iwWDA9cRURcmveE%2F6npfXSzchzp9p%2BoNPWVFfuGQ5tvMQlvwOXMk%2FaFZHAWGYSlWcY7pFUqKBCioclEC55K4d9TH2GXkaqbl%2Bu6fM6Jkt%2FQ2SCVHh8tFKmV899%2BMweeG6pwnGXTWWPWjmX47OVmNYfQay7OvdWWBCfz53hK3FPId5TLvdENg9Mk5eYOUAerVSJuDh2zh7oePfjso6RjxG94YJf2gCAKZGC3x5Ktvs1nkZxRctO4Z19bAhAsw%2B0BM5U%2B%2FU083BiXoGsSFQoC9Lz22bdy%2BCzk5m%2B9Rvqss2qI7%2BZMPG6%2F9IGOqUBQ74Ccd0TiT8QFNft9oUIqw3xYccAdD5j9Lhk5wYyfNJwR8F6K3aKzUdJghoavX0cK8yQarWcNNcaRu9espDLREyXblx2z7oSxW3X9y%2FVOakjgEpfaDGkDa9WqNmfqyH7CWuGGH%2F8PNPfpgPx2oJLVlKgOLhBF9MJxRD1HBbcmUdLDY%2BaZgeSbSyAxZ9u%2FpgaqFqvnH7tN47CGcrgzCNqzN3XywZ5&X-Amz-Signature=fad58463471eca0ecba2f0de616bc73c8371590d4d042aee31ab97d2dd2e06dc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先，小伙伴们想一想，当前是我们的一个 client 端对不对？我们的 client 端可能会发送很多种不同的请求，比如有些请求可能是针对于，当然是 server 端。在这老师画一下，我们现在这是 client 这一方，是 server 的一方。 OK 我把它大一点，让小伙伴们都能看清。
+
+
+好了，我现在想要去发送数据，比如现在我数据包是针对于 user 模块的，数据包可能是针对于比如我们简单写一个 group 一个组的模块的。好，这就是两个不同的模块，一个是 user 模块，一个是股入口模块。首先我外部的请求，假设有一个外部的请求过来了以后，假如我们是，外部请求，OK，我把它要画大一点。好。外部请求过来之后，可能外部请求是针对于 user 做一个操作。我的 user 一定要我现在使用 Nike 通信，我一定要发给对应的肯定它是要发给搜索端对不对？包括我的 Google 模块也是一样的，要发给搜索端。
+
+
+我怎么去区分它到底是这个模块？哈，它到底是对应的是 user 的处理类？它到底是对应着 user 的处理类？还是我们 a sorry Ctrl c Ctrl a OK user 模块的处理逻辑这个处理逻辑我可以理解为它就是一个service，比如我们 spring 的 annotation 就是 at service 或者 at component。这边我们的 group 对不对。 group 的处理逻辑我们首先要对应上就是 user 模块，它的处理应该处理这个应该让 user 的处理类去处理group，它也是应该让 group 去处理。
+
+
+接下来就是 user 下面的具体的一些 c r u d 操作。比如 user 下面它具体的它可能有好多种操作，比如我们新增对不对，或者是修改或者是删除。我在这里就写 3 个哈修改或者是删除好。 OK 无论是新增还是修改还是删除，这些相当于它是我们 user 模块所发出的一系列的。我可以理解为这里是一系列的指令。你可以理解为这是 user 模块一系列的指令。新增一条数据，修改数据，或者是删除数据或者查询等等。 OK 对应着这 3 个指令，其实应该直接落到我们 user 处理类的。什么应该也是在这里，我把它画出来哈。新增我得写处理对不对，就是处理逻辑，是修改处理逻辑，这边是删除处理逻辑对不对？ OK 这是 user 类等你能对应的上的，必须要让它能够对应的上。
+
+
+好了，我们带着这个问题想一想应该怎么去做，能够实现我们想要的效果。也。其实说白了，这件事情我们先要做的事情，我们要对我们自己的不同的请求类型进行一个划分。好了，这个里边涉及到一个，其实这里边就涉及到两个非常重要的点，就是刚才我们跟小伙伴们讲的第一个就是 sprint boot 如何跟 native 去集成。我们想一想 spring boot，说白了 spring boot 可能感觉太高大上了。我们就说 spring spring 里边有一个比较核心的注解，就是 at service。说白了，你 user 模块其实就是一个 user service，就是我们用 Java 代码写，就是一个艾特 user service 对不对？ user service 下面有不同的方法，比如叫public，我就这么去简单去写 y 的 save 对不对？还有一个叫做 public wide，比如update，再来一个叫做 public wide delete 对吧？ OK 我把最大化一下，也就是我们同理你的 group 类模块也是有一个service，里边有各种各样的方法，我们一定要干什么，把我们的 service 能够让 native 模块感知到。说白了，我们一定要能够让 native 模块感知到。当我们把数据推过来的时候，我们根据他给我们传的数据到底是 user 模块。
+
+
+下面的哪个方法？就是两个去定义，一个是什么样的模块，还有一个具体执行什么样的方法，什么样的指令。 OK 根据这两个约束条件，找到唯一的一个类下面的方法，把它执行返回结果。当然 server 端肯定执行完了，会有一个结果返回 client 端。其实就是这么一件事情。所以小伙伴们，你现在要想到一个问题，我们可能思考这个问题。这是我想跟大家说的，你可能要关注两点。
+
+
+第一点就是你怎么去集成都还好，最重要的最开始的一个步骤，你的数据包就是你的整个普通 buffer 数据包怎么去定义，这个才是最关键的。如果你没有去有一个非常好的 Protobuffer 的数据包结构定义以后，这个是很有问题的。比如除了有两个 user a group，我以后再去扩展对不对？你的扩展性是没有的。所以第一点我们要做到的是怎么去把我们的数据包定义好，接下来再去考虑怎么去跟我们的 spring boot 进行继承。好了，这也是我们整个实战项目三个关键点中的两个。
+第三个什么？很简单，我们整体的数据怎么去做到一个负载均衡？假设我 server 端跟 client 端挂掉了，对不对？当然我 client 端不可能只有一个， server 端不可能只有一个， client 端也不可能只有一个。挂掉了之后，我们怎么样能实现负载均衡对不对？怎么样能实现这种切换？ Fail over？这是一个非常重点的一个问题。
+
+
+OK 基本上我们这节课已经把我们整个的项目要做什么事情跟小伙伴们说清楚了。保障一个数据的可靠性，让我们每一个指令，每一个模块儿下的每一个指令，去分别处理它指定的一个业务处理器得到反馈结果，并且也支持一个高可靠性的，支持一个故障恢复的一个，切换的一个目的。好了，我们整个的项目的介绍就暂时到，感谢小伙伴们收看。
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+---
+title: 5-4 RocketMQ面试题-RocketMq如何保证顺序（0556）
+---
+
+# 5-4 RocketMQ面试题-RocketMq如何保证顺序（0556）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/213e0f03-b33d-48df-8d10-7d47385fea01/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZJA33376%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T232235Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCI4SPV4CVcg8QphpNICuEN6DHrUdU7Bw7IUaZ8J1POqQIhANACh7Q2O1sdBoYK54u%2FQUU4W16LFUUYiJdlvE92yQUMKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgziVZxyIWuxQhd5tdEq3APSrv9L54%2BBb9AMFlj%2FRDh%2B%2BSxOhvSm84YrJxp6aMooGHAoZOJJ2uoYuwtVac71ONFRsHJOvxkFTvjiDNsotEB3g3iz7GaE77tpsWPMqGd7lz7Yp6vwfm%2B5NvFITjvrEF3rlqSZbSdvRRF6oZe8NDpSbHzWgtVMkRb6Bikwtbz93qNRm9qV%2FhkA8AKT3UWR4lhAWS5K68ePBZn4BHiEjhVCe%2BlsTguzxMLWei9UjEdRgsnUSJleIUftt9T5aN%2BGU8AIyGHwdkzDYO5wJftcsibRgQnSnCob61w%2BfvDq0D4RemgPqc6nIgg2EitJSoHVoCNtFe8%2BwefwyiL6DvQe%2Bj%2BMQsA%2BCVlgpSTb05YI0ewWvZph8ZvzmwN4EQAG%2BdJUCZ6kbizApQhDCHfV8pZUrPeqaANxYs0O%2F7uGLyCUneid3TlHjigf3Ujc4FgKKaWYHwC1a9Y6q02UUnOfXpx7BfvarDvPqS83vL1cYDWhHs3Cuvu8wXGLboEwT4NKWOKh2c63ipMhpsS48okc1%2BHMtsS3sVY%2B3B2uSW85qxI%2FAdodvPI4I7tquY%2FF6MG3JNdyLiNDftUMxnJxSI1u2SeSlDO4FInK5XnxTg8jETB2eE0mLViY%2FX9UUjOsRSS8CjCFt%2F%2FSBjqkAT7HhCckuNVtIipYAY9UYVEqySF0G%2FUtaRCzYl3CDculGI4ebqi4vocCp9hIKChrzYgIZ%2Ba6PrXsvMQ82FSuoETCrTmEJiAuLH0otk4bpBYS2yXP1ubtSf%2FldbCTkBhXdUovWPyFCbqDTOj9nk7GC2ylKiwLT5rUr6HxkA4WIG%2BU1KpRYSDjgmuKuUQByL3fsDh%2FJh7lhEfQknn5mFKpwDw617Oa&X-Amz-Signature=ca490b920426daa8714002a9a717251e9fd34e6f29315c10861aafdc3472a0e6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+接下来我们介绍一下 rock m 面试题， rock MQ 如何保证顺序，那么这里面其实如果说我们通常对于消息队列是不要求严格顺序的，那么如果说我们业务场景有顺序这个需求，那么面试官也在跟你讨论这个需求的过程中，你一定要解释清楚我们这个顺序的场景，以及我们通常业务对顺序的要求是什么。
+
+
+那么首先我们来去了解一下我们跟介绍什么是无序消息，那么对于通常我们发消息的过程中，无序消息也是普遍的消息，我们 producer 只管发送消息， consumer 只管接收消息，那么至于消息之间的顺序我们并不表证。那么刚才我们也介绍到了，对于消息队列，它是维持一个先进先出的队列，那么这会我们又变成了我们不保证消息的顺序，这是不是有一些矛盾？当然它并不矛盾，这是因为我们对于一个消息队列理解的维度不一样，那么接下来我们来去，如果说我们要严格保证先进先出，那么我们就需要有一个全局的顺序。
+
+
+我们知道通常我们对于一个消息队列，它命名成一个topic，每个 topic 下面会有不同的q，那么不同的 q 在每一个 q 里面它是严格保证顺序的，但是因为我们在消费的过程中，消费的 q 的过程不一样，那么所以说这里面我们并不能保证一个 topic 的一个顺序。
+
+
+所以说这里面如果说我们要严格保证全局顺序，那么我们对于这个topic，它只能要求有一个q，也就是说有一个队列，那么这个队列的话，其实就会严格的限制了我们这个 MQ 它的一个消费的性能，通常业务上我们也不会产生这种夸损。那么这里面我们对于保证顺序，我们会分析我们的业务场景，那么对于交易的业务场景，其实对于我们每一个订单与订单之间，通常我们是没有顺序要求的，但其实我们这个订单生产的业务是有顺序要求的，比如说我们订单的生成、订单支付和订单完成，包括我们个人的订跟订单相关的积分变更，这个是有顺序的。
+
+
+那么所以说我们在对于使用消息队列的过程中，对于我们 producer 生产出的消息，在生产的过程以及我们 consumer 消费的过程中，整个博客的流转，我们要保证这些消息的一个虚性，也就是说我们这个保证顺序性，它由我们的一个全局顺序变成一个局部顺序。比如说我们订单 a 的订单测程，订单支付订单完成，订单 b 的订单生成，订单之后，订单完成，他们之间可能会有交叉。但如果说我们只站在一个角度，我们只看订单a，那么它的生成、支付和完成它肯定是有序的，所以说这就是我们的一个局部顺序。那么在实际的开发场景中，我们其实主要是能满足这个局部顺序就可以了。
+
+
+这里面我们完成了我们消息发送的这个顺序性的保证，那么我们再去想我们的消费的时候怎么保证顺序性？这样的话如果说我们是局部有序，局部有序，我们的不同的 consumer 实例，它会去消费不同的一个 consumer q，也就是我们的一个队列，那么这样的话它在单独的一个死地去消费的过程中应该是没问题的，这样的话它可以保证这个顺序去消费。
+
+
+但如果说我们真的是需要一个全局的消息，那么一个全局消息，我们这里面把 topic 对应的 q 只有一个q，那么我们也有多个实例进行一个分布式，我们做一个负载惊横的模式进行消费，那么这种情况下怎么去解决这种情况？其实我们就需要一个分布式锁的方式，比如说对于我们同一个队列里面，我们的消费订单的时候，我们的比如说我们三个 consumer 节点分别去获取对应这个 consumer 里面的我们的订单的生成、订单的支付和订单的完成。
+
+
+那么这个消息如果被三个不同的 consumer 进行消费的过程中，其实得到这个消息不一定是消费完成，所以说我们必须保证我们的订单生成，消费完成以后得到对应的 ACK 以后，那么第二个 consumer 他才能去消费对应的我们订单的支付，那么第三个那么他才能去把消费订单的完成这些消息。
+
+
+那么所以说我们最终的消费逻辑，其实说消费一去 q 里面拿订单生成，他就锁住了整个q，那么只有他消费完成以后返回成功，那么这个锁才能够释放。那么对下一个 consumer 他去获取订单支付，同样也是锁住这个q，这样一个过程就能保证对一个 q 真正意义的顺序消费。但我们知道这个消费的过程中它涉及到了锁，所以说它的性能肯定会下降。
+
+
+那么这里面对于 rock MQ 这个具体的实现，那么我们如果说严格要求顺序的情况下，对于 topic 一些消息类型有一些是不支持的，比如说对于普通的消息，它是可以去支持事务，也可以支持定时延时，那么它的性能也是非常高的。如果说我们需要去做一些顺序消息，哪怕是分区消息，那么它也就不能去支持事物，也不能去支持定死的隐私了，所以说它的性能也可以还可以接受，也可以理解为正常。那么如果说我们要去做一个全局的顺序消息，它不能支持事物，也不能支持定死和延时，那么它的性能因为只集中在同一个 q 里面，所以说它的性能会比较差一些。我们基于这几个维度来去介绍一下 rock m q，它这个顺序我们了解完什么是无序，什么是有序，有序里面我们要去区分局部有序和全局有序，那么以及我们在嗯发送顺序消息跟 rock MQ 带来的一些弊端，那么把这些介绍清楚以后，通常也能达到我们面试官大的要求。
+
+
+那么介绍完这些的话，我们对于 rock MQ 如何保证顺序的话就已经了解的不错了，到我们的面试题部分的 rock M6 这个章节的课程也就介绍完了，谢谢大家。
+
+

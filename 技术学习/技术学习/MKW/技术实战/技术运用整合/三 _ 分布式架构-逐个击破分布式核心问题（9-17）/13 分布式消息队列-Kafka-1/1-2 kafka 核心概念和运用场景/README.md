@@ -1,0 +1,43 @@
+---
+title: 1-2 kafka 核心概念和运用场景
+---
+
+# 1-2 kafka 核心概念和运用场景
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/557419ba-6370-450e-8796-ae819eaee700/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XOIN43DF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225320Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFoSErecGls169NoBcuwFPbabMcSE8A98eXZpBmB37UiAiEA9%2Bork91MiDFz9fNkGr1SCPYZO%2FcOOUVhud8aY8Aj5DQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEaU9VE9DKpR7WvrPyrcAwF9jTQh1FRI5wS9ZM3pjXA%2BIDCNiNwXisOxOOukufNkL2T1unpI1bEqNdDHUv6KjiEFxfMUhnpl15Uv0Ds%2F72e2KBysihxgOTpgIq4L65NCWsf2aHwo7raLM5tmJLrMSQAbZuaHWnHEv%2BepcpfI6WZ7Vc56orBNefEJX%2FIsc1Vg1Lo16Q%2F262hIxgSr8a7WMx4LqO27%2FrphBJNUP9PmR5m86aXs0i7oVOMgI9C0FD263iOzDSQJKuDVdEWlGfIk1I%2B6TXru2%2FRLJrsv%2FWbwcfP9Zm1LHECKyXCwWkC%2B6VX1Ro46KUnZ8pFqa6t5OoAsqpKNFv3Uwq7MiwjQ3sNU%2Bv4f4aGi9kev6dlKihXgPv7idSv0tagNz43v%2BSYVuGhfGkOCjndLGLnvcTHKsvLUeebGT0%2BSATwwUZHVS0O3Iw7%2FFb8%2FSGh3ZS8cjA6a5tjkba7IEz31MXbhsLvuUr2SChRaUeIWBAfo9piKJdDTGoaQWfyrMZ8QRLHmO8YauLatvc44GGqtysWIoz0rkAGN9KiimKR%2BvzIUo8BUtDkI8NbCqANy3E58M%2FWz2hlp17NHnGqx2U8dheOziSHEPhoVsHZQCbhm6OO98QXl49OypaTw6AewNnXoNQWNvLjCMJm3%2F9IGOqUBph5U0An7GAcMLOfkiGrbsjZULzq1ltwv7IaSVj%2F%2FJssSX3EOI5evjE090PH6gsbPJP%2F9Z1VhNeRV6vpduFcMgjuRjyQScXWcpnhkv0k4U4ZBYHBmPPXH55HVGK6dx%2BIevgmFNxyPfc973xTX8esNES7F0dBMtdFq1nOJPmQCggxTkUVhZU6yw%2FV4BWtWVSsDATx9zk3tz%2BFNFP%2Bxh2Pe4CnQrpXe&X-Amz-Signature=68aef4c63a2513e40da613e6097f85318aedd77a90833c281c15ce1516c2e3ca&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+```javascript
+1—2kafka核心概念与应用场景
+Kafka的主要特点
+Kafka是分布式发布—订阅消息系统。它最初由Linkedln公司开发，之后成为Apache项目的一部分。Kafka是一个分布式的，可划分的，冗余备份的持久性的日志用于处理活跃的流式数据。
+·kafka的主要特点：
+·同时为发布和订阅提供高吞吐量。据了解，Kafka每秒可以生产约25万消息（50MB），每秒处理55万消息（110MB）。
+·可进行持久化操作。将消息持久化到磁盘，因此可用于批量消费，例如ETL，以及实时应用程序。通过将数据持久化到硬盘以及止数据丢失。
+·分布式系统，易于向外扩展。所有的producer、broker和consumer都会有多个，均为分布式的。无需停机即可扩展机器。
+·消息被处理的状态是在consumer端维护，而不是由server端维护。当失败时能自动平衡。
+·支持online和offline的场景。 kafka的优秀设计
+接下来我们从kafka的吞吐量、负载均衡、消息拉取、扩展性来说一说kafka的优秀设计。
+·高吞吐是kafka需要实现的核心目标之一，为此kafka做了以下一些设计：
+·内存访问：直接使用linux文件系统的cache，来高效缓存数据，对数据进行读取和写入。
+·数据磁盘持久化：消息不在内存中cache，直接写入到磁盘，充分利用磁盘的顺序读写性能。
+·zero-copy:减少I0操作步骤
+·采用linux Zero—Copy提高发送性能。传统的数据发送需要发送4次上下文切换，采用sendfile系统调用之后，数据直接在内统上下文切换减少为2次。根据测试结果，可以提高60%的数据发送性能。Zero—Copy详细的技术细节可以参考：https：/wwdeveloperworks/linux/library/j-zerocopy/
+·对消息的处理：
+·支持数据批量发送 Kafka的架构
+Kafka的整体架构非常简单，是显式分布式架构，producer、broker(kafka)和consumer都可以有多个。Producer,consumer实现Kafka注册的接口，数据从p broker，broker承担一个中间缓存和分发的作用。broker分发注册到系统中的consumer。broker的作用类似于缓存，即活跃的数据和离线处理系统之间的缓存。器端的通信，是基于简单，高性能，且与编程语言无关的TCP协议。
+·基本概念：
+·Topic:特指Kafka处理的消息源(feeds of messages)的不同分类。
+·Partition:Topic物理上的分组，一个topic可以分为多个partition,每个partition是一个有序的队列。partition中的每条消息都会被 序的id(offset)。
+·Message：消息，是通信的基本单位，每个producer可以向一个topic（主题）发布一些消息
+·Producers:消息和数据生产者，向Kafka的一个topic发布消息的过程叫做producers。
+·Consumers：消息和数据消费者，订阅topics并处理其发布的消息的过程叫做consumers。
+·Broker：缓存代理，Kafka集群中的一台或多台服务器统称为broker。
+·发送消息的流程：
+·Producer根据指定的partition方法(round-robin、hash等)，将消息发布到指定topic的partition里面
+·kafka集群接收到Producer发过来的消息后，将其持久化到硬盘，并保留消息指定时长（可配置），而不关注消息是否被消费。Consumer从kafka集群pull数据，并控制获取消息的offset
+```
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/770a48a5-a06c-4aa5-8ac6-add6873a71e4/SCR-20240807-frzz.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XOIN43DF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225320Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFoSErecGls169NoBcuwFPbabMcSE8A98eXZpBmB37UiAiEA9%2Bork91MiDFz9fNkGr1SCPYZO%2FcOOUVhud8aY8Aj5DQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEaU9VE9DKpR7WvrPyrcAwF9jTQh1FRI5wS9ZM3pjXA%2BIDCNiNwXisOxOOukufNkL2T1unpI1bEqNdDHUv6KjiEFxfMUhnpl15Uv0Ds%2F72e2KBysihxgOTpgIq4L65NCWsf2aHwo7raLM5tmJLrMSQAbZuaHWnHEv%2BepcpfI6WZ7Vc56orBNefEJX%2FIsc1Vg1Lo16Q%2F262hIxgSr8a7WMx4LqO27%2FrphBJNUP9PmR5m86aXs0i7oVOMgI9C0FD263iOzDSQJKuDVdEWlGfIk1I%2B6TXru2%2FRLJrsv%2FWbwcfP9Zm1LHECKyXCwWkC%2B6VX1Ro46KUnZ8pFqa6t5OoAsqpKNFv3Uwq7MiwjQ3sNU%2Bv4f4aGi9kev6dlKihXgPv7idSv0tagNz43v%2BSYVuGhfGkOCjndLGLnvcTHKsvLUeebGT0%2BSATwwUZHVS0O3Iw7%2FFb8%2FSGh3ZS8cjA6a5tjkba7IEz31MXbhsLvuUr2SChRaUeIWBAfo9piKJdDTGoaQWfyrMZ8QRLHmO8YauLatvc44GGqtysWIoz0rkAGN9KiimKR%2BvzIUo8BUtDkI8NbCqANy3E58M%2FWz2hlp17NHnGqx2U8dheOziSHEPhoVsHZQCbhm6OO98QXl49OypaTw6AewNnXoNQWNvLjCMJm3%2F9IGOqUBph5U0An7GAcMLOfkiGrbsjZULzq1ltwv7IaSVj%2F%2FJssSX3EOI5evjE090PH6gsbPJP%2F9Z1VhNeRV6vpduFcMgjuRjyQScXWcpnhkv0k4U4ZBYHBmPPXH55HVGK6dx%2BIevgmFNxyPfc973xTX8esNES7F0dBMtdFq1nOJPmQCggxTkUVhZU6yw%2FV4BWtWVSsDATx9zk3tz%2BFNFP%2Bxh2Pe4CnQrpXe&X-Amz-Signature=6ed031fdbd6ed38ec60269bcf785a98afee060f21e8ab7e1fffdda8c6887190c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

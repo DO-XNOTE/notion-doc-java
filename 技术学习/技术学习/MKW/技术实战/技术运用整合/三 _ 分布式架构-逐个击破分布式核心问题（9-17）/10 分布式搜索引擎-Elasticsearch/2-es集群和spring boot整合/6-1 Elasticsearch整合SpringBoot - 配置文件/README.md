@@ -1,0 +1,86 @@
+---
+title: 6-1 Elasticsearch整合SpringBoot - 配置文件
+---
+
+# 6-1 Elasticsearch整合SpringBoot - 配置文件
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0baee9cb-cf4a-40e1-a4e3-302aa6dc1d54/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ROAUZECQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225158Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNkeb%2BBEkU3RG75vTvTvpWEV0xJNNk8fF6%2B%2BAOb1MQYwIhAMC2YUXCBDsUqBdpMdMqmjAoDbmE8PNWjHQUrhV4nnafKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgweSTmuMc3a5lYDSXQq3AM5ETZzDkW5JAKS%2FuF4eYWK5UdM2crf9IHqbgt7unQfsio6kWjbHcI7kDEGQp6sK48f0xHT%2FTcogwpGUeQO8IJXwAkXdNb79zwgXkoe6fSoUaCEP9GZRwx1khQZy3FhI5E7C37wH2%2FJM%2Fc%2B5pqkwdlfBNHi2Scop8Wt%2B33%2FCkWdlpcLPyibMEFDAxDLLZPRV7Idgn6COy0n7%2F6ytDasyFxnyReMHOXqGFJ%2BtyBIoBuHG4y%2FqzJnv9QfsI9PEUl5NPOh0g5PXq3QN%2F1ZfGTRu2HrAnY9HZbUlFcy%2FX1EgquGuVZDlPD1a%2FxcNuEwuIGeGMpWRH%2Bqyril77iAagWY1tFUiOJUcpRGTvqOECNLlpdeVyg%2FIlfOAgxUFlWNNunaclZGBtX7c4Q%2B57PuYA0x1HLO5RXOn7XIF095PRxxKkNmBVrjHP2q6B%2FOpcge05qlNUJXQ4MWUGrRiwNQbWkg3zcEkVQ%2BULvRJAWE6WIFm5W7B89XtPIID%2FjOKDPXHmwtH1ANbLWfUipHnyaVqC0aMvd4Z%2BwGtdXuZxKDeMgXMlJDEpUx1BTIc8N7%2BVRveNAYwZe%2B%2BixRJXt5UyQMSgFSNcxHS7z2v25fwgMb3OO3EUHG3iJ4gKCOu3KO%2BNK1EzCXuP%2FSBjqkAbBrh4BUxXBID2Zum3GL5niaR8hJ579r6i8X0XJFS7ZmygMVoxBNCWaYzYsyawvI2r8%2BPdfSRsjPGd5CH31i8%2BmH0UBuQNCe0VUPxlGbZXmscxawVkkJlvilrdxJZbYey4c30CvF46moqPlaLEubqu0ADq6XE2dcpmxHslbcq3r6%2BaPKHwx2fiTG%2FYckJcPenyI%2Fmz5yGajt6k9aaVf0ypCbkrf0&X-Amz-Signature=38db880b95e628cc4ab02d900372320a1f9194fbb0659413cd255a25b2e1246d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b6a3b5de-aabf-4b59-abdc-f2456dd33e37/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ROAUZECQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225158Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNkeb%2BBEkU3RG75vTvTvpWEV0xJNNk8fF6%2B%2BAOb1MQYwIhAMC2YUXCBDsUqBdpMdMqmjAoDbmE8PNWjHQUrhV4nnafKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgweSTmuMc3a5lYDSXQq3AM5ETZzDkW5JAKS%2FuF4eYWK5UdM2crf9IHqbgt7unQfsio6kWjbHcI7kDEGQp6sK48f0xHT%2FTcogwpGUeQO8IJXwAkXdNb79zwgXkoe6fSoUaCEP9GZRwx1khQZy3FhI5E7C37wH2%2FJM%2Fc%2B5pqkwdlfBNHi2Scop8Wt%2B33%2FCkWdlpcLPyibMEFDAxDLLZPRV7Idgn6COy0n7%2F6ytDasyFxnyReMHOXqGFJ%2BtyBIoBuHG4y%2FqzJnv9QfsI9PEUl5NPOh0g5PXq3QN%2F1ZfGTRu2HrAnY9HZbUlFcy%2FX1EgquGuVZDlPD1a%2FxcNuEwuIGeGMpWRH%2Bqyril77iAagWY1tFUiOJUcpRGTvqOECNLlpdeVyg%2FIlfOAgxUFlWNNunaclZGBtX7c4Q%2B57PuYA0x1HLO5RXOn7XIF095PRxxKkNmBVrjHP2q6B%2FOpcge05qlNUJXQ4MWUGrRiwNQbWkg3zcEkVQ%2BULvRJAWE6WIFm5W7B89XtPIID%2FjOKDPXHmwtH1ANbLWfUipHnyaVqC0aMvd4Z%2BwGtdXuZxKDeMgXMlJDEpUx1BTIc8N7%2BVRveNAYwZe%2B%2BixRJXt5UyQMSgFSNcxHS7z2v25fwgMb3OO3EUHG3iJ4gKCOu3KO%2BNK1EzCXuP%2FSBjqkAbBrh4BUxXBID2Zum3GL5niaR8hJ579r6i8X0XJFS7ZmygMVoxBNCWaYzYsyawvI2r8%2BPdfSRsjPGd5CH31i8%2BmH0UBuQNCe0VUPxlGbZXmscxawVkkJlvilrdxJZbYey4c30CvF46moqPlaLEubqu0ADq6XE2dcpmxHslbcq3r6%2BaPKHwx2fiTG%2FYckJcPenyI%2Fmz5yGajt6k9aaVf0ypCbkrf0&X-Amz-Signature=20507fb20bc72447dcea8417119b274bcb5388f8df9ce5196287328a77e16c7e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么前面几节课其实我们都是针对于咱们的 elastic search 做的一个结构化的一个搜索。接下来我们就需要把 ES 和我们的项目做一个整合，整合到 spring mute 那么如何去整合，肯定的我们是需要去引入一定的依赖的。所以我们会先创建一个工程，这个工程的话主要是用于去做搜索的。好打开咱们的一个开发工具。那么我们去创建一个新的 mojo 在这里面直接点击下一步写一下 foodie 杠 gev 杠 search 或者你直接写一个 ES 也可以。
+
+
+好，然后我们点击下一步好创建。那么这个时候咱们这个新的工程在这里我们就已经是创建出来了，创建出来以后我们在这里面，在这里 search 好。 OK 这里面都是空的。然后我们在这个 pom 我们是需要去引入一定的内容的，这个依赖的话我们来看一下，我们直接使用我们这一部分的一个笔记，这个笔记是在我们当时课程的下一节课会包含我们的一个文档的，直接拷贝一下推到咱们的项目里面来。那么是需要写一个 dependencies 然后再给包进去好保存一下。
+
+
+在进行下载的时候其实会比较的慢，那么我这边其实也是预先下载好了，所以现在已经是加入进来，并且加入的其实也是比较快的。然后我们可以到这里来看一下。就是说当我们在引入这样的一个依赖的时候，那么这个依赖其实是 springboot starter data plastic search 这个是由 springboot 和 ES 做的一个整合，是由它所出的一些相应的 API 我们可以通过 spring 所提供的一些 API 其实也就是有一个叫做 elastic search temperate 通过这样的一个模板去实现我们针对于 ES 的一些结构化的搜索，它帮我们封装了很多的一些 API 方法等等的内容。然后我们可以到这里面来看一下。
+
+
+打开我们的 search 到 dependence 找一下，我们把这个拉过来，找到我们这个，这个就是我们刚刚所添加的一个 ES 那么我们展开一下再展开。在这里面我们往下面看，可以看到我们在这边引用了一个ES ，在这里这个 ES 的话我们能够看到它的一个版本其实是六点四点三，我们可以再展开，在这里。在这里面就会有一个 ES 官方的一个价包了，它的版本就是六点四点三。那么这是一个六点叉的一个版本，我们可以打开眉门库，这是眉门库，这就是我们刚刚所依赖的校包的一个名称。那么其实它目前的一个最新版本就是2.2，也就是我们在项目里面所引用的，这个版本号它所对应的一个 ES 的一个版本是6.4，这样子的话其实和我们在之前所搭建的一个 ES 版本是不匹配是不贴合的。如果说发生这样的一种情况的话，我们在使用 ES 的客户端在 sprint 里面去发起调用，那么是不行的，版本必须要保存一致。
+
+
+OK ，如何去保证一致呢？一种方式是把我们的 stay mode 它的这个版本也就是 spring data ES 它的版本去提升，但是它的目前最高版本是 2.2 对吧，所以提升不了。还有一种方式就是把我们的 ES 做一个版本的降低，把它降低到六点四点三保持一致。这样我们就可以在我们的一个甲板端可以向咱们的 ES server 发起一些结构化的一个搜索了 OK 吧。
+
+当然如果说 ES 就是说我们的 spring boot 它的一个 ES 它的一个版本号，如果说它提升了以后，那么我们可以把它的这个版本再去提升，其实也是可以的。在我们这里的话由于是学习阶段，所以我们会把 ES 我们会降低到六点四点三。然后这个的话就是我已经预先去进行了一个安装。
+
+
+6 和 7 的话其实我们最大的一个主要区别就是说我们的一个菜盘，就是我们其实之前也已经是说了在新版的 ES 7 点叉里面，其实它的一个菜盘其实是没有这样的一个概念了。但是也没有关系，我们在使用这个 ES 六点四点三的时候，我们的 tab 统一的可以设置为下划线 Doc 就可以了。 OK 吧，那么这一点我们注意一下就行了。
+
+
+随后我们在这个打开浏览器，我们看一下这个是我们的ES ，我们可以往下面去看可以去做一个下载，在这里有一个 past release 也就是我们历史的一些发布的版本，到这里面可以去下。然后在这边可以去搜一下，搜一个 elac search 然后有一个版本号往下面搜，有一个六点四点三在这里搜一下，然后点击进去再去做一个下载就可以了。
+
+
+OK ，可以通过这种方式去下。像其实我们如果说使用一些云服务器厂商所提供的 ES 服务的话，比方说我们可以来看一下由腾讯云所提供的 ES 服务。腾讯云的话其实我们也可以看到目前其实我们的 ES 主流版本还是四六点四或者5.6，这两个版本还是我们目前主流的两个版本，后续的话应该还是会把这个七点叉的版本慢慢的可以迭代上去。所以如果说你要去购买这种云服务的一个 ES 肯定只能够选择这两个版本之间的一个。
+
+
+当然目前在云服务器上的一个六点四点三和我们本地所使用的一个 ES 版本其实可以说也是完全的贴合。OK ，所以我们也是基于六点四点三去做这样的一个操作，这样子的话你就需要去下载和安装。下载和安装的话其实和我们在之前安装 ES 7 的话，它的流程是一模一样的，过程也是差不多的。可以看到这个我们提供的文档里面其实我也是附上了这样的一段配置，就是说你在安装 ES 六点四点三的时候，这个是我自己安装的时候所配的一些 YAML 的一个内容配置。那么一个是 class name 我是配置了 ES 6，这个根据你自己的一个情况去配 node name 是 node 0，这个也可以随意。然后这个 pass data 以及是 pass loss 这个是和我们之前在安装 EST 的话是保持一致，只不过这里的一个名称这个是改掉了。另外在这里还有是一个 net network 点， host 是改成0.0。 OK 吧，主要是这个。
+
+
+另外如果说你在安装 ES 的过程中出现一些错误的话，和我们 ES 7 安装的时候也是一样，你去注意一下，就说如果发生这些错误，然后你是需要去切换到如此用户之下去做一个相应的操作。而且一定要注意 ES 6 的话你也要去创建一个新的用户，不能够去使用 root 去启动咱们的一个 rest 这一点也是需要去注意的。
+
+
+OK ，当这些配置你全部都设置好了以后，那么你的 ES 6 的话就可以成功的去启动。OK ，那么当然不要忘记你的一个中文分词器，你也要去做一个相应的下载。那么中文分词器根据这里的一个版本去做安装，我们之前安装的是一个七点叉这个版本，所以我们要去做六点叉的一个安装的话，那么你要到这个 release 里面对应的去搜索一下，去找到对应的版本，然后再去做一个相应的安装。那么安装的过程和我们之前在安装这个七点叉的这个插电的时候其实一模一样的。
+
+OK ，你可以到这里面去搜一下，搜到六点四点三这个版本贴合，再去做一个对应的安装。在这里你可以直接去安装。当然你通过我们的文档去点击也可以，在这里有一个链接，你直接去点击就可以去做相应的一个下载了。那么这个就是我们的一个 GS 版本所需要去注意的一个问题。
+
+
+好，然后我们回到咱们的一个项目，那么当我们的一个依赖在这里我们加入之后，那我们就可以去把咱们的一个 resource 也就是我们的 YAML 文件 springmode 给设计一下。那么在这边我们拷贝分，这是我们之前所写的，拷贝一下贴过来。好，贴过来之后我们做一些相应的修改。我们这样子，我们把这里面的内容全部都删掉，全部删掉以后来看一下。
+
+有一个叫做 spring boot 有个 spring date 来看一下，这里面其实就可以去做一个相应的设置了，我们可以创意找到这个 spring data elastic search class notes 那么这个就是代表我们的一个集群里面的一个节点，在我们的这个文档里面其实我也是贴了出来来看一下。
+
+
+其实总共是两个配置，一个是 cluster name 另外一个是 cluster notes 你把这两个去设计一下咱们的一个整合，其实就可以说是已经 OK 了，写一下。还有一个是 cluster name 在这里。那么这个其实我们可以直接通过咱们的一个我们可以通过这个去拿到。那么这个其实就是咱们法务的一个92008。那么目前我的 ES 6 是安装在了这个 IP 是 187 上幺点幺八七OK ，所以直接访问是可以去拿到的。那么在这边我把 ES 6 直接拿过来贴到这个位置就可以了。然后在这里会有一个 class notes 那么这个是把他的 IP 写上187，然后冒号9200。那么在这里我们要去注意一下，当我们在使用 ES 的过程中，我们在之前其实都是使用的 9200 发起的一些 rest 请求，这个 rest 请求是9200。当我们在项目中使用 Java 去对接的时候，我们的客户端所使用的一个端口号是9300，这点是一定要去注意的。Ok 。好，那么这是我们单个的配置。那么如果说你现在是一个集群的话，你只需要在这它的后方你去把相应的这个 IP 它的 IP 给写上，比如说 188 再来一个 189 这样子。那么这样子其实就是一个集群的配置了。那么我这边只有一台，所以这样子就可以设置成功了。
+
+
+随后的话我们在这边我们现在其实已经是把它基本的一个配置是配好了，随后我们就可以去做一个运行。运行的话不要忘记，我们有一个启动类，也就是这个东西。我们直接拷贝过来贴过来就行了。
+
+这个复制的内容比较多，我们撤退撤回一下。我们这样子我们单独去拷贝，我们先创建一个 package com.m 可然后把这个 application 直接拷贝过来。像刚刚那样的拷贝的话，你会把这个子包所有的内容都会贴过来的，在这里面做一个精简，这些内容其实都不需要太多了。好OK ，那么这样子其实就可以去做一个运行。现在我们先来做一个install ，针对于我们当前这个 search 这个工程去做一个 install 好， install 在这里的话是成功的，没有任何问题。那么然后我们在这里我们可以这样子再去运行一下，跑一下来看一下。
+
+
+当我们的运行的时候，其实你会发现它其实会报了一个错，这边报错的话主要是因为在这里它会有一个错误原因，说我们 data source 是需要去做一定的一个配置。为什么会出现这样的一个问题？主要是因为我们这个工程其实附属，是依赖于我们的一个福地 DEV 这样的一个 root 工程的，有一些相应的依赖，其实我们都是配在 DEV 里面。所以我们在这里的一个 YAML 文件里面，你应该要把它所缺失的一部分的内容给拿过来，我们可以去把它去拷贝一下。其实主要就是我们的一个数据库，有的一个内容，那么它是需要有的，我在这里就直接拷贝，把这边直接拷贝过来，接过来一个是 UI 保持对齐，然后 password OK 吧，这个在我们这里虽然是用不到，但是它还是需要有的。然后这个 purpose 这个是没有用的。好，然后我们再来做一个启动。
+
+然后现在我们启动了以后，你会发现这个错误的话其实是发生了一些变化了，这个我们的一个数据库这个 UI 其实是没有了。然后在这边我们再来看一下这边，这个时候它会提示我们往下面看，它会有一个错误。这个错误是什么呢？是这个有一个 available processes is already set to 8，然后 grt 8。那么这个有这样的一个问题，这个问题是什么问题呢？我们可以来看一下。
+
+
+打开浏览器这个有一个这样的一个网址，这个网址它是一个 net 里面的一个 issue 对吧，也就是这样的一抛出来的一个问题来看一下。这里有一哥们，跟我们其实也是一样，我把这个放大一下，这边这哥们抛了一个问题，其实和我们在刚刚是一模一样，就这个问题，那么这个问题应该如何去解决呢？这个其实是由于 net 所产生出来的一个 issu 在这里来看一下，它有一个设置，我们是可以去配的。在这里有一个 yes.set.netty.runtime.adviable.processes 有这样的一个配置，你把这个配置设置为 false 就可以了。OK ，那么这一点是可以去注意一下的。
+
+
+那么在我们的这个文档里面，其实我也已经是贴了出来，这边是有一个 matt issue fix ，有这样的一个配置，你把这个类直接拷贝到我们的项目里面去就可以了，我把这个拷贝一下，然后我们在这边，去创建一个新的类，创建和我们的启动类。在同胞下，你有一个 Java class 创建叫做 ES configure 然后我把这里面的内容直接给贴过来，把这边直接拷贝，然后有一些包我们直接导入一下。这是我们的一个 config racing 是 spring framework 容器的一个配置，这样子的话会被扫描。然后下面是一个 post construct 这个的话就是在我们容器启动的时候，我们可以去做一个初始化，就是说通过
+
+
+system.set property 其实也就是一个属性，这个属性和我们刚刚在这个网页上其实是一样的，然后直接把它设置为 false 那么就可以了。好OK 。好，然后我们再来尝试启动一下。
+
+那么这样子的话启动没有任何的问题。现在其实我们当前的整合可以说是初步的成功了，主要就是我们的一个 pom 以及是我们的 YAML 这两个配置。另外还有是要去注意的就是咱们的一个 yes config OK ，咱们这个是由 Netty 引起的一个issue。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a4e7f422-9353-4fd9-81eb-b97f7c158417/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ROAUZECQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225158Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNkeb%2BBEkU3RG75vTvTvpWEV0xJNNk8fF6%2B%2BAOb1MQYwIhAMC2YUXCBDsUqBdpMdMqmjAoDbmE8PNWjHQUrhV4nnafKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgweSTmuMc3a5lYDSXQq3AM5ETZzDkW5JAKS%2FuF4eYWK5UdM2crf9IHqbgt7unQfsio6kWjbHcI7kDEGQp6sK48f0xHT%2FTcogwpGUeQO8IJXwAkXdNb79zwgXkoe6fSoUaCEP9GZRwx1khQZy3FhI5E7C37wH2%2FJM%2Fc%2B5pqkwdlfBNHi2Scop8Wt%2B33%2FCkWdlpcLPyibMEFDAxDLLZPRV7Idgn6COy0n7%2F6ytDasyFxnyReMHOXqGFJ%2BtyBIoBuHG4y%2FqzJnv9QfsI9PEUl5NPOh0g5PXq3QN%2F1ZfGTRu2HrAnY9HZbUlFcy%2FX1EgquGuVZDlPD1a%2FxcNuEwuIGeGMpWRH%2Bqyril77iAagWY1tFUiOJUcpRGTvqOECNLlpdeVyg%2FIlfOAgxUFlWNNunaclZGBtX7c4Q%2B57PuYA0x1HLO5RXOn7XIF095PRxxKkNmBVrjHP2q6B%2FOpcge05qlNUJXQ4MWUGrRiwNQbWkg3zcEkVQ%2BULvRJAWE6WIFm5W7B89XtPIID%2FjOKDPXHmwtH1ANbLWfUipHnyaVqC0aMvd4Z%2BwGtdXuZxKDeMgXMlJDEpUx1BTIc8N7%2BVRveNAYwZe%2B%2BixRJXt5UyQMSgFSNcxHS7z2v25fwgMb3OO3EUHG3iJ4gKCOu3KO%2BNK1EzCXuP%2FSBjqkAbBrh4BUxXBID2Zum3GL5niaR8hJ579r6i8X0XJFS7ZmygMVoxBNCWaYzYsyawvI2r8%2BPdfSRsjPGd5CH31i8%2BmH0UBuQNCe0VUPxlGbZXmscxawVkkJlvilrdxJZbYey4c30CvF46moqPlaLEubqu0ADq6XE2dcpmxHslbcq3r6%2BaPKHwx2fiTG%2FYckJcPenyI%2Fmz5yGajt6k9aaVf0ypCbkrf0&X-Amz-Signature=4f7df182e65fc7ab106205f2a804ecfb8a0abc0b4bbad74b7a302c208aef6507&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9983dc9c-87f5-4402-851e-3234cd990106/2020-09-17_175709.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ROAUZECQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225158Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNkeb%2BBEkU3RG75vTvTvpWEV0xJNNk8fF6%2B%2BAOb1MQYwIhAMC2YUXCBDsUqBdpMdMqmjAoDbmE8PNWjHQUrhV4nnafKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgweSTmuMc3a5lYDSXQq3AM5ETZzDkW5JAKS%2FuF4eYWK5UdM2crf9IHqbgt7unQfsio6kWjbHcI7kDEGQp6sK48f0xHT%2FTcogwpGUeQO8IJXwAkXdNb79zwgXkoe6fSoUaCEP9GZRwx1khQZy3FhI5E7C37wH2%2FJM%2Fc%2B5pqkwdlfBNHi2Scop8Wt%2B33%2FCkWdlpcLPyibMEFDAxDLLZPRV7Idgn6COy0n7%2F6ytDasyFxnyReMHOXqGFJ%2BtyBIoBuHG4y%2FqzJnv9QfsI9PEUl5NPOh0g5PXq3QN%2F1ZfGTRu2HrAnY9HZbUlFcy%2FX1EgquGuVZDlPD1a%2FxcNuEwuIGeGMpWRH%2Bqyril77iAagWY1tFUiOJUcpRGTvqOECNLlpdeVyg%2FIlfOAgxUFlWNNunaclZGBtX7c4Q%2B57PuYA0x1HLO5RXOn7XIF095PRxxKkNmBVrjHP2q6B%2FOpcge05qlNUJXQ4MWUGrRiwNQbWkg3zcEkVQ%2BULvRJAWE6WIFm5W7B89XtPIID%2FjOKDPXHmwtH1ANbLWfUipHnyaVqC0aMvd4Z%2BwGtdXuZxKDeMgXMlJDEpUx1BTIc8N7%2BVRveNAYwZe%2B%2BixRJXt5UyQMSgFSNcxHS7z2v25fwgMb3OO3EUHG3iJ4gKCOu3KO%2BNK1EzCXuP%2FSBjqkAbBrh4BUxXBID2Zum3GL5niaR8hJ579r6i8X0XJFS7ZmygMVoxBNCWaYzYsyawvI2r8%2BPdfSRsjPGd5CH31i8%2BmH0UBuQNCe0VUPxlGbZXmscxawVkkJlvilrdxJZbYey4c30CvF46moqPlaLEubqu0ADq6XE2dcpmxHslbcq3r6%2BaPKHwx2fiTG%2FYckJcPenyI%2Fmz5yGajt6k9aaVf0ypCbkrf0&X-Amz-Signature=d4574c2594bf936d849323ea21da449d72e4da3dc1f7381d3a8dbb5ca01552a5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/618fe082-cdc7-49c6-9572-c771e8f0ca21/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ROAUZECQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225158Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNkeb%2BBEkU3RG75vTvTvpWEV0xJNNk8fF6%2B%2BAOb1MQYwIhAMC2YUXCBDsUqBdpMdMqmjAoDbmE8PNWjHQUrhV4nnafKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgweSTmuMc3a5lYDSXQq3AM5ETZzDkW5JAKS%2FuF4eYWK5UdM2crf9IHqbgt7unQfsio6kWjbHcI7kDEGQp6sK48f0xHT%2FTcogwpGUeQO8IJXwAkXdNb79zwgXkoe6fSoUaCEP9GZRwx1khQZy3FhI5E7C37wH2%2FJM%2Fc%2B5pqkwdlfBNHi2Scop8Wt%2B33%2FCkWdlpcLPyibMEFDAxDLLZPRV7Idgn6COy0n7%2F6ytDasyFxnyReMHOXqGFJ%2BtyBIoBuHG4y%2FqzJnv9QfsI9PEUl5NPOh0g5PXq3QN%2F1ZfGTRu2HrAnY9HZbUlFcy%2FX1EgquGuVZDlPD1a%2FxcNuEwuIGeGMpWRH%2Bqyril77iAagWY1tFUiOJUcpRGTvqOECNLlpdeVyg%2FIlfOAgxUFlWNNunaclZGBtX7c4Q%2B57PuYA0x1HLO5RXOn7XIF095PRxxKkNmBVrjHP2q6B%2FOpcge05qlNUJXQ4MWUGrRiwNQbWkg3zcEkVQ%2BULvRJAWE6WIFm5W7B89XtPIID%2FjOKDPXHmwtH1ANbLWfUipHnyaVqC0aMvd4Z%2BwGtdXuZxKDeMgXMlJDEpUx1BTIc8N7%2BVRveNAYwZe%2B%2BixRJXt5UyQMSgFSNcxHS7z2v25fwgMb3OO3EUHG3iJ4gKCOu3KO%2BNK1EzCXuP%2FSBjqkAbBrh4BUxXBID2Zum3GL5niaR8hJ579r6i8X0XJFS7ZmygMVoxBNCWaYzYsyawvI2r8%2BPdfSRsjPGd5CH31i8%2BmH0UBuQNCe0VUPxlGbZXmscxawVkkJlvilrdxJZbYey4c30CvF46moqPlaLEubqu0ADq6XE2dcpmxHslbcq3r6%2BaPKHwx2fiTG%2FYckJcPenyI%2Fmz5yGajt6k9aaVf0ypCbkrf0&X-Amz-Signature=5bd7894c26ff1f4dcc8a6ad5298567a800d59340b3d8ba60effd6c1d8afa4de1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/09f4ccc7-06ec-4e3f-9e11-19f2f5a1f344/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ROAUZECQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225158Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCNkeb%2BBEkU3RG75vTvTvpWEV0xJNNk8fF6%2B%2BAOb1MQYwIhAMC2YUXCBDsUqBdpMdMqmjAoDbmE8PNWjHQUrhV4nnafKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgweSTmuMc3a5lYDSXQq3AM5ETZzDkW5JAKS%2FuF4eYWK5UdM2crf9IHqbgt7unQfsio6kWjbHcI7kDEGQp6sK48f0xHT%2FTcogwpGUeQO8IJXwAkXdNb79zwgXkoe6fSoUaCEP9GZRwx1khQZy3FhI5E7C37wH2%2FJM%2Fc%2B5pqkwdlfBNHi2Scop8Wt%2B33%2FCkWdlpcLPyibMEFDAxDLLZPRV7Idgn6COy0n7%2F6ytDasyFxnyReMHOXqGFJ%2BtyBIoBuHG4y%2FqzJnv9QfsI9PEUl5NPOh0g5PXq3QN%2F1ZfGTRu2HrAnY9HZbUlFcy%2FX1EgquGuVZDlPD1a%2FxcNuEwuIGeGMpWRH%2Bqyril77iAagWY1tFUiOJUcpRGTvqOECNLlpdeVyg%2FIlfOAgxUFlWNNunaclZGBtX7c4Q%2B57PuYA0x1HLO5RXOn7XIF095PRxxKkNmBVrjHP2q6B%2FOpcge05qlNUJXQ4MWUGrRiwNQbWkg3zcEkVQ%2BULvRJAWE6WIFm5W7B89XtPIID%2FjOKDPXHmwtH1ANbLWfUipHnyaVqC0aMvd4Z%2BwGtdXuZxKDeMgXMlJDEpUx1BTIc8N7%2BVRveNAYwZe%2B%2BixRJXt5UyQMSgFSNcxHS7z2v25fwgMb3OO3EUHG3iJ4gKCOu3KO%2BNK1EzCXuP%2FSBjqkAbBrh4BUxXBID2Zum3GL5niaR8hJ579r6i8X0XJFS7ZmygMVoxBNCWaYzYsyawvI2r8%2BPdfSRsjPGd5CH31i8%2BmH0UBuQNCe0VUPxlGbZXmscxawVkkJlvilrdxJZbYey4c30CvF46moqPlaLEubqu0ADq6XE2dcpmxHslbcq3r6%2BaPKHwx2fiTG%2FYckJcPenyI%2Fmz5yGajt6k9aaVf0ypCbkrf0&X-Amz-Signature=d6b798f64a4375d0ac0becf00e055a0c0e8601701c5caee149683e4a7cbf3f6e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

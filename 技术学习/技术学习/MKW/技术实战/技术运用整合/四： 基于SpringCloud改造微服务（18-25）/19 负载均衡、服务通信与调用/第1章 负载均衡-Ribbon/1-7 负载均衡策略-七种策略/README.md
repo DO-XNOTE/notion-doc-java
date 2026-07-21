@@ -1,0 +1,134 @@
+---
+title: 1-7 负载均衡策略-七种策略
+---
+
+# 1-7 负载均衡策略-七种策略
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ce1154c9-343b-42b3-9dc8-ac9becd7be17/SCR-20240718-edmt.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=cf14242428524123fb6e1fc5ad088f54ed28b6ac5215ff46be0a5c8f75d68872&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**1-7 负载均衡策略-七种策略**
+
+前面我们学习了LoadBalancer的加载方式，那么大家知道LoadBalancer底层是怎么做具体的分发吗？
+
+这一小节我们就打开Ribbon的工具箱，来看一下LoadBalancer下面更底层的7种内置的负载均衡策略，他们是Ribbon实现负载均衡的核心类。本教程适合搭配代码讲解视频一同使用，边读边看视频，功力必将大增。
+
+**七种策略**
+
+这一小节没有段子（严肃脸.jpg）
+
+**RandomRule - 随性而为**
+
+收心归寂灭，随性过光阴
+
+——宋代·文天祥《偶赋》
+
+从名字就能看出，这是个很随性的策略，随性到什么程度呢？它会从当前可用的服务节点中，随机挑选一个节点访问。
+
+这分明是乱拳打死老师傅的路子吗，哪有负载均衡的智慧？别急，这里为了打死老师傅还真用了两个小花招，使用了yield+自旋的方式做重试，还采用了严格的防御性编程。不知道我说的是什么对吧？那就打开配套的代码讲解视频，边看边学。
+
+**RoundRobinRule - 按部就班**
+
+蜗牛背着那重重的壳呀，一步一步地往上爬
+
+这个rule是RandomRule的亲兄弟，RandomRule是随性而为挑选节点，RobinRule却按部就班从一个节点一步一步地向后选取节点，既不会跳过一个，也不会原地踏步，每一次只向后移动一步。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bdd116ae-2a87-41e9-8271-93f532fa9488/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=decb8b67a6b120171dfe3e52fe188d517c83c33db845dcd99d69811261c4edd1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+同学也许会问了，假如在多线程环境下，两个请求同时访问这个Rule是否会读取到相同节点呢？不会，这靠的是RandomRobinRule底层的自旋锁+CAS的同步操作。CAS的全称是compare and swap，是一种借助操作系统函数来实现的同步操作。前面我们讲到过Eureka为了防止服务下线被重复调用，就使用AtomicBoolean的CAS方法做同步控制，CAS+自旋锁这套组合技是高并发下最廉价的线程安全手段，因为这套操作不需要锁定系统资源。当然了，有优点必然也有缺点，自旋锁如果迟迟不能释放，将会带来CPU资源的浪费，因为自旋本身并不会执行任何业务逻辑，而是单纯的使CPU“空转”。所以通常情况下会对自旋锁的旋转次数做一个限制，比如JDK中synchronize底层的锁升级策略，就对自旋次数做了动态调整。
+
+```yaml
+// CAS+自旋锁获取系统资源的打开方式，真实应用中还要注意防止无休止自旋：
+
+// 或者for (;;) 做自旋
+
+while (true) {
+
+// cas操作
+
+if (cas(expected, update)) {
+
+// 业务逻辑代码
+
+// break或退出return
+
+}
+
+}
+```
+
+Netflix真是特别喜欢用自旋CAS，毕竟作为中间件来说性能还是非常重要的。不过我实在没明白为什么名字里带个Robin，我猜想写代码的人或者他的宠物可能叫Robin？就像Oracle数据库有一个默认账号叫scott一样。
+
+**RetryRule - 卷土重来**
+
+江东子弟多才俊，卷土重来未可知
+
+--唐代·杜牧《题乌江亭》
+
+RetryRule是一个类似装饰器模式的Rule，我们前面学习服务注册的时候了解过，装饰器相当于一层套一层的俄罗斯娃娃，每一层都会加上一层独特BUFF，我们这里复习一下装饰器的结构
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/35d20d77-650f-4b0e-b212-19896dec36a3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=a6f509a4d2e368eb7ff7358e97fb628cf63f9eebb898700544e845e89df80612&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+RetryRule也是同样的道理，他的BUFF就是给其他负载均衡策略加上“重试”功能。而在RetryRule里还藏着一个subRule，这才是隐藏在下面的真正被执行的负载均衡策略，RetryRule正是要为它添加重试功能（如果初始化时没指定subRule，将默认使用RoundRibinRule）。
+
+**WeightedResponseTimeRule - 能者多劳**
+
+巧者劳而知者忧，无能者无所求
+
+--战国·庄子《列御寇》
+
+这个Rule继承自RoundRibbonRule，他会根据服务节点的响应时间计算权重，响应时间越长权重就越低，响应越快则权重越高，权重的高低决定了机器被选中概率的高低。也就是说，响应时间越小的机器，被选中的概率越大。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/63efa8f0-4719-470d-b34a-8e27bb969844/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=e4d6a0d031b63630d560c082c3bec7d5c48eb379d7c71e64170f16b181820ddd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+由于服务器刚启动的时候，对各个服务节点采样不足，因此会采用轮询策略，当积累到一定的样本时候，会切换到WeightedResponseTimeRule模式。关于权重的计算方式，请大家参考源码阅读视频。
+
+**BestAvailableRule - 让最闲的人来**
+
+莫等闲，白了少年头，空悲切
+
+--南宋·岳飞《满江红·写怀》  
+
+应该说这个Rule有点智能的味道了，在过滤掉故障服务以后，它会基于过去30分钟的统计结果选取当前并发量最小的服务节点，也就是最“闲”的节点作为目标地址。如果统计结果尚未生成，则采用轮询的方式选定节点。
+
+关键字
+
+过滤故障服务
+
+选取并发量最小的节点
+
+**AvailabilityFilteringRule - 我是有底线的**
+
+这个规则底层依赖RandomRobinRule来选取节点，但并非来者不拒，它也是有一些底线的，必须要满足它的最低要求的节点才会被选中。如果节点满足了要求，无论其响应时间或者当前并发量是什么，都会被选中。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8003769c-c436-44a3-aeec-a55e2338dfd6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=d180c7bea273b3679adeb203cca8335c12a5f7e108445c03b41ff15389a01fbd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+每次AvailabilityFilteringRule（简称AFR）都会请求RobinRule挑选一个节点，然后对这个节点做以下两步检查：
+
+是否处于熔断状态（熔断是Hystrix中的知识点，后面章节会讲到，这里大家可以把熔断当做服务不可用）
+
+节点当前的active请求连接数超过阈值，超过了则表示节点目前太忙，不适合接客
+
+如果被选中的server不幸挂掉了检查，那么AFR会自动重试（次数最多10次），让RobinRule重新选择一个服务节点。
+
+**ZoneAvoidanceRule - 我的地盘我做主**
+
+这个过滤器包含了组合过滤条件，分别是Zone级别和可用性级别。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9e4af34d-7725-45a6-98d0-a3a7d2f845e6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=747d658ef3189b9a1aeaefce9b0970a1a9cbac583ea282d4f347a2764584405f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Zone Filter: 在Eureka注册中一个服务节点有Zone, Region和URL三个身份信息，其中Zone可以理解为机房大区（未指定则由Eureka给定默认值），而这里会对这个Zone的健康情况过滤其下面所有服务节点。
+
+可用性过滤：这里和AvailabilityFilteringRule的验证非常像，会过滤掉当前并发量较大，或者处于熔断状态的服务节点。
+
+**小结**
+
+老师想给大家分享一个小tips，关于日常碎片化学习的。技术能力的提高经常需要靠着琐碎的知识碎片的积累，有时候利用时间碎片来学习知识碎片是个很好的“见缝插针”的学习方法。比如坐地铁上下班的碎片时间，可以关注一些技术公众号，学一些零散的但相对深入的知识，比如synchronize底层的锁升级策略，Java8相比Java7对JVM模型的改动，等等。假如每天能利用1小时的碎片时间，坚持1年就会有质的提升，要知道每天1小时一年就是365小时，这可都够得上一门新语言课程的学习时间了。
+
+今天我们学习了Ribbon内置的七个负载均衡策略，下一小节我们趁热打铁，学习如何给服务指定一个负载均衡策略。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0db79303-fb21-405e-905c-acd57e7025f6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UK5NKMX4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225608Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIB7Cm40ym5wY0higEx%2BMR%2F%2BH81ib9hIasLMlvG1fGHX3AiBi2wLxsSSxKbp26LOZhXhDaDeGk0tOw1LzefUmou7IxSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz7%2Fd6hDoFD9uIhlAKtwDr%2B8OwiSEmugMBKbXW8DkOVVoWG%2FuvdPQwxsy1o65eOjcfXahAocP5YtAJU%2FA33BKO%2FgQFXfPzwKPL7UJ7i6lZ5O1EclZBHd%2B7sSXH0qgjSyNUFN0Fh2cl1K%2B74VLNV8VXO4OnymvqczQjN8BGfDj1w8op56SOr5lcKsmEURNoIUt%2Bm1y0VdmYNfDrceTw55wqaCOg3wUQD5hHUaSKTa383lZ%2BI2z1H6IvIH5jgy2VmtvVHyQ2VRIS4yKnG1E5bZYVKkV%2BaFCf%2FRIQwP4BVI4HgI0VS%2BpKDwUfCplESIqip2S1XgEWV2CKHXUnZ6wAB3k0960KMXnU1dOH0iJfTKfG1RaufM7DTtMYOJsS%2Fe8nVsiNH6AG%2BeIvZ%2F9gX5GLpK%2FW%2FZQHyEYQMLoBM24Ozb%2FOAFSqk7ULkT3BETLP0Dg0kGr8oNrdJb5CVGkUASzRpBMRtwkTICCNUr0NP8SrS3vq29jdWA61NEjRkttu%2FnAbMJVAcOf2S%2FQLMWUvFoyc3CQdUOwOunfaP6kQUZl5%2BTh2eIimP1%2B%2F2d7pn2raNI5%2BDjvPmWyqAWoTTyzIR7hl39E94AYP5hm%2FU7S6QPHAZyLfMPmUxBMCS7U7NqbatQmF89O7vQnArsglkE4l9wwgrv%2F0gY6pgFyygptKbFGrCmhJ%2BQKY96AZvyY35TDCbQEcWPuaUcUjcbxJDVecVcy%2B%2Ft83NFuObS6%2BbhzgyKSEaHUtDstK%2F7hN5ME1yxwRZy7J4KhMuSngmAom3YtTGMdltcjjF674bB9OsSVUDmGHVIP4pnhZOSs0sf7FwZttRc6JPd8rP1Rv8JSfCngvQ5caeOb3hAL%2FqnuGSIFUaCh8iILBiSfSzI5YsXZrFBd&X-Amz-Signature=a0629cf4ca81a1f1f5ca20fed3720d00a78d614fe48178353ac6c8bbc4d3ec62&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+

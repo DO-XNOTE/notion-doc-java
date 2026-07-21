@@ -1,0 +1,28 @@
+---
+title: 2-6 本周小结与作业任务
+---
+
+# 2-6 本周小结与作业任务
+
+
+**2-6 本周小结与作业任务**
+
+**课程小结和作业**
+
+这部分Config课程只是香肩半露，剩下那一半放在下一个Bus章节里show出来
+
+**脑图**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a45043ef-b48b-4094-ba68-ad7133b86f5b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VO76DL4Y%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225701Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCCVjkdNV5tnxtAMMzkGGvuHbj98pH%2BpGtpYQkNtt%2BlNAIhAIY%2FWQu%2BQ6PadT3E14OaMdoeoPJUqGl3FRuXrdt2I8hlKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzdbob1dlK%2FkHSxyqsq3AOsdib6PifZL4mbp9LExcNchEIPHw1UHfMZfQlbwNmIQ1AHzyYPxg6qE9UFDjX2KQmdn7y1dTUdntzVWduSB2GAIiEwIuLggxKKM0CiptpCz021ly%2BxYVGyv6E1zDfjd8zwzuNg6%2FOdI3AGWHRAGC71ibZAXIfA1Ks2ZzJwj2biD4O%2BQIRY8oNUjl6MbOutAU83zCJqlT6FCeHOTucRrg9tpUMiq48yPUwKP1txlwcZFnPXDMs3O2khLQbsbLT4RI2iHemBhNzapiaZyZ3AypeQUuDls7SR2bpltH6bVgGIs5ZycoMrHnLyQWqKJ%2BQ9T4tpLz%2FqOe4TQaULo%2FLcbG8cN7Ajq9gdmRz2RfWOmq%2BxNQIhwrYOhQEnGawQpTf9swc4dMrK6Hlxg0m4QOx9Vk8eCTwZNm7QdCT56IqiPYdlgBbfqDKBMKKFfw5x7s3adyIhoBaWSLOwvGhJWey%2F01uw33EObmNl3%2BGbNdQM8cWhMoR0HJnCPC2x%2Bo9VGpdjV4UjkjbCgNvqBEHL2uygF9zNMGvGf9x6hCFiusdogLyOOBgBqQukri0bf0OjYKQPrzGNPXXFUEeYdBaJuKJI1d8025iB6Ytrm7YN3y18xq%2BNQPvmM6G4rcGyXat2TzCeuv%2FSBjqkAeFBQqvCnZ2VROpt4b9zlnkPj%2B5VvDl3OaLAbEYKwKpWWMcgkh%2F8gYSGwu60W0LWsfqNOvjXN1ec2sgQ3lyOzRvOqT8EFdQdJqGfcYHHunLp0SjLaPOKwdF813pUKYwiDFQz9DQtLExs37Jef96OT55XEH5xzn0zSx4uRJVywwumrbeF4fdMfl5e%2BeFIJEn78tElJ%2FC3L6Nwo6UN7bvrM55n1TEf&X-Amz-Signature=3198b0acc36d3e89efb131289c23dff85db11aeaad01463c32bc8c8d493d33cc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+**作业时刻**
+
+[配置存储]-我们演示了基于Github的配置方式，同学们自己尝试下，如何通过Config搭建一套基于数据库，或者本地文件系统的配置管理服务
+
+[环境隔离]-课程中我们提到了通过外部传入参数的形式指定环境参数（如Profile，Label等），从而实现环境隔离，同学们在本地尝试通过设置系统变量或者bootstrap启动变量，将环境参数传入到应用里
+
+挖掘一到两个新的应用场景，将动态配置刷新应用在这些业务当中
+
+将应用当中的敏感信息，比如数据库密码等，替换为加密形式存储
+

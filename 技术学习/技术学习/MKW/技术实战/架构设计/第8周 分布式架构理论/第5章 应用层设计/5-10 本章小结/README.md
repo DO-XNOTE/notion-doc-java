@@ -1,0 +1,16 @@
+---
+title: 5-10 本章小结
+---
+
+# 5-10 本章小结
+
+
+本章小结
+从老师在工作里接触的项目来说，大部分复杂业务都会涉及到状态机的流转，比如订单中心和履约 中心就是两个典型的“重业务”，规则引擎是相对比较合适的解决方案，在我上一家公司中是采用的I BM的商用引擎ILog(除了贵以外，真是要多垃圾有多垃圾)。阿里系则有内部的规则引擎，在我当时 工作的业务中将它应用在了供应链体系中，运营人员可以在规则模板中手工嵌入少量python脚本做 定制化(可见编程已经是一项全民技能了)。
+这一章当中的性能规划是小型项目中不容易接触到的点，而在大厂当中又是很重要的，比如阿里系 核心项目甚至还有专门的稳定性团队，来做相关的工作。考虑到这一点，我们也在后面的课程中单 独开设了质量保证的章节，让同学们对大厂的测试方案、质量保证方案有一个比较全面的认识。
+
+本章知识点总结
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a0cc144b-5ae5-43e4-97c7-d8ec39db5b0a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466375S2AP5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230741Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDlEJey9yVUa4sHaFBrpoLF7LWOGpzq858E5hKVZhSlxwIhANkuASpHzN%2FyLtCl4ZFpylLxm3FK2l2U6SdLJQlWGHVkKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyoUvEusU%2BJLr1GBuYq3AMUAkE3lQzIybkmqiHQuwEvgKC%2BFWb%2FmRKfAIjZhCUOAgyASElysbc5UHlwIQi2xeiOnXZpY7pIce0HqzwWAwkpqkKbk4WpkWkZak8VA1CpBrjGHR539CeYJGRlaMf5rYRmt9Q408o10rGoZ37qE69l1JL1hyCpj7zAo5GDlThbcepLsSjB0HsScuhrhkdukckMeonr%2FnnUx4wUsFBehTo%2BRlibVy3LeiLOlwvAv5jfVlri3KS9PzJC436z4Aff1K2T7ojW5X%2BtrKHAS3EOQDoI8MTjFi%2FI81%2Fkw8gyVVCbssCY4SWCgtpfOh4yoQs65YjcXhqKc2sx0oi%2BZfgi03aJPxSRUQJCjcnfDTHxkUQtep9EPAFI9zynF2AL2SBClUU%2BhaAwIdTup7QRPR1flc%2FqmXSzvDPOYklb6UjgTr5VKIpXB51YC3PiHfh%2BCfhmN7OFULriZHZyWhLPU%2Bmpr4gb37iJvfyt3ldkvLx%2BcLMoZtLWRMDG0ygkn2%2F%2BL7xKETbOjTOi3Yr%2FFZIqX0zakY2w9Naijh%2BapYRWlOwSuo8oXma0RbQ%2Bz9YmEkzg5UgC%2FTJwn3QBT981Yt%2BEGIHsF0qqQ6bSQsaZociARc8TfS5xd%2Bf19EN6TMC0CAfFvjC3uv%2FSBjqkAQhJ2uGNKkJfuxauYKNLqpPaVKjACXePCMeFl876Pq2Vi8QewX0T66xS%2F30Xmsv34kZg%2BoN9fdzFlIoDLT4wW7gFCrVtEVWwCPzZGro8%2F%2FIqnUR7Fk1ipTk7k%2F3zLL0Zg2iz7cg6W7kbkdmLppPqTf31ZgdgbDZyK09Ed9zWi9B0qABIEBA3wxaV9fcIN1csfqZ%2BBSoqcbuvAiUh1tzTsxBif9tm&X-Amz-Signature=17b9ece2cbe217839671119860d07b9cb06075a4a2d280f40f2485e46d5c82d6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

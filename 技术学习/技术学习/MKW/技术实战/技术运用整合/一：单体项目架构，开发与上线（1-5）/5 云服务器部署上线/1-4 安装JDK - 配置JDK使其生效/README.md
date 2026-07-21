@@ -1,0 +1,40 @@
+---
+title: 1-4 安装JDK - 配置JDK使其生效
+---
+
+# 1-4 安装JDK - 配置JDK使其生效
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2776c68d-2549-42d2-a5b7-34060cf0573e/SCR-20240818-sykc.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662M7YJSPF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224747Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCID9C05CUuFFehuWxZABqY%2FN%2BhYb12rdB9qizvW%2FkFZp0AiEAik81m6Ou6ORrryf5989RaDvuSA33%2Fh3D4a0VsjVmt3AqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBdJpv%2F61xy2wWG1GircA0ykpCWHKQ3iRZeUzHb%2Fd7vqXD8yC2nKT911LnyN3heUq6sSMm6jO5pmLJMD9We5ayIPf0B1iwljPxrVRO%2FqnaROgaBrEso8hKMjFR%2FLtiufKVKUbCIMj1ax8PZ1CU4bYzVuMdf9DMhWQPvkk0yRiJx6yeau6qIi01ali5pTn97zYSk8%2BwVB%2FirVkId4EWYDiwxqITEJ%2FiDPxso5jauVasGK81ZdXF2aUsYojkgyPbP%2BT8mPAsEloeP4VQ2v8gJ9mgEtDasI%2Ff2lQFmEM%2BIDBupcCKUU7e3u5UeYijNsn0VYCunbV2ghAkrPifK1r0Yn5C%2FQbbxrMnka6iwch8SbUDHKEyGNLC1KrcIEKIvZNLv63sJvyzAOg3%2BcT9rw4bbC9anuCJPcI44SBgaVLjcgi0Cs%2FHqaPI6sUjIqN8JtKf%2FPH7QU8d0%2Bb%2F4j0hRasUgpj3Xpa0mBDhnBkdGCIZvVVNvaRX8fqZNw1cK%2BkJFjv8mgT3n7Wn5XinYnHvjyE5rNFWnC5h2%2BXTkkkYTHSdGanmNkVusYQbcSkyol9thBLgmJRCjqMqoqG9AwXKZ8ggt4pW2xVbp8S3tEhicLqaC5I9bzYNUt%2F3etAuYzYxmoCw%2F749EGB0OI71cNubDzMN23%2F9IGOqUB2H7dno17Fj0hZUHiy0vqhjd3dK7bPdUnSqX3%2BvJzb8OhxianD1sBZwkefnA%2BQki2xnIq1Tcttl%2F5smqIc3prvu%2Bqy6kKntGTx3XHJOA%2BrDxqArKipx1BXQVJe5wvcF4LQy1aPgLVrsY1mVWgDiVT9jFqI0wq%2BoAxJY0RvB7UbNiVd3DiXPZrKjQZ67cXfp4lgj3CVrzqDl2Ih74bR2YmE516i1Pj&X-Amz-Signature=6634847d6fcad229d5861887903739c81f12cf5f0c819ae1490c582b27415a92&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b30f60a0-a5b6-493c-9669-2fefb4be27ec/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662M7YJSPF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224747Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCID9C05CUuFFehuWxZABqY%2FN%2BhYb12rdB9qizvW%2FkFZp0AiEAik81m6Ou6ORrryf5989RaDvuSA33%2Fh3D4a0VsjVmt3AqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBdJpv%2F61xy2wWG1GircA0ykpCWHKQ3iRZeUzHb%2Fd7vqXD8yC2nKT911LnyN3heUq6sSMm6jO5pmLJMD9We5ayIPf0B1iwljPxrVRO%2FqnaROgaBrEso8hKMjFR%2FLtiufKVKUbCIMj1ax8PZ1CU4bYzVuMdf9DMhWQPvkk0yRiJx6yeau6qIi01ali5pTn97zYSk8%2BwVB%2FirVkId4EWYDiwxqITEJ%2FiDPxso5jauVasGK81ZdXF2aUsYojkgyPbP%2BT8mPAsEloeP4VQ2v8gJ9mgEtDasI%2Ff2lQFmEM%2BIDBupcCKUU7e3u5UeYijNsn0VYCunbV2ghAkrPifK1r0Yn5C%2FQbbxrMnka6iwch8SbUDHKEyGNLC1KrcIEKIvZNLv63sJvyzAOg3%2BcT9rw4bbC9anuCJPcI44SBgaVLjcgi0Cs%2FHqaPI6sUjIqN8JtKf%2FPH7QU8d0%2Bb%2F4j0hRasUgpj3Xpa0mBDhnBkdGCIZvVVNvaRX8fqZNw1cK%2BkJFjv8mgT3n7Wn5XinYnHvjyE5rNFWnC5h2%2BXTkkkYTHSdGanmNkVusYQbcSkyol9thBLgmJRCjqMqoqG9AwXKZ8ggt4pW2xVbp8S3tEhicLqaC5I9bzYNUt%2F3etAuYzYxmoCw%2F749EGB0OI71cNubDzMN23%2F9IGOqUB2H7dno17Fj0hZUHiy0vqhjd3dK7bPdUnSqX3%2BvJzb8OhxianD1sBZwkefnA%2BQki2xnIq1Tcttl%2F5smqIc3prvu%2Bqy6kKntGTx3XHJOA%2BrDxqArKipx1BXQVJe5wvcF4LQy1aPgLVrsY1mVWgDiVT9jFqI0wq%2BoAxJY0RvB7UbNiVd3DiXPZrKjQZ67cXfp4lgj3CVrzqDl2Ih74bR2YmE516i1Pj&X-Amz-Signature=cb6cb071e6a4ba181ad6dd12ec71558acd4e150dc2427bbf24639474d78fc322&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么接下来我们就正式的去把 JDK 去安装一下，那么首先一下我们是需要去创建一个目录，那么这个目录是在 user 下创建一个 Java 这样的一个文件目录，那么在这个文件目录里面，我们的所有的 JDK 都会放到这个里面的，所以我们可以去把这个命令拷贝一下，拷贝一下以后推到SecureCRT里面来。
+
+
+那么在这里显示我们的一个参谋长超时的，因为我们的服务器，它服务器是有一个心跳的，如果你长时间没有去进行操作的话，那么它默认的会断开你的链接。mkdir 回车一下。好，创建成功，那么这个时候我们可以进入到 user 下，可以看到在这边多了一个甲板这样的一个目录。好，随后下一个。那么现在我们就需要去把 JDK 上传到我们的服务器了，那么上传到服务器的话，我们会推荐使用一个工具，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/86b38794-6130-4b7f-82ae-8fb2b75bb53e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662M7YJSPF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224747Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCID9C05CUuFFehuWxZABqY%2FN%2BhYb12rdB9qizvW%2FkFZp0AiEAik81m6Ou6ORrryf5989RaDvuSA33%2Fh3D4a0VsjVmt3AqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDBdJpv%2F61xy2wWG1GircA0ykpCWHKQ3iRZeUzHb%2Fd7vqXD8yC2nKT911LnyN3heUq6sSMm6jO5pmLJMD9We5ayIPf0B1iwljPxrVRO%2FqnaROgaBrEso8hKMjFR%2FLtiufKVKUbCIMj1ax8PZ1CU4bYzVuMdf9DMhWQPvkk0yRiJx6yeau6qIi01ali5pTn97zYSk8%2BwVB%2FirVkId4EWYDiwxqITEJ%2FiDPxso5jauVasGK81ZdXF2aUsYojkgyPbP%2BT8mPAsEloeP4VQ2v8gJ9mgEtDasI%2Ff2lQFmEM%2BIDBupcCKUU7e3u5UeYijNsn0VYCunbV2ghAkrPifK1r0Yn5C%2FQbbxrMnka6iwch8SbUDHKEyGNLC1KrcIEKIvZNLv63sJvyzAOg3%2BcT9rw4bbC9anuCJPcI44SBgaVLjcgi0Cs%2FHqaPI6sUjIqN8JtKf%2FPH7QU8d0%2Bb%2F4j0hRasUgpj3Xpa0mBDhnBkdGCIZvVVNvaRX8fqZNw1cK%2BkJFjv8mgT3n7Wn5XinYnHvjyE5rNFWnC5h2%2BXTkkkYTHSdGanmNkVusYQbcSkyol9thBLgmJRCjqMqoqG9AwXKZ8ggt4pW2xVbp8S3tEhicLqaC5I9bzYNUt%2F3etAuYzYxmoCw%2F749EGB0OI71cNubDzMN23%2F9IGOqUB2H7dno17Fj0hZUHiy0vqhjd3dK7bPdUnSqX3%2BvJzb8OhxianD1sBZwkefnA%2BQki2xnIq1Tcttl%2F5smqIc3prvu%2Bqy6kKntGTx3XHJOA%2BrDxqArKipx1BXQVJe5wvcF4LQy1aPgLVrsY1mVWgDiVT9jFqI0wq%2BoAxJY0RvB7UbNiVd3DiXPZrKjQZ67cXfp4lgj3CVrzqDl2Ih74bR2YmE516i1Pj&X-Amz-Signature=fc8b282cf50b0395cfbddc8f31a969c8efcbf0242e720285bc5f7e75699fcd5b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么这个工具我们会推荐叫做 FileZilla。那么这是一个 FTP 的工具，你是可以把文件上传到你的一个Linux，也可以从你的 Linux 上去把相应的文件做一个下载都是可以的。那么在这里其实相应的你也是需要去连接一下你的一个 Linux 服务器。那么在这里我们呢还是一样回到我们文档里面，把之前这个公网IP，把这个你要拷贝一下，切到我们在这个 FTP 工具的一个主机，就是 hostname 贴过来，用户名是root，密码写一下，然后默认的端口号再写一下。 12 号点一个回车。那么随后可以看到这是一个问你是否要信任，我们总是信任这一台服务器，然后会把你的密钥加入到缓存，然后点击确定，等待一下。那么认证失败的话没有关系，那么可能是我们的一个主机在这边，他的一个密码会写错，我们重新再写一遍，端口回车，重新再连一下。好，那么现在是成功了，那么刚刚密码可能是写错，然后继续。
+
+
+那么在这里面的话，我们可以找到home，我们在这个 home 里面我们可以去创建一个目录，可以取个名字，我们取名叫做software，我们后续的一些软件我们都会保存到这个目录之下，传过来以后，那么在本地我也已经是预先准备好了一个JDK，在这里有一个JDK8，然后我在这里直接可以选中后拖到咱们这个里面来。那么拖过来以后，那么他会做一个上传，等待片刻，那么这是它的一个上传，那么上传现在速度也比较快，能够达到 5 到 6 兆，然后上传完毕以后，它就会出现在这个目录之下了。
+
+
+我们可以到这个命令行先可以进入到 home 下software，目前 total 为0，没有任何的文件， GDK 还没有上传成功，然后等到他上传成功以后，然后我们来看一下，我们把这个 JDK 拖进来，拖到 software 里面去，那么这样子在你的这个命令行里面再敲一下，那么这个时候你的 JDK 在这边就已经是有了。好，OK，好。那么有了 JDK 以后，下一步就可以去针对这个 JDK 去做一个解压，因为它你下载的时候它的一个后缀是一个TR，它是一个压缩包对吧。那么解压的话使用差杠 tar -zxvf 把它的名称写过来，那么这样子你就使用这个踏命令去做一个解压了，做一个回车。好，OK。解压成功以后，那么在这边会有一个文件夹，那么这就是一个 jdk1. 8。好，有了之后下一步，那么下一步的话我们就应该要把这个文件夹拷贝到我们刚刚所创建的一个夹娃目录吧。我们看一下文档，我们来看一下。
+
+
+在这边解压后，你是需要把这个 JDK 放到 user Java 这个目录，因为我们刚刚也说了，这个下面以后会放很多的一些JDK，那么你是需要去通过这个命令我们直接拷贝一下，拷贝以后贴过来回车一下，然后看到当前目录是没有了，然后进入到 user 加法这个目录，那么这里就多了一个 JDK 这个文件夹了。
+
+
+OK，好，那么有了以后，那么现在我们就可以去配置一下咱们的环境变量。那么环境变量那么在这边来看一下环境变量，我们是需要去修改 profile 这个文件的，那么这个文件是存在于 etc 下，通过 VM 去进行文件的编辑，把这个贴一下拷贝，回车，然后那么这就是目前打开的一个 profile 文件，那么这里面其实有很多的内容我们是不需要去改的，我们直接跳到最后拆到最后一行。我们在这里面去把我们的一个环境变量去进行一个配置，那么环境变量我们在这里也就不去手敲了，直接拷贝一下看一下，直接把这一段内容直接拷贝。
+
+
+那么你只需要关注的一个地方就是一个 Java home，这个 Java home 就是我们刚刚所创建的一个，这是一个文件夹的目录，再加上你所放进去的一个JDK，把这个目录放到这个夹包 home 里面，你就可以配置一个变量，那么这个变量的话在下面的 classpath 就是 path 里面都可以去使用的，那么这个和你在 MacOS 就是 windows 上配置的时候，其实都是换汤不换药的。好，那么在这个地方我们直接贴过来拷贝，那么这样子你的环境变量就已经是配置在这个 profile 这个文件里面了。好，然后按 ESC 冒号 WQ 保存一下。那么保存以后环境变量虽然是有了，但是我们的 Java 整个环境还并没有和我们的系统融合到一起，所以你是需要去刷新一下这个配置文件的。那么如何去刷新？那么刷新的话可以去使用一个source，看一下，有一个source，然后再把你的一个文件贴过来，那么这样子你就可以使得我们的环境变量生效了。
+
+
+好，生效以后那么我们就可以再去做相应的执行，先去没有拷贝过来没有关系，我们直接手写一下 source /etc下的profile，回收一下 source 少了一个，拼错，source。回收一下。好，那么这个时候我们的一个 profile 就已经生效了。
+
+
+生效以后，那么我们可以通过 Java 杠 fourteen 来检查一下。这个时候可以看到我们的夹拉模型，这边是 1. 8，然后是191，那么现在其实也可以看到我们这个就不再是一个 open JDK 的一个版本号。OK，那么这样子我们在云服务器里面，那么这个jdk 就已经是安装成功了。
+

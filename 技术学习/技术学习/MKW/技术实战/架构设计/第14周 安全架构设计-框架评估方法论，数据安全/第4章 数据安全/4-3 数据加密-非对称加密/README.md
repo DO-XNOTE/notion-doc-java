@@ -1,0 +1,69 @@
+---
+title: 4-3 数据加密-非对称加密
+---
+
+# 4-3 数据加密-非对称加密
+
+价值需求到落地的桥梁，构建 ITE 新light，我是张飞雅，上一个章节我们聊了聊对称加密，那这个章节我们来看一看另外一个新的思路，非对称加密，这是什么？现代密码群中最关键的里程碑，我要首先向两位大师致敬。
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d6793031-6ac2-49e3-b46d-0f226a498579/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YPLQM6XD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231018Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD87%2F86wGf2TMKr9sq8zF4z9uIu7oYNgd%2FvKqlTnf2LuQIgdUuyk5bRoJpHPzPHTXb0FXTEmP448IU3qNceCa8XqS4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHAu%2BaQmGuAy5xmQoircAwRFWqN7r9KNijkZPjo7fYmaDo%2BJAsWeKiivYHzPB4m44ra24%2Bswdwc38sOF8yJJoH0bforoSYy%2BxkixO8wvpbulDnEPAjSXou4vSOwxOU7kSEWBNxiLiVoVsT1TFw6mfxLuaKBI8KLZu7Pda5SCrk9Gi9M86y%2BXyW%2FSrld8juEuYeyoEa%2BOw5mmKSIAm%2BLUHERV31KU5J89biLtvZpnBGn7Ss31VVdDOwLFrlGIBT6V2xQ4LEN8BJQsc%2FHqiJfbK9njYeqCYmbXoc18s7KaKj9LyGMGxvtFrxIiqfBu3ReYb1VieIGEmZl%2B6kSXbCLdcCG9oVLrDubOguLzrJM8ud7QjyPggGapvEr2ZG9jFpxYIjIyaohlGCUaD0yKVJn7y93zh7xo3jQIA%2BKKNONu2%2FR7bKGdWMBwZcMtDi1OraryQjWt5oX%2FQPOrZDia8T7QKUjPK2ZzKGmrzerRj2oHggFMEnFqMJuPKx7EAXkeKRrIhINyL9fpG6sQuh2Thh%2FBBwQiluqT2Mb1%2FsHVN6Wg8KOlAeuUtsy0cCt1GDZ1zZDTEb%2FEaG8z7YnO0tLPI6R0QPus6VfrD1sBOushN20g5zjFttcndYzQzcBCi6hn5vuO3mlWjO0OfIFQqItSMK23%2F9IGOqUBguAWDxH1W%2Ft0nX7Fo8HeU%2Bd2cZS175xLP579EMyWNVTVaKQMq9APusn2hgxpjO9XXRDr%2FsWh%2FdUkqyvyKrW%2BnnozFK%2F2OxAGiYGJ78YJLq8vwIK9nxP5jY1J5n%2BsO8EVjo7WaefAWPOKj3tZvmBiTYoSB5PUYIzEZmqzknUazYBj1jaTp07LtoYeadsOHi4O1BHYxuqNiYUb6JFq1DWYZGP0kJ%2Fv&X-Amz-Signature=a68ae1a26d6af6aab8ceaffa270e671c5a26fd282fc82feb3e40f3c25cef3c93&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+MR Jeff 和 MR Helma 作为著名的数学家，他们在研究指数问题跟离散对数的时候发现其实对于一套秘文，我们可以通过什么指数加曲模的形式转换成铭文，铭文也可以通过指数加曲模的形式加密成密文，只不过这整个过程当中要生成两个关键词，它把它命名称了，叫什么私钥和公钥，这两个值分别用于加密和解密。
+
+
+那通过这样一套思路，我们不用前面很多轮的什么替代，也不用很多轮的轮转，只需要简简单单的用数学方式就能够实现，很难攻破的密码学。所以这就是什么非对称密钥产生的那个起始点，那这个过程当中我们会有很多的变种和进化，但是整体思想都是不变的，就是有两个钥匙，一个是公钥，一个是私钥，它通过类似于指数，类似于离散对数这种方式来实现轻轻松松的以数学为基准的进行加密和解密。依然你无法破解其中的什么难点，那这个难点在哪里呢？就是一个世界上有太多的指数，也有太多的对数，你没法很方便的把一个什么数字采用离散对数的形式变成两个整数。如果你有这个能力，那你就能轻松地破解全世界的什么几乎大部分的这个密码和密钥了。
+
+
+那这个破解难度。我举个例子，假设以 1, 000 位的一个指数为例，那这个指数如果你要破解，你也许需要 1, 000 台机器形成一个什么大型计算机机群，然后跑一年到两年才能破解。那这时候黑客要算一下这个成本，我 1, 000 台机器，每个月花个几万块、几十万，然后我跑个 365 天，我这赚到的钱比我破亿这个密码，然后能拿到的收获谁多？尤其是很多什么大型机构，它的什么公私要对时，每季度都会进行替换。当你破译完上一个密码的时候，这个季度的密码已经替换喽。在这个时候你有收益吗？收益为零，花了钱很多，所以非对成密钥是通过什么？通过一个成本计算来让大部分的黑客知难而退。但是有个黑客想出一个方法，嗯，我不破于你的密码，我尝试监控 Alice 跟 Bob 这两个用什么公司要密码沟通的人。一旦你哪一天在协商公钥和私钥互相发送自己的公钥给对方的时候，我截获下来，然后我也许可以冒充某一个人，比如我冒充 Alice 跟 Bob 沟通，然后我获取到我们直接的信息。然后我又冒充 Bob 跟 Alice 沟通，获取到中间的信息，所以这就存在中间人攻击，对于中间人攻击最好的方法呢。
+
+
+后面会聊后续章节，我们会有 PK i 讲一讲如何采用一种安全的方法，把公钥和私钥分别发给两方，使得一边可以加密，另外一边可以解密，但是中间的密钥不会被别人偷取到。聊完了 DIFF Hermer，其实大家可以想到什么指数的一种加解密的处理方法，其实是有点复杂的，那这个复杂的这个算法有没有一个替代的方法可以来替换呢？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b25ece38-458d-445c-8e2a-600ccbda4fda/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YPLQM6XD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231018Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD87%2F86wGf2TMKr9sq8zF4z9uIu7oYNgd%2FvKqlTnf2LuQIgdUuyk5bRoJpHPzPHTXb0FXTEmP448IU3qNceCa8XqS4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHAu%2BaQmGuAy5xmQoircAwRFWqN7r9KNijkZPjo7fYmaDo%2BJAsWeKiivYHzPB4m44ra24%2Bswdwc38sOF8yJJoH0bforoSYy%2BxkixO8wvpbulDnEPAjSXou4vSOwxOU7kSEWBNxiLiVoVsT1TFw6mfxLuaKBI8KLZu7Pda5SCrk9Gi9M86y%2BXyW%2FSrld8juEuYeyoEa%2BOw5mmKSIAm%2BLUHERV31KU5J89biLtvZpnBGn7Ss31VVdDOwLFrlGIBT6V2xQ4LEN8BJQsc%2FHqiJfbK9njYeqCYmbXoc18s7KaKj9LyGMGxvtFrxIiqfBu3ReYb1VieIGEmZl%2B6kSXbCLdcCG9oVLrDubOguLzrJM8ud7QjyPggGapvEr2ZG9jFpxYIjIyaohlGCUaD0yKVJn7y93zh7xo3jQIA%2BKKNONu2%2FR7bKGdWMBwZcMtDi1OraryQjWt5oX%2FQPOrZDia8T7QKUjPK2ZzKGmrzerRj2oHggFMEnFqMJuPKx7EAXkeKRrIhINyL9fpG6sQuh2Thh%2FBBwQiluqT2Mb1%2FsHVN6Wg8KOlAeuUtsy0cCt1GDZ1zZDTEb%2FEaG8z7YnO0tLPI6R0QPus6VfrD1sBOushN20g5zjFttcndYzQzcBCi6hn5vuO3mlWjO0OfIFQqItSMK23%2F9IGOqUBguAWDxH1W%2Ft0nX7Fo8HeU%2Bd2cZS175xLP579EMyWNVTVaKQMq9APusn2hgxpjO9XXRDr%2FsWh%2FdUkqyvyKrW%2BnnozFK%2F2OxAGiYGJ78YJLq8vwIK9nxP5jY1J5n%2BsO8EVjo7WaefAWPOKj3tZvmBiTYoSB5PUYIzEZmqzknUazYBj1jaTp07LtoYeadsOHi4O1BHYxuqNiYUb6JFq1DWYZGP0kJ%2Fv&X-Amz-Signature=207d89f0eb25d2f6c8879dd6d46878d6bd0a200791d8b53c6677d7dae4229572&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这里又出现了三位著名的数学家，分别是 r 开头、 s 开头和 a 开头。名字太长了，飞扬老师记不住，但是他们成立的这家公司大家应该很容易记住，就是这个 RSA 用户的密钥密令管理系统，我们就以 RSA 来简称这三位大师，那这三位大师说，嗯，离散对数固然精妙，我用另外一个方法也能实现，很难破解。什么方法？小学五年级要学的质因数分解。我们来给大家做道题目，看大家小学实例还有没有 21 分解成两个质数，三七二十一诶？这个分解很简单啊。好，这次我们面临一个问题了，我们要攻破什么？美国国防部的一个安全的一个核弹密码，这核弹密码要攻破的方法就是分解直营树，我给你一个直营树，让你来分解，大家可以尝试开发一个什么 Java 小程序来分解这个数字，这个数字是由两个质数相乘得到的，我们看一看，如果是让你反向开发程序来破解这个数字，你要花多少时间？我估计可能你要花一年左右的时间在一个 100 核以上的机器，也许你能破解出这样两串数字。
+
+
+那飞扬老师怎么得到的呢？很简单，我找两个大支出乘一乘，就乘到了左边这个结果，然后我让你破解，也许你就要花一年左右的时间，通过大量的计算能够破解这个质因数。好，那一样的道理，我们那么通过这样的资金数的转换，能够生成一对公钥和私钥对，这一对公钥和私钥对，分别用指数取模的形式来加密我们的明文，形成密文。在用指数曲模形式来解密我的密文，成为明文这个过程当中，黑客就会尝试不断地去猜，我就一堆密码，它的那个最终的结果是这样一个值，然后我如何采用分解之因数把它分成 a 和b，然后用 a 和 b 通过欧拉函数和欧拉公式形成公钥和私钥，那这个过程就是又是在 PK 计算能力和我们的密码复杂度了。
+
+
+那通常我们来看， RSA 对于相同的计算能力来说，密码复杂度是要高于 Diff Helmer，所以 i s a 才是我们当前最主流的非 a 对称密钥、公私钥密钥的加密方式。好，除了这个 IC 算法，我们现在业界还流行这样一个算法，这个算法还是继承自 Diff Hermer， DIFF Hierman 说的是离散对数很难，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a804ea53-5bd5-4692-a8d1-7bfdaef6c0da/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YPLQM6XD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231018Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD87%2F86wGf2TMKr9sq8zF4z9uIu7oYNgd%2FvKqlTnf2LuQIgdUuyk5bRoJpHPzPHTXb0FXTEmP448IU3qNceCa8XqS4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHAu%2BaQmGuAy5xmQoircAwRFWqN7r9KNijkZPjo7fYmaDo%2BJAsWeKiivYHzPB4m44ra24%2Bswdwc38sOF8yJJoH0bforoSYy%2BxkixO8wvpbulDnEPAjSXou4vSOwxOU7kSEWBNxiLiVoVsT1TFw6mfxLuaKBI8KLZu7Pda5SCrk9Gi9M86y%2BXyW%2FSrld8juEuYeyoEa%2BOw5mmKSIAm%2BLUHERV31KU5J89biLtvZpnBGn7Ss31VVdDOwLFrlGIBT6V2xQ4LEN8BJQsc%2FHqiJfbK9njYeqCYmbXoc18s7KaKj9LyGMGxvtFrxIiqfBu3ReYb1VieIGEmZl%2B6kSXbCLdcCG9oVLrDubOguLzrJM8ud7QjyPggGapvEr2ZG9jFpxYIjIyaohlGCUaD0yKVJn7y93zh7xo3jQIA%2BKKNONu2%2FR7bKGdWMBwZcMtDi1OraryQjWt5oX%2FQPOrZDia8T7QKUjPK2ZzKGmrzerRj2oHggFMEnFqMJuPKx7EAXkeKRrIhINyL9fpG6sQuh2Thh%2FBBwQiluqT2Mb1%2FsHVN6Wg8KOlAeuUtsy0cCt1GDZ1zZDTEb%2FEaG8z7YnO0tLPI6R0QPus6VfrD1sBOushN20g5zjFttcndYzQzcBCi6hn5vuO3mlWjO0OfIFQqItSMK23%2F9IGOqUBguAWDxH1W%2Ft0nX7Fo8HeU%2Bd2cZS175xLP579EMyWNVTVaKQMq9APusn2hgxpjO9XXRDr%2FsWh%2FdUkqyvyKrW%2BnnozFK%2F2OxAGiYGJ78YJLq8vwIK9nxP5jY1J5n%2BsO8EVjo7WaefAWPOKj3tZvmBiTYoSB5PUYIzEZmqzknUazYBj1jaTp07LtoYeadsOHi4O1BHYxuqNiYUb6JFq1DWYZGP0kJ%2Fv&X-Amz-Signature=6ec6c0a6f769aa226af37efb728d003fb5fef2f30da961a1e5ec421d6e6a6cf1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+但是怎么难呢？有一位大师说我把离散对数化成曲线，我可以用椭圆曲线来展现离散对数的优美。这个时候我让椭圆曲线了三个点，形成什么求和为 0 的这样一个特征值，这个特征值一旦形成以后，我可以通过 PQ 形成 r 的方式来进行什么？一种公钥和密钥的生成，然后通过这样公钥和密钥的生成，我依然还是可以通过类似于什么指数取模的方式来快速地进行加密和解密。
+
+
+在整个过程当中，它的强度比 ISA 略低，但是它的计算资源消耗比 ICA 要省很多，所以在哪里用得多移动端，如果大家是移动端的 Java 的架构式，那大家应该推进了解一下 EC seed 原理，同时用 ECC 去替换前面的 diff format，去替换前面的 IC 来实现低成本物联网的加密。
+好，聊完了，对称加密和非对称加密，我们来做一个简单总结，看一看两者的区别和使用的场景。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d76adec9-3795-44cf-9322-a66aa230c837/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YPLQM6XD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231018Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD87%2F86wGf2TMKr9sq8zF4z9uIu7oYNgd%2FvKqlTnf2LuQIgdUuyk5bRoJpHPzPHTXb0FXTEmP448IU3qNceCa8XqS4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHAu%2BaQmGuAy5xmQoircAwRFWqN7r9KNijkZPjo7fYmaDo%2BJAsWeKiivYHzPB4m44ra24%2Bswdwc38sOF8yJJoH0bforoSYy%2BxkixO8wvpbulDnEPAjSXou4vSOwxOU7kSEWBNxiLiVoVsT1TFw6mfxLuaKBI8KLZu7Pda5SCrk9Gi9M86y%2BXyW%2FSrld8juEuYeyoEa%2BOw5mmKSIAm%2BLUHERV31KU5J89biLtvZpnBGn7Ss31VVdDOwLFrlGIBT6V2xQ4LEN8BJQsc%2FHqiJfbK9njYeqCYmbXoc18s7KaKj9LyGMGxvtFrxIiqfBu3ReYb1VieIGEmZl%2B6kSXbCLdcCG9oVLrDubOguLzrJM8ud7QjyPggGapvEr2ZG9jFpxYIjIyaohlGCUaD0yKVJn7y93zh7xo3jQIA%2BKKNONu2%2FR7bKGdWMBwZcMtDi1OraryQjWt5oX%2FQPOrZDia8T7QKUjPK2ZzKGmrzerRj2oHggFMEnFqMJuPKx7EAXkeKRrIhINyL9fpG6sQuh2Thh%2FBBwQiluqT2Mb1%2FsHVN6Wg8KOlAeuUtsy0cCt1GDZ1zZDTEb%2FEaG8z7YnO0tLPI6R0QPus6VfrD1sBOushN20g5zjFttcndYzQzcBCi6hn5vuO3mlWjO0OfIFQqItSMK23%2F9IGOqUBguAWDxH1W%2Ft0nX7Fo8HeU%2Bd2cZS175xLP579EMyWNVTVaKQMq9APusn2hgxpjO9XXRDr%2FsWh%2FdUkqyvyKrW%2BnnozFK%2F2OxAGiYGJ78YJLq8vwIK9nxP5jY1J5n%2BsO8EVjo7WaefAWPOKj3tZvmBiTYoSB5PUYIzEZmqzknUazYBj1jaTp07LtoYeadsOHi4O1BHYxuqNiYUb6JFq1DWYZGP0kJ%2Fv&X-Amz-Signature=20d3c348fadd237208f57e16a3221650e6c0c67c3c39fc7fb1310932ada3726c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那首先对称加密现在比较流行的什么？DS、前浪、 a s 中浪和后浪非对称加密，我们 Diff Horma 基本上就没形成浪，只形成了一套原理。那真正的浪要么就是IC，非常经典的是吧？公司要加密或者是移动端的ECC。
+
+
+好，我们来看一看对称密钥和非对称密钥在不同场景下的用途。第一个场景就是按加密速度来看谁更优谁更劣呢。对称密要优，非对称密要劣，其实这里表示不好，非要老师心目当中是 100 个根号和一个大叉，也就是说对称密钥的速度跟非对称密钥是十倍百倍的关系。因为对称加密，其实你看替换一下，轮转一下，是不是都是什么与或非求和的问题啊？所以在我们的 CPU 计算器里面很容易做非对称密钥有指数还有取末，所以复杂度明显要高于什么。
+
+
+高于对称加密？按照加密速度来说，当然是对称加密远远优于非流程加密。好，那我们看看机密性的，大家其实都是很机密的，你没有拿到对称密钥，那个密钥你就没有办法进行密文的解密，同样非对称加密，你没有对应的私钥，你也没有办法进行对应的密文的解密，所以机密性大家是相当。
+
+
+我们看看完整性对称加密，非对称加密其实都没有一个标准的完整性的校验，有一种可能就是输入的铭文，是吧？是我们的年轻人你输出的也许是不讲武德。如果我把不讲武德改成什么不讲文德，然后我来一个解密，也许解密成了老年人不讲文德，哈哈，这样一个内容，这是有可能的。
+这个可能性未必那么高，但是它解密完了以后那串文字，也许你通过各种各样的 base 64 加解码也能形成一些特殊的文字，你从中读出了一些韵律，但这个韵律有没有意义？因为已经被别人篡改过了，这种篡改是没法保证什么数据完整性的，所以对称加密和非特称加密的完整性没法保证。怎么保证呢？我们要看下一节什么数字签名来保证文字的完整性。
+
+
+好，身份验证能不能验证呢？都能验证，因为对称加密你必须要有跟我一样的密钥，有这样一对密钥你才能验证，所以我可以验证，当你拿到这个数据的时候，就是接收方可以验证什么加密方确实是也有同样密钥的，a、 b 可以验证a， a 也可以验证b。那同样道理，非对称加密也一样。非对称加密，我拿到的数字，我用你的公钥进行解密。这个解密的过程当中我就知道必然你是用你的私钥来进行加密的，所以 b 也可以验证a。
+
+
+好，那这个身份验证过程当中有一个问题，通常身份验证还有个什么验证delay？怎么样叫验证抵赖呢？如果我验证完你的内容以后，我串点了一下，重新加密了，然后我放在网上说，你看你发给我的文章里面说了你欠我1万元，本来你欠我 100 元，然后我解密以后我把内容篡改重新加密，放在公网上说你欠我1万元，那我没法确认到底是什么 b 改的还是 a 改的，因为 b 和 a 都有这对称密钥，所以对称加密是没法确认身份的。
+
+
+接收方是可以篡改的，只要有密钥的任何一方都可以篡改的内容号称是对方做的，但非对称密钥不是这样，非对称密钥 a 有自己的私钥， b 有它的公钥，所以 a 签名的内容，或者 a 加密过的内容发给 b 以后的 b 解开来可以看到内容，但是 b 没法篡改以后重新加密，因为 b 没有 a 的私钥哦。
+
+
+通过这样一种公司要对两个密钥不一致、不对称，这种方式可以什么实现？用户的无法抵赖，无法否认这是非对称密钥的最优的一个地方，也是最最关键的地方。不可否认，不可抵赖性。好，聊完了对称密钥和非对称密钥这些特性，以及非对称密钥里面的好几种 default IC 和ECC。我们下一个章节来聊一聊数字签名怎么样实现完整性？在聊数字签名之前，我们给这一段内容用一个对联来总结，就是对称密钥叫什么？叫数据存储加密，叫数据通信加密之王者，那非对称密钥就是对称密钥的加密和数字签名的小d。呵呵，王者怎么样？当然要用多一点了，小技就是什么相对弱一点，所以非进程密钥大家尽量少用。
+
+
+在什么时候用，当你要传输密钥的时候，你可以把这个密钥用非对称密钥进行加密或者沟通，就是在 HTTPS 里面，我们后面会详细聊到怎么样用非对称密钥来帮助对称密钥的传递。另外在数字签名里面，为了验证完整性的过程当中需要一些非对称密钥的支持，所以尽量少用非对称加密的小 d 而多用对称加密的王者。聊完了对联，大家敬请期待下一章节数字签名和验证。
+

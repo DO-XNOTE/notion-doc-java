@@ -1,0 +1,63 @@
+---
+title: 2-4 授权和访问控制-SSO单点登陆
+---
+
+# 2-4 授权和访问控制-SSO单点登陆
+
+加起需求到落地的桥梁，构建 it 新蓝图，我是张飞扬，上一章节我们聊了聊授权以及访问控制的主要概念。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/057bff38-9aa0-4ba0-9684-5be4f452c648/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231037Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=860dae1361f04272f2c0a7ae41b07cb6006d451f8535661e4bde492518040762&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这一节我们来聊一些比较有特色的案例，比如说 SSO single 赛奥单点登陆，这个是什么？是业界非常流行的一种方法，如果我有很多个系统，是吧？但是我其实是一家公司的，我是需要每个系统都有一套独立的用户名密码登录吗？这种分散式的吗？通常不会，通常会实现一种单点登录，通过一个什么用户名密码的登录，然后可以用这套账号完成所有其他平台的登录。
+
+
+一样的，我们有些系统其实都没有创建自己的用户登录系统，它靠什么？第三方，比如像GitHub、微信、腾讯、 QQ 等等和微博等等不同的登录方法来实现用户的登录，那这种情况下是不是也是属于单点登录啊？当你登录完微博以后，你可以打开什么？比如像腾讯云，比如像阿里云，不需要做过多的操作，所以这极大的简化了我们的流程。
+
+
+好，下面我们就要聊一聊几种最常见的单点登录方式。那第一种必然是什么？单点登录的老祖师 Kerberos 吸纳了一个神社三头狗的一个英文单词。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1ac4f277-3cc8-41a5-a137-b8a5f2681507/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231037Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=d824d7a6882313a3903421f306fb25fab76267f73d91c5a2b1e5dc1f5870fea0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，我们来看一看当一个用户要访问一个神殿的时候，三头狗是如何来阻挠的？好，这也是个用户，对吧？他想访问一个神殿，那这个神殿要访问的时候要过三个关，那第一个关就是第一个狗头。就 a s Authentication service 认证服务，哎，就是我们前面说的三个 a 里面第一个 a authentication 好，第二个图是什么？叫 TGS ticket granting service 票证授权服务，其实就是第二个狗头就蕴含着第二个 a authorization 的概念。
+
+
+好，那第三个狗头呢？大家很容易想象就是什么？就是要访问后面的神殿以后的最后一道关卡，我要看一看我这个资源能不能给你，如果我给你，我就让你通行了。就是第三个狗头。好，那用户怎么样？具体来访问，我们要在访问之前其实要做一些准备工作的，我们看看做哪些准备工作啊？第一个狗头发跟第二个头发关系特别亲密，他们可以简称叫密钥分发中心，有两个a，对吧？是紧密联系的。所以我们也用 KDS 来命名，那这个时候用户要访问和，或者说通过第一个狗头和第二个狗头，必须要跟他们之间有一个协议，这个协议就是用一个密钥，对称密钥、红颜色对称密钥来表示。这样情况下我们用户才能够通过这两个狗头，而第三个狗头和前两个狗头之间有一对绿颜色的对称密钥，那这样的情况下，我们资源方和我们的用户方其实是没有密钥沟通的。但是不管是资源方还是用户方都会跟什么我们的密钥分发中心有一个成对的什么密钥的通讯的功能，那完成密钥通讯以后才能真正进行什么尝试？去访问神殿。
+
+
+好，我们看一看用户向什么神殿走出第一步就碰到了第一个狗头。那这第一步的时候我们要输入用户名密码，嗯，狗头验证一下说，嗯，看你的面相不错。我同意你通过了，他会给你一个叫TGT。这个什么？这是票子的票子，或者叫门票的门票，有这张门票才能拿下一张门票，而下一张门票才能真正去买通往神殿。
+
+
+好，那这第一张门票拿到是拿到了，但它有个问题，它是什么？它是加密的，那我们用户就用这个红色的密钥进行解密。解完以后就把这个 TGT 发给第二狗头，第二狗头一看，嗯，你能解开第一个狗头发给你的这个票证，所以就证明什么你真的是这个用户不错。我回给你两张票子，他给你两张票子，正常应该回一张票子的，他给你两张票子，这是什么意思呢？其实是一张门票的两种变形，一种用红色钥匙进行加密，另外一种用绿色钥匙进行加密，好把这两张门票扔给用户，说绿色那张票子我也看不懂，我把红色那张门票给解密，解密完以后我把这两张门票一股脑儿，我不管三期还是一期，扔在第三个狗头的脸上，他扔上他狗脸，这第三个狗头比较乖，他不怎么咬人，他怎么样？他一看到有绿色的门票，他就把它给解密了，用绿色钥匙给解密，解密完了以后比对一下，你用户用红色钥匙解密的那个门票跟我用绿色钥匙解密的门票是不是一样呢？就放心，如果不一样不好意思。哇哦，一口咬下是吧？直接把用户给咬死在这个路上，那这就是三狗头套路。
+
+
+那其实重点来看就是什么？一个是认证，一个是授权，最后一个通过几次密钥的交互来一个最终确认，那这三狗头是不是有点烦啊？确实是，这套协议发现或者说发明之后，很多的用户用下来说好烦啊。有没有一些简化版随着像叉 mail h t m l 的盛行，出现了一个 s a m l 安全断言标记语言？这个语言也是一个非常流行的，什么 SSO 的实现方法，虽然它不是为了 SSO 而生，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cc08ebf5-4bc4-4e80-bffb-1ec3713eb486/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231037Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=d868c4e272651ffee96ea5a0b475e40c10c72d9b77cd34394dd55268e1af7844&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+但是当前我们最常用的还是用它来做SSO。好，这里我贴了一个腾讯云的登录的图，我这里拿一个笔给大家。嗯，说说画画更方便来交流啊。
+
+
+这个功能好，用户要登录，假设是腾讯云，这是腾讯云的功能好，这是什么？ SSO 和它后台的认证以及腾讯云的终端。好，那我们通常会要提前做一个准备，就跟前面狗头一样，狗头跟用户之间有个沟通，我们这里腾讯云假设跟慕课登录一个沟通，我们如果要访问腾讯云，一旦是慕课的用户，那你不需要那么有腾讯账号了，你直接用 mock 账号就可以登录。
+
+
+好，我们至今会有一个沟通，会有一些什么标准的配置？两边都要配，假设配好以后用户这样，用户第一次访问腾讯选择 SSO 的时候，什么 s u c 会让你跳转到慕课的登录界面？这就是什么？这是一个什么？这是一个网页的跳转，那这个跳转的浏览器会根据这个要求跳转到什么我们慕课的登录界面，然后慕课会验证一下你的用户微密码，然后最后访问后台的 LDAP 数据库，然后确认你这个用户是能正常登录吗？你应该有什么样的权限和分组？他把这个信息封装在这个SAML，这个安全断验标记语言就类似于 h t m l 或者 XM l 的一个标记语言里面发回给用户的浏览器，那用户浏览器就拿到这段内容重新发给什么？发给腾讯云，腾讯云会在后台做个验证，看看之前他跟慕克之间的沟通，是不是就跟你的这个 SEMO 完全对应，如果完全对应很好，他就给你一个token，可以访问腾讯云了，这个 token 很有可能就是个shot，就是访问腾讯的这个token。然后你的浏览器拿到这个token，你就可以什么打开网页进行进入终端，或者甚至于什么调用一些 API 都可以了。
+
+
+而你的账号所有权限就和什么，就和腾讯云上自动对应这个慕课账号所生成的那个后台，这个隐藏账号对应的全选完全一致，你可以访问到你所能访问或者你所购买的所有资源。这就是腾讯云对外提供的一个 sample 服务，那其他的云平台其实都类似，几乎所有的平台都支持Kuberus，也都支持Samo。
+
+
+好，我们聊完这两个，我们来看一看第三个，或者说是第三、第四、第五个，大家有没有听说过 open ID？还有 open ID connect，还有 Oauth two。哇？好多名词他们其实都是现在很火的 single 3ON 或者是授权的机制，那我们逐一来看一看他们各是什么。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9932bd94-22d7-42a8-9352-d7756e95a65c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662XIUJCRS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231037Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDHGaL6lXuxvcz%2BbZcXlq5Cd0tjlPj%2BU0mBI%2FrIObVeewIhAO0EjGL4V%2ByUZUPvDunUBboX3HrfKYQR%2F21JGYGaJi2VKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igzszfo%2FVSwoYYsTP2kq3ANqo%2BhvkHfvuptG4MzTaZKJ8tEP1zT25BvJZnSJSBgVvWZi25byWii2d3iQdIuEWXrrsyFKE01yYNbYCavxu2OrImvKosfLVP5ZM%2FPJ0u7wqFfOMsfh7ofsSW3V3E3OdMX9kRpzAdpdYauyLalnTBSI%2Fcrtt5xvClGQ7dSH%2FPREBsiEx0cxm1kyhYAJjFS%2FWqCPC5YJ9UNgAOgaYpgXNQqZxa2w3l1Ak44%2BdQZkjoLssyyVZQveMv%2BlJTK89yTTLuCG3AWwznSpyYk8KniY2hzt4SHxUOC9b6ijDj%2FiCfznNFQgkwd8YgsOqaFyiIriw7u7jN2jVA7eWFBKZaMc8Ft7Iltx7Qd67i5WVjHXLVN1JdvAvKJsK0cMat5Fez3LkreAne62mW6CcdCbl66fLiAnDm5ZMx7kR5hPfmwdnXQFQ3hzwKxBqBBRZvtRLUIx8PZfWV9dGONm9O4MqTd6zFiCXQNcdxJOa5TPtIDKsWjZVePik4cNNWTShaD9DrofGbBbCaSbTACChB8U1Hs7Bs6w28WIx5XlDa9zRGL%2BekL1Jtl0Kv%2FiIB9xtjQDWInTlC7kdUKB%2B5%2FoXgb2y4J1mcicdBPcmv4pJl%2FI2ptkjDZjPf3TIP0xpKGV%2BoTJGTDDuv%2FSBjqkAUAWD6%2FgYggsYGcroMhIiO6ot0frDpwo6b95rygkv3ccs19rLc72zCYlBXjj1SVovhc6NmMvSvGODpxfM7xymEREZQM9ms%2FLDBV1PKTDHZouqKgC0jbX61ulxKOIQ3OzUnQfsJzCriD7Go%2FTBLvqJ%2FPy%2Brz%2BLioePAWHFYV%2Fdft2SAoQodHDCVq4EhdiZx5vzIfeNoHAOvDZNhzN7SdkkFDNRuo0&X-Amz-Signature=ba8e5bf64cdab0c07e6b8bbaaabd21eb4ff1372cf6c72f0407c227fe8dcd2072&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+open ID 其实只是一种标准，这种标准定义的比如说几个角色，什么终端用户资源方？ open ID 提供者哪些企业用的多啊？谷歌苹果亚马逊这些企业用的多，他们会什么？以 open it 作为一个标准的ID，它可以代替 apple ID，代替 Google ID，对你进行合理的授权和访问。
+
+
+好，那它要实现呢？其实什么还有好几种实现方法，那我们看看当前最火的实践方法是什么？其实就是 OS 2.0， OS 2.0 是 OOS 的升级版，那它是主要是做一个授权假设，比如说我们要访问一个网站，那这个时候如果你用什么？用微博登陆，登陆完了以后你可以什么把微博登陆的什么照片，以及他微博登陆的那种什么粉丝情况也在这个网站上展现出来。但这个时候你要勾一下我允不允许，是吧？这个网站来获取到微博的我的这个粉丝数和我的这个账号和照片啊。那这个勾取的过程其实就是 oauth to 把一个网站的资源授权给另外一个网站的过程。好，那基于这种过程大家可以想到，既然有授权了，必然什么是有认证的？所以在 OS two 2.0 过程当中，其实已经完成了一个用户认证，通过什么微博账号就可以认证我能不能访问另外一个网站？那这种认证过程抽象出来就叫什么OIDC，全称就是 open ID connect。那相当于什么？一个佛，对吧？经常会有两面，特别什么印度的佛，还有什么东南亚的一些佛，那俄罗斯兔也有两面，一面是授权，就 o s to 2.0，另外一面就是认证，就是 open ID connect， open ID connect 是当前实现 open ID 的最火的实现方法，所以绕了一圈，说白了就是什么，就是 OS two 2.0，你能搞完 o s to 2.0 的开发和测试，你就能完成 open ID 的第三方联合认证。
+
+
+好，这里我要重点提一提，我们不管是 open ID 还是前面的 summer 还是科博斯，通常我们都认为它是联合认证，那这种联合就是一个网站和第二个网站之间的联合。好，那既然收到了SSO，又收到了联合论证。我们来想一想我们现在最常见的几种方法，一种就是云平台登录，云平台登录基本上都支持以上所有的联合认证，还有什么？还有就是我们在登录企业网站的时候会经过负载均衡起，比如像F5，那 F5 的经过的时候能不能支持联合认证呢？也可以，不仅可以支持 oauth two，不仅可以支持 open ID connect，可以支持SEMO，可以支持Kuberus，还可以支持 RSA 独有的叫 CQID 以及很多其他的第三方的协议。
+
+
+所以 SSO 套路很多，至少不下 10 种，大家只要了解一两种就可以了。那你了解哪一种最精彩呢？那当然是 OS to 2.0 了。好，下一节我们就会跟大家详细聊一聊 OOS two 2.0，那后续我们还有 OOS two 2.0 的实战，大家敬请期待。
+

@@ -1,0 +1,85 @@
+---
+title: 1-1微服务介绍
+---
+
+# 1-1微服务介绍
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7116c9aa-80ab-4aee-92dc-7e60583a2f44/SCR-20240720-bkct.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q5WWEFO7%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225514Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCRSltSP%2BCCu1Oc%2B%2BhYt6%2BNAL2c59XRwPL7WZGWuk3pKgIgcVcWrUWGImqXQH8oT30e1XLq06Vavorv2iyObKSp5ToqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDE37WatDjIRjsWGpYyrcA52IC07Feh0G3hG0GcVg7JRqJQ8FeLeehC5YM8MqsYaDZO8mXZ0ab4ifiYdp5dRtoXV%2BUiKCRXpLDLBZEXC6CjDc7srQjOsVVii4IS%2BXCu2gjTFuJ54MpXbbmNop0NhbBrFL%2Bu0qIJUl5N1fJ9cn7Rj%2FBPn%2B%2BgCrP1ZjINvmHj49QR%2BWU90%2Fas760eznjcRh1ezU0K9oOmDCoUWE4ANh2kKXET9hJ6Lkw9mORaikBZILphR3G%2BenrO6Ovw5d2xG34dMvHYfzxng8nXtJ2Strf4Cz%2BUxN1y4EYi6pJC0txLANTnvWVdKHJjFM8ixpPMem8WMG9ptC5Jc4B5hZvqJ7dAhZgK%2BfGtU9sa4H5V%2Fmd3%2Fu%2BWezCUc2cOFs3%2F7FxZYOCG3PElg0iDuvqrLhEF6tlGwBJDPCs5hwREI7NaSB7DeYNiTvS4b3dCeCd5T4TrRhyT7BAHcA%2FoZQYkFJPeAbDWXY0b7lh0wbAG4QdcfRcq%2FzTS3hJWYWM9XO6zqQKl1Uo1kJxiF7dgnKHjfPzpYNNbCVrjyZTWZwuTfZjjnPpJW9ywA1oFvpR75QyCa0ZJIl9mQUgE0%2BsuWkpy8h1kuUwY%2FEruup6qqmC0e0F2RM%2FVrqNcxB%2FPBgX67oEzv1MIW3%2F9IGOqUBkSlNMcNTsiv1Hho6SODMg8EvegYEX2m48CcC9ZCou66g9smLriGp4N5DUJybeyGFJMArF0jF1oCikp7suxIV%2BPuZ%2Ftb7Sz%2FpC4zEURnBvSb4ORqXkzmKHo7TLth%2FXwv0RsAv%2BDA2LCOD1%2BMf0VZBYjeTPMaSTtTAi0TCkuZnKuRbdvXTzSqe0BJydmPY4lb4iv7iaGgGnDtweOvQOhrknLUETxMk&X-Amz-Signature=86c5c3deabc757d899e077f5e25a9d36a07f76cce4b125fd94b93e20b1e616d2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**微服务介绍**
+
+新学期新气象，终于来到了微服务章节的正课部分，一想到我们即将Get到目前业界最主流的微服务架构技能，同学们是不是已经跃跃欲试了呢？稍安勿躁，心急可吃不了热豆腐，我们在进入正式的实战环节以前，先来大话一番这个所谓的微服务。
+
+**Teenage Sex**
+
+微服务是什么？杜克大学教授Dan Ariely说过一段非常出名的话，用来表述Big Data的发展现状。我觉得把这句话放到微服务身上也极其贴切。
+
+Micro-services is like teenage sex:
+
+Everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so everyone claims they are doing it
+
+微服务就像青春期性行为的话题，所有（小屁孩）都在讨论它，但没人知道怎么做，所有人都以为其他的人都在做，因此所有人都宣称他们自己也在这么做。
+
+大到BAT级的应用，小到两三人的软件作坊，开发团队都会说自己的系统是使用“微服务架构”，这就像几年前大数据被吹到天上的时候，只要有一个数据库就可以说自己的系统是“基于大数据技术”。那这些所谓的微服务架构，到底是真微服务还是伪微服务？又或者是为了微服务而微服务呢？God knows
+
+**一字箴言 - 微**
+
+要说微服务，那么就绕不开这个微小的微字。亚马逊的掌门人Jeff Bezos提出过一个很有意思的观点：The two pizza principle，双披萨原则。
+
+Teams shouldn’t be larger than what two pizzas can feed
+
+言下之意就是，如果两个Pizza还不能让你的团队吃饱，那么你的团队可能太大了。很可惜，它并没有说Pizza的大小，而且他的团队也没有老师这号凭一己之力就可以干掉2个Pizza的人。但是Jeff提出了一个蛮有建设性的意见，就是保持小规模的团队。
+
+如果我们保持规模较小的特战队模式，那么这个团队的项目/模块规模必然也要控制在一定范围以内，他们所负责的项目也应当是一组相对较小，并且独立的功能单元。通常情况下并不是先有团队再有业务架构，实际上我们的团队应该是围绕“业务功能”来组织的。
+
+对于微服务的划分，什么粒度的微服务才是合适的？这个没有标准的答案，假如你的用户只有100个，那么还需要做服务划分吗？我想并不需要，因为对这种规模的项目来说，单体应用是更好的选择，微服务反而会增加运维和研发成本。那么当你的应用要承接几十万用户的时候，无论是从交付迭代的效率来说，还是从高可用的角度来说，微服务架构会是更好的选择。我们在后面的章节里，将和大家一起来讨论服务拆分的几个衡量标准。
+
+**微服务的印象标签**
+
+微服务领域有众多开源项目，比如后面我们要深入学习的Spring Cloud就是目前这个领域的头牌。但是要提醒大家的是，并不是说你在项目中应用了微服务的开源技术，那么这个项目就摇身一变成了微服务架构，土鸡穿了马甲还是土鸡，可变不成凤凰。这些开源技术就像一个人的外功招式，武术架子使的再漂亮，没有内功加持还是花架子。
+
+那么微服务领域都有哪些所谓内功？其实这些都是软件设计中很常见的准则，并不是什么高深的功夫，但是这些准则可以很好的应用到微服务规划，或者用来识别业务主链路。我们来回顾一下这些耳熟能详的软件设计方法论。
+
+**拆迁办事处**
+
+对我们来说最直观的感受就是一个字“拆”，应用微服务化的第一步就是理清楚两个问题，拆什么和怎么拆。字面意思上很好理解，就是将一大坨纠缠在一起的服务拆分成单个服务，剥离出去独立提供服务。在稍后的小节里我们将一起来探讨拆迁办的办事儿准则。
+
+**单一职责**
+
+软件工程的新理念层出不穷，但“单一职责”这句口号喊了几十年仍然是一条Golden Rule。如果说设计模式是“微观”领域的单一职责，那么微服务架构就是在“宏观”层面上做到单一职责。这也是整个微服务话题最容易引战的部分，因为它涉及到微服务的拆分，至于怎么个拆法，那就公说公有理婆说婆有理了。
+
+在本章后面的小节里我们会探讨微服务拆分的几个考量标准，我们倡导的是“最合适的才是最好的”，所以服务拆分过程中的领域划分和粒度还是要结合自身业务来考量。
+
+比如对大型互联网公司来说，“大中台”就是一套构建在集团层次上的服务治理理念。拿阿里来举例，集团各个事业部的业务模型最终都对接到所谓的“大中台”，从前端的商品服务、营销优惠服务、订单和用户服务，再到底端链路的支付结算和汇金平台等等，都有对应的中台业务方做支撑，在整个集团层面已经把中台业务做了细致拆分和领域划分，大大节省了新业务的接入成本。对中小型业务来说，拆分粒度不需要过细，识别出核心主链路，围绕主链路做拆分即可。
+
+单一职责不仅涉及到服务拆分，在微服务领域，这种职责划分要求将数据库、开发、测试、发布和运维都划归到一个领域模型里，由一个团队完全掌控应用的整个生命周期管理。就拿电商业务中的商品模块来举例，商品的数据完全存放在商品微服务中，任何上下游系统都要通过商品服务提供的接口获取数据，而不是像单体应用那样直接访问数据库。尽管这种方式增加了系统复杂度，但是对于庞大的应用系统来说，各个微服务模块可以用一种“小步快跑”的模式做迭代发布，提高了产品迭代速度。
+
+**研发团队赋能**
+
+很多公司都存在这么一个问题，研发团队处于食物链的最底层。发布要经过QE团队的同意，然后再寻求运维团队的帮助来部署项目。生产环境的任何权限看不到也摸不着，每次都要辗转找到线上OPS团队来排查问题，一个小小的data fix也要经过层层审批。你要说这类公司能做好微服务，不管你信不信，反正我是不信。
+
+如果你的开发团队没有被充分赋能，自己的微服务都不能说了算，那一定不能好好施展拳脚。开发团队作为最了解应用系统的一方，却需要找那些对系统一知半解甚至一无所知的人来审批哪怕一个微小的线上操作，这显然不太合理。要做好微服务，就需要充分赋能你的研发团队，让他们掌握更多的话语权。
+
+在这个问题上阿里是这样做的，研发人员除了不能让生产服务器原地爆炸，其他事情几乎都能做。即便是线上数据订正，除非涉及到的记录数量非常庞大，那需要找分派给部门的DBA审批一下，绝大部分数据订正只要自个儿团队里审核一下就好。大部分生产环境的权限也只要找直属主管审批就好了，就连集群扩容缩容都可以在团队内部解决。微服务团队就成了封疆大吏一般的存在，在自己的地盘就是自己说了算。
+
+所以呢，充分赋能开发团队，这是现在互联网公司主流的价值观。
+
+**可独立部署**
+
+每一个微服务模块都应当是一个独立打包，独立部署的应用，在发布流程上与上下游应用没有直接的依赖，由开发团队直接负责线上发布操作。这种方式特别适合应用于微服务模块，保证快速迭代。在这种模式下对接口升级有特殊要求，如果你对接口进行了重大功能改造，同时又不能100%保证向前兼容的情况下，那么就需要提供一个新的接口，而不是在老接口上大动手脚，因为你无法保证上游应用可以兼容这些改动。当所有上游应用都切换到新接口后，老的接口没有流量了，这时候才可以将老接口下线。所以我们在很多互联网公司的项目里会看到一个业务功能对应好几个同名接口，但各个接口之间版本号不同（比如placeOrderV1，placeOrderV2）
+
+阿里在项目发布部署方面的做法是这样的，将运维的工作全数交给开发团队自己负责，每个团队自己 （或者事业部）来拟订发布时间窗口和发布策略（比如采用蓝绿发布或者金丝雀发布），OPS团队大部分转型去做运维工具的开发，纯OPS的团队人数极少。这在一定程度上也是充分附能研发团队的一种方式。
+
+当然了，独立部署的方式也有一个弊端，你的改动也许不经意间导致了下游团队的bug。因为独立部署的模块做全链路end-to-end测试非常困难而且耗时间，所以很多小改动可能并没有做全套回归测试，也没有知会下游应用。在16年我经历过一个线上故障，所有上架商品的优惠计算全部失效，后来排查发现，淘系营销优惠服务调用了一个比较“冷门”的接口来读取用户信息，而上游团队以为这个接口没人在用，于是在某次发布中把接口直接下线了。
+
+**小结**
+
+这一节跟大家简单介绍了几个微服务的理念，在后面的章节中，我们继续来探讨微服务的话题，聊一聊为何需要做微服务改造，以及微服务拆分的一般准则都有哪些。
+
+
+学习Tips：为了更深入了解微服务理论在业界的应用，同学们可以在网络上搜一搜各个大厂的技术牛人的技术分享，尤其是业务架构领域（不涉及具体技术细节），看一看他们是如何从系统架构的全局层面划分业务模块的。
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a98290a3-ee00-42f2-b3e8-4a2bc866624e/2020-09-17-050500.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q5WWEFO7%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225514Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCRSltSP%2BCCu1Oc%2B%2BhYt6%2BNAL2c59XRwPL7WZGWuk3pKgIgcVcWrUWGImqXQH8oT30e1XLq06Vavorv2iyObKSp5ToqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDE37WatDjIRjsWGpYyrcA52IC07Feh0G3hG0GcVg7JRqJQ8FeLeehC5YM8MqsYaDZO8mXZ0ab4ifiYdp5dRtoXV%2BUiKCRXpLDLBZEXC6CjDc7srQjOsVVii4IS%2BXCu2gjTFuJ54MpXbbmNop0NhbBrFL%2Bu0qIJUl5N1fJ9cn7Rj%2FBPn%2B%2BgCrP1ZjINvmHj49QR%2BWU90%2Fas760eznjcRh1ezU0K9oOmDCoUWE4ANh2kKXET9hJ6Lkw9mORaikBZILphR3G%2BenrO6Ovw5d2xG34dMvHYfzxng8nXtJ2Strf4Cz%2BUxN1y4EYi6pJC0txLANTnvWVdKHJjFM8ixpPMem8WMG9ptC5Jc4B5hZvqJ7dAhZgK%2BfGtU9sa4H5V%2Fmd3%2Fu%2BWezCUc2cOFs3%2F7FxZYOCG3PElg0iDuvqrLhEF6tlGwBJDPCs5hwREI7NaSB7DeYNiTvS4b3dCeCd5T4TrRhyT7BAHcA%2FoZQYkFJPeAbDWXY0b7lh0wbAG4QdcfRcq%2FzTS3hJWYWM9XO6zqQKl1Uo1kJxiF7dgnKHjfPzpYNNbCVrjyZTWZwuTfZjjnPpJW9ywA1oFvpR75QyCa0ZJIl9mQUgE0%2BsuWkpy8h1kuUwY%2FEruup6qqmC0e0F2RM%2FVrqNcxB%2FPBgX67oEzv1MIW3%2F9IGOqUBkSlNMcNTsiv1Hho6SODMg8EvegYEX2m48CcC9ZCou66g9smLriGp4N5DUJybeyGFJMArF0jF1oCikp7suxIV%2BPuZ%2Ftb7Sz%2FpC4zEURnBvSb4ORqXkzmKHo7TLth%2FXwv0RsAv%2BDA2LCOD1%2BMf0VZBYjeTPMaSTtTAi0TCkuZnKuRbdvXTzSqe0BJydmPY4lb4iv7iaGgGnDtweOvQOhrknLUETxMk&X-Amz-Signature=9bd2b1d654be0fd2fac8c6eded53021d7d653b5bec94f01f089bdec6ca06f1ae&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

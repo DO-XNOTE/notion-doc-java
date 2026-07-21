@@ -1,0 +1,83 @@
+---
+title: 2-7 落地Nacos服务发现 - 搭建toilet-center进行服务注册-2
+---
+
+# 2-7 落地Nacos服务发现 - 搭建toilet-center进行服务注册-2
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3e08c551-9fcf-40a6-a3fe-2269cf34e357/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUZU7QDR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEUgwKIiMfCOss6j%2BGFFy3x%2B4kkpfSVa0aWkVbao5FEwAiBdmx6H0Up%2BIbmGjUCcdGMSHRIAK%2FVIO8pnibnJM850xyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMuqhecVMUpV3ljdXNKtwDar79DLXaC454Gtj5U%2FyF0a%2BzJUnfhsyJBt0Q1bv28MbF%2FSQRNVqsdjCMD5eKD2jA6eufcoccfw4F6Z2b00WKB5FJub7g%2F3BDdVdWzTEvv2HylbVA32XJOSeGc1wfCcIWy%2BOizmSCvbujHOf3wvCqPeqT9ObrTXkdKDkW9IfNAvuiE99mjem%2B%2FBtu9PkFuNQggKGGc9RcpEX5IL6H8zms4y8n%2FVvmSTmHrC1syXK6p2gNdYsF9zGQYJU86Y60Ou3JLz08uPpfdBLXli%2BuIwKx8lr3OVeXA0wMZQAH4VtLTsfs9clRptV8gUbxjGBAFu7vZVMtrqFNMnGEJlvRcf25hO9bvTsryZzneIY6icjUbubodF30%2FOn9oKkUHiDzoWyZLV9ZcD4ESnkx7gpXBK6miIdo4e5OBP1GnCwv2XugQWiAX3FeG7Bu1s5FMEOY3Z1wpn3zk3v1%2Bsatx3QFaKhRpml6geoC36Tx1Uf3m53dnJr%2B5sGSSpjG3H5QRKK9rPIOeHISSwtWP1qFtIBIPzkyX0aAoNJ5NIm3fu10EjSIjPB7X8PR7mnAd687OXCA3%2Fxehk0YJWUgEDiBLB%2FdxvOuUO6%2BPFmvHeky7uY3Pv7lxTqxrIOnUwZopDl7HQkwwbf%2F0gY6pgEhyzbrSQzwTS8KtBjAKJw%2BbqgLj3jOyB5TM6DObn%2B3g7Wqa3Et%2FDqt1uipfssatRN24z8mPIlrEdk8qyhbug3q2CjBbo411xbMzvPGxm5wAQoXaRFjcQjTVthFowNl5ub6kDwsoYGC1QDIBGDtYUJlRWVSc818pqBdvYHqaVCS%2BBeDfDDZUFmTtD8tVQk5tNxY5DR6mXMAuMurufdB6cjZrCWBkb1v&X-Amz-Signature=09f6d99a2d5266abd03d02600a33119ecacd6b5fa101e22dcd19c101aa2c66bb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3c1877da-2558-4fad-9548-20d3e7c1adf8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUZU7QDR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEUgwKIiMfCOss6j%2BGFFy3x%2B4kkpfSVa0aWkVbao5FEwAiBdmx6H0Up%2BIbmGjUCcdGMSHRIAK%2FVIO8pnibnJM850xyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMuqhecVMUpV3ljdXNKtwDar79DLXaC454Gtj5U%2FyF0a%2BzJUnfhsyJBt0Q1bv28MbF%2FSQRNVqsdjCMD5eKD2jA6eufcoccfw4F6Z2b00WKB5FJub7g%2F3BDdVdWzTEvv2HylbVA32XJOSeGc1wfCcIWy%2BOizmSCvbujHOf3wvCqPeqT9ObrTXkdKDkW9IfNAvuiE99mjem%2B%2FBtu9PkFuNQggKGGc9RcpEX5IL6H8zms4y8n%2FVvmSTmHrC1syXK6p2gNdYsF9zGQYJU86Y60Ou3JLz08uPpfdBLXli%2BuIwKx8lr3OVeXA0wMZQAH4VtLTsfs9clRptV8gUbxjGBAFu7vZVMtrqFNMnGEJlvRcf25hO9bvTsryZzneIY6icjUbubodF30%2FOn9oKkUHiDzoWyZLV9ZcD4ESnkx7gpXBK6miIdo4e5OBP1GnCwv2XugQWiAX3FeG7Bu1s5FMEOY3Z1wpn3zk3v1%2Bsatx3QFaKhRpml6geoC36Tx1Uf3m53dnJr%2B5sGSSpjG3H5QRKK9rPIOeHISSwtWP1qFtIBIPzkyX0aAoNJ5NIm3fu10EjSIjPB7X8PR7mnAd687OXCA3%2Fxehk0YJWUgEDiBLB%2FdxvOuUO6%2BPFmvHeky7uY3Pv7lxTqxrIOnUwZopDl7HQkwwbf%2F0gY6pgEhyzbrSQzwTS8KtBjAKJw%2BbqgLj3jOyB5TM6DObn%2B3g7Wqa3Et%2FDqt1uipfssatRN24z8mPIlrEdk8qyhbug3q2CjBbo411xbMzvPGxm5wAQoXaRFjcQjTVthFowNl5ub6kDwsoYGC1QDIBGDtYUJlRWVSc818pqBdvYHqaVCS%2BBeDfDDZUFmTtD8tVQk5tNxY5DR6mXMAuMurufdB6cjZrCWBkb1v&X-Amz-Signature=fa8ce5605392e8093efbb70397d0c8f69ca77453b0cc3e8b8a103964b66ba273&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/244eada1-7d32-485b-a9c4-62b79f96f6c5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUZU7QDR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEUgwKIiMfCOss6j%2BGFFy3x%2B4kkpfSVa0aWkVbao5FEwAiBdmx6H0Up%2BIbmGjUCcdGMSHRIAK%2FVIO8pnibnJM850xyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMuqhecVMUpV3ljdXNKtwDar79DLXaC454Gtj5U%2FyF0a%2BzJUnfhsyJBt0Q1bv28MbF%2FSQRNVqsdjCMD5eKD2jA6eufcoccfw4F6Z2b00WKB5FJub7g%2F3BDdVdWzTEvv2HylbVA32XJOSeGc1wfCcIWy%2BOizmSCvbujHOf3wvCqPeqT9ObrTXkdKDkW9IfNAvuiE99mjem%2B%2FBtu9PkFuNQggKGGc9RcpEX5IL6H8zms4y8n%2FVvmSTmHrC1syXK6p2gNdYsF9zGQYJU86Y60Ou3JLz08uPpfdBLXli%2BuIwKx8lr3OVeXA0wMZQAH4VtLTsfs9clRptV8gUbxjGBAFu7vZVMtrqFNMnGEJlvRcf25hO9bvTsryZzneIY6icjUbubodF30%2FOn9oKkUHiDzoWyZLV9ZcD4ESnkx7gpXBK6miIdo4e5OBP1GnCwv2XugQWiAX3FeG7Bu1s5FMEOY3Z1wpn3zk3v1%2Bsatx3QFaKhRpml6geoC36Tx1Uf3m53dnJr%2B5sGSSpjG3H5QRKK9rPIOeHISSwtWP1qFtIBIPzkyX0aAoNJ5NIm3fu10EjSIjPB7X8PR7mnAd687OXCA3%2Fxehk0YJWUgEDiBLB%2FdxvOuUO6%2BPFmvHeky7uY3Pv7lxTqxrIOnUwZopDl7HQkwwbf%2F0gY6pgEhyzbrSQzwTS8KtBjAKJw%2BbqgLj3jOyB5TM6DObn%2B3g7Wqa3Et%2FDqt1uipfssatRN24z8mPIlrEdk8qyhbug3q2CjBbo411xbMzvPGxm5wAQoXaRFjcQjTVthFowNl5ub6kDwsoYGC1QDIBGDtYUJlRWVSc818pqBdvYHqaVCS%2BBeDfDDZUFmTtD8tVQk5tNxY5DR6mXMAuMurufdB6cjZrCWBkb1v&X-Amz-Signature=ccf10b5520c60a498a9ad6d8ea833c4cbb7e9e12d97c3e7adccb983e7d575ad2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这个类创建好之后，我们在刚才创建的这个 service 当中，把它的 converter 给它填入进去。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/50baeec2-6676-48d9-b474-4030bcff6bbc/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUZU7QDR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEUgwKIiMfCOss6j%2BGFFy3x%2B4kkpfSVa0aWkVbao5FEwAiBdmx6H0Up%2BIbmGjUCcdGMSHRIAK%2FVIO8pnibnJM850xyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMuqhecVMUpV3ljdXNKtwDar79DLXaC454Gtj5U%2FyF0a%2BzJUnfhsyJBt0Q1bv28MbF%2FSQRNVqsdjCMD5eKD2jA6eufcoccfw4F6Z2b00WKB5FJub7g%2F3BDdVdWzTEvv2HylbVA32XJOSeGc1wfCcIWy%2BOizmSCvbujHOf3wvCqPeqT9ObrTXkdKDkW9IfNAvuiE99mjem%2B%2FBtu9PkFuNQggKGGc9RcpEX5IL6H8zms4y8n%2FVvmSTmHrC1syXK6p2gNdYsF9zGQYJU86Y60Ou3JLz08uPpfdBLXli%2BuIwKx8lr3OVeXA0wMZQAH4VtLTsfs9clRptV8gUbxjGBAFu7vZVMtrqFNMnGEJlvRcf25hO9bvTsryZzneIY6icjUbubodF30%2FOn9oKkUHiDzoWyZLV9ZcD4ESnkx7gpXBK6miIdo4e5OBP1GnCwv2XugQWiAX3FeG7Bu1s5FMEOY3Z1wpn3zk3v1%2Bsatx3QFaKhRpml6geoC36Tx1Uf3m53dnJr%2B5sGSSpjG3H5QRKK9rPIOeHISSwtWP1qFtIBIPzkyX0aAoNJ5NIm3fu10EjSIjPB7X8PR7mnAd687OXCA3%2Fxehk0YJWUgEDiBLB%2FdxvOuUO6%2BPFmvHeky7uY3Pv7lxTqxrIOnUwZopDl7HQkwwbf%2F0gY6pgEhyzbrSQzwTS8KtBjAKJw%2BbqgLj3jOyB5TM6DObn%2B3g7Wqa3Et%2FDqt1uipfssatRN24z8mPIlrEdk8qyhbug3q2CjBbo411xbMzvPGxm5wAQoXaRFjcQjTVthFowNl5ub6kDwsoYGC1QDIBGDtYUJlRWVSc818pqBdvYHqaVCS%2BBeDfDDZUFmTtD8tVQk5tNxY5DR6mXMAuMurufdB6cjZrCWBkb1v&X-Amz-Signature=5c814a06c122590191d05693a7b4474c28a5bd9dbc836c30a028454a5842f320&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3eed6e0d-bd58-41a7-b652-bbdee164c3ce/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUZU7QDR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEUgwKIiMfCOss6j%2BGFFy3x%2B4kkpfSVa0aWkVbao5FEwAiBdmx6H0Up%2BIbmGjUCcdGMSHRIAK%2FVIO8pnibnJM850xyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMuqhecVMUpV3ljdXNKtwDar79DLXaC454Gtj5U%2FyF0a%2BzJUnfhsyJBt0Q1bv28MbF%2FSQRNVqsdjCMD5eKD2jA6eufcoccfw4F6Z2b00WKB5FJub7g%2F3BDdVdWzTEvv2HylbVA32XJOSeGc1wfCcIWy%2BOizmSCvbujHOf3wvCqPeqT9ObrTXkdKDkW9IfNAvuiE99mjem%2B%2FBtu9PkFuNQggKGGc9RcpEX5IL6H8zms4y8n%2FVvmSTmHrC1syXK6p2gNdYsF9zGQYJU86Y60Ou3JLz08uPpfdBLXli%2BuIwKx8lr3OVeXA0wMZQAH4VtLTsfs9clRptV8gUbxjGBAFu7vZVMtrqFNMnGEJlvRcf25hO9bvTsryZzneIY6icjUbubodF30%2FOn9oKkUHiDzoWyZLV9ZcD4ESnkx7gpXBK6miIdo4e5OBP1GnCwv2XugQWiAX3FeG7Bu1s5FMEOY3Z1wpn3zk3v1%2Bsatx3QFaKhRpml6geoC36Tx1Uf3m53dnJr%2B5sGSSpjG3H5QRKK9rPIOeHISSwtWP1qFtIBIPzkyX0aAoNJ5NIm3fu10EjSIjPB7X8PR7mnAd687OXCA3%2Fxehk0YJWUgEDiBLB%2FdxvOuUO6%2BPFmvHeky7uY3Pv7lxTqxrIOnUwZopDl7HQkwwbf%2F0gY6pgEhyzbrSQzwTS8KtBjAKJw%2BbqgLj3jOyB5TM6DObn%2B3g7Wqa3Et%2FDqt1uipfssatRN24z8mPIlrEdk8qyhbug3q2CjBbo411xbMzvPGxm5wAQoXaRFjcQjTVthFowNl5ub6kDwsoYGC1QDIBGDtYUJlRWVSc818pqBdvYHqaVCS%2BBeDfDDZUFmTtD8tVQk5tNxY5DR6mXMAuMurufdB6cjZrCWBkb1v&X-Amz-Signature=e71375e6bfdc6ff892d91f5ca02b31709daf89ae0ea3a9d9718a7d20d98efe34&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+convert，OK，那这个方法就已经写完了，我们在写完的同时给它这里添加一个什么呢？ get mapping，我希望它是一个 get 方法，那它对应的路径就叫 check available，OK，那与此同时我们用同样的方式把接下来的下面几个方法给它实现掉。
+
+
+首先我们直接去调用你的这个 toilet DEO 层，去把这个厕所先给它查出来。OK，怎么查的？ toilet deal？点 find by ID 这个方法，同学们看咱有没有写过？没有写过，这是咱 spring data GPA 里面给我们自动实现的方法，非常的方便。
+
+
+好，我们把这个 ID 传入进去，那如果同学们想这个 ID 如果不存在怎么办？你想上一个厕所，这个厕所压根就不存在，你骗我，我们这种情况下就要使用 or else 输入方法，那怎么办？扔出一个异常出去不就好了？这个异常我们就直接丢出一个 runtime exception，给它的这个里面添加，叫 toilet not found okay。
+
+
+好，那接下来走到这里，我们要去做一个二次检查，如果你当前的这个 toilet 它不满足条件，它既不是available，也不是什么呢，也不是clean。那这种情况下我们也同样的不能去把它给占用掉，所以也要抛出去一段异常。这个异常，我们给它添加一个说明，叫 a restroom not available or unclean。那接下来往后走，既然咱要占用，我们就要把它的 available set available 给它设置成false，证明当前蹲坑已经有人了。与此同时，咱互联网公司的员工讲究个速战速决，我这个蹲坑一站上，我就开始直卸千里， set clean force，那直懈千里了，自然不 clean 了，对吧？设置好之后把它给 save 一下。好，那这个方法就非常简单的完成掉了。
+
+
+save 完之后，我们是还是使用咱前面创建的这个converter，把它给 convert 一下返回去好使，使用 spring data g p a 加上 loombook 写代码，就是这么轻松。OK，那这个 release 方法我们也是采用类似的方式，先去查询一个厕所。OK，那查询到了之后，我们去做相应的逻辑， release 是什么意思？就是说我起身离开，挥一挥衣袖，不带走一片云彩。所以我要把这个厕所先给它打扫干净。 set clean too，同时物归原处， set available 也是处好。当前这个 toilet 就已经是处于一个可用的状态了，所以最后一步把它做一个保存好之后，同样的方式给它 return 回去。OK，那这两个方法定义完之后，我们到最后一个方法。
+
+
+最后一个方法是 check availability，非常的简单。首先第一步依然是查询这个厕所，查询完之后直接 return toilet，点 get available is available。好，那这几个业务逻辑写好之后，同学们想还缺了什么呀？我们这里还没有加这个注解吗？不是要把对应的这个 post mapping 给它加上。OK，那它是一个 post 方法，对应的路径就是杠 occupy 下面的一样，我是杠 release 好，给它加上。
+
+
+最后一个是一个 get 方法，我们遵循 rest API 的规范，对于这些只读的方法使用 get mapping 好， check available ability 这个单词蛮难拼的，给它 copy 上去。好，那这里创建好了这个核心的业务逻辑之后，我们接下来还缺什么呀？还要去怎么样去创建对应的资源文件，也就是配置项。那，那我们接下来在这个 resources 文件夹下面创建一个 application 点YAML，那因为我们的资源文件属性非常多，那老师这里就不带着大家去机械性的一行命令敲了，我直接把这个文件里面的核心的内容给同学们大概梳理一下，讲一下。
+
+OK，那这第一个配置就是咱当前应用所占用的端口号，我这里指定了2万。好，那接下来的这个 error 配置是什么含义？来，这就是我们 spring boot 2. 3 版本和 2. 2 版本之间的一个不同。如果咱在 202 版本之间扔出一个异常， through runtime exception，那么你在 postman 里你可以很明显地看到你的 runtime exception 里面具体的错误信息，但是在 2. 3 点叉版本这里，它做了一些变动，那你是无法获知。你在 runtime exception 就是这里 runtime exception 这个括号里面。哎，添加的这些具体的那种错误信息了，如果想看到怎么办，那就要把这些注解给它加上那 include exception，设置成 true include message，这个属性一定要设成always。与此同时这里还有一个 include stacktrace，那这个可以视情况而定。你在开发过程当中把这个 stacked trees 给它打印出来，可以去帮助你分析错误。咱在生产环境可就不要这样打开了。
+
+
+OK，那再往下，这里到了 spring boot，还有 spring cloud 的设置部分，那这里是我当前应用的名称，同时这一个 name 也会作为我服务注册的这个服务名。那服务注册在哪里？同学们，看这 cloud negos discovery，那这里有一个配置 server address，那么我们这里配置的就是 nequest 地址了。OK，那这 necklace 这里其实还有一些其他配置，我们在后面再跟同学们详细来说明。
+
+
+好，那接下来这里配的是 GPA 的相关注释，比如说你是否在你的 log 当中打印出你的 SQL 文件，那接下来的几个都是跟我们底层的数据库访问层有关。比如说你在获取你的 database 的 entity 的时候，你是否会去执行创建表的操作，那这个属性我们会通常把它设置成什么都不做，那接下来是一些什么去显示SQL，做一个 SQL 格式化的这样的参数。
+
+好，我们再往下，那接下来，哎，是一个比较重要的配置，你的数据源连接，那这个 URL 就是我们连接到的最终的数据库。同学们可以看这里，我给这个数据库当中创建了一个单独的schema，它这里就可以把它作为一个独立的数据库，指供我们的 restroom service 访问。那同学们，这里有一点要注意的，如果你本地数据库的版本和我不一致，那么有可能会在启动项目的时候碰到一些启动问题。数据连接问题，这种启动异常连接不上数据源，往往是由两个问题引起的。那第一个问题就是不同版本的 MySQL 这里对参数的要求不同，那有可能比方说某些版本，它要求你必须配置这个 server time zone，如果你缺失了它可能又不能启动起来。那第二个问题就有可能是你的用户名密码不正确。OK，那同学们，碰到这类的启动问题，只要在搜索引擎当中去查询具体的报错，都可以找到对应的解决方案。
+
+
+好，那我们继续往下看，这里是它的 g d b c driver 的 class name，那再往后是一个连接池，那它就是数据库连接池，我们配置一些 connection timeout 超时连接的参数，以及你连接池的池子里面的线程大小。OK，都是在这里面配置的。那再往下，这边 management 端口，它是为了暴露出一些服务端点，那当我们在项目当中集成不同的组件的时候，比如说配置中心或者说网关层，那这些组件都会把自己的一些额外的服务通过 to reader 这里的 end point 把它暴露出去，那后面我们会再跟同学们去详细来解释，那这里只用去仿照我的方式把这些端点全部暴露出去。
+
+
+OK，那接下来我们就可以去启动这个项目了，同学们这里留一个心，我在启动的时候故意跟大家留了一个坑，也是大家最容易犯的 2 个错误之一。我这里让同学们先尝试着启动项目，看具体报错，然后尝试自己解决。OK，同学们现在可以去试一下。那我们这里也沿着同样的错误路径去尝试着启动一下项目，看它具体报错以及怎么来解决。那这个项目基本上 10 个新手当中有七八个都有可能碰到。OK，那我们这里直接点击run，把这个项目启动起来。那稍等半炷香的时间。好，看它打印log，打到最后。
+
+
+同学们看，这句话是什么呀？第一 restriction 就是说我做了服务下线，那为什么做服务下线？因为它这里启动失败了。那启动失败的具体原因是什么？同学们，看这一行报错，你看 toilet DEO 层初始化失败。诶，问题是这里提示出来了，你当前的 toilet entity，它不是一个受托管的对象。OK，引起这个问题的原因有好几种，那同学们有可能从这个报错里并不能很好地直观发现具体问题出在哪。我这里跟同学们提 3 个点，新手非常容易犯错的。
+
+
+那第一个点，我们同学们注意一下你的类，上面同学们配置了扫包路径的，咱再去定义具体类的时候，尽量让你的 do 层看到吗？这个 do 层的包名和你的这个 service call，也就是启动类，这里的包名保持一致，我们都叫 come 点 imock 点restroom，那首先我们确保这个包名一致，OK，这是最容易犯的一个错误之一。
+
+
+那第二个容易犯的错误，同学们看这个包的具体路径，咱都把它定义成什么呀？ Com 点 imock 点restroom，**那乍一看它应该是 3 个文件夹，对不对？但是有的时候同学们如果操作不当，你在创建文件夹的时候，有时候输入包名的时候，它不会给你创建出三级目录，而是给你创建出一级目录。那这个一级目录的目录名叫什么呀？就叫 Com 点 imock 点restroom，那同学们可以去检查检查自己去创建项目当中的时候，有没有犯这个错误，我们一定要把它建成三级目录，而不是一级目录。**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1a160705-38e7-443a-a7b7-213024d1a504/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZUZU7QDR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231310Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEUgwKIiMfCOss6j%2BGFFy3x%2B4kkpfSVa0aWkVbao5FEwAiBdmx6H0Up%2BIbmGjUCcdGMSHRIAK%2FVIO8pnibnJM850xyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMuqhecVMUpV3ljdXNKtwDar79DLXaC454Gtj5U%2FyF0a%2BzJUnfhsyJBt0Q1bv28MbF%2FSQRNVqsdjCMD5eKD2jA6eufcoccfw4F6Z2b00WKB5FJub7g%2F3BDdVdWzTEvv2HylbVA32XJOSeGc1wfCcIWy%2BOizmSCvbujHOf3wvCqPeqT9ObrTXkdKDkW9IfNAvuiE99mjem%2B%2FBtu9PkFuNQggKGGc9RcpEX5IL6H8zms4y8n%2FVvmSTmHrC1syXK6p2gNdYsF9zGQYJU86Y60Ou3JLz08uPpfdBLXli%2BuIwKx8lr3OVeXA0wMZQAH4VtLTsfs9clRptV8gUbxjGBAFu7vZVMtrqFNMnGEJlvRcf25hO9bvTsryZzneIY6icjUbubodF30%2FOn9oKkUHiDzoWyZLV9ZcD4ESnkx7gpXBK6miIdo4e5OBP1GnCwv2XugQWiAX3FeG7Bu1s5FMEOY3Z1wpn3zk3v1%2Bsatx3QFaKhRpml6geoC36Tx1Uf3m53dnJr%2B5sGSSpjG3H5QRKK9rPIOeHISSwtWP1qFtIBIPzkyX0aAoNJ5NIm3fu10EjSIjPB7X8PR7mnAd687OXCA3%2Fxehk0YJWUgEDiBLB%2FdxvOuUO6%2BPFmvHeky7uY3Pv7lxTqxrIOnUwZopDl7HQkwwbf%2F0gY6pgEhyzbrSQzwTS8KtBjAKJw%2BbqgLj3jOyB5TM6DObn%2B3g7Wqa3Et%2FDqt1uipfssatRN24z8mPIlrEdk8qyhbug3q2CjBbo411xbMzvPGxm5wAQoXaRFjcQjTVthFowNl5ub6kDwsoYGC1QDIBGDtYUJlRWVSc818pqBdvYHqaVCS%2BBeDfDDZUFmTtD8tVQk5tNxY5DR6mXMAuMurufdB6cjZrCWBkb1v&X-Amz-Signature=b6387e973f66bc81c7ad050be8a0e8c8fed4b377ace6251c498775faa1c88da5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+OK，那这是第二点，第 3 点，同学们很容易忽略的是什么呀？我在定义倒层的时候，有可能把这个 entity 对象上面漏了几个注解，比如说什么注解？我们这里有两个核心注解，一定要加上的，一个叫entity，一个叫table。OK，那只有你添加了entity，你的这个类才会被作为一个数据库实体。同时我这里指定了一个table，那它才会去找到具体数据库当中对应的表明，那这两个注解必不可少。
+
+
+好，那我们把这个最容易犯的 3 个问题都跟同学们说明了，接下来我们再去查漏补缺，看一看自己项目当中是不是犯了同样的错误。那如果我们准备妥当，这时候再来试一下启动这个项目，稍等半炷香的时间。OK，看到 spring 的大图标，哎，成功了一半，我们往下走，哎，看到这句话吗？started，你的应用已经启动成功了。接下来我们就可以移步到浏览器当中，看一下 negos 这里是否已经去注册到了这个服务。好，我们刷新一下页面，可以看 down 的服务列表，这里多出了一个服务名， restroom service，那分组是默认分组。
+
+OK，当前有一个实例数，那说明你当前服务已经注册上去了。如果同学们发现你的 log 里显示注册成功，但是你的注册列表又没有，这时候怎么办？很简单的一个办法，同学们重启一下negos，基本上就可以解决问题了，那可能是由一些网络变更等等，导致你的服务注册出现了异常，重启一下就可以解决。
+
+
+好，那接下来我们尝试从 Postman 这里去发送几个调用，看一看你的服务是否可以正常接收请求。第一个请求，去查询可用的坑位。我们发送出去，可以看到当前数据库有一个数据返回来，那它的 clean 和 available 参数都是true，证明当前这个坑位是可用的。同学们在做测试之前，不妨去先插入这么一条数据，当做种子数据来跑测试。那接下来我要去做一个蹲坑操作，这个 p 蹲坑操作是一个 pose 的请求。与此同时，我们在咱自己的这个表单这里， body 这里，那我传入了一个叫 ID 为 1 的这样的一个数据。好，我把它 post 进去，OK，也成功返回了200。那当前的这个坑位可以看到它的 clean 和 available 都变成了false，证明我已经抢到了。那如果我尝试再抢一次，同学们应该看到一个错误的报错，好， runtime exception，它这里曝出的具体的信息是， restroom not available or it is unclean，证明当前的这个坑位不能被继续占用了。
+
+
+好，那接下来同样的方式，我们这里去调用一个出坑指令出坑，也就是我把当前坑位打扫干净，还给下一个人。那这里同样传入一个参数， ID 为 1 的一个参数，之后点击send，OK，那可以看到当前坑位已经被物归原主打扫干净了。OK，那这里就是本节跟同学们去演示的内容，本节稍微有点长，那这里咱去演示了 **sprint boot 的极速落地，以及使用 Lombook 还有 spring data jPA 如何通过这两个组件来去加快开发速度。自动生成一些代码**，**那在同学们去在 Intelligi 写代码的过程当中，记住 lombok 这里可是要让同学们提前装一个插件的，那同学们在 Intellij 里，在它的插件市场上搜索 long book 插件，就可以把它给安装进去。OK，那对于用 eclipse 的同学也是用同样的方式去到插件市场当中，找到这个插件安装上去即可。这个插件的名称在这里叫 lombok，那装好这些开发工具插件之后，你的开发工具就会去识别出 lombok 注解，并且自动生成一些代码。**
+
+
+**OK，那我们在下一节当中去搭建一个服务的调用者，它通过服务发现机制从 nacos 当中获取到所有注册服务的列表，然后再去发起一个调用，去查询你的 restroom service。OK，同学们，那我们这一节到这里结束，咱下一节再见。**
+
+
+

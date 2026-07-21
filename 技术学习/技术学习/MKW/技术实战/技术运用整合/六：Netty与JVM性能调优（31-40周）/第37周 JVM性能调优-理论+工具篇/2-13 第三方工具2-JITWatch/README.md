@@ -1,0 +1,56 @@
+---
+title: 2-13 第三方工具2-JITWatch
+---
+
+# 2-13 第三方工具2-JITWatch
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/60da34f2-0256-499b-87be-462fecd2a45a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R2SDO67N%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230150Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHb6ipZX0aCZ7HnEoEzzlXNuhP0rJI6uwdlbD%2B2QgvxmAiA%2FB2K5s%2BxxRaWTqde9ZBbIMWGoQW62sFzKm8TxVrJ0cCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMr6VHb%2B3Mh5Pa7dCcKtwDw%2FLGjEKo54WhG%2F42gkmpeDkAaQfYNlD0Cr4hcJPG8vtUMe8kp9u0MvpNVbAVgMph7btyQyjQa2m13M5OyNusT4stqyy9GtHcXKS8Xyawx9NQ3FViFliBaX8Kcl1dt%2Bzwz9bzcG%2FUsjSway44T1ipMogXMkWqrFmoZNvaod26nWh636bLVytrIx9WfMMJaKLDf8XLN%2Ba0fMNBloNTfwxXN0QtQ1LNPpuLqchiO9qx%2Fiv94oogiIZ4LpGCET%2FWVGVtYW6uTyPeYkGyLIlJ6RTX6%2BEXuakGAjImcvf2r0flvO%2BVNKzRxxa6L2k6KYLa5UFIAmdljPuS%2BuumKmB3b3pOorh3bAZdQTzzURf%2Bdb2T1URAy%2FcFsPZNrJWrlfK1%2Bdf1iYbf1upewJEzKfjpe2dyJ3KZEBarPDClXKm8rJhTDRgFUtZ%2Bhfn1Qg6nx0tninujksLCz9CyZBEhL3hUnKv92XfR7aYku6DB0n22S844LwcYeeoXTaM84VPh5zrhr4Pxbc1JXlfrsroysyD1NIFf4KQlOcNeZ04G8b6P%2F1t0ZNJ7%2BfuvIzSEl5bygh279808zcWizIHHDWhBk2O6IEC21RCb65I6UweaO7BzozhMRMOIJd4sZ1X%2Fq7ZrCIkw07n%2F0gY6pgGHMmOhYZtsIqJSwGjO9bd3oMoezhe1W9tFGenOp7o83o33pTly95uSNnGPtj%2BnJJvsDp5jX%2F2JEkW1W%2Bl86WuZnuhTZiKHDgQomNLr2jM4Kxv8al9hhwCS1x5RmvGxzHZu0TFwcVNeYHGvYCJpLTn%2BtH1ViZHiJ27%2BeX%2BrUPG6LN1RnY%2F4ykIy34pNxkSFVCttNk3nKM%2F%2BCDx4wNrtF52iaT1q6YPU&X-Amz-Signature=a116144ca980005b574607f1030ea5a8ca1f465ad05220d4b08564459797a3db&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/336e98f5-b503-44e3-b7ac-edc542bc5ff1/SCR-20240728-tikb.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R2SDO67N%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230150Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHb6ipZX0aCZ7HnEoEzzlXNuhP0rJI6uwdlbD%2B2QgvxmAiA%2FB2K5s%2BxxRaWTqde9ZBbIMWGoQW62sFzKm8TxVrJ0cCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMr6VHb%2B3Mh5Pa7dCcKtwDw%2FLGjEKo54WhG%2F42gkmpeDkAaQfYNlD0Cr4hcJPG8vtUMe8kp9u0MvpNVbAVgMph7btyQyjQa2m13M5OyNusT4stqyy9GtHcXKS8Xyawx9NQ3FViFliBaX8Kcl1dt%2Bzwz9bzcG%2FUsjSway44T1ipMogXMkWqrFmoZNvaod26nWh636bLVytrIx9WfMMJaKLDf8XLN%2Ba0fMNBloNTfwxXN0QtQ1LNPpuLqchiO9qx%2Fiv94oogiIZ4LpGCET%2FWVGVtYW6uTyPeYkGyLIlJ6RTX6%2BEXuakGAjImcvf2r0flvO%2BVNKzRxxa6L2k6KYLa5UFIAmdljPuS%2BuumKmB3b3pOorh3bAZdQTzzURf%2Bdb2T1URAy%2FcFsPZNrJWrlfK1%2Bdf1iYbf1upewJEzKfjpe2dyJ3KZEBarPDClXKm8rJhTDRgFUtZ%2Bhfn1Qg6nx0tninujksLCz9CyZBEhL3hUnKv92XfR7aYku6DB0n22S844LwcYeeoXTaM84VPh5zrhr4Pxbc1JXlfrsroysyD1NIFf4KQlOcNeZ04G8b6P%2F1t0ZNJ7%2BfuvIzSEl5bygh279808zcWizIHHDWhBk2O6IEC21RCb65I6UweaO7BzozhMRMOIJd4sZ1X%2Fq7ZrCIkw07n%2F0gY6pgGHMmOhYZtsIqJSwGjO9bd3oMoezhe1W9tFGenOp7o83o33pTly95uSNnGPtj%2BnJJvsDp5jX%2F2JEkW1W%2Bl86WuZnuhTZiKHDgQomNLr2jM4Kxv8al9hhwCS1x5RmvGxzHZu0TFwcVNeYHGvYCJpLTn%2BtH1ViZHiJ27%2BeX%2BrUPG6LN1RnY%2F4ykIy34pNxkSFVCttNk3nKM%2F%2BCDx4wNrtF52iaT1q6YPU&X-Amz-Signature=5d528396725f4720a1fc6c8799ecd5b6db6d106f5d3c1ee5c992932354eca4fa&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8c5efaf6-4a69-4023-8383-82e5f8e42982/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R2SDO67N%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230150Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHb6ipZX0aCZ7HnEoEzzlXNuhP0rJI6uwdlbD%2B2QgvxmAiA%2FB2K5s%2BxxRaWTqde9ZBbIMWGoQW62sFzKm8TxVrJ0cCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMr6VHb%2B3Mh5Pa7dCcKtwDw%2FLGjEKo54WhG%2F42gkmpeDkAaQfYNlD0Cr4hcJPG8vtUMe8kp9u0MvpNVbAVgMph7btyQyjQa2m13M5OyNusT4stqyy9GtHcXKS8Xyawx9NQ3FViFliBaX8Kcl1dt%2Bzwz9bzcG%2FUsjSway44T1ipMogXMkWqrFmoZNvaod26nWh636bLVytrIx9WfMMJaKLDf8XLN%2Ba0fMNBloNTfwxXN0QtQ1LNPpuLqchiO9qx%2Fiv94oogiIZ4LpGCET%2FWVGVtYW6uTyPeYkGyLIlJ6RTX6%2BEXuakGAjImcvf2r0flvO%2BVNKzRxxa6L2k6KYLa5UFIAmdljPuS%2BuumKmB3b3pOorh3bAZdQTzzURf%2Bdb2T1URAy%2FcFsPZNrJWrlfK1%2Bdf1iYbf1upewJEzKfjpe2dyJ3KZEBarPDClXKm8rJhTDRgFUtZ%2Bhfn1Qg6nx0tninujksLCz9CyZBEhL3hUnKv92XfR7aYku6DB0n22S844LwcYeeoXTaM84VPh5zrhr4Pxbc1JXlfrsroysyD1NIFf4KQlOcNeZ04G8b6P%2F1t0ZNJ7%2BfuvIzSEl5bygh279808zcWizIHHDWhBk2O6IEC21RCb65I6UweaO7BzozhMRMOIJd4sZ1X%2Fq7ZrCIkw07n%2F0gY6pgGHMmOhYZtsIqJSwGjO9bd3oMoezhe1W9tFGenOp7o83o33pTly95uSNnGPtj%2BnJJvsDp5jX%2F2JEkW1W%2Bl86WuZnuhTZiKHDgQomNLr2jM4Kxv8al9hhwCS1x5RmvGxzHZu0TFwcVNeYHGvYCJpLTn%2BtH1ViZHiJ27%2BeX%2BrUPG6LN1RnY%2F4ykIy34pNxkSFVCttNk3nKM%2F%2BCDx4wNrtF52iaT1q6YPU&X-Amz-Signature=f33374300779ca23585ef50180d2ef36fd928dea05632d30c778affd008db04c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/54d919c4-d4c9-4cc3-81c1-0c448abb8a31/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R2SDO67N%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230150Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHb6ipZX0aCZ7HnEoEzzlXNuhP0rJI6uwdlbD%2B2QgvxmAiA%2FB2K5s%2BxxRaWTqde9ZBbIMWGoQW62sFzKm8TxVrJ0cCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMr6VHb%2B3Mh5Pa7dCcKtwDw%2FLGjEKo54WhG%2F42gkmpeDkAaQfYNlD0Cr4hcJPG8vtUMe8kp9u0MvpNVbAVgMph7btyQyjQa2m13M5OyNusT4stqyy9GtHcXKS8Xyawx9NQ3FViFliBaX8Kcl1dt%2Bzwz9bzcG%2FUsjSway44T1ipMogXMkWqrFmoZNvaod26nWh636bLVytrIx9WfMMJaKLDf8XLN%2Ba0fMNBloNTfwxXN0QtQ1LNPpuLqchiO9qx%2Fiv94oogiIZ4LpGCET%2FWVGVtYW6uTyPeYkGyLIlJ6RTX6%2BEXuakGAjImcvf2r0flvO%2BVNKzRxxa6L2k6KYLa5UFIAmdljPuS%2BuumKmB3b3pOorh3bAZdQTzzURf%2Bdb2T1URAy%2FcFsPZNrJWrlfK1%2Bdf1iYbf1upewJEzKfjpe2dyJ3KZEBarPDClXKm8rJhTDRgFUtZ%2Bhfn1Qg6nx0tninujksLCz9CyZBEhL3hUnKv92XfR7aYku6DB0n22S844LwcYeeoXTaM84VPh5zrhr4Pxbc1JXlfrsroysyD1NIFf4KQlOcNeZ04G8b6P%2F1t0ZNJ7%2BfuvIzSEl5bygh279808zcWizIHHDWhBk2O6IEC21RCb65I6UweaO7BzozhMRMOIJd4sZ1X%2Fq7ZrCIkw07n%2F0gY6pgGHMmOhYZtsIqJSwGjO9bd3oMoezhe1W9tFGenOp7o83o33pTly95uSNnGPtj%2BnJJvsDp5jX%2F2JEkW1W%2Bl86WuZnuhTZiKHDgQomNLr2jM4Kxv8al9hhwCS1x5RmvGxzHZu0TFwcVNeYHGvYCJpLTn%2BtH1ViZHiJ27%2BeX%2BrUPG6LN1RnY%2F4ykIy34pNxkSFVCttNk3nKM%2F%2BCDx4wNrtF52iaT1q6YPU&X-Amz-Signature=b677c45ecb29f1ed85ac20d2aaf1fb8fadc7e743faf22630e44d814d5bb0f0c0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+大家好，我是大木。这节课来探讨最后一款 JVM 调优工具，叫做 JITWatch。JITWatch 是一个基特编译器的日志分析和可视化工具。它可以用来检查内联决策、热点方法、自检码以及汇编的各种细节。它经常和  hsdis 去配合使用。季度二尺使用起来有点复杂，如果同学们实在玩不转，其实关系也不大。实际项目中，季度 watch 其实用的也不是特别多，所以只要留一个印象就可以了。但是站在工具链体系完备性的角度来说，还是有必要探讨一下的。
+
+
+下面我们来玩一下 JITWatch。首先需要安装一下  hsdis，这是一个 hotspot 虚拟机即时编译代码的反汇编插件，这一步其实是可选的，只不过如果不安装  hsdis 插件，就没有办法使用 JITWatch 去查看汇编相关的信息了。所以我们还是安装一下吧。
+
+
+安装  hsdis 步骤总的来说可以分成两步首先准备好 hsdis 的相关文件。第二步把文件拷贝到 JDK 的指定目录。关键在于第一步准备好 hsdis 的相关文件。你可以使用 JDK 源码自己去编译，也可以下载别人事先准备好的  hsdis 文件。
+
+
+这里我已经列出了 JDK8 和 JDK11 相关的源码地址、安装的说明，以及应该把  hsdis 存放在哪里？下面来演示一下。在 Michael s 下面借 11 怎么样去使用源码安装  hsdis。首先到这个地址下载  hsdis 的源码，我已经下载好了。解压。
+
+
+第二步将目录切换到  src/utils/hsdis 目录。  src/utils/hsdis 右击服务，打开一个终端。接着在目录下面需要下载 bin utils。 bin utils 是一个二进制工具集，它提供了一系列的工具，比方连接器，汇编器等等。我也已经下好了。我们把并 utils copy 到 src/utils/hsdis 目录粘贴。
+
+
+第四步解压并 util s。第五步执行 make a 命令编译  hsdis。我们 copy 到终端里面去粘贴。编译需要一段的时间，并且在不同的操作系统下面编译过程也是不太一样的。这里贴出的是麦克斯 GDK 11 环境下面如何编译的命令。对于其他的操作系统，同学们可以按照这里的安装说明或者是文档里面的说明去执行编译。
+
+
+编译结束了，编译完成之后，就会在  hsdis 目录生成一个 build 目录。在这个里面有一个  hsdis m d 64 d y library 文件，就是编译好的  hsdis 文件了。只要把编译出来的 d y library 文件 copy 到 Java home 的 library server 下面。这里也需要注意，不同的 JDK版本存放的目录是不一样的。 JDK11 是 library server， JDK8 则是 j're library server。我们执行一下。最后我们可以 CD 到 library server 下面，查看一下这个文件是不是确实已经存在。OK，没有问题。这样  hsdis 就安装好了。
+
+
+安装好 hsdis 之后，我们来启动应用，并去生成一个编译日志，使用这些参数启动应用。这些参数的作用让应用在启动的时候使用编译模式启动，并打印返回编的信息和编译相关的信息，把这些信息存放到这个地方， copy 参数。那么简单起见，这里我们就不去启动腹地 Dev 整个项目了。因为我们使用编译模式启动，又打印反汇编的内容，再打印编译相关的信息，会导致应用启动特别的慢。所以这里我们就随便启动一个测试类。比如这里的 hsdb test。 edit configurations 找到 jhsdb test，把参数贴进来。
+
+apply OK 启动项目会疯狂的打印日志。启动好了，现在就会在 JITWatch . com 目录下面生成一个 logfi 点 log 的文件。
+
+
+打开可以发现里面的内容巨多，人工去分析这个日志显然是比较麻烦的。JITWatch 的作用主要就是可视化分析，日志并未给我们提出一系列的优化建议，关掉。回到手机，下面我们就来用JITWatch 可视化的分析这个日志。要想安装 JITWatch，按照这个步骤去操作就 OK 了。
+
+
+第一步下载JITWatch 的源码，然后将目录切换到源码跟目录。我已经下载好了，在这里将目录切换到源码。根目录好了，使用 Maven clean compile execute Java 就可以启动。JITWatch 了。下了。点击 open log，选中刚刚的日志文件，点击open，再点击config，点击 add floater，选中日志对应的源码路径。在这里，open，再点击 at JDK SRC 会自动关联，点击save，最后点击start，就会自动分析日志了，就可以看到各种各样的信息。
+
+
+在这里会展示一些优化的建议。他说这个 file 类，它使用 c e 编译器分层编译，是第二层去进行编译的。 e Cos 方法没有实现内联，原因是这个 call 力实在是太大了。还有很多其他的建议信息，同学们可以看一看。你可以根据这些建议去优化你的代码。
+
+
+当然了，里面展示的很多代码都是 jdk 内部的代码，而不是我们自己的代码。你也可以打开对应的类，找到对应的方法。就可以看到源码自建码以及汇编代码的一个对比。比如在这一行，源码是 flash buffer，自建码是 allow 的0，但你在这里双击还可以查看 load 这个字节码指令的作用是什么。
+
+
+再次点击左侧的 flash buffer，在右侧又可以看到汇编信息是什么。安装  hsdis 的作用就在这里。如果不安装，汇编信息是不会展示的。这样你就可以对比字节码以及汇编的信息，去调优这一行的代码。其他的一些功能同学们可以玩一玩。好，这节课就到这里，谢谢大家。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2e9a9dca-02f1-471a-b063-f1c0c2862807/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R2SDO67N%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230150Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHb6ipZX0aCZ7HnEoEzzlXNuhP0rJI6uwdlbD%2B2QgvxmAiA%2FB2K5s%2BxxRaWTqde9ZBbIMWGoQW62sFzKm8TxVrJ0cCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMr6VHb%2B3Mh5Pa7dCcKtwDw%2FLGjEKo54WhG%2F42gkmpeDkAaQfYNlD0Cr4hcJPG8vtUMe8kp9u0MvpNVbAVgMph7btyQyjQa2m13M5OyNusT4stqyy9GtHcXKS8Xyawx9NQ3FViFliBaX8Kcl1dt%2Bzwz9bzcG%2FUsjSway44T1ipMogXMkWqrFmoZNvaod26nWh636bLVytrIx9WfMMJaKLDf8XLN%2Ba0fMNBloNTfwxXN0QtQ1LNPpuLqchiO9qx%2Fiv94oogiIZ4LpGCET%2FWVGVtYW6uTyPeYkGyLIlJ6RTX6%2BEXuakGAjImcvf2r0flvO%2BVNKzRxxa6L2k6KYLa5UFIAmdljPuS%2BuumKmB3b3pOorh3bAZdQTzzURf%2Bdb2T1URAy%2FcFsPZNrJWrlfK1%2Bdf1iYbf1upewJEzKfjpe2dyJ3KZEBarPDClXKm8rJhTDRgFUtZ%2Bhfn1Qg6nx0tninujksLCz9CyZBEhL3hUnKv92XfR7aYku6DB0n22S844LwcYeeoXTaM84VPh5zrhr4Pxbc1JXlfrsroysyD1NIFf4KQlOcNeZ04G8b6P%2F1t0ZNJ7%2BfuvIzSEl5bygh279808zcWizIHHDWhBk2O6IEC21RCb65I6UweaO7BzozhMRMOIJd4sZ1X%2Fq7ZrCIkw07n%2F0gY6pgGHMmOhYZtsIqJSwGjO9bd3oMoezhe1W9tFGenOp7o83o33pTly95uSNnGPtj%2BnJJvsDp5jX%2F2JEkW1W%2Bl86WuZnuhTZiKHDgQomNLr2jM4Kxv8al9hhwCS1x5RmvGxzHZu0TFwcVNeYHGvYCJpLTn%2BtH1ViZHiJ27%2BeX%2BrUPG6LN1RnY%2F4ykIy34pNxkSFVCttNk3nKM%2F%2BCDx4wNrtF52iaT1q6YPU&X-Amz-Signature=5343f15c2aa5b8b73a52392d0fe839ca47f8689774a8644751238a19dd2688cf&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

@@ -1,0 +1,47 @@
+---
+title: 5-18 设计生产者消费系统：分发模式
+---
+
+# 5-18 设计生产者消费系统：分发模式
+
+讲完了这个消费者的这个消费模式之后，我们再看一下这个另外一个比较重要的选择一个分发模式。这个话听上去讨论稍微有点不太好理解，其实说白了就是这个消息的组织结构，怎么组织这个消息，它同时也决定了这个消息最后怎么被消费，就是能消费多少次，简单来说就可以这么理解了，大家来体会一下。最主要现在技术当中常见的都是两种，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/21499703-6839-47eb-95f8-a3ba2b20a5b3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YQVYIQNL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230624Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCabiOyxKTheB8V9JXONEVbUlAT8HcAeHWJiHdTZfI6%2BAIhAIbMqhjw%2BB6l59hQXGbB3uW8WmCDYCz91tT4askA9AdqKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igxo%2FMCVOSOP7n%2BtYqYq3APb%2BGI%2B9XAL80R1T%2BwM9zhjepx3sF61H1frGR78UBuiL8iVgkqUdCGiaZ6NV7LOwl1TGBbSX3tt8Y4yGnrkI1XYj8I6%2BP4FbcI%2BVqupdZGzhX37HCDnqRfXHvTFgwlByPjSLDzd4AWcp5G6XbPAhXfOpTpXx6M0Mkmqw145DSM9wwYbgegwAak0C55OBTmkUNnZUI04K3NfnS7D5PqwVI97h0jSvcXpqGcbI1UMa6XCeXTCtYzaO9%2BOaXRqe3%2FQNjK2XQBaKufKdHKV848tDLAZVekFMss46VGWBGGC6burkeYCv57E9bCh%2B%2FFRJEIumq5hcnmIlYy1AFwg9dqwSjjrxULImef0gRTvkuNJyw8opNScD7uEQqKTlC%2FIJz4XLu4Wbgke%2FmbqdINUDlmmAMZiYZZUdDnSpQgGLntb2lWjTqEnKYTXfQ76mCWA2IsIWgXErLJVOSq73SNojFTlTOEqAJ%2F9BBIYoOlsfyFK%2FdRoSGxU%2B1%2BrThN9RJ1kdrcqB6FMxhVMUcKwIYF0yC403wMiMrt%2Bw1vpW9zOOrAmypuf3f2VLUPc1bfi6lyWxcjrNcHidshlj1iyiVgk4Yv37cxSRPEfyrpjyyKL3qjHD6LDAZN6lKfS0VE%2FTrSYxzDGuv%2FSBjqkAf82Z75q7NDv2VaYVb9ghb4aUyoItYz6Jw0TmOuU7k2BC5LQNwEnwinK4ngE5tQQhlG2jvnN%2FWTycTi7MLW%2BkGRogUdaUvuCCQbYQICiO1YBzNhYZQIfc%2B0Buy8gjorPD7lC67CYHgcVCGJR69WMv7skerE6ZCxbWr9esjDTlATntrcRoY6VDOjdxNhmEZf3aBBuotrRJwO4V%2Fgn3Zc1Pzjn0y0W&X-Amz-Signature=815b86a61e796133a36a73d3f06b527d97de8c837205d4ef2e14e48fcf79d3ed&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+一种就是q，就是这种队列的模式，一般就适合这种点到点这种感觉就像他说你是指定的是有某一个能够受到这个东西，这个就跟你的这个打电话有点像，这是个不恰当的比喻，就是它只针对说点，对一个我给自己的家人打电话你是只能给你一个人的，对吧？就是这是一个点对点的，你发送一个包裹，你可以想象一下，特别小，你给你女朋友寄一个包裹，OK，这包括往外一系到了容器当中，而这种聚在女朋友的手上的话，这是一个一对一的这样一个关系，而且仅有一个人能够收到这个东西。
+
+
+你就想象一下这个行的那个q，你往里面丢一个，它被另外一个消费者给消费掉之后，它是不是就不见了？哎，说它就没了，它是不可重复消费的，是吧？这就是一种 q 的模式，但一般来讲的话，这个 q 的话就是一种 in QDQ，所谓的那 EQ 就是把这个东西数据单元放进了我们的 q 里面，取 d q 就是我们的column，从 q 里面把它取出来，这个我觉得只要是做个马毛的这个 q 这个东西都是非常理解，而且很好理解的。
+
+
+这里面你强调的是两个点，一般在你系统当中你要采用这种，它就是 consumer 的模式，同时又是使用 q 这种方式来分发的话，那一般就是点对点，左右点对点，其实就是一对一，你只能把这一条消息让一个人能够消费到。就是说这个消息只其可能就有很多人都在等着，但是只有一个人能拿到这个消息，这点你要注意它会有什么样的问题，因为只有一个人拿它去意味着这个逻辑只有一个地方会发生，而且一旦它出了问题，可能这个就丢了这种感觉，当然这是说唉，一个想法，那有些情况下你就这样子，那别人寄包过来的位置一样，你说只能寄给一个人，你不肯寄给某个人。
+
+
+你打电话的例子，你要打给你女朋友的话，那你说把你女朋友一家人全部叫来，每个都打一个嘛？这显然不是这个意思，对吧？唉，你不是这么想的，就根据你这个消息发出去之后，你是指定了相当于说你写到一个授信能力一样的，就是你写了封信，像每个授信能力一样，而不是说谁都可以开这封信，这显然不是这个意思，对吧？所以这个一对一的，而且是不可重复的。
+
+
+这个地方我还是想称为码农的话，你要对 q 这个概念是非常好理解的，这个 q 只要进了这个 q 以后，它肯定外面就你就会消费，它在消费掉这个消息就没有了，对不对？它不存在一个副本的概念，那消费了就没有了。那另外一种就是说，比如说这个消息我就是需要很多个人来读的，对不对？相当于群发短信，那我记得群发怎么办？刚才这个单发跟我的女朋友聊聊天，那肯定只能是一个人发，现在你作为一个班主任，只好说今天你来补课，网上课，那我们老师要通知说，哎，今天什么时候这个课程上线，大家来看他能不能给一个人打电话。
+
+
+给一个人发消息，当然可以，但是这样子肯就不是想要的。那肯定大家希望一个群发的效果，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5d883117-b522-4e96-8b29-01be5be48a64/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YQVYIQNL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230624Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCabiOyxKTheB8V9JXONEVbUlAT8HcAeHWJiHdTZfI6%2BAIhAIbMqhjw%2BB6l59hQXGbB3uW8WmCDYCz91tT4askA9AdqKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igxo%2FMCVOSOP7n%2BtYqYq3APb%2BGI%2B9XAL80R1T%2BwM9zhjepx3sF61H1frGR78UBuiL8iVgkqUdCGiaZ6NV7LOwl1TGBbSX3tt8Y4yGnrkI1XYj8I6%2BP4FbcI%2BVqupdZGzhX37HCDnqRfXHvTFgwlByPjSLDzd4AWcp5G6XbPAhXfOpTpXx6M0Mkmqw145DSM9wwYbgegwAak0C55OBTmkUNnZUI04K3NfnS7D5PqwVI97h0jSvcXpqGcbI1UMa6XCeXTCtYzaO9%2BOaXRqe3%2FQNjK2XQBaKufKdHKV848tDLAZVekFMss46VGWBGGC6burkeYCv57E9bCh%2B%2FFRJEIumq5hcnmIlYy1AFwg9dqwSjjrxULImef0gRTvkuNJyw8opNScD7uEQqKTlC%2FIJz4XLu4Wbgke%2FmbqdINUDlmmAMZiYZZUdDnSpQgGLntb2lWjTqEnKYTXfQ76mCWA2IsIWgXErLJVOSq73SNojFTlTOEqAJ%2F9BBIYoOlsfyFK%2FdRoSGxU%2B1%2BrThN9RJ1kdrcqB6FMxhVMUcKwIYF0yC403wMiMrt%2Bw1vpW9zOOrAmypuf3f2VLUPc1bfi6lyWxcjrNcHidshlj1iyiVgk4Yv37cxSRPEfyrpjyyKL3qjHD6LDAZN6lKfS0VE%2FTrSYxzDGuv%2FSBjqkAf82Z75q7NDv2VaYVb9ghb4aUyoItYz6Jw0TmOuU7k2BC5LQNwEnwinK4ngE5tQQhlG2jvnN%2FWTycTi7MLW%2BkGRogUdaUvuCCQbYQICiO1YBzNhYZQIfc%2B0Buy8gjorPD7lC67CYHgcVCGJR69WMv7skerE6ZCxbWr9esjDTlATntrcRoY6VDOjdxNhmEZf3aBBuotrRJwO4V%2Fgn3Zc1Pzjn0y0W&X-Amz-Signature=2b825c4e8c77301c16b5562e3d0562316e820ebd3df3250a4ec1620118e0dfec&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那群发的效果就是把它叫papa， papa 本来就是相当于是什么呀？所有对这个 topic 感兴趣的 Quiber 都可以订阅它，那只要你订阅了它，你就可以收到这个消息，所以它是个前面讲的一个散播的这样一个感觉，就是它是一对多的，一对 n 的，只要你对这个东西感觉，我就会把这个东西给你。而且你可以间接地认为说这是一种重复消费。当然这个其实从实际来讲的话，你一般来讲 subscribe 的它可能都是做不同的业务逻辑处理，要充实充那个，但是从这个价格上来讲，它其实可能是存在重复。
+
+
+消费的，对不对？就跟前面那个一对一的这种，它是一个人可以是消费，它是不能重复的。 maybe 这边其实是一种重复性消费，那这个就是什么意思？相当于说你去订那个某一个博主，你说他在 b 站上的视频很好看，那当然这个你觉得很好看，那可能也有几百万个人觉得他很好看，这个很正常的。那李佳琦那个口红那么多每天直播，他其实说白了就对这种感兴趣，首先关注了他，这是一种典型的 pop SUB，是一种消息的分发模式。那李佳琦他在推销这个口红的时候，他又不测定这对某一个粉丝，他对他几千万粉丝同时在说相同的话，但是你每一个粉丝都听到了相同的话以后，做出了不同的逻辑处理，对吧？这是一种典型的 pop SUB，你一订阅了这个主题，别人李佳琦在某某某开直播这个话题，你定义了那一天开直播的，你就会去收到一个消息，自然就开始跟他一起进行一个消息的处理。但是这个过程中所有人都收到相同的消息，只是每个人的应对方式可能相同，可能不同，这就是一个典型的订阅关系。
+
+
+所谓的 palm SUB 就是说我们会设定一个主题，这个主题你是可以很多人来关注的，就是我的subscribe，然后后续等真正的这个生产者李佳琦上线，他开始生产制造话题了，开始直播了，对吧？就像这个话题里面 topic 里面发送数据，那所有订阅这个主题的人都会收到一模一样的东西，对不对？这就是这种感觉。
+
+
+这个其实可能性的大家不太常见，就是还有定人期刊杂质这种，那就用相同的刊号，你走交币前去邮局跟他说我要定朦胧期刊，朦胧杂志它就会这种在某一个情况寄给你，这就是点这个名字的来源， publish subscribe 对吧？大家知道这一点，就是它不太一样的是在于哪里。而所谓的重复信息的消费就是很多个人对同样的东西感兴趣，然后他们会收到一模一样的东西，这就是我们的分发模式的pubsub。
+
+
+前面也讲过这个 PUB SUB 和这个q，你各自有优点和缺点，你自己觉得在你的场景下应该用哪一种，那你就去用就可以了，反正这个没有定论，说一定是 PUB SUB 就好，这个这就不好，这个没有这样一种说法，虽然说感觉这个场景的应用的地方不一样，但其实有些层面你可以把它想象成也是比较接近的。
+
+
+怎么说这个话呢？它就它的sub，你就反向成这个 topic 里面其实是有很多个 q 的，每一个 q 应对一个subscriber，对不对？这种感觉你看，比如说你有 50 个 subscriber 在这个 topic 上面，那就相当于这为 50 个 subscriber 各建立了一个q，然后所有消息一来之后，这个 topic 就复制到这 50 个 q 里面去，然后 50 个 q 再放到自己的那 subscriber 去，对吧？你可以这么理解，但事实是这么做的，你这不一定，你有各种的实现方法嘛，对吧？因为但是你这个意思你要搞明白，就是说 topic 下面你都是收到了相同的东西，但是你做了不同的处理手段而已，这点一定要和这个 q 稍微区分一下，它就算只给一个人也是一样的，小心这边就相当于复制了多分给了不同的。
+
+

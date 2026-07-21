@@ -1,0 +1,37 @@
+---
+title: 2-6 基于ReentrantLock锁解决超卖问题
+---
+
+# 2-6 基于ReentrantLock锁解决超卖问题
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3b5e35f5-1ebe-4d17-b6ea-9211e468c696/SCR-20240807-jhzn.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QH4HMGWD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225342Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCUEgD2c5%2Fa2j44PSGgz4tIotUPSXGpD5CjbDqGVAEjqAIhAPTwdwlURpwQe%2BIQTOokw9ZzyVJnPlMRG9SCtyiSmCYMKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyDbrIs4gc5mpuOkj8q3AMYMRPUAeQHIrxK2mAyqT9SrPBN5n7CLAV2YEhtNW9cju1yllB9mNU8oCOuqTe2pQkpJPL3GGwbf8uXdNYsCJ62KMR9v3ImjPX%2FJC8i%2BPoaVBm0d1MB4qVFISTdaWdBxqk8O0TiR6Mj8X1ZNS4ZQjcfkqH%2BkVw0lLglj4cj5LcpgsHoCjyboFuEWnNBte2hqnfhKxVp8%2BqKvoobHojkcOvc0lVE1yUDKCveieYdy8Ime9oDbFsDO%2BMBeOIoEO7AYVD5GgJyd4BNCDJSbA7oUXI82KRZ04u6rc%2FwAHKZyT3Mj2Uw3T6x0bsm9UN%2BkNHiaNte%2FsbirfdoZM3u%2FVR4Pg1gZ5M%2Fm55h2H6RxkGYABnr4%2BqU%2Fk6a81jIvl51i19IYHgPJvlLNiFmWkO0RJS86TpjshSK288tqhNlyQAdD%2Bhn03Bfa1EwnqO81RGVODu60M9%2FtDCXdObyk8u3gs9GdwK2VxBdRX6posf3J%2BoVeA4GjZ15e0ZlmIucBzoTFqrlMeRaEDUw%2Fix4Gix4qQwCzrTT%2BHqOW5IRDb0YGciLtQ5A3IaTESy%2FktkjagyUFWhtBJn8r6beyIjyxNDCoOutuiXAaT0ZN7w7bGxwl3pkO1Z9JswQJdAf7RdVGEW6SjDwuv%2FSBjqkAcFN%2FBwmcJJLVj6P2GW9yTazlcP4sXm7uKnO7ITE%2FUbgRtHJttG%2ByC7CpaPrf27Na6wuZWlmsdnKdqzosmOJXjzgrXL4ITd4pbIe1CyvSW5aDq37hC8F5OEH6mmYmGEfp%2BJcevJKOZ6RQqYbIJgQvRp4G55EwKqaqoXny%2FTxfrXo7HohnxckIoNqpgQ0X3YRZTet9VgteHWrH9Vwh39d7jzQPdGz&X-Amz-Signature=3e45f847e240165575afcc36d620cb3789d91a7e9a4f3aaa6d95f6f0bd310d4b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/211f97bb-0b80-435c-a41b-29f2a031bc2c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QH4HMGWD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225342Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCUEgD2c5%2Fa2j44PSGgz4tIotUPSXGpD5CjbDqGVAEjqAIhAPTwdwlURpwQe%2BIQTOokw9ZzyVJnPlMRG9SCtyiSmCYMKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyDbrIs4gc5mpuOkj8q3AMYMRPUAeQHIrxK2mAyqT9SrPBN5n7CLAV2YEhtNW9cju1yllB9mNU8oCOuqTe2pQkpJPL3GGwbf8uXdNYsCJ62KMR9v3ImjPX%2FJC8i%2BPoaVBm0d1MB4qVFISTdaWdBxqk8O0TiR6Mj8X1ZNS4ZQjcfkqH%2BkVw0lLglj4cj5LcpgsHoCjyboFuEWnNBte2hqnfhKxVp8%2BqKvoobHojkcOvc0lVE1yUDKCveieYdy8Ime9oDbFsDO%2BMBeOIoEO7AYVD5GgJyd4BNCDJSbA7oUXI82KRZ04u6rc%2FwAHKZyT3Mj2Uw3T6x0bsm9UN%2BkNHiaNte%2FsbirfdoZM3u%2FVR4Pg1gZ5M%2Fm55h2H6RxkGYABnr4%2BqU%2Fk6a81jIvl51i19IYHgPJvlLNiFmWkO0RJS86TpjshSK288tqhNlyQAdD%2Bhn03Bfa1EwnqO81RGVODu60M9%2FtDCXdObyk8u3gs9GdwK2VxBdRX6posf3J%2BoVeA4GjZ15e0ZlmIucBzoTFqrlMeRaEDUw%2Fix4Gix4qQwCzrTT%2BHqOW5IRDb0YGciLtQ5A3IaTESy%2FktkjagyUFWhtBJn8r6beyIjyxNDCoOutuiXAaT0ZN7w7bGxwl3pkO1Z9JswQJdAf7RdVGEW6SjDwuv%2FSBjqkAcFN%2FBwmcJJLVj6P2GW9yTazlcP4sXm7uKnO7ITE%2FUbgRtHJttG%2ByC7CpaPrf27Na6wuZWlmsdnKdqzosmOJXjzgrXL4ITd4pbIe1CyvSW5aDq37hC8F5OEH6mmYmGEfp%2BJcevJKOZ6RQqYbIJgQvRp4G55EwKqaqoXny%2FTxfrXo7HohnxckIoNqpgQ0X3YRZTet9VgteHWrH9Vwh39d7jzQPdGz&X-Amz-Signature=db2e4c42bb738f93388f1476b69eae2a89f33508ded24180fd6a72977e1f2982&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+最后咱们来看一下使用 reentrant lock 解决这个超卖的问题。 reentrant lock 它是 gdk 1.5 以后并发包当中为咱们提供的，叫做可重入锁。接下来咱们看一下这个可重入锁怎么去使用，咱们还是回到程序当中来。其实这个 rain trend lock 和这个同步代码块使用是差不多的。这个 rain trend lock 首先咱们要在这个类当中创建一个变量对吧叫做 lock 大家看一下，这块儿一定要选择 Java 并发包儿当中的这个类 lock 等于 new reentrant lock 就是第一个是不是？然后这块这个 session nice 的块咱们就不用给它删除掉。
+
+
+格式先调整一下，这块儿咱们调用 lock 点儿 lock 对吧，这块儿就等于是已经给加锁了，到这儿所有的线程只有一个线程可以获得这把锁获得锁以后才会执行后续的操作，其他的线程都会在这一行去进行等待。最后咱们要把这个锁给它释放掉。释放锁咱们也是在这个事务提交以后对吧唠嗑点 unlock unlock 就是释放锁了对不对？这块咱们程序要写得严谨一点对吧，咱们看一下，如果你现在加了锁了对吧？然后你的程序抛出异常，比如说这块库存判断不符合要求对吧？你事物回滚了，然后你抛出了一个异常，你抛出异常以后，这个 lock 这个锁是不会被释放的，你不释放。
+
+
+那下一个线程得永远不会去执行后面的方法对不对？所以这一块咱们要加个 try catch 将后面的这一段给它放到这个 try catch 里，然后这块加个 finally 对吧？不管你是不是抛出异常，我最后都要把这个锁给它释放掉，是不是？咱们来看一下代码，创建订单进来以后先获得锁是吧？这块先给它锁住，只有一个线程能够执行摔开这里边的东西。最后不管怎么样都要把这个锁给它释放掉。然后其他的线程才会继续的去执行。
+
+
+最后咱们还是把数据库里边的数据给它修改一下，运行一下程序，看看和我们的预期是不是一样。运行一下这个测试的程序。执行完了，咱们看一下后边的日志线程，1获得的库存数是 1 对吧，然后后边看看几个异常，也是 4 个异常。最后产生了一个订单应该是没有问题的对吧，咱们在数据库里边刷新一下，看看库存数 0 对吧，也是没有问题。这个就是使用了这个 Java 1.5 以后推出的这个 reentry 的 lock 可重入所对吧，可重复所的用法就是这么用好了，到这里咱们使用锁解决电商中超卖问题就告一段落了，这里边的内容还是比较多的，咱们也是快速的回顾一下。
+
+
+首先超卖现象是什么意思？你库存数有一个，但是我产生了五笔订单对吧，这个就是超卖如何解决？首先咱们要通过这个 update 的行锁，这个是数据库的锁对吧，让在程序当中计算库存数，变成了在数据库当中去计算剩余库存数。最后咱们还要通过数据库的 update 行锁，让更新的操作变成有序的对吧，谁抢到了锁，谁去更新这条记录。但是这样还是不能保证咱们的库存是没有问题的对吧？然后咱们在程序当中加了锁，程序中加锁有两种方式，第一种， settle nice 的对吧，在方法上加 settle nice 的关键字，使得整个方法变成了一个同步的，只有获得了锁的这个线程才能执行这个方法。
+
+
+但是这里边有一个坑是什么坑呢？就是这个事物之前咱们这个事物是打在了方法上对吧？方法结束以后失误再提交。但是方法结束以后锁也已经释放了，第二个线程也会迅速的进入到这个方法内，和你这个事务提交等于是一个并行的操作。第二个线程得到的这个商品还是事物提交之前的这个商品这块可以说是一个坑对吧，咱们也费了不少的精力去排查这个问题。最后咱们手动的去控制事故，解决了这个超卖的现象。对吧？这个是 settle nice 的方法。然后咱们通过 session nice 的同步代码块，通过这种方式去解决这个超卖的现象。赛车代的同步代码块主要是里边的表达式，一般的情况下会写 this 或者是一个 object 的对象，然后还可能是一个类是吧，这个三种方式的区别也给大家做了介绍。
+
+
+最后就是这个 gdk 1.5 推出以后，并发包当中为咱们提供的这个可重入所，它的一些用法其实也是很简单的。好了，这一节的内容就先告一段落了，里边的内容大家还是课后要多多的练习，找到它的难点，彻底的理解怎么去使用锁，尤其是锁和事物这一块揉在一起了，比较难理解，大家还要多多的复习。好。从下一节开始，咱们要正式的进入到了分布式锁的学习，大家继续加油。
+
+
+
+
+
+
+
+

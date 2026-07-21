@@ -1,0 +1,47 @@
+---
+title: Mac上安装的Kafka
+---
+
+# Mac上安装的Kafka
+
+```shell
+1：配置文件目录：
+
+cd    /opt/homebrew/etc/kafka
+
+cd    /opt/homebrew/etc/zookeeper
+
+安装目录bin
+
+/opt/homebrew/Cellar/kafka/3.2.3/bin
+
+/opt/homebrew/Cellar/zookeeper/3.7.0_1/bin
+
+修改配置文件中设置：
+
+ /opt/homebrew/etc/kafka中的server.properties
+
+修改启动文件的jdk路径
+
+/opt/homebrew/Cellar/kafka/3.2.3/libexec/bin/kafka-run-class.sh
+
+&符号指定文件后台启动：kafka
+
+./opt/homebrew/Cellar/kafka/3.2.3/bin/kafka-server-start.sh /opt/homebrew/etc/kafka/server.properties &
+
+查看进程状态：
+
+ps -ef | grep kafka
+
+测试：创建
+./kafka-topics.sh 可以直接看命令 那些是必须的可以看见
+```
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/deebdaab-52bd-43b0-868d-c00088aff2ed/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QWLCRZRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234412Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUjYIMhAyOVy5Hb5kYVyurnm1eYEb6vcn2bWzYwpH69AiEA7KUmmlX4B4wzNWcUQS2FNsVEdXdzRohzvlbArke23ccqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDP1uUSoJWfvuLKPeyrcA2YY6Md9oST2zulVVdvP6DRYdLK678kpf%2FSl91jPbKcZiT0B4rO660aHN%2B5MHYBUuj%2BN58TS31kwBmwCe1rCKZdkh4TI7RprzL2fOX2F9%2By8aI8wBIyJYXV%2FNRLkq5wwM2o%2BDVR1XrnZS5dppHUsIpBMgCM6H9%2BaGJdguRo6twzuKTUCPL89Gax94svmzdsuysiaCR%2FDI%2FFvfL9soRCA63uOGn3eW8IS4bxcgji843h0W3RwKyyerJFFq3Nhyr6047LPZ0M%2FEbZAYjVrsvhPRK2a2Xh%2Fb7IEXKieG4WLoMkm3wZ%2BJix2I7W%2BKZn1D4YgoSeDEAOjZKqynxj5PHR79iQ7ytRUOiGC7pc%2FNgUjH2Wnr%2BERgGmHEqNgIRBKfLwwY4tC4SwIU9zVGfc1npdUYQ5uG0AVc49l5lv%2FMciVRkrhe1%2FBdy%2BdJd2%2BeIhJJtEbAI9Kzr1FGZj414mntmlSzOvdBB%2BRojWOD%2BEy0GNVAEKPvdBKQSnUB%2FcJL960YxYlTPEktQkw6x0mDaL%2BJ6HikV%2FlUWs07KPvdftGmIG7n7UzcMz3r6hJTGuMU4XFKpqJQ2pBGoFHjE1%2F9Qyd9vlx%2BPiQwgJyB%2B9T6Usov2nBvBuayhI5BHXrg5u%2FbtKUMO%2B3%2F9IGOqUBl1Gz2h9K2QUIBgUPdwC5EjMpnSuhICKQxXx6wcOAzD3OdD3yXWhrxZXCirCq1R95fpdZfcNoFuG%2BmTYXjbR4J19B20Ndb5b%2BUuPmpUVCFf6x74iPWBhLEjU61fmPTHkrSxdEycUwgpdgeSNp8MoUI%2Ftf%2Fcm%2BQ3QW4XZ5Bq7kYBHkAhOmuvIDEBvtf23uqWD6AQJy0FePVLugZ%2BuYcFgUP1Q3D7Hg&X-Amz-Signature=a3de27b6e5ce49097a3089dd6d8c4e7a10197e836d32ec467edfa2376b188339&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6a6af332-f25a-407a-a2b6-084305ad42b6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QWLCRZRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234412Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUjYIMhAyOVy5Hb5kYVyurnm1eYEb6vcn2bWzYwpH69AiEA7KUmmlX4B4wzNWcUQS2FNsVEdXdzRohzvlbArke23ccqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDP1uUSoJWfvuLKPeyrcA2YY6Md9oST2zulVVdvP6DRYdLK678kpf%2FSl91jPbKcZiT0B4rO660aHN%2B5MHYBUuj%2BN58TS31kwBmwCe1rCKZdkh4TI7RprzL2fOX2F9%2By8aI8wBIyJYXV%2FNRLkq5wwM2o%2BDVR1XrnZS5dppHUsIpBMgCM6H9%2BaGJdguRo6twzuKTUCPL89Gax94svmzdsuysiaCR%2FDI%2FFvfL9soRCA63uOGn3eW8IS4bxcgji843h0W3RwKyyerJFFq3Nhyr6047LPZ0M%2FEbZAYjVrsvhPRK2a2Xh%2Fb7IEXKieG4WLoMkm3wZ%2BJix2I7W%2BKZn1D4YgoSeDEAOjZKqynxj5PHR79iQ7ytRUOiGC7pc%2FNgUjH2Wnr%2BERgGmHEqNgIRBKfLwwY4tC4SwIU9zVGfc1npdUYQ5uG0AVc49l5lv%2FMciVRkrhe1%2FBdy%2BdJd2%2BeIhJJtEbAI9Kzr1FGZj414mntmlSzOvdBB%2BRojWOD%2BEy0GNVAEKPvdBKQSnUB%2FcJL960YxYlTPEktQkw6x0mDaL%2BJ6HikV%2FlUWs07KPvdftGmIG7n7UzcMz3r6hJTGuMU4XFKpqJQ2pBGoFHjE1%2F9Qyd9vlx%2BPiQwgJyB%2B9T6Usov2nBvBuayhI5BHXrg5u%2FbtKUMO%2B3%2F9IGOqUBl1Gz2h9K2QUIBgUPdwC5EjMpnSuhICKQxXx6wcOAzD3OdD3yXWhrxZXCirCq1R95fpdZfcNoFuG%2BmTYXjbR4J19B20Ndb5b%2BUuPmpUVCFf6x74iPWBhLEjU61fmPTHkrSxdEycUwgpdgeSNp8MoUI%2Ftf%2Fcm%2BQ3QW4XZ5Bq7kYBHkAhOmuvIDEBvtf23uqWD6AQJy0FePVLugZ%2BuYcFgUP1Q3D7Hg&X-Amz-Signature=c0acc5777f5f0753ead225e6342df62d3b96d53de0f7cc5dc4c0076333e67815&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/758e4a2b-0af8-4881-8644-44813fa16d3c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QWLCRZRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234412Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUjYIMhAyOVy5Hb5kYVyurnm1eYEb6vcn2bWzYwpH69AiEA7KUmmlX4B4wzNWcUQS2FNsVEdXdzRohzvlbArke23ccqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDP1uUSoJWfvuLKPeyrcA2YY6Md9oST2zulVVdvP6DRYdLK678kpf%2FSl91jPbKcZiT0B4rO660aHN%2B5MHYBUuj%2BN58TS31kwBmwCe1rCKZdkh4TI7RprzL2fOX2F9%2By8aI8wBIyJYXV%2FNRLkq5wwM2o%2BDVR1XrnZS5dppHUsIpBMgCM6H9%2BaGJdguRo6twzuKTUCPL89Gax94svmzdsuysiaCR%2FDI%2FFvfL9soRCA63uOGn3eW8IS4bxcgji843h0W3RwKyyerJFFq3Nhyr6047LPZ0M%2FEbZAYjVrsvhPRK2a2Xh%2Fb7IEXKieG4WLoMkm3wZ%2BJix2I7W%2BKZn1D4YgoSeDEAOjZKqynxj5PHR79iQ7ytRUOiGC7pc%2FNgUjH2Wnr%2BERgGmHEqNgIRBKfLwwY4tC4SwIU9zVGfc1npdUYQ5uG0AVc49l5lv%2FMciVRkrhe1%2FBdy%2BdJd2%2BeIhJJtEbAI9Kzr1FGZj414mntmlSzOvdBB%2BRojWOD%2BEy0GNVAEKPvdBKQSnUB%2FcJL960YxYlTPEktQkw6x0mDaL%2BJ6HikV%2FlUWs07KPvdftGmIG7n7UzcMz3r6hJTGuMU4XFKpqJQ2pBGoFHjE1%2F9Qyd9vlx%2BPiQwgJyB%2B9T6Usov2nBvBuayhI5BHXrg5u%2FbtKUMO%2B3%2F9IGOqUBl1Gz2h9K2QUIBgUPdwC5EjMpnSuhICKQxXx6wcOAzD3OdD3yXWhrxZXCirCq1R95fpdZfcNoFuG%2BmTYXjbR4J19B20Ndb5b%2BUuPmpUVCFf6x74iPWBhLEjU61fmPTHkrSxdEycUwgpdgeSNp8MoUI%2Ftf%2Fcm%2BQ3QW4XZ5Bq7kYBHkAhOmuvIDEBvtf23uqWD6AQJy0FePVLugZ%2BuYcFgUP1Q3D7Hg&X-Amz-Signature=63b7c300ac9f28a84d533b7bfa9fa7456c824c40de5e5fd2b3e64e8e0c5b0114&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

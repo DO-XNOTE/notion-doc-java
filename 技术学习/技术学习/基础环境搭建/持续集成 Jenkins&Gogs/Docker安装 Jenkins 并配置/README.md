@@ -1,0 +1,111 @@
+---
+title: Docker安装 Jenkins 并配置
+---
+
+# Docker安装 Jenkins 并配置
+
+docker 安装 jenkins
+
+```markdown
+
+##使用 war 包直接启动  jar -jar jenkins.war
+## 直接访问 http://ip：8080
+
+
+
+
+# 在 224 机器节点上
+rpm 包安装的方式
+## 这个版本低 -- wget https://pkg.jenkins.io/redhat/jenkins-2.83-1.1.noarch.rpm
+rpm -ivh jenkins-2.83-1.1.noarch.rpm
+安装在了  JENKINS_HOME="/var/lib/jenkins" 目录下
+修改配置文件的用户名和密码
+vim /etc/sysconfig/jenkins
+JENKINS_USER="root"
+JENKINS_PORT="8888"
+启动服务： systemctl start jenkins
+         systemctl status jenkins
+重启：systemctl restart jenkins
+
+
+
+#### 使用systemctl start jenkins 启动使用的不是这个文件， 
+##   是使用的/usr/lib/systemd/system/jenkins.service文件  需要在这里面配置 java_home，端口修改也是这个
+#### 端口也是使用这个配置的 不是 /etc/sysconfig/jenkins配置文件
+
+
+# The Java home directory. When left empty, JENKINS_JAVA_CMD and PATH are consulted.
+# 打开这个选项 设置 jdk 版本
+# ======>   Environment="JAVA_HOME=/usr/local/software/jdk-11.0.17"
+
+
+
+
+## 目前使用的cnentos 都是自带的jdk
+使用  whic java/javac  删除 显示的目录
+然后如果找不到 自带java的路径， 使用 ln -s 创建自己的java目录软连接试一下
+然后 编辑 profile 和 刷新（source）
+
+首次登录：
+# cat /var/lib/jenkins/secrets/initialAdminPassword 拿到密码
+# 用户名 admin
+
+
+docker 容器安装 jenkins
+# jenkins/jenkins:lts-jdk17是目前的长期稳定版本2023.11.13     
+
+chmod 777 /usr/local/jenkins_home 
+sudo chmod 777 /var/jenkins_home
+docker run -u root -p 8080:8080 -p 50000:50000 --restart=on-failure -v /usr/local/jenkins_home:/var/jenkins_home -v /usr/local/apache-maven-3.9.1/:/opt/apache-maven-3.9.1/ jenkins/jenkins:lts-jdk17
+
+# 创建容器时添加参数 --restart=always 后，当 docker 重启时，容器自动启动
+# chmod 777 /usr/local/software/docker/jenkins_home
+docker run -d -p 8080:8080 -p 50000:50000 --restart=always  --name=jenkins jenkins/jenkins
+# docker run -d -p 8080:8080 -p 50000:50000 --restart=always -v /usr/local/software/docker/jenkins_home:/var/jenkins_home  --name=jenkins jenkins/jenkins
+```
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/37e3c6f1-502b-497c-980b-ef51ce1a1435/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=6f923d75eb65c6dbcf1410087840e13d16fe15c1b5142347bf107796facba1bb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0e4722b1-5fbb-4ca3-a8e6-84c4502bc837/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=5755ad19aba8ca0807c1776d403e7db9acac990cc78fe8b2484592021d9fe423&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e9bb4d07-c3e1-4491-8c01-f46443d7bd09/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=b0225308d091207386996c5f6d651535af9ced3b17fbe42d4049d64e1a9b7834&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+```markdown
+登录后 安装推荐的插件后 创建管理员
+#用户名：guojun
+#密码：guojun12
+#全名：guojun
+#邮件：1101403286@qq.com
+
+
+```
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d30acd74-19e5-411f-b57c-077a5d116642/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=c42a729701c625e80a457afbeefaddbd08f92ef0a447e376fb47667d59a87473&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1722d5d3-783a-4dd8-8d42-4ff067f676e3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=d131a1199c10fcd55af07a96eae22f91872f51c74bc472f82405ca4a7d97a6b5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a25b541f-c8f8-4192-ae3a-6fb4d61119e5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=d57adca58e1c27c28bda68d3f54cb7bcc9649574a34fe8f69877ef3bc5f40fe9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+全局安装 maven jdk git
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/35c260c9-4a02-4777-ac5b-9d8edf4cb078/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=7a765773600b5cb5d1d838f7802b91ad49c3cc14540c0e7111e3de986241f0da&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Git安装
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5750d177-bd18-4756-9a48-6902f9c4f01a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=eed593da2461769187db1e6f4746c253e86824d1cf293f52900055024b1c1695&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Maven安装
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a85a329e-70ba-4365-8ddf-8cdeb9a3c8f0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RQ3YRXE4%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T234344Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIBPjEjULsTlXJB4egcONf%2Ffhi%2B9uxj94srPdE63oM5enAiEA4lDQuzfxAj%2F3J37TEHpFIm577ph7TcCUkfL0rndPt3oqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKpg3U%2B%2BDDqGnZ9foyrcA%2Bmpk9QpnBnRRxW5ounp1FZGSMpFoOGU49hEzlTB8S804M11ppAnqom9YoM7lIB%2FkIwrqaaeShz6MMtBye3nKYLxW2rflfBukigALLzQPjKg69AQL3IEZqmMs8wCHM3EX6SR1XTmSiFCOK27OYO%2BoiTqdB75wNOPwOcvyJS0H3dsU2T5j41x2dn2m8iXFfjPaq%2BojL9OBH0fzJAL63o0qT6UIR8I6nzuxCEkBkpQmLNQmEeJnjZ73sMIOF9D88xvIFm7ljewd9Qwc2RIuBQlynmr5lP7PSCwjYpuaPxlrM10Skp7MQSnM8fcIab%2F64FtiRdJJ4GRViyvdMDaZteO3CtjgBz7ZVT%2FvTnKddk4OZAuYzbH%2Fl149109qCn5okMASEf1YUEd0932V6Xj1ZHg4eUbT34KWkSNa0DHgWEcCeQT8klooAFQcief78RGqtC%2BwYPVwmBdIj%2BK00kR%2BAzhdeMwu0w8%2FNZiMu9eRQydLpX9Nbm%2F8Hh%2BvIU6QFnotrsrJtUq4loTTQqddk0WYUhB4u8OQyK8EvVROu1r9TyAseMnzgD7tSnGP06Y60BQtKaIPJVnbZRBw6zNQLIz3uC5QH%2BzRJiRzkqF4kwlEHWpY1DEb5pZBbcj7DOlSa2wMNm5%2F9IGOqUBxeg2zjgb1Zwztn%2BbZQCh2yWGsFQBEcCUTKtnTFj3dg5%2BDUt4cVgc270TKrCPsH3pUwgg%2BdJlfJuCv%2B6svGCwN9AEFrVrX4du0KrgJMXqPqxulgEvyKEN2U45YS5VVaVa2QDd%2BtR1hvG53tIG%2B2xpG3bXoBp53L3G1UmLnEMc4uI3KLVgqyJHAjrdQ%2F05W9FqKV99SiSzIJsqMgNQvuX%2BMb1InQkz&X-Amz-Signature=12e0372f39945ae6323ad812ab770e3fad47a6ee639c436fc3f7c4be9a297da5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+根据搜索结果，有几篇博客提供了关于在CentOS 7上设置Jenkins war包开机启动的详细步骤。以下是其中一篇博客的步骤：
+
+1. 创建Jenkins启动脚本：
+1. 配置开机启动服务：
+请注意，这只是其中一篇博客提供的步骤，您可以根据自己的需求和环境进行适当的调整。
+
+来源：
+
+1. [三、Centos 7 Linux创建Jenkins启动脚本以及开机启动服务-CSDN博客](https://blog.csdn.net/yaolanshu_june/article/details/79176523)
+1. [Centos 7 Linux创建Jenkins启动脚本以及开机启动服务_jenkins 启动脚本-CSDN博客](https://blog.csdn.net/yaolanshu_june/article/details/79176523)
+1. [【Linux】Jenkins以war包运行及开机启动配置（四） - H__D - 博客园](https://www.cnblogs.com/hd--/p/10015742.html)

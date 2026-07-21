@@ -1,0 +1,16 @@
+---
+title: 1-17 本章小结和作业
+---
+
+# 1-17 本章小结和作业
+
+**1-17 本章小结和作业**
+
+日志文件的特点就是，平时没事儿的时候用不到，一旦生产环境出了问题，我们只能仰仗Log记录来排查问题（除非你想变身成人肉编译机，肉眼代码扫描）。所以我们这节一口气拉出了五小强组件（Sleuth+Zipkin+ELK三兄弟）来给日志模块保驾护航。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1317bd7b-4c7d-4d39-a934-42f1634cff02/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S7HZ44GD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225807Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCXn%2FTtpx0dPbwDrGN6rbJyLwoc77FgDF1fhrHES4FyCAIgVK2JsPnwkoDHMukSmyTAPm5xu1V9EjKE78RAVe%2BIgysqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLgwvZaNOzr78OydzyrcA3fmI%2FrjURxA%2FnymLhdfW0KOLPvOh%2BO6HGo%2BF2jsbEllaDAW5FHebUSqXOhvsXJcR4%2BCXo3JlgSah5%2F5WMkEW7vynse5Wd%2FH196BSJ7On4XgPxIZFbVeZz%2FFEK%2BjdxaiteSKOPEDwYAEMa4hHudidDtiV9%2F0LA2dATq%2FUYafMd%2BvIKeAUdzIvQ5oGhXSZqN%2BpuxPmK1iNIFTP1CK4woi5JZvb1i%2FoKT9S7Z3q%2FvkGMHo8%2FN23kOcx4MXu%2F%2BXwYotgyRx%2BmWhsQd%2BIm4z04qDiaDNFkLjCP%2BZh9DZpPFbT4uvOaJeUmzsS%2Frmx33nyDRxPAXZahSWmIg9BWp5vLc6%2FDdF4lKE%2Bo6oKonzO00H9j5qsTYMiKo%2FvWNrVS6OB%2F7GQTrnyBw881Bt6ae6YmcgfR0MDre8cXE0HzanlpcfdtkPWp2F3j9XkLxOBL9SgzJYk%2BEu2snmEwFnuxQW4nlxMf2WVwgeE%2BQ6veZS34f02y3SG8mzL0xZ6TJISOtdq11UNWHHxNyfAB6oUC%2BvoALAVudXv4mBp1tCQ%2B02eZ6Z%2B%2FXLmdRzBChxtIX2jEhZcGgrtvrv46reGaLumYzlcQrm8f0TwtJ%2FqqxTKhfvdpEhJ0yb1R20uYBF9metJP1RMIC4%2F9IGOqUBQLvRbFPAYX%2BAXfdZfIPzDvRKG6UVToYoQbjA9gI2o3Iuf6TlB9GvDMYBZ9hys%2Fvumcf7OwC8RNsYn4QnEKgYBxs7ws%2FOYDOihTYcLKyszMS9A0ao4vXygkDNsY20sEHBXXzTgEMdOTTiOgqfNiSpNZhAwQz%2BndtNgLF3lAhIbC9qsSRx3dsxkDZiR7KTmRlw9o2ObXFhvggsw3JKoVtdzFZ6RG3x&X-Amz-Signature=d9d0c58c6399d24f1fd9a7b91b4072c11b3cb3afd05f182ba23ca2a87098947a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**作业时刻**
+
+本地搭建ELK镜像文件，将电商系统剩余微服务模块的日志信息喂给ELK
+

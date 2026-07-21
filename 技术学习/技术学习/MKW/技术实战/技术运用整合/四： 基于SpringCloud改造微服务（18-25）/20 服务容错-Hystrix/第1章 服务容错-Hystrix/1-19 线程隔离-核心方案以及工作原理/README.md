@@ -1,0 +1,49 @@
+---
+title: 1-19 线程隔离-核心方案以及工作原理
+---
+
+# 1-19 线程隔离-核心方案以及工作原理
+
+1-19   ** 线程隔离-核心方案以及工作原理**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/80489c75-118f-458c-aa4f-25ad021960e5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XOA6PI2X%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225647Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUv3chkMlz2vW5fJA%2BZMSt1OlJGy%2Ba4PN2jfZ0Vz2jMAiEA2j9M1egw4Wg%2F8Nlb0oIHol5%2Bvk2g8%2FSjs9EOrAC%2Fv8gqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEerBBMJamzKsk3VjyrcA0GqU1xFvH19RS2yxSH%2FpRd8o3%2Broi9GC9QnEB25Rq9OvAXwUFrhnedIslek5%2FzNRxDdvRZzJwMdFkF2IWEVVzxDBb1cRSuMbsA51zcIb%2BlOHrxYh5pSOViVsHH8eFg%2FxbQoxCgDC9V5eW8EyLvSC4W6dif4Gt%2BjHCuIPQic1q7P87kLE1Cr22HIgEp0PNev3YS6snixS9EFHSdJlvil9py1Q19ODfkePtszFXSUJ%2FMYBKSa%2B7joy1JBuIey2zuQnjml2BSXtPavwIZWZFmJrv%2Fji9ZbYyT5C8Ic6%2B2YfkFD5AWtfrN4rgQpKqutJPuIX2Jm65KuVQHUt%2FHnmRGvc1%2Fr%2BgAeADP41bEXaRXYLbGWg4JwKXtiHCnkQBtbVsdeydAaeI3S7N%2F%2B4MQcONwayHruwwlI%2BsawuB7%2BhFe6OoyyAhv2DQb6NFAeEAMJFHcSdnMGDgAJSEl%2BHttRu%2BLGnySO8dwvcTWbfm6N8kkizYlG%2FOQ%2BcsDA5yAZUA5XHBFu2G%2B0qj56%2FhK6hJ8fF2oLCcVN%2BuvzMnxFa7orSRU0b4VLQvF4VvffDOPAfMAGw5S%2BxnuR5EzpdxGcKykCcFwIKShoW9n1x%2FwpTXOOy5E7A0%2FP20fX%2ByNMPaD9VdOFMJq6%2F9IGOqUBR%2BBY%2BD0ik1h5VvyqS6Sh5vQSeeZkA5XGGWkWtdRf4Zs9qrbLxooQyuC%2B4Qq0RxCaficRaDfXmjKCYRZBqPlPfWPfaxzPNrDmt9jmww%2BRhnGe0Qbro5If9Vuy4kjcaBNOAmX8PRcGOTSCLV%2B7WNb8vKy1YsvUvwEePrK3xnDVjQF2sFEPb6CYaXQ9UtK%2B%2FWoIkXbGDylpqE8Tcf3zwS0NDLU2TAH6&X-Amz-Signature=ba87f1e60d30d012c5e0d76c370930d415aa74440a557d0d39ae53c37550b32f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3189d513-2008-464c-85b9-9fc25b478446/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XOA6PI2X%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225647Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUv3chkMlz2vW5fJA%2BZMSt1OlJGy%2Ba4PN2jfZ0Vz2jMAiEA2j9M1egw4Wg%2F8Nlb0oIHol5%2Bvk2g8%2FSjs9EOrAC%2Fv8gqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEerBBMJamzKsk3VjyrcA0GqU1xFvH19RS2yxSH%2FpRd8o3%2Broi9GC9QnEB25Rq9OvAXwUFrhnedIslek5%2FzNRxDdvRZzJwMdFkF2IWEVVzxDBb1cRSuMbsA51zcIb%2BlOHrxYh5pSOViVsHH8eFg%2FxbQoxCgDC9V5eW8EyLvSC4W6dif4Gt%2BjHCuIPQic1q7P87kLE1Cr22HIgEp0PNev3YS6snixS9EFHSdJlvil9py1Q19ODfkePtszFXSUJ%2FMYBKSa%2B7joy1JBuIey2zuQnjml2BSXtPavwIZWZFmJrv%2Fji9ZbYyT5C8Ic6%2B2YfkFD5AWtfrN4rgQpKqutJPuIX2Jm65KuVQHUt%2FHnmRGvc1%2Fr%2BgAeADP41bEXaRXYLbGWg4JwKXtiHCnkQBtbVsdeydAaeI3S7N%2F%2B4MQcONwayHruwwlI%2BsawuB7%2BhFe6OoyyAhv2DQb6NFAeEAMJFHcSdnMGDgAJSEl%2BHttRu%2BLGnySO8dwvcTWbfm6N8kkizYlG%2FOQ%2BcsDA5yAZUA5XHBFu2G%2B0qj56%2FhK6hJ8fF2oLCcVN%2BuvzMnxFa7orSRU0b4VLQvF4VvffDOPAfMAGw5S%2BxnuR5EzpdxGcKykCcFwIKShoW9n1x%2FwpTXOOy5E7A0%2FP20fX%2ByNMPaD9VdOFMJq6%2F9IGOqUBR%2BBY%2BD0ik1h5VvyqS6Sh5vQSeeZkA5XGGWkWtdRf4Zs9qrbLxooQyuC%2B4Qq0RxCaficRaDfXmjKCYRZBqPlPfWPfaxzPNrDmt9jmww%2BRhnGe0Qbro5If9Vuy4kjcaBNOAmX8PRcGOTSCLV%2B7WNb8vKy1YsvUvwEePrK3xnDVjQF2sFEPb6CYaXQ9UtK%2B%2FWoIkXbGDylpqE8Tcf3zwS0NDLU2TAH6&X-Amz-Signature=fea0d9da0eb6b6bca9446b6ffd5c25840c13b0d7f66fb0dcee9836b9b2ead0c7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7282ca93-1d43-4124-90ea-a0664372a0ef/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XOA6PI2X%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225647Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUv3chkMlz2vW5fJA%2BZMSt1OlJGy%2Ba4PN2jfZ0Vz2jMAiEA2j9M1egw4Wg%2F8Nlb0oIHol5%2Bvk2g8%2FSjs9EOrAC%2Fv8gqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEerBBMJamzKsk3VjyrcA0GqU1xFvH19RS2yxSH%2FpRd8o3%2Broi9GC9QnEB25Rq9OvAXwUFrhnedIslek5%2FzNRxDdvRZzJwMdFkF2IWEVVzxDBb1cRSuMbsA51zcIb%2BlOHrxYh5pSOViVsHH8eFg%2FxbQoxCgDC9V5eW8EyLvSC4W6dif4Gt%2BjHCuIPQic1q7P87kLE1Cr22HIgEp0PNev3YS6snixS9EFHSdJlvil9py1Q19ODfkePtszFXSUJ%2FMYBKSa%2B7joy1JBuIey2zuQnjml2BSXtPavwIZWZFmJrv%2Fji9ZbYyT5C8Ic6%2B2YfkFD5AWtfrN4rgQpKqutJPuIX2Jm65KuVQHUt%2FHnmRGvc1%2Fr%2BgAeADP41bEXaRXYLbGWg4JwKXtiHCnkQBtbVsdeydAaeI3S7N%2F%2B4MQcONwayHruwwlI%2BsawuB7%2BhFe6OoyyAhv2DQb6NFAeEAMJFHcSdnMGDgAJSEl%2BHttRu%2BLGnySO8dwvcTWbfm6N8kkizYlG%2FOQ%2BcsDA5yAZUA5XHBFu2G%2B0qj56%2FhK6hJ8fF2oLCcVN%2BuvzMnxFa7orSRU0b4VLQvF4VvffDOPAfMAGw5S%2BxnuR5EzpdxGcKykCcFwIKShoW9n1x%2FwpTXOOy5E7A0%2FP20fX%2ByNMPaD9VdOFMJq6%2F9IGOqUBR%2BBY%2BD0ik1h5VvyqS6Sh5vQSeeZkA5XGGWkWtdRf4Zs9qrbLxooQyuC%2B4Qq0RxCaficRaDfXmjKCYRZBqPlPfWPfaxzPNrDmt9jmww%2BRhnGe0Qbro5If9Vuy4kjcaBNOAmX8PRcGOTSCLV%2B7WNb8vKy1YsvUvwEePrK3xnDVjQF2sFEPb6CYaXQ9UtK%2B%2FWoIkXbGDylpqE8Tcf3zwS0NDLU2TAH6&X-Amz-Signature=27b6e31e7eaabde09024ab01e0a371ae350d5851559e0b236642550d541fa302&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面我们学习了 Hystrix 两大主要功能，服务降级和熔断器。这一节我们学习一个隐藏在幕后的功能：线程隔离。还记得 Hystrix 开始的时候老师说的话吗，线程隔离作为一个检验大家学习能力的小练习，需要同学们自己去实现落地（为了提高难度，不要直接搜索别人的例子，从 SpringCloud 官方文档结合 Hystrix 代码入手）
+
+
+线程隔离是个什么概念呢？简单的说，就是将用户请求线程和服务执行线程分割开来，同时约定了每个服务最多可用线程数。说也说不明白，我就举个例子吧。假设我们的服务器就是六扇门总部，那每个用户请求都是来访参观的皇亲国戚。首先我们的Web 容器有个线程池用来接收请求，我们把这个线程池可以看做是六扇门的大堂，所有来访的用户都要先到大堂接待。接下来，我们六扇门提供了各种各样不同的服务满足这些官老爷们，比如按摩服务，蒸桑拿服务，美容服务。按照老规矩的话，这些服务都是在大堂现场开展，假如大堂只能接待 20 个人，结果来了这 20 人全是要按摩的，而按摩服务耗时又比较久，那么后面如果再来个想要蒸桑拿的可就没地方去了。
+
+
+现在我们六扇门有了新规矩-线程隔离，就是说每个服务单独设置一个小房间（独立线程池），把大厅区域和服务区域隔离开来，每个服务房间也有接待数量限制，比如我设置了按
+摩房最多接纳 10 人，桑拿房最多 5 人，美容护理室也是 5 人。这样，即便来了 20 个人喊着要按摩，我们也只能接待 10 人，剩下的 10 个人就会收到 Thread Pool Rejects。如此一来，也不会耽搁六扇门为用户提供其他服务。这下明白了吧？那我们就来看一看线程隔离方案的全景图。一波三折- 线程隔离的三道坎
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/95a71a64-56e7-41a4-b6b1-061868ab550d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XOA6PI2X%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225647Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUv3chkMlz2vW5fJA%2BZMSt1OlJGy%2Ba4PN2jfZ0Vz2jMAiEA2j9M1egw4Wg%2F8Nlb0oIHol5%2Bvk2g8%2FSjs9EOrAC%2Fv8gqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEerBBMJamzKsk3VjyrcA0GqU1xFvH19RS2yxSH%2FpRd8o3%2Broi9GC9QnEB25Rq9OvAXwUFrhnedIslek5%2FzNRxDdvRZzJwMdFkF2IWEVVzxDBb1cRSuMbsA51zcIb%2BlOHrxYh5pSOViVsHH8eFg%2FxbQoxCgDC9V5eW8EyLvSC4W6dif4Gt%2BjHCuIPQic1q7P87kLE1Cr22HIgEp0PNev3YS6snixS9EFHSdJlvil9py1Q19ODfkePtszFXSUJ%2FMYBKSa%2B7joy1JBuIey2zuQnjml2BSXtPavwIZWZFmJrv%2Fji9ZbYyT5C8Ic6%2B2YfkFD5AWtfrN4rgQpKqutJPuIX2Jm65KuVQHUt%2FHnmRGvc1%2Fr%2BgAeADP41bEXaRXYLbGWg4JwKXtiHCnkQBtbVsdeydAaeI3S7N%2F%2B4MQcONwayHruwwlI%2BsawuB7%2BhFe6OoyyAhv2DQb6NFAeEAMJFHcSdnMGDgAJSEl%2BHttRu%2BLGnySO8dwvcTWbfm6N8kkizYlG%2FOQ%2BcsDA5yAZUA5XHBFu2G%2B0qj56%2FhK6hJ8fF2oLCcVN%2BuvzMnxFa7orSRU0b4VLQvF4VvffDOPAfMAGw5S%2BxnuR5EzpdxGcKykCcFwIKShoW9n1x%2FwpTXOOy5E7A0%2FP20fX%2ByNMPaD9VdOFMJq6%2F9IGOqUBR%2BBY%2BD0ik1h5VvyqS6Sh5vQSeeZkA5XGGWkWtdRf4Zs9qrbLxooQyuC%2B4Qq0RxCaficRaDfXmjKCYRZBqPlPfWPfaxzPNrDmt9jmww%2BRhnGe0Qbro5If9Vuy4kjcaBNOAmX8PRcGOTSCLV%2B7WNb8vKy1YsvUvwEePrK3xnDVjQF2sFEPb6CYaXQ9UtK%2B%2FWoIkXbGDylpqE8Tcf3zwS0NDLU2TAH6&X-Amz-Signature=315578dbe5d83a234e553dcf5bcb98485e5ce2f0fb495b4e0116891b036490d9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在线程隔离的完整链路里，需要经历三道坎（降级）才能取得真经
+
+线程池拒绝：这一步是线程隔离机制直接负责的，假如当前商品服务分配了 10个线程，那么当线程池已经饱和的时候就可以拒绝服务，调用请求会收到Thread   Pool   Rejects，然后将被转到对应的  fallback 逻辑中。其实控制线程池中线程数量是由多个参数共同作用的，我们分别看一下  
+
+coreSize：核心线程数（默认为  10）
+
+
+maximumSize：设置最大允许的线程数（默认也是 10），这个属性需要打开 allowMaximumSizeToDivergeFromCoreSize 之后才能生效，后面这个属性允许线程池中的线程数扩展到 maxinumSize 个**queueSizeRejectionThreshold：**这个属性经常会被忽略，这是控制队列最大阈值的，Hystrix 默认设置了 5。即便把 maximumSize 改大，但因为线程队列阈值的约束，你的程序依然无法承载很多并发量。所以当你想改大线程池的时候，需要这两个属性一同增大
+
+
+keepAliveTimeMinutes：这个属性和线程回收有关，我们知道线程池可以最大可以扩展到 maximumSize，当线程池空闲的时候，多余的线程将会被回收，这个属性就指定了线程被回收前存活的时间。默认 2 分钟，如果设置的过小，可能会导致系统频繁回收/新建线程，造成资源浪费线程
+
+
+Timeout：我们通常情况下认为延迟只会发生在网络请求上，其实不然，在 Netflix 设计 Hystrix 的时候，就有一个设计理念：调用失败和延迟也可能发生在远程调用之前（比如说一次超长的 Full GC 导致的超时，或者方法只是一个本地业务计算，并不会调用外部方法），这个设计理念也可以在 Hystrix 的Github 文档里也有提到。因此在方法调用过程中，如果同样发生了超时，则会产生 Thread Timeout，调用请求被流转到 fallback
+
+服务异常/超时：这就是我们前面学习的的服务降级，在调用远程方法后发生异常或者连接超时等情况，直接进入 fallback ，Hystrix 的业务流程非常复杂，降级、熔断和线程隔离之间还相互影响，大家如果有时间可以尝试着画一幅 Hystrix 的全家福，把前面学到的 Hystrix 核心功能的主线脉络全部梳理在一张图上，这就要靠大家深入研究源代码才能理得清楚了。线程隔离的方式Hystrix 提供了两种线程隔离的方式，分别是线程池技术和信号量技术。这两种方式在业务流程上是一致的，在默认情况下Hystrix 使用线程池的方式。可以使用如下配置参数切换到信号量方式：**execution.isolation.strategy = ExecutionIsolationStrategy.SEMAPHORE **有关信号量和线程池之间的比较，我们放到下一节来介绍。
+
+
+**小结**
+这一节我们学习了  Hystrix  中的线程隔离技术，下一节带大家了解一下基于信号量的另一种资源隔离方案。
+学习 Tips：往往一个开源组件在提供一个功能的时候，不会仅仅提供一种技术方案，比方说 Spring 在动态代理方面既支持 JDKDynamic 也支持 CGLIB，而 Hystrix 在资源隔离这里不仅提供了线程池技术，也有基于信号量（Semaphore）的方案。所谓存在即有道理，我们可以把自己放在开源组件开发者的角度，分析一下为什么设计这些不同的方案，如果你是设计者的话会提供怎样的方案，久而久之，我们就能把自己的视野从“使用者”拔高到“设计者”。
+
+
+

@@ -1,0 +1,20 @@
+---
+title: 1-1 初探响应式架构
+---
+
+# 1-1 初探响应式架构
+
+有很多同学们，大家好，我们又见面了。大学同学最近收获很多，所以他开始思考一个问题，就我们现在的系统都是为了追求更高、更快。再有没有一种可能性就是我们不需要做这么大的改变，
+
+但是我们的系统也能获得一种高并发、高扩展性，显而易见肯定是有的，对吧？只是我们钱的思维方式要做一些彻底的调整，才能够适应这样一种新的方式。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2317622e-064d-40ad-9a74-d26258f0e5b1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46624MPDPMZ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230927Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIANzk3ZGZvGJHmUn%2BZL5IPruWFNcdoCOkhG%2BsSKDQVEkAiEA12Vd7W3wM9Tnx%2BU8nawdVClupNJ7ILQBFLVbP1Rxw1kqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDOrmtRyccDbVcR2ndSrcA8hwlC%2F9MRLJD4VGeNkGrAhMODADyJ5x33ac%2FoDPrXWzKUHnWy3Sak3jtjcUol07qYtbkVhgQeL%2FH3brKHNnjRonGI1iUm0ah7P%2FoLRllql%2BEhtqGDH%2FceLCjqxMCTSh%2FAMT0lcUXrvSKiV3BEboWg5a6cKjC%2BDqbG0dCTvQRasm7zK%2BUQ0hm8MEprYDfQZdntzmn1mcys1moDrCDVjR8xwnSzm2JnPYiMCjk%2FGslWOvGguKwAH0bxHXmx8YDSL%2Bi3pxjcVlpcyUgxhy6DZVmA6pJa5X77OtONs3rTp6w8lxvtLK%2BM3ymUTyMz6elAt8lQlQ7GM5jWuf2%2FEXh%2F1%2BDw1eKvYv11d9g%2BGR6Z570cZJdCFB5XKT8bnEwgQfU8LQh59Fw3c2ayHHlT5yFovaVM3y2fZE92d9biVgym3B6vWjnYoA2p8Gy0LCTOGd%2FvgA9MGHv%2Bi3bEDRbKn2OA9JTyniDyv%2FvLsEJhSWJ%2FRsHuhXcmIbvKPnIHgb2SNviDyqQYeipSZxQU0vW%2BnSp0jTWaAYFPHc715ZXGMq48H%2B9%2FWqsbbquft2pXxXj614ljEU3WeaSkNvtcRDeptSnCLJH2KyGl2dSYYKw6lNDCdeV3R086WaEcc6iUmdm0JGMJO4%2F9IGOqUBbSbcyWiZ69YUXKyCTWrNM3aQLbu3fq4KbOxD4NzcmkdMs0LXy5ThWa1HuqbPDigQKS26bs231PnspOAVMut%2FbRyhQ1JE6zv07aG68weYaOyEk69vMU3%2BPXYknnWpUwrOH%2FQ0vGRRlpiLHfF5Fjmm4U1ldugqAdLin%2BSEWkx26xtZ%2B%2BEoVYSZyc%2Bq2tsusADdC7%2BWJAJzeZAGEdiDoVX%2BICNFyYKs&X-Amz-Signature=a0458e2fdc35eb20cb94b17fca17e755a21c236f245ee6abfd4a7057537c773c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+所以那是什么样的技术需要这样子完全转化自己的思维方式呢？我就问大锤，你有没有听说过响应式架构？什么是响应式架构？其实想要简单的描述什么是响应式架构，还是相对较困难的一件事情。但是我们可以先从概念上对它有一个抽象的认知，基于我们的常识，什么叫做响应？你的日常生活中已经有这种体会了，有人叫你去做一件什么事情，对吧？那你肯定会根据人家对你说的这件事情，或者他告诉你在其他一些背景知识什么之类的，也会做一些下意识的反应，或者去执行一些事情，对不对？这就是一种响应，就是别人告诉你一件事情或者下载一个命令，对它做出你自己的反应。
+
+
+但是有可能你做这件事情并不是马上就会去执行，因为你可能手头上有别的事情要做，也有可能你自己的落实风格，就是我也先缓一缓，这都是有可能的，对吧？但这其实就恰恰是响应式价格的一个金水根据，就是这个系统里面的其他的人，他给你的一个指令去做相应的事情，当然听到其他人的消息和做这件事情之间却未必是同步进行的。
+
+
+其实这种事情在军队中是最常见的，在我们中国古代的著名的兵书孙子兵法当中，它就有描述到岩布相文，故为轻事，不相见故为志气。这句话什么意思呢？就是说在行军的过程当中，因为故乡听不见说话，所以说设置锣鼓来指挥 a 股进攻，鸣金收兵。这就是最简单的，它还有各种号角什么的，传递不同的信息，又因为我们互相都看不见，所以设置志气来指挥。旗帜，有各种不同的颜色和图案用于传递指挥信息，还有其余不同的动作呢。它代表了不同的敌情和指挥信息，属于视觉通讯工具和符号指令。所以从指挥官他发出一种指令，不管是哪种方式，他不得作出响应，还有相对一些调整执行这个命令，这之间可能是有时间差的，对吧？是不是？这就是最早的一种响应式系统？希望大家通过这个例子能够对我们这个响应式架构有初步的一些了解。
+

@@ -1,0 +1,65 @@
+---
+title: 4-5 scroll 滚动搜索
+---
+
+# 4-5 scroll 滚动搜索
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5b863be3-bc2f-4c76-b689-a76b4188655e/SCR-20240806-eqls.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667CYZECVD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225146Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHm5G57GaSsR1wKvIxTct3iWIrkOXW5S4CrBzrW6NsO0AiB%2Bu3%2BxJmN5IHhnUfcgHwroq5MbvmaUNJqU2YwWzJhcsiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMFwQtRkpzjAt6rKZ9KtwDDo59Owm0wieq%2FwPMa%2FYGTT1Oq9pPlhxdUrDZ8AnpE2yhb33AXv3pKCbfrZfUAiFBV%2BrtYvqzThPPCdqAMa8jFM8IYWiwmduq0MVouEMmMCXt87XQKpbRYW0eHDc6uESGrB0OT591nxcxm8wN0iCgK5yE90w%2BEH8EbyTH2EtvRULD43N8x%2BcgcEyi6jDscbeCmo6dDKNSuxERIL7brKmLMIjlaIVhhR1vqpvPxb81jqoh0UiiCOFxJXa6a6BEyqWLZAZRq2YFY8Y3lqRFPGe6uIjRzmRHLHluTzaJjJy8NognuA0NmPHbUqZ4gDgPt0skVp%2FRZ7k7ocR33zrQvjuVqmtZG%2FmgDe8HIXhRSkvZF3iKG6bmByOkCqUy8zsJMHE7SW3gsQqPdHKavec4QX6iouINMfwsnjzx9%2FMmVRgDsd9zdOPNHeC4frY%2BnMYok%2BANXsLNulnfEqhAoSy%2BOyyH7gKLPfzejqoJzZzphG0Q8WNIcSqgNF4mmfpcIiknCU2qqN8EQutlKJJX3jlGTcOLogyHzC%2B1sGFUH3k%2FO7gsCl2VMneM05WUZxfCUYqXG4I0J6%2BfMatOdvALIz59v0TRDEs1CeakQnBDUrfoD%2F3cco9hcDxGm4weuvu6LB4wirn%2F0gY6pgHOriQ3GuMYdmj1gdbv16sHgKfQ2qm7fk5jWUxsm3I8C1%2BWraThEQbUOfghgUkR8OD%2B5BqaUXtUcK9Ne5O4tiovDGtvOA%2FxxFzAODiR7RFXphG6FzCImrSklxFkYRLOl%2FRoUpjzsIELP731xcYfp0RV7BHSADPIOFGKp5GshFjeQl%2FRu%2F3Qu2QMSnN3ocbqljIw0iJ8stmoF7b9DcOhTQWeHWWlGt9O&X-Amz-Signature=57bf0576560d001a7b292f9ed90680f2a98c5cf2c3952a3d33464087259240c2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cd3563f5-dbb4-40a6-b6a4-9c664fc61d35/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667CYZECVD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225146Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHm5G57GaSsR1wKvIxTct3iWIrkOXW5S4CrBzrW6NsO0AiB%2Bu3%2BxJmN5IHhnUfcgHwroq5MbvmaUNJqU2YwWzJhcsiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMFwQtRkpzjAt6rKZ9KtwDDo59Owm0wieq%2FwPMa%2FYGTT1Oq9pPlhxdUrDZ8AnpE2yhb33AXv3pKCbfrZfUAiFBV%2BrtYvqzThPPCdqAMa8jFM8IYWiwmduq0MVouEMmMCXt87XQKpbRYW0eHDc6uESGrB0OT591nxcxm8wN0iCgK5yE90w%2BEH8EbyTH2EtvRULD43N8x%2BcgcEyi6jDscbeCmo6dDKNSuxERIL7brKmLMIjlaIVhhR1vqpvPxb81jqoh0UiiCOFxJXa6a6BEyqWLZAZRq2YFY8Y3lqRFPGe6uIjRzmRHLHluTzaJjJy8NognuA0NmPHbUqZ4gDgPt0skVp%2FRZ7k7ocR33zrQvjuVqmtZG%2FmgDe8HIXhRSkvZF3iKG6bmByOkCqUy8zsJMHE7SW3gsQqPdHKavec4QX6iouINMfwsnjzx9%2FMmVRgDsd9zdOPNHeC4frY%2BnMYok%2BANXsLNulnfEqhAoSy%2BOyyH7gKLPfzejqoJzZzphG0Q8WNIcSqgNF4mmfpcIiknCU2qqN8EQutlKJJX3jlGTcOLogyHzC%2B1sGFUH3k%2FO7gsCl2VMneM05WUZxfCUYqXG4I0J6%2BfMatOdvALIz59v0TRDEs1CeakQnBDUrfoD%2F3cco9hcDxGm4weuvu6LB4wirn%2F0gY6pgHOriQ3GuMYdmj1gdbv16sHgKfQ2qm7fk5jWUxsm3I8C1%2BWraThEQbUOfghgUkR8OD%2B5BqaUXtUcK9Ne5O4tiovDGtvOA%2FxxFzAODiR7RFXphG6FzCImrSklxFkYRLOl%2FRoUpjzsIELP731xcYfp0RV7BHSADPIOFGKp5GshFjeQl%2FRu%2F3Qu2QMSnN3ocbqljIw0iJ8stmoF7b9DcOhTQWeHWWlGt9O&X-Amz-Signature=4ced22a5d9fbf15764c27948958ba95f7da37cdb7b81c2d032a51fa3b36c661a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+讲了咱们的一个深度分页，深度分页会有一定的性能的损耗。其次如果说你想要突破这个 1 万条数据的话，那么是可以去设置 index.max result window 这个数值，设置完毕以后，那么你的一个深度分页就能够突破 ES 默认的一个限制，你不管是十万一百万的数据都可以去做。那么在这个异常的信息里面，其实中间有一段英文的文字，我们可以来看一下。
+
+
+在这里如果说我们要去请求一个大数据量，在这里有一个 large data 当我们要去做大数据量的一个请求的时候，其实我们可以去使用一个叫做 scroll API 其实这个是一种滚动搜索，这是什么意思呢？假如说我们现在有 10 万条数据，我们要一次性的给查出来。那么如果说你要一次性的去查出来的话，它会有一定的性能营养。因为你的这个数据量一次性去查实在是太庞大了，数据量太多了。这个时候我们是不建议你去使用绩效这种，直接在这边你写一个 0 对吧，然后你在这边写个 1 万或者 10 万去查，那么肯定是不太好的。所以我们会使用这个 score API 也就是滚动搜索去进行一个查询。使用滚动搜索的话，那么它其实会帮我们先去查出一部分的数据，随后再依次往下去查询。那么在第一次查询的时候，其实我们会有一个滚动的 ID 那么它会相当于是一种铆标记。随后当我们再去进行下一次的一个查询的时候，我们只需要把上一次的一个铆标记拿到传到我们下一次的一个查询中。那么我们就可以根据这个码标记其实就是一个 score ID ，那么就可以一次一次的往下去进行搜索的一个请求。
+
+
+那么每次的搜索都会基于一个历史的数据快照查询数据的一个期间的话，如果说有一个数据的变更，那么它是不会影响我们搜索的结果的。所以说我们的一个搜索其实相当于是有一段时间的一个历史数据，它是一个历史的快照数据。如果说这个数据是正在被用户去更新的，那么在我们的一个滚动搜索里面是不会被体现出来的。这一点是需要去注意的。OK ，随后我们就可以去针对咱们的一个滚动搜索做相应的一个查询，来看一下如何去做的。那么首先我们在这里 post 还是要去写上。
+
+
+最后我们在这边是基于当前 shop 这个索引去做的一个搜索，所以我们是使用这个 search 去搜，随后在它的后方你要去加上一个相应的参数。那么这个参数其实就是我们滚动的一个时间，写上一个 score 等于在这里我们可以定一个一分钟两分钟都可以。那么也就是 1m 这个代表我们滚动的时候所存留的一个时间。这个时间的话你可以把它作为是一次请求的会话时间，相当于是一个 session 这个搜索它会保持整个在搜索过程中上下文的一个时间，就是设置了一分钟。Ok 。
+
+
+那么随后我们的这个 body 有一部分数据我们要去做相应的修改。首先这里 query 还是使用这个 match 下方我们就要去改掉。首先在这里我们要改成一个 sort 有一个排序，这个排序我们要固定的去写上使用我们的下划线 Doc 也就是基于我们的文档去搜的。随后在这个下方你要去指定它的一个 size 也就是每一次滚动你要查询出来的一个数据量，其实就相当于是分页的时候的一个数据量。这里因为我们现在总共只有 12 条，数据不是很多，所以我们使用五条去进行一个展示的话，那么我们进行滚动搜索其实是会经历三次，第一次五条，第二次五条，第三次是两条数据。随后当你再进行第四次去查询的话，其实是没有任何的数据的。OK ，随后我们点击 send 来看一下。
+
+
+那么找我们进行一次查询的时候，其实我们就已经是执行了一次滚动的搜索，这是第一次。那么第一次话来看一下，它其实会分配给我们一个 score ID 那么这个 ID 的话它其实是一个 base 64 的一字符串，你是需要去携带上的。你在这里的话可以直接去拷贝一下，拷贝一下。在我们的后续我们会去用到。在这里的话它其实会有一个 hit 撒选中命中，总共是命中有 12 条记录。那么在这里的话就是我们命中的一些系读数，在这里有一条数据，然后这边是两条再往下，这是第三条，再往下这是第四条，随后一个是第五条，再往下就没有了。那么在这里我们就可以做第二次查询。第二次查询的话在这里我们这整个 API 就说在这里使用的这个玻璃的数据，以及是我们的这一块的 UI 都是需要去做一个相应的更改的。这边我们重新开启一个窗口，在这边使用 post 把这里的一个 URL 我们把这个拷贝一下，拷贝一下以后。
+
+
+那么在这里是需要去注意，就是说我们再一次要去做滚动搜索的话，我们就不需要去把这个 shop 它的所有的名称给携带上了，你只需要去这样子写上一个下划线 search 来一个斜杠 score 把这个给写上，这样子的话我们就可以去执行第二次后续的一个滚动搜索。
+
+
+这里你是需要去携带相应的一个 JSON 也就是我们的保底数据。这个数据的话其实最主要的就是要把我们的一个 score ID 上一次在这里。那么我们上一次查询在这里的 score ID 你是需要把它给携带过来的，拷贝一下切过来。在这里面你是需要去注入一下，要注明一下叫做 score ID 然后把这个值给贴过来。
+
+
+那么这个就是我们需要去查询的，这个是上一次滚动搜索的一个 score ID 好，然后你还要再去加上我们这一次的一个时间，也就是我们在这边携带的 score 把这一分钟给携带过来。当然你不写一分钟，你写个两分钟三分钟都可以。好。 Ok. 然后我们再点击线的去查一下。这个时候的话他会说我们 search content 整个型都说我们搜索不到报了这样的一个异常。
+
+
+这是为什么呢？我们的这个时间其实 10 个 ID 这是我们从上一次携带过来的，上一次我们在这里设置的是 1 分钟对吧？那么一分钟其实我们现在在点击这个 send 之前，我们讲了一些内容，就是这个一分钟已经是过去了对吧？所以说在这边我们重新再发起一次请求，然后再把这个 ID 拷贝携带过来携带复制到这个部位粘贴点击线的OK 。
+
+
+那么这个时候你会发现这是我们的下一次的数据，在这里总共是有就是 1 条，然后两条 3 条 4 条五条OK ，这是我们第二次滚动的内容。随后你要把这个时刻 ID 再一次的拷贝粘贴到这个位置，粘贴过来，点击搜索查询。那么这是我们的第三次查询。那么第三次查询来看一下。那么这是第一条数据，这是第二条数据。 OK 那么这个数据现在已经是都查询出来。这个时候如果说你把这个 ID 再次拷贝，我们再去进行一个滚动搜索的话，那么你会发现这里 hits 其实是 0 条数据。所以说这个时候当我们的这个 list 为空了，那就说明我们的滚动搜索已经是全部都执行完毕了。
+
+
+OK ，那么这个就是一个滚动搜索。需要注意就是说我们在每一次进行一个查询的时候，那么你的这个 score ID 上一次的 score ID 你是需要给携带过来的。另外在我们执行搜索的时候，其实我们都是基于一些快照数据。如果说我们在查询的期间，用户针对我们的一些数据做了一些更改的话，那么在我们当前这个地方我们是没有任何的体现的。
+
+
+OK ，像这种滚动搜索的话，往往我们可以用来去做一些导入的操作。如果说我们有很多的数据想要把它批量的导出到一些 Excel 文件的话，那么你使用 score 去做的话是完全没有任何问题的。Ok 。那么另外对于我们的一个文档来讲的话，其实官方也是有这样的一个文档，那么在官方文档里面它称之为是搜索游标查询 score 那么我们把它称之为是滚动搜索，其实也是可以的。那么使用这个滚动搜索的话，它可以去非常有效的去执行大批量的文档数据的一个查询，而又不用付出深度分页那种代价。那么他也知道就是说深度分页是有性能损耗的。
+
+
+OK ，在我们去使用这个 score 查询的时候，那么首先我们要去做一次查询的初始化，那么查询的初始化操作就是我们在这里所执行的这个也就是初次查询，也就是他的第一次。第一次查询之后，你要把他的 ID 携带给下一次查询，这样子下一次查询的话，那么就可以根据上一次的一个 score ID 去做查询的。
+
+
+OK ，在这里也是它所贴出来的查询的一个结构化的数据。那么在这里也会有一个 store 它是保持我们滚动查询的一个时间，也就是一分钟。那么关键字关键字也就是下划线 Doc 这个其实是固定的一个写法，然后 size 也就是我们滚动的时候查询的一个数据量，总共是有 1000 条。那么在这里这个是它的 1 第二次查询，在这里也要注意它再次设置我们的一个滚动它的一个过期的时间。这个会话存在的时间是一分钟。
+
+
+OK ，在这里有一点要注意，所以说我们每一次滚动去查询的话，其实我们也会涉及到一些肯定有这种集群对吧，所以我们也会有多个 set 那么再进行一个翻译的话，它每一个批次其实它返回的一个数据量文档的数最大为我们的 size 乘以我们的 number of primary SaaS 也就是我们当前 size 在这里如果说你设置是 1000 条的话，那么我们在咱们的 header 里面这边是有三个节点化，那么在这边其实就是 3000 对吧。如果说我们赛子就是按照我们在这里设置的是五条的话，在我们进行一个搜索的话，其实是 5 乘以3，那么就是一个十五条。OK ，那么这个是它实际操作会返回的最大文档的一个数量。OK ，所以都是和它的一个节点 SARS 是相关的。
+
+
+然后这边还有一个注意点，就是说要注意，我们滚动查询每一次返回一个新的字段，也就是 score ID 那么这个就是当前批次的一个滚动搜索 ID 如果说你要去做下一次的滚动查询，那么就必须要把上一次的 scope ID 给传递进去 OK 吧。当没有更多结果返回的时候，那么我们就处理完毕所有的匹配的文档。那么这句话就是指我们在这里如果说返回的一个数据是一个 hits 为空的 list 那么就代表我们的滚动搜索，这一次的查询就已经是全部都结束了OK ，那么这个就是我们 sport 查询的这种方式。
+
+
+那么这个要和我们前两节的一个深度分页做一个相比，那么深度分页它是会有一个限制的影响滚动搜索，那么它是可以按照 p41 页一页的往下面去做一个查询，那么它的性能相对来说会更好更快。只不过它有快照这样的一个概念，当我们的用户在我们进行查询的时候去修改了某些数据，那么我们的查询出来的数据是不会有任何的更改的。 OK 吧，那么这一点是需要去注意。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/de4a05bc-c402-47da-a89d-96432de26bec/2020-09-17_175607.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667CYZECVD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225146Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIHm5G57GaSsR1wKvIxTct3iWIrkOXW5S4CrBzrW6NsO0AiB%2Bu3%2BxJmN5IHhnUfcgHwroq5MbvmaUNJqU2YwWzJhcsiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMFwQtRkpzjAt6rKZ9KtwDDo59Owm0wieq%2FwPMa%2FYGTT1Oq9pPlhxdUrDZ8AnpE2yhb33AXv3pKCbfrZfUAiFBV%2BrtYvqzThPPCdqAMa8jFM8IYWiwmduq0MVouEMmMCXt87XQKpbRYW0eHDc6uESGrB0OT591nxcxm8wN0iCgK5yE90w%2BEH8EbyTH2EtvRULD43N8x%2BcgcEyi6jDscbeCmo6dDKNSuxERIL7brKmLMIjlaIVhhR1vqpvPxb81jqoh0UiiCOFxJXa6a6BEyqWLZAZRq2YFY8Y3lqRFPGe6uIjRzmRHLHluTzaJjJy8NognuA0NmPHbUqZ4gDgPt0skVp%2FRZ7k7ocR33zrQvjuVqmtZG%2FmgDe8HIXhRSkvZF3iKG6bmByOkCqUy8zsJMHE7SW3gsQqPdHKavec4QX6iouINMfwsnjzx9%2FMmVRgDsd9zdOPNHeC4frY%2BnMYok%2BANXsLNulnfEqhAoSy%2BOyyH7gKLPfzejqoJzZzphG0Q8WNIcSqgNF4mmfpcIiknCU2qqN8EQutlKJJX3jlGTcOLogyHzC%2B1sGFUH3k%2FO7gsCl2VMneM05WUZxfCUYqXG4I0J6%2BfMatOdvALIz59v0TRDEs1CeakQnBDUrfoD%2F3cco9hcDxGm4weuvu6LB4wirn%2F0gY6pgHOriQ3GuMYdmj1gdbv16sHgKfQ2qm7fk5jWUxsm3I8C1%2BWraThEQbUOfghgUkR8OD%2B5BqaUXtUcK9Ne5O4tiovDGtvOA%2FxxFzAODiR7RFXphG6FzCImrSklxFkYRLOl%2FRoUpjzsIELP731xcYfp0RV7BHSADPIOFGKp5GshFjeQl%2FRu%2F3Qu2QMSnN3ocbqljIw0iJ8stmoF7b9DcOhTQWeHWWlGt9O&X-Amz-Signature=a8c7e8d654cd081483027df228e1ae191097c01e585043faf552ab1232f45852&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

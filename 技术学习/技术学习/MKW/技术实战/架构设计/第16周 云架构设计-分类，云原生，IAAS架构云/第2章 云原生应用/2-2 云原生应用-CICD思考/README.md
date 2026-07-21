@@ -1,0 +1,81 @@
+---
+title: 2-2 云原生应用-CICD思考
+---
+
+# 2-2 云原生应用-CICD思考
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/50563b60-b5b5-42fa-9c3f-d5dc8332aead/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4AYYNRF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231057Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGH7Qf6ixiQ7dkJ2fn5LHm3J7sqZODa4skHcqN%2BfgY50AiEA7SYph69QpTqRvtmJlwF9kh%2BlWtQ5AAhGyeb2s%2FirxWUqiAQIyP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKeRoyED%2FHt%2FxtcMGSrcA3vIJKzkCgn1KOkh7uF7SoHGNy8wsKrAR90UwVOPagZd6TzA7%2BA%2B04Sf6YmaM9HsBWAnERoNyKwrsWVHmYcqVmdNV9SwBlo0FHKPCOIdOnJbctv5i6RXj9M7dYroAzN7%2BqrjWE0i8iWK2JsH%2BuK1Hv7sU50rQa2X7u0ZnidIH1QX9GApri1CNHcbuwfp8tMbAFXZuXKLnkJzd%2FWa24DrcxSQMhDpS901OLLxPSZMofngA1n%2FiWbW4UsX7zohV3ELzpVIm7IAt0b7BYho3qNYW0TEJtKbdQawFd%2F9EQXf1XtlGs4Q2P6bijas3Zl%2BWRiSnzhr0FKitWeTvZ%2FUF%2F7wack5XbAb%2BTkg1wvb3nmOqAP6QFu%2B1s7qZUXPvTif9rgi%2BRCCaBB524j2g6mtFz%2FYc5glnd3P%2BjXQuRk9g9df1xLRS4aEMqpTa9Bhs0dTvTK4bRa%2BsiScGSu0hJzkq7Gi45DalxU1TNHty6IoQuL3Ym1xHLE8AVZe7L00iq6WTeBHcDKY0bL%2BHA9paR2AiJJRFGg0lffgy6%2FKcm2TfzWMRDwyfYCGSHinLTCRo%2BsOzSOaimatiJyWLWkq%2B1blq7fSB4gJIEXQyZXRHekodQDoi14RbKcj%2F7B7KAN0CgtoMMzk%2F9IGOqUB9ErSv2phEQ8dmBmUc20rLSnA8CAFn3i3ydsZOKhX64I5aMe9%2BSI6hiQCr28e0vXQbGnD%2Blh%2FCOVNaDCEcVwtpQlWuCCMWE%2FijzwPOYU41jgq8JmCiFUJLrJyHWUkj77GFnGhGJ12rKKpHfJft5Dezx%2BAc2hKfHPjqHkSlfqyiixfB2Fcg5DvvysfyYo0c%2FYn7kVKB9WGVrVB2LtOenkRV%2FUixZQ8&X-Amz-Signature=8cae5a55e4573e900f9095baa21c00b59df63c13c9c8b1c06454a203b5c1d331&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+---
+
+```javascript
+会议讨论了云原生中与 CICD 相关的三个关键原则。具体如下：
+一份代码多次发布：一个应用应只有一份代码库，可存在多个版本分支和发布历史记录，建议用单链发布，开发、测试、生产从同一链发布，不同环境版本有差异，应敏捷发布，微服务拆分不合适会导致不符合此原则。
+编译、发布和运行要分离：从设计到开发、编译、发布过程应完全切分，关键切分点在 build 跟 config 汇聚点，应用代码 build 完打成工件，工件包含所有所需配置，应根据环境变量决定运行时使用的配置，工件编译完成后永不改动。
+环境一致性：开发、准生产、测试、生产的环境应保持一致，包括人员、时间、工具、数据库、配置等，若存在差异可能导致单元测试在生产无法正常运行、系统崩溃等问题，应做到技术栈、CICD、运行时环境等完全一致，人员一贯到底。
+
+
+
+云原生CICD相关原则之一：一份代码多次发布的解读
+本章节主要探讨 CICD 相关原则中的“一份代码多次发布”原则，英文名为 one code base one application multiple deployment，即一个应用只用一份代码库。应用不宜跨多个仓库，耦合的共用库应独立。建议用主链或专门的发布链发布，开发、测试、生产从同一链发布，版本有差异，发布应敏捷 。
+
+
+应用开发原则之编译、发布和运行分离解析
+本章节介绍了应用开发的第二个原则：编译、发布和运行要分离（design，build，release and run separation）。核心是代码 build 完打成的工件不能再改动，同一份代码一个工件，能在多环境运行，由环境变量决定具体配置。测试测此工件，编译后只改 config，抛弃环境相关内容，统一打包发布。
+
+
+CICD第三个原则：环境一致性及开发、准生产、生产环境差异介绍
+本章节讨论 CICD 的第三个原则“环境一致性”（environment parity）。介绍开发测试时，由研发人员花一周左右在应用节点跑应用，后台连 MySQL 数据库。准生产环境同样由开发人员在一天内完成联调，数据库也是 MySQL。但生产由运维团队负责，可能一小时发布，后台却是 Oracle 数据库，因成本等因素形成环境差异
+
+开发、准生产、生产环节存在的问题及影响
+本章节主要探讨应用从开发到生产过程中存在的问题。人员方面，开发准生产测试与生产若不是同一人，存在人员差异；时间上，各阶段时间差大，导致环境变化，单元测试在生产可能无法正常运行；工具及环境方面，数据库、配置系统、操作系统等环境参数变量不同，端口、防火墙策略有别，易引发问题 。
+
+CICD关键原则及云原生弹性介绍
+本章节指出开发测试与生产存在环境、时间、人员等差异问题，提出 CICD 关键的三个原则，即一份代码多次发布、一次打包依环境变量运行、各环境一致。还提到下一节将从弹性维度聊 cloud native 核心原则，介绍了弹性的两个英文名称 resilience 和 scalability，并表示将探讨云原生弹性的内涵。
+
+
+
+```
+
+架起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，上一个章节我们聊了聊 cloud native 云原生的 what why how，以及其中核心的一个关键点，什么才是飞扬老师心目中的云原生的定义？那这一章节我们来聊其中的三个很关键的原则，统称为 CICD 相关原则。好，那第一个原则叫什么？一份代码多次发布，因为这五个原则其实都来自于什么？国外的一些文档，所以我的这里也跟大家交流一下它的英文名叫什么？叫做 one code base one application multiple deployment。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/88fc2b74-6f2d-4572-a5c6-910a3cace082/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4AYYNRF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231057Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGH7Qf6ixiQ7dkJ2fn5LHm3J7sqZODa4skHcqN%2BfgY50AiEA7SYph69QpTqRvtmJlwF9kh%2BlWtQ5AAhGyeb2s%2FirxWUqiAQIyP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKeRoyED%2FHt%2FxtcMGSrcA3vIJKzkCgn1KOkh7uF7SoHGNy8wsKrAR90UwVOPagZd6TzA7%2BA%2B04Sf6YmaM9HsBWAnERoNyKwrsWVHmYcqVmdNV9SwBlo0FHKPCOIdOnJbctv5i6RXj9M7dYroAzN7%2BqrjWE0i8iWK2JsH%2BuK1Hv7sU50rQa2X7u0ZnidIH1QX9GApri1CNHcbuwfp8tMbAFXZuXKLnkJzd%2FWa24DrcxSQMhDpS901OLLxPSZMofngA1n%2FiWbW4UsX7zohV3ELzpVIm7IAt0b7BYho3qNYW0TEJtKbdQawFd%2F9EQXf1XtlGs4Q2P6bijas3Zl%2BWRiSnzhr0FKitWeTvZ%2FUF%2F7wack5XbAb%2BTkg1wvb3nmOqAP6QFu%2B1s7qZUXPvTif9rgi%2BRCCaBB524j2g6mtFz%2FYc5glnd3P%2BjXQuRk9g9df1xLRS4aEMqpTa9Bhs0dTvTK4bRa%2BsiScGSu0hJzkq7Gi45DalxU1TNHty6IoQuL3Ym1xHLE8AVZe7L00iq6WTeBHcDKY0bL%2BHA9paR2AiJJRFGg0lffgy6%2FKcm2TfzWMRDwyfYCGSHinLTCRo%2BsOzSOaimatiJyWLWkq%2B1blq7fSB4gJIEXQyZXRHekodQDoi14RbKcj%2F7B7KAN0CgtoMMzk%2F9IGOqUB9ErSv2phEQ8dmBmUc20rLSnA8CAFn3i3ydsZOKhX64I5aMe9%2BSI6hiQCr28e0vXQbGnD%2Blh%2FCOVNaDCEcVwtpQlWuCCMWE%2FijzwPOYU41jgq8JmCiFUJLrJyHWUkj77GFnGhGJ12rKKpHfJft5Dezx%2BAc2hKfHPjqHkSlfqyiixfB2Fcg5DvvysfyYo0c%2FYn7kVKB9WGVrVB2LtOenkRV%2FUixZQ8&X-Amz-Signature=6a71fa6067e00b04fa9d645bd76896d2bd2254b58d7d63f73886b9288fc3bcbb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+翻译成中文其实更核心的应该就是一个应用只用一份代码库。当你一个应用跨多个什么 Git Hub 或者 GitLab 的 repo 仓库的时候，我就认为你这个服务可能没有拆分好，你应该拆分到这个服务只有一个库为止。那这个时候你的微服务拆分才合适，同时多个微服务用共用的库的时候，我们也认为你这两个微服务耦合度太高了，必须把共用库提取出来变成一个独立的应用，这个应用被其他两方应用调用，这样才合适。
+所以一个应用应该是只有一份代码库，但是这个代码库里可能有很多个不同版本的分支，也有很多个不同的发布的历史记录。那这个时候飞阳老师就建议我们用一个链来发布，你可以是 master branch 或者是 main branch，直接进行发布，主链发布。也可以是公司统一一个发布链，专门有一个什么 release 的 branch 来进行发布，通常单链发布会更加敏捷，更加符合当前时代的需求。
+那这个时候不管你是开发、测试还是生产，都是从同一个链，比如说主链发布出来的，但是当前的版本可能不一样，通常开发版本最新，因为在测试测完了以后会扔给转生产，或者是一些这个类似于生产的性能测试这样的环境里面，在这里面测完以后，最后放到生产，通常生产的应用版本稍微老一些， staging 准生产可能偏中间开发，测试可能更新。
+但是他们之间应该是敏捷开发，敏捷发布的中间可能只差几个小时或者一两天，这样是一个比较合适的发布过程，所有应用也都应该这样，能够把每个微服务放成一个仓库里面，同时通过一根链对外进行发布，这个链的不同版本状态会发布在不同的环境里面，这就是这里 one code base， one application multiple deployment 要聊的内容。
+好，第一原则，聊完大家感受一下，是不是你的应用大部分其实符合这个原则？嗯，那就很不错，如果不符合，多数就是因为微服务切分不合适。好，我们来看一看，第二个原则实现起来就稍微难一点，它叫做什么？编译、发布和运行要分离，这个其实用一个英文名词来说，就是design，build， release and run separation，从开发开始一直到什么，甚至从我们的设计开始，一直到开发到编译到发布过程，完全切分开，最关键的切分点在哪里呢？在两个箭头的汇聚点，也就是 build 跟 config 那个点，当一个应用代码 build 完了以后会打成一个工件。这个工件打出来的过程我们叫它CI，叫持续集成。一旦打出这个工件就不能再改动了，这个工件可以发布到开发，可以发布到测试，也可以发布到生产。同一份代码，每一个版本只有一个工件，这就是整个编译和运行分离的核心。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3744f921-fe4d-4392-8b4e-74ea8090138c/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4AYYNRF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231057Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGH7Qf6ixiQ7dkJ2fn5LHm3J7sqZODa4skHcqN%2BfgY50AiEA7SYph69QpTqRvtmJlwF9kh%2BlWtQ5AAhGyeb2s%2FirxWUqiAQIyP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKeRoyED%2FHt%2FxtcMGSrcA3vIJKzkCgn1KOkh7uF7SoHGNy8wsKrAR90UwVOPagZd6TzA7%2BA%2B04Sf6YmaM9HsBWAnERoNyKwrsWVHmYcqVmdNV9SwBlo0FHKPCOIdOnJbctv5i6RXj9M7dYroAzN7%2BqrjWE0i8iWK2JsH%2BuK1Hv7sU50rQa2X7u0ZnidIH1QX9GApri1CNHcbuwfp8tMbAFXZuXKLnkJzd%2FWa24DrcxSQMhDpS901OLLxPSZMofngA1n%2FiWbW4UsX7zohV3ELzpVIm7IAt0b7BYho3qNYW0TEJtKbdQawFd%2F9EQXf1XtlGs4Q2P6bijas3Zl%2BWRiSnzhr0FKitWeTvZ%2FUF%2F7wack5XbAb%2BTkg1wvb3nmOqAP6QFu%2B1s7qZUXPvTif9rgi%2BRCCaBB524j2g6mtFz%2FYc5glnd3P%2BjXQuRk9g9df1xLRS4aEMqpTa9Bhs0dTvTK4bRa%2BsiScGSu0hJzkq7Gi45DalxU1TNHty6IoQuL3Ym1xHLE8AVZe7L00iq6WTeBHcDKY0bL%2BHA9paR2AiJJRFGg0lffgy6%2FKcm2TfzWMRDwyfYCGSHinLTCRo%2BsOzSOaimatiJyWLWkq%2B1blq7fSB4gJIEXQyZXRHekodQDoi14RbKcj%2F7B7KAN0CgtoMMzk%2F9IGOqUB9ErSv2phEQ8dmBmUc20rLSnA8CAFn3i3ydsZOKhX64I5aMe9%2BSI6hiQCr28e0vXQbGnD%2Blh%2FCOVNaDCEcVwtpQlWuCCMWE%2FijzwPOYU41jgq8JmCiFUJLrJyHWUkj77GFnGhGJ12rKKpHfJft5Dezx%2BAc2hKfHPjqHkSlfqyiixfB2Fcg5DvvysfyYo0c%2FYn7kVKB9WGVrVB2LtOenkRV%2FUixZQ8&X-Amz-Signature=3251ecba9f34c20acff5007a3316c07059c0a67146a32a781c1b346370a733aa&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+之所以有一个工件有什么样的好处呢？也就是任何我们的代码改动必然产生工件的改动，而这个工具不会因为环境而有什么额外的处理，比如说我们有些应用跑在什么？在开发环境我们用的 yaml 是 application DEV 点yaml，但我们在生产环境就跑的是 application prod 点Yarn，这个时候这个工件里面应该包含所有需要的配置，它既能支持dev，也要能支持staging，也要能支持production，但是当它运行的时候到底用哪一个 Yarn 文件呢？这是由环境变量决定的，这样的工件就是在任何环境都是可以运行的。
+而我们测试其实就在测这个工件，当这个工件完成了开发测试，完成了转生产测试，我们有信心同样这个工件就能在生产上运行。如果你每次代码是发给开发环境，发给测试环境，发给生产环境是不同的工件，当你测完以后，你能有信心说我生产上跑的工件就能够正常运行吗？这里说的工件，如果我们是Java，大概率就是架包了，如果是传统的像 Jboss 那种框架，可能就是一个 war 包，或者是一个 ear 包等等，那这种部署空间一定要什么？编译完成以后永不改动，唯一能改的就是下面那个config，这个 config 可以用环境变量传参给我们的应用，也可以用一些类似于什么 spring cloud config 等等一些集中化的那种汇聚型的我们的配置管理中心，它把所有的环境变量去跟应用沟通。实时地推送到应用上，总体来看就是所有环境变量跟环境相关的内容我们抛弃掉，我们把跟环境无关的内容统一打包、统一发布。只完成一次，完成以后永不改变这个工件里面的任何内容，那这就是一次发布的完整过程。
+聊完了这个第二个原则，大家考虑一下你的应用开发做到这样特点了吗？你所有的运行环境当中跑的工件是不是同一份呢？同一份代码就只跑同一份工件？好，聊完了我们的第二个原则，我们来看看 CICD 的第三个原则叫什么？
+
+
+
+环境一致性，英文名称其实就叫做 environment parity，我们看一下环境有什么样的一致性和不一致，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c11bb67b-9f1f-4523-b44f-a26b5bf75fbf/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466W4AYYNRF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231057Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGH7Qf6ixiQ7dkJ2fn5LHm3J7sqZODa4skHcqN%2BfgY50AiEA7SYph69QpTqRvtmJlwF9kh%2BlWtQ5AAhGyeb2s%2FirxWUqiAQIyP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKeRoyED%2FHt%2FxtcMGSrcA3vIJKzkCgn1KOkh7uF7SoHGNy8wsKrAR90UwVOPagZd6TzA7%2BA%2B04Sf6YmaM9HsBWAnERoNyKwrsWVHmYcqVmdNV9SwBlo0FHKPCOIdOnJbctv5i6RXj9M7dYroAzN7%2BqrjWE0i8iWK2JsH%2BuK1Hv7sU50rQa2X7u0ZnidIH1QX9GApri1CNHcbuwfp8tMbAFXZuXKLnkJzd%2FWa24DrcxSQMhDpS901OLLxPSZMofngA1n%2FiWbW4UsX7zohV3ELzpVIm7IAt0b7BYho3qNYW0TEJtKbdQawFd%2F9EQXf1XtlGs4Q2P6bijas3Zl%2BWRiSnzhr0FKitWeTvZ%2FUF%2F7wack5XbAb%2BTkg1wvb3nmOqAP6QFu%2B1s7qZUXPvTif9rgi%2BRCCaBB524j2g6mtFz%2FYc5glnd3P%2BjXQuRk9g9df1xLRS4aEMqpTa9Bhs0dTvTK4bRa%2BsiScGSu0hJzkq7Gi45DalxU1TNHty6IoQuL3Ym1xHLE8AVZe7L00iq6WTeBHcDKY0bL%2BHA9paR2AiJJRFGg0lffgy6%2FKcm2TfzWMRDwyfYCGSHinLTCRo%2BsOzSOaimatiJyWLWkq%2B1blq7fSB4gJIEXQyZXRHekodQDoi14RbKcj%2F7B7KAN0CgtoMMzk%2F9IGOqUB9ErSv2phEQ8dmBmUc20rLSnA8CAFn3i3ydsZOKhX64I5aMe9%2BSI6hiQCr28e0vXQbGnD%2Blh%2FCOVNaDCEcVwtpQlWuCCMWE%2FijzwPOYU41jgq8JmCiFUJLrJyHWUkj77GFnGhGJ12rKKpHfJft5Dezx%2BAc2hKfHPjqHkSlfqyiixfB2Fcg5DvvysfyYo0c%2FYn7kVKB9WGVrVB2LtOenkRV%2FUixZQ8&X-Amz-Signature=29f2efbbe72de0f60bb0232d362b52e844ad2d51087d07d5fb8ee6ee4f568f76&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+通常我们在开发测试是这样跑的，有专门的开发部门的研发人员，对吧？也就是我们的 Java 架构师，或者是我们的 Java 开发，跑个一周左右的时间反复测试一些功能、一些bug，测试完了以后我们会发现我们的整个应用可以很好地在应用节点上跑起来，它后台连的可能是 MySQL 数据库。
+
+
+那下一步我们是什么？会找一个准生产环境，还是由我们的开发人员？这个时候可能只给你一天的时间，你要在准生产环境完成联调，这个时候各个应用的数据库也是MySQL，但是到了生产就不一样了，生产有可能把我们的代码抛给了一个运维团队，或者是一个生产中心的负责人团队，那这个团队可能很快就把应用发布出去了，也许是一小时，但是他发布的环境有可能后台是一个 Oracle 数据库，那因为 Oracle 数据库太贵， license 实在是太庞大了，这个价格太大了。同时我们准生产、开发、测试环境，环境又太多，为每一个环境配一套 Oracle 实例不现实，所以就出现了开发测试跟准生产是MySQL，生产是 Oracle 这样的场景。
+
+
+那这种情况下我们会说什么？其中有好几个问题，从人员角度来看，我们开发准生产测试跟生产如果不是同一个人来进行，就存在着人员的差异。那同时我们时间上来看，如果我们的应用版本在开发这里跑了一周，准生产跑了一天，最终到生产的时候，其实我们前面的单元测试什么啊？已经过了 7 天或者 8 天才到生产，中间这个时间差度太大了，导致很多的环境可能发生了一些变化，你原来跑过的单元测试可能在生产不能够正常运行了，这是时间导致的问题。
+
+
+除此以外，工具包含这里说的数据库，那还有的这个企业里面可能配置系统不一样，也可能是操作系统的这些环境参数变量不一样。生产是有调优的，甚至于生产上的端口跟开发测试的端口不一样，生产的防火墙策略跟开发测试的防火墙策略不一样，导致经常有这样抱怨，哇，我在我的笔记本跑得好好的，怎么在开发测试老是失败啊？或者是诶？我昨天投产一个应用，在开发测试跑得好好的，但是一投产就导致什么系统崩溃，或者在生产触发了一些生产的这种告警。
+
+
+那原因是什么？原因？就是因为开发测试跟生产之间的差异，不管你是环境的工具的差异，还是你的两边运行的时间拉了太长的时间差异。以及开发测试是你在负责那生产，是运维人员负责他的这个手势不对，他这个姿势不对导致什么人员差异，这些差异都是问题的本身，所以我们希望是什么？不管开发转生产，所有的技术栈完全一致， CICD 一致，运行时环境一致，后台的数据库中间件全都一致。那时间上希望是这一分钟，你是开发测试，下一分钟你就转生产，再下一分钟你就投产，中间只差几分钟人员是一个人，不管开发还是测试，投产还是运维，一贯到底，这就是 CICD 最关键的三个原则，一个是一份代码多次发布，一个是整个环境当中我们希望只做一次打包，根据环境变量在不同的环境进行运行。
+
+
+最后一个就是每一个环境希望做到几乎一致，能做到这三点，其实就是什么你的应用本身以及你应用发布的环境就已经很像 cloud native，很像那个自助冰激凌了。下一节我们再从另外一个维度来聊一聊什么我们的 cloud native 的另外的几大核心原则，那这个维度就是弹性的维度。弹性其实我们英文也有两个名称，一个叫快速弹性，叫resilience，就是出错以后快速地去修复。那还有一个英文名称叫什么？叫扩展性弹性scalability，我们会感受一下什么是resilience，什么是scalability？到底什么才是云原生的弹性，大家敬请期待。
+

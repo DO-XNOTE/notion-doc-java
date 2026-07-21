@@ -1,0 +1,52 @@
+---
+title: 2-10 文档的基本操作 - 查询
+---
+
+# 2-10 文档的基本操作 - 查询
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/85df6b8b-644f-4730-9a1e-6056b53b9e89/SCR-20240806-chjb.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QKOGHMCJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225133Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFECDnVehSrprMhBb%2BSpNV8ecq45jFPnKOIEaKDqo6ehAiEAs8k6V64YMGLqdjCt6Wla3jZb%2FlOXvfvTb9qfPg4phiEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIia8fvj6beGtk9WiSrcAxp57EXdXwl5zGE3xzJtOQ3MHX2DLI4B2u0tkuGrgedmHzHiSfDg6R64nFJ6fYmZeHGnEYNaVqzrdhXt1J7SlzyzJr2Z8qvNsllPWExDRafpMNkXaE%2FNqPSykKmCPhUab1j8HDSrHG44NayVDecpvtX6rdMKL0K9AwfzYkIuw5swCXFJHT%2Fp4sUgXZo0xG46KlOLTUm8nV7Z5p8BkSv%2FNaAx8kkzsvgu4ehbZl8GLg0BbddZ64SEW2DTw9vH3GTe2bNdQiglnzSHa%2FTyXVWrkHe5IbYdMrOOoOtbv1t4EINhvlwc4jV926pX%2FeapSZ2RLZu%2F8gZIqImZ9TDRZTaxA6Q6IbF1753W9eSINd8IXWQtiIsnRaqznA%2BRCy3cScbpxtFRBFIF7Dclb490qZVg0WBVzG2en3gPWcSCnRkmNotf%2FsjqDEp1bxS882ZhvYS%2BgJo0XU%2FnrVmT2PM%2Bh6LuMpJcZyDB6j3IMAYxJhF01WMce%2Ft58Ogo74Pj7oDP3a92bDN4SSSioPgMxjidPJ1tUCqPpmbO8OB3Lm5ceiqfYr1Ab3IzZlswGS5S1JO%2BFO9DT0WOe8Kf7igiJ5zbp1crG0KHWc9bJx%2FWNGzofMnK51YJ04s9MSmwwjvynl6aMNa6%2F9IGOqUBL77R9tMnB0URqPlkuM1GH4yAx2EnhZMzIruTeBx2hfdMynqNt3M08weym4uwe7xz0hjuaju%2BVH0WYWvNUjIRkZbjFJFK51aqClhqpDs%2Fwxg7kgaSUsIv4L16qTzH6FKanI47LGay%2FK120qFuntXJSIIjSWS2kPCf1IMHEXGYns0zTpHZNsP%2F3834kMz%2BPixAeLOC5mW0BQugA3CX9EB%2FItWH%2Fw3G&X-Amz-Signature=a56e2729729d052223178ba2cbb20a84fe6680567487242b8ed275ecaa870159&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8b17bbf1-b389-4ae1-b38f-3570e6b14d24/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QKOGHMCJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225133Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFECDnVehSrprMhBb%2BSpNV8ecq45jFPnKOIEaKDqo6ehAiEAs8k6V64YMGLqdjCt6Wla3jZb%2FlOXvfvTb9qfPg4phiEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIia8fvj6beGtk9WiSrcAxp57EXdXwl5zGE3xzJtOQ3MHX2DLI4B2u0tkuGrgedmHzHiSfDg6R64nFJ6fYmZeHGnEYNaVqzrdhXt1J7SlzyzJr2Z8qvNsllPWExDRafpMNkXaE%2FNqPSykKmCPhUab1j8HDSrHG44NayVDecpvtX6rdMKL0K9AwfzYkIuw5swCXFJHT%2Fp4sUgXZo0xG46KlOLTUm8nV7Z5p8BkSv%2FNaAx8kkzsvgu4ehbZl8GLg0BbddZ64SEW2DTw9vH3GTe2bNdQiglnzSHa%2FTyXVWrkHe5IbYdMrOOoOtbv1t4EINhvlwc4jV926pX%2FeapSZ2RLZu%2F8gZIqImZ9TDRZTaxA6Q6IbF1753W9eSINd8IXWQtiIsnRaqznA%2BRCy3cScbpxtFRBFIF7Dclb490qZVg0WBVzG2en3gPWcSCnRkmNotf%2FsjqDEp1bxS882ZhvYS%2BgJo0XU%2FnrVmT2PM%2Bh6LuMpJcZyDB6j3IMAYxJhF01WMce%2Ft58Ogo74Pj7oDP3a92bDN4SSSioPgMxjidPJ1tUCqPpmbO8OB3Lm5ceiqfYr1Ab3IzZlswGS5S1JO%2BFO9DT0WOe8Kf7igiJ5zbp1crG0KHWc9bJx%2FWNGzofMnK51YJ04s9MSmwwjvynl6aMNa6%2F9IGOqUBL77R9tMnB0URqPlkuM1GH4yAx2EnhZMzIruTeBx2hfdMynqNt3M08weym4uwe7xz0hjuaju%2BVH0WYWvNUjIRkZbjFJFK51aqClhqpDs%2Fwxg7kgaSUsIv4L16qTzH6FKanI47LGay%2FK120qFuntXJSIIjSWS2kPCf1IMHEXGYns0zTpHZNsP%2F3834kMz%2BPixAeLOC5mW0BQugA3CX9EB%2FItWH%2Fw3G&X-Amz-Signature=64d4fc97c6d341d50746fcdbcefbccc9664cdb79cfa05e9fb6b29a5b95dbd5a6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+之前我们是演示了咱们文档数据的一个新增修改以及是删除。那么接下来我们就一起来看一下如何来做一个相应的查询。其实涉及到查询的话，那么它其实是一种多样化的，是非常丰富的查询的方式会有很多。那么在我们这里的话我们先讲最简单的一种方式，也就是根据他的一个 ID 去进行一个相应的查询。那么在这里我们要根据他的 ID 去查的话，也就是这个下划线 ID 那么这个就是他的文档的唯一组件 ID 好然后我们打开 post man 那么在这里我们可以去写一下要去查询的话，那么肯定使用 get 这个方法，然后这个 body 这是不需要的。
+
+
+随后那么我们要发起查询的话，那么首先你要去查哪一个索引，你要把索引的名称给写上。最后这个文档。那么我们固定是写下划线 Doc 随后在它的后方你要去加上这个文档的一个标识符，也就是它的一个 ID 点击线的。好，然后我们往下面看，这个时候它的数据就会被我们给搜索出来。 OK 吧，主要就是 source 内容， JS 数据就是对应到我们在插件里面在 case 中所看到的某一条记录的后面这一部分的内容，也就是这一块。 OK 吧，那么这个其实就是我们的一个文档的数据。那么当然我们除了根据某一个特定的 ID 去查询的话，那么你也是可以去查询所有比方说我现在要把这个当前买 Doc 下这些数据都查出来的话，那么我们只需要在这个后方加上一个下划线，下划线 search 回车。
+
+
+Ok. 然后你就可以发现在这里面就可以查询出来很多的内容。那么在这里总共是有 7 条数据，7条来看一下对应在这边1234，还有是三个这个自动生成的组件。那么总共是包含了 7 条数据。Ok 。好，然后在这里有一个took ，这个代表是耗费的一个时间，然后 his 就是代表我们的命中的记录数。这里有一个 max go 这个就是它的一个分数就是说和我们的一个搜索匹配度分数相关性。那么在这里面它其实是一个 list 总共是有七项内容。那么这里面 7 个内容，这里面的一部分内容其实就是和我们之前所说的那一部分内容其实是一样的。在这里也会有一个相应的 source 那么这个其实就是我们所查询出来的一部分的内容。OK ，那么这两种方式就是最简单的一种查询。那么然后我们可以来看一下，我们在这个 head 插件里面，其实你是可以去点击某一项内容的，点了以后在这里面会有相应的展示有 index type ID for 那么这些其实在我们这边展示的一个前半部分，左边这一片其实是一样的，也是类似的，这个我们可以称之为是一种元数据。
+
+
+OK ，然后 source 就是我们的文档数据，那么源数据的话，像这个 indexindex 其实我们都说了，那么 index 其实就是我们这个文档数据所归属的那个索引的名称。那么我们可以把它理解为是数据库中的某表，某一张表里面有很多很多的一些记录的值，那么这些记录就是我们的一些文档数据。然后下面有一个 type 固定，就是写成下划线 Doc 因为这个在我们早期的版本里面， tab 是有一个逻辑分类的，有一个类型这样的一个意思，现在的话其实是在七点叉以后是被移除了。
+
+
+另外下划线 ID 这个我们前面也是说了，这个 ID 其实就是我们文档数据的一个唯一的标识，那么就是类似于我们在数据库中某一张表的一个组件。那么这个 ID 的话它是可以自动的生成，也可以我们手动的去指定某一个 ID 去做一个生成，那么也是可以的。
+
+
+这个我们之前在新增数据的时候，我们也是演示过了。随后下一个是佛性，一旦我们的数据被修改被删除，那么这个佛系会累加1，随后还有是一个score 。那么这就是我们的一个相关度查询出来的结果，和我们用户的一个搜索这个行为它的一个相关度，它的匹配度是否很高。那么分数越高就代表这个记录的一个展示，就越有可能就是用户所想要的，也就是能够提高用户的一个体验性，分数越高体验性就越高。
+
+
+那么 source 的话其实就是我们的具体的一些文档数据，那么在这里它就是一个 JS 的格式所展示的。那么这些总共就是这些意思。那么其实这些就是我们所说的一个元数据，其实如果我们不去讲的话也没有什么大的问题。有一方面的话我们可以完全通过这个字面意思，就是我们累积的一个经验，我们就能够推测他们是什么意思。
+
+
+那么另外一方面，本身我们的一个互联网现在也是很发达，你完全可以通过百度或者谷歌去搜索到，毕竟我们的一个客流时间也是有限的，很多时候还是要靠我们的自己。Ok 。所以说在我们的如今的互联网时代，我们的信息是大爆发的一个情况下，我们学会搜索也是一个非常重要的一个技能的体现。Ok 。好，我们随后再来看一看。那么目前我们在进行搜索的时候，我们来搜这个E 。那么搜索这个 E 的时候，其实这里面它是会把我们所有的一些属性全部都展示出来的。那么这个就相当于是 select 星号 from 某一张表对吧，把里面每一列的内容全部都展示出来。那么如果说我们当前这样的一个文档，如果说有很多很多数据，那么这样子岂不是我们全部都要展示？对吧？所以我们是可以定制化这个响应的结果值的，如何去定制化呢？那么我们只要去定制化这个 source 就可以了。
+
+
+我们可以把这个拷贝一下贴到这个后方，我们可以这样子去写这上一个问号，下划线 source 等于你要写上一个 ID 比方说我们要把这个 ID 粘出来，我们可以点击 send 这个时候你会发现这个 source 里面就只有一个 ID 了。如果说你有多个属性的话，那么在后方加上一个逗号。要注意这是英文的逗号，然后再去加上一个比方说 name 点击查询。 OK 吧。那么这样子的话，我们 source 里面的一个响应的数据就是被我们所定制的。OK ，这个在我们的一个数据，如果说有很多很多的情况之下，完全可以使用这种方式去进行相应的一个定制的。同理如果说我们要搜索整个索引下所有的数据的话，那么也是可以通过这种方式去做的。在这里加上一个下划线 search 好搜索，那么可以看到也是有 7 条记录，只不过里面的 source 数据只有 ID 和 name 了。OK ，每一项都是这样子的。
+
+
+那么这个其实就是我们所涉及到最简单的一个查询的方式，一个是查询特定的指定的 ID 那么另外一个就是直接通过下划线设置去搜索所有这个搜索，所有的话其实还会涉及到一个分页，分页的话我们现在还没有涉及到，我们后续的话会跟大家去做一个讲解的。好。Ok 。然后我们在这里的话可以去思考一个问题，比方说现在我们要搜索一个文档，我们就搜索这个，1搜索这个文档是否存在。那么我们要去做一个搜索的话，假设我们现在就有一个需求，我们就要去搜当前判断这个文档存不存在。那么我们能不能使用这种方式去做其实是可以的，使用这种方式。那么我们肯定会查询出来一个内容，我们只需要判断我们得到的这一部分内容有没有就可以了。如果说有的话就代表我们这个文档是存在的，但是其实还会有另外一种方式更加的规范，在这里我们就使用 head 就可以了。
+
+
+那么使用 head 的话我们直接这个 URL 地址保持不变，还是买德克夏，我们直接查找这个 ID 为 1 点击 send 然后这个时候当我们发起一次请求之后，那么 body 里面其实是没有任何的数据是一片空白。但是在这里会有一个状态码，两百二百就代表我们当前这个请求是成功的。那么成功就代表我们这条数据是存在的。如果说我们去搜一个不存在的数据，随便写一个 ID 远极限的。如果说在这里它展示 404 模特放的，那么就代表我们这一条数据在我们的索引里面是不存在的。OK ，所以我们完全可以通过这种方式来判断我们某一个文档，它在或者说是不在。那么为什么要使用这种方式？第一即规范。
+第二个我们来观察一下，如果说我们仅仅只使用这种方式，因为它只会返回我们一个 code 返回一个状态码。那那么它的一个大小在这里是 93 个 B OK 吧。那么如果说我们按照之前如果说我们使用这个 get 来搜一下，我们要来判断某一个数据的话，在这里如果说这个数据有的话，那么它所展回出来的一个大小是303，那么很明显是我们刚刚的两三倍。对吧，比刚刚的要大对吧，可以看一下这个是害的，一个是80，一个是 300 多，差了差不多是 4 倍。
+
+
+OK ，如果说我们数据量很多的话，那么它的一个大小会更大。就说我们这条数据本身现在包含的字段就比较少。如果说它的字段比较多，内容又比较大的话，那么查询出来的 size 肯定会越高。但是如果说你仅仅只是一个 code 是一个状态码的话，那么相应的它的传输的速度肯定要比你原来的要更快。所以要去判断某一个文档在不在的话，我们使用这种 head 的方式就比较的规范化了OK 。
+
+
+那么以上这些其实就是关于我们文档数据的一些基本的论文操作，增删赶查其实都涉及到了都是比较基础的内容，我们也都过了一遍都讲了。那么关于 Resso 的一些接口的调用其实都是由 ES 提供的，那么我们是没有必要去死记硬背的。那么如果说你忘记的话，去搜索一下去查一下就行了。
+那么其实包括我也是，如果说你不是专业化的，专业的一些 ES 工程师的话，那么有些命令什么的，你多多少少肯定是会忘记的。所以我们平时在学习的过程中做好笔记，然后忘记了，那么你就可以去查一下或者遇到一些新的问题，新的内容的话，谷歌一下，百度一下，那么也就都有了OK 。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e7f47380-011f-4655-9bee-0d6ed42781b3/2020-09-17_174614.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QKOGHMCJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225133Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFECDnVehSrprMhBb%2BSpNV8ecq45jFPnKOIEaKDqo6ehAiEAs8k6V64YMGLqdjCt6Wla3jZb%2FlOXvfvTb9qfPg4phiEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIia8fvj6beGtk9WiSrcAxp57EXdXwl5zGE3xzJtOQ3MHX2DLI4B2u0tkuGrgedmHzHiSfDg6R64nFJ6fYmZeHGnEYNaVqzrdhXt1J7SlzyzJr2Z8qvNsllPWExDRafpMNkXaE%2FNqPSykKmCPhUab1j8HDSrHG44NayVDecpvtX6rdMKL0K9AwfzYkIuw5swCXFJHT%2Fp4sUgXZo0xG46KlOLTUm8nV7Z5p8BkSv%2FNaAx8kkzsvgu4ehbZl8GLg0BbddZ64SEW2DTw9vH3GTe2bNdQiglnzSHa%2FTyXVWrkHe5IbYdMrOOoOtbv1t4EINhvlwc4jV926pX%2FeapSZ2RLZu%2F8gZIqImZ9TDRZTaxA6Q6IbF1753W9eSINd8IXWQtiIsnRaqznA%2BRCy3cScbpxtFRBFIF7Dclb490qZVg0WBVzG2en3gPWcSCnRkmNotf%2FsjqDEp1bxS882ZhvYS%2BgJo0XU%2FnrVmT2PM%2Bh6LuMpJcZyDB6j3IMAYxJhF01WMce%2Ft58Ogo74Pj7oDP3a92bDN4SSSioPgMxjidPJ1tUCqPpmbO8OB3Lm5ceiqfYr1Ab3IzZlswGS5S1JO%2BFO9DT0WOe8Kf7igiJ5zbp1crG0KHWc9bJx%2FWNGzofMnK51YJ04s9MSmwwjvynl6aMNa6%2F9IGOqUBL77R9tMnB0URqPlkuM1GH4yAx2EnhZMzIruTeBx2hfdMynqNt3M08weym4uwe7xz0hjuaju%2BVH0WYWvNUjIRkZbjFJFK51aqClhqpDs%2Fwxg7kgaSUsIv4L16qTzH6FKanI47LGay%2FK120qFuntXJSIIjSWS2kPCf1IMHEXGYns0zTpHZNsP%2F3834kMz%2BPixAeLOC5mW0BQugA3CX9EB%2FItWH%2Fw3G&X-Amz-Signature=d1e2ab95afec0a14b51e41176d579fd640514e31a25c58d508192d253618307a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

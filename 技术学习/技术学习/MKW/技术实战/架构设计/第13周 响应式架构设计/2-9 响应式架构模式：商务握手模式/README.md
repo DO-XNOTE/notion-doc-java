@@ -1,0 +1,24 @@
+---
+title: 2-9 响应式架构模式：商务握手模式
+---
+
+# 2-9 响应式架构模式：商务握手模式
+
+商务握手模式，大家看见这个词是不是第一个？商务这个东西很土，商务讲究的是一个什么？你老板派你出去跟人家谈一件事情，他必须你要给他一个答案，没有这个答案你就不是一个成功的商务，所谓的商务握手，就是你伸出手去跟人家握一下，人家没有回握你，这不算握手。
+
+
+你如果简单理解就可以这么理解，但实际上他要提出的问题是什么？有它的问题于在于如何尽可能地让跨组件的消息传递更加可靠。这个地方两个点大家注意，第一是跨组件的消息传递，第二如何让它变更可靠是什么含义？疑问，进行了跨组件的传递， a 发送消息给b。大家都知道这个响应式架构当中，我们都是以消息为驱动，所以消息很重要。那如何保证消息传递一定成功？这就是一个可靠性的问题。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9f2e59cb-2dfd-470f-83c8-60d016edcdf4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XQYI5ODX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230948Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDQWvrJoNypZoQgtbKuQMjNQcbexpnWbBJ8HPyi1SAk%2BQIhAIlB2qs9MAoytwXe4gYydpr5Ays9rKrSp6xgfcC7jC8fKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzsTGITvhdYiW4eaB8q3ANi2z1Mxrl4kHE7yv1UdihB3WPjyCHgqAuq5hRTcdlWXeLFZT5yt8mUuUVJwtPTFLhevuf4UAAGxXLXVkklp89fAEYcAhEXfttar%2BSPALx7rsKJIG7SVE0ToAMSVO4y1hF240G5bDIYH0%2FziECbPKdrcHXcvSjAa9YqKMN%2F53bYmlJC00ZktTk%2FZYFww24Pq3GAyw36Qk%2Fe9HFKiFvO483fPoCwZqf%2BY7XHPWdqqt0ex45cFP0ul3PFKH7Y8aamBVy2lukPmzqiXzfhpOjAz8KTHDsSMovM0tooPF3iy29xFIOZLTqtI7bPKT7e7j0yNtkFW3%2BB%2BGrqUlL62M3AWQwg7g5nkQGfAP98k%2FisFpu2MMOKntcZGX8XOrZybZc02iAmZvk%2FSj3aGLZ4eqBT7iwgW%2FWg7QL4Jw90bMsed9SHbuQSS87M8tFO4LD9JlMlgjLDkx8tq4PkVmWr49LWB%2BYPTkGr4ywRl4j%2BAqTRdTrvGibzZh4McXzgou9igOnfvsR9Ju1wADS%2FP%2FcCi%2Fz%2BJ766gqR7ja%2FzNAK%2FTmowdTyoqqYqrwyTOppfPhNvgs7PkN24g3q%2FHZDpPKqlQsJ7V%2Bo122ulaWGPmUxCsz8%2BCnuTu06OcNaGL5gnLmPyyjDwuv%2FSBjqkAZnK4kNtrDtpiEbuXGG70Ng6t1jJA%2FbC8%2F%2FSEO51X18tPCLtIObvaOQGmGGI52SynG4qGqNzPW0MEYiylskWcTQMEoFPBvhtpOS8W9QjjsDFDIqp%2FDQb6kFilWnkSHVDROsMYyE1lgeV2LTKPEEeEbrINEpZxT7Ct8rFZs%2FTRlQWGOD%2BlQJiRGR3Irdt0MzBmg1D7YFOGnuuITbLNmRBsdwbQsup&X-Amz-Signature=b9a04ad6bae50d5251724e70a808ebc6028492a9fdda4f6d0fa89ac931470a46&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+如果说你发送一个消息你都不知道发生成功没有，那这个肯定不行。第二你只要发了，你就必须得确保它是成功的，这才是你所希望的样子，这就是所谓的可靠性。商务握手就是我前面举的例子，老板派你出去进行账户谈判，你必须要有响应。如果你作为商务代表去拜访你的客户，当你来进行会谈的时候，你发出了问题，那肯定希望得到一个答案，这种就是商务握手的含义，那怎么来解决这个问题呢？其实简单来说这个模式它也被称为可靠交付模式，原因就是我前面已经解释过了，我们都希望在跨组件的消息传递当中得到一个更可靠，让整体系统都放心地进行消息传递的这样一种模式。它的解决方案无非几种，第一种就是在消息中加上标识，这是一种解决方案。加上标识之后就是你发出一个消息，然后这个消息它要得到一个a、C、 k 就要得到确认，例如 a 发送给 b 用 ID 为一的消息，它就会在系统中记录一的消息发送给b，那 b 在收到消息之后给它一个确认，给它一个 a C， k 告诉你已经收到了。
+
+
+这是一个简单的思路，并不是真的现实系统已经这么玩的，我只是大概说一下这个原理，现在他就知道一这个消息发送完毕了，成功的，那如果一发出去之后一直没得到ACK，那这个肯定表示相信没有传递成功，它就会重试，有可能是重试到一直成功，或者重试到一定次数之后把这个消息持久化并且上报一个异常，这就是说可靠性处理。
+
+
+那另外一种就是记录一下它的这个顺序，比如像 Kafka 这种，大家知道吗？它是一通过一个 offset 来记录每一个消息的位置，你只要定位到这个具体地点的某一个位置，并且定位到这条消息，其他都是一样的。发送消息，然后收到确认，收不到就一直发到成功为止，或者将这个错误信息进行上报，然后整个系统做出对应的响应。商务握手模式就是给消息打标志，然后确保这个标志的消息能够成功地发送，就是要收到一个确认成功的消息，这样子才保证整体交付的一个可靠性。它的适用范围相对还是比较广的，特别是在这种以消息驱动为核心的系统里面，只要你要求它必须得传达和处理请求的地方。只要是你要发出一个消息，并且希望消息被得到处理，而且你对这种可靠性要求很高，那你最好就是采用了商务摸手的模式。当你发出去的消息里面包含一定的标识性信息，然后接收方给你一个相应的确认，你就可以保证这种可靠性。
+
+
+当然这个是相对比较抽象层次的一个描述，其实本质在实践上有很多技术细节需要去回答，比如说多久算是超时？我多久才从事多少次，它都是具体的实现，技术细节如果命令一定是不能丢失的，在你尝试很多次请求都没有成功的情况下，你可以选择将消息持久化，如此一来，在系统后续恢复的时候，故障消失之后，该消息还是可以再次被重发。但是前提都是这个消息是有标识并且有确认才可以完成，否则你怎么知道哪条消息需要重新发送、重新处理？这个模式最重要的三点，第一消息要有标识，第二接收方要有确认。第三，消息的发送方有重发功能，这三大要素缺一不可，如果大家要在实际项目中来实践这种商务或者模式，还是有很多技术细节很在探讨，但是这三大基础要素是你整个运作的基础。
+

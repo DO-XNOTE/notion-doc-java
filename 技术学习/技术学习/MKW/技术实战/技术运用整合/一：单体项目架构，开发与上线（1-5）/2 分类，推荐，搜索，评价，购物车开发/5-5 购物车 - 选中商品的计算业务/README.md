@@ -1,0 +1,28 @@
+---
+title: 5-5 购物车 - 选中商品的计算业务
+---
+
+# 5-5 购物车 - 选中商品的计算业务
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2329363e-fc23-4433-8266-6e18088eca3d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46654RYQFBG%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224654Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEM2cwMwZXLKmzd47w9DVipkURZWXMDyi4TmVz1UrvwpAiAlEWX7qIgh76YmSya4jlRe61QGRzuSpC%2FIFHViXHwFICqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMOVuozEP9jB4nPCWjKtwD1UiLm62MUVgJ2S7H2gurhYeR%2FHN2JHoeeZ%2FCEsfzk%2BBx2ZKCg7E3oKPRX5tRnRu6m7c6AE0td1%2BnQiRzrmfIhVFTQwYWUKlR0zdU%2BRWnKNU%2FzLmQCNjx%2FXnXmI9Ha3ufI8ClxlGfkfsKWs7ahFefAuN7BJ3ibx5ndWsd2IbMK9L1a%2BN4mmzlM%2FDkGdQhawGOfaLjEyYv3eYZM9CjHqfGYrOUQ4Nwbcx1Nl2KZ2FeOK%2BbCAGoZhpxVvle87Em3VsuJL%2B86rGG%2F%2BzA1KyVhKcmpcBbrQsz8Tsib7LTKnNgp%2Fu0I3NhaYzegL8P%2BX4BvRv8NxK24l9B1wmeWRO5Q451AfnkMsesk7GTOOdfRuG5Fcmd5w2Hc6OzNjI2Q8f9x4rGRRCO35TXJtc3V0M7xvN%2Fjox5D%2Fh25z3pAod634K4IIS%2F788lpDHBjdIrFRUssmq9LxgTJ%2Fnz3dVb8WiDleX2CGADIUeufOD9PznkDZ6nzeqiNDJ7g32rB0LbTAdDAcaBCpdsX5j7GNBHP5ldNrGOXSMXXJ4DIzy%2BvWYiu4iYlWr2awT%2FYzqTCBcVgRsWWitF%2BZHGAA0KVWJCB38hMjNQYqmlJsl8aweDicotz9JpQwLIy6S8pdAAUoDFzZswvrv%2F0gY6pgEUec5qDiOa9GcnNbUPuI4nh6X4bRpsk8xrvhB1vXnRCsvLaK9yjKfDo2LgNdFIIy%2Fw7jJR6H7a4%2BcB14E0sbGQw9zudxpWuWiushtvgDz4aAAtk6jGJd5qlaEKx0X2hq9iDWJA%2Btxe%2FDIJ7EJcGVAXjEXRPvQRQRtFFW4MRtAJZecuEwbIORrA86ecFCHIpHGq3Ailv5AMEkuep0RCQZ9LH6seZe1r&X-Amz-Signature=9928280365c0ce4cbfa60662a7442e2e28a1def42eabe1d255584e451b846c3d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前两节我们是把购物车的渲染做了一个讲解，接下来这一节来讲一下用户在购物车里面的一些操作。比方购物车里面它会有一个结算按钮，在结算之前，它有一个必须要做的操作，就是要选择你想要去买单的商品。在商品的前方会有一个多选框，这个多选框用户是可以去进行选择的。我们可以来看一下。比方我选择第一项商品，选择了以后，在结算按钮的旁边会有一个已选择商品，是一件当前的这一项商品，它的价格总共多少钱，你要列出来。随后如果我选择第二项，它第二项的价格又会拼接过来。它的一个数量其实是由每一项的金额，应该是优惠过后的一个金额价格乘以它的数量，每一项商品进行的一个价格的累加，目前就是1230，这个数字是所要去支付的一个价格。当然用户在这个下方也可以去选择一个全选，点一下全选，所有的价格全部都会在里面去掉，全选所有的价格现在又都是 0 了。所以在这里面只要用户点击相应的一个 check box，就会触发一系列的相应的一个脚本的事件。所以我们可以来看一下相应的脚本事件是如何去进行处理的。
+
+
+打开我们的页面，在页面里面先来看一下我们的全选，在这里可以看到有一个watch，这个 watch 其实是一个深度watch，这是 view 里面相关的内容，它是用于去监视我们的一些数据的，在我们的当前页面里面其实会有一个 s p e c i、 d s 这个是什么东西？来搜一下，往上面搜可以看到，在这里它的意思是一个选中的那些商品的规格，也就是在我们的页面里面，每一项其实都是以规格作为单位的，选择了一项或者两项相应的在数组里面就会包含相应的内容，会放进去的。这一点是需要去注意的，我可以搜一下。
+
+
+在页面里面的上方，在这个部位可以看到它其实是一个Checkbox，它是伴随着我们的一个 Shopcut list，就是购物车去做一个渲染的，渲染的同时，其实每一项每一个商品前方就会有一个对应的 check box，只要你打了一个勾去进行了一个选择，相应的其实在我们的数组里面其实就会发生变化。变化监视函数里面相应的内容就会被触发，随后它就会调用一个。可以看到是recall，其实就是重新计算的意思，重新去计算我们商品的总数以及是价格。
+
+
+关于监视，它其实是 feel 框架里面的一项技术点，有兴趣的同学或者你本身也会feel，可以在课后或者是在群里面问答区域和老师交流这方面的内容，有兴趣可以去了解一下。在我们的视频里面就不会针对这一个前端的技术点做过多的讲解了。OK，在这里面其实前面的一部分主要是用于去计算它的一个 all check，就是它有一个全选的按钮，这个全选的按钮是否要选上，这个是相应的，脚本是相关的。随后还有一项重新计算我们在购物车里面选择的数量和选中的那些价格的总计。好，我们就来看一下这个方法。在这里它适用于重新计算购物车中选中的件数以及是总价格。首先第一个应该要看一下我们当前数组，这数组是不是为空，如果它为空，这前面一部分是为空，并且它可能会是一个空数组，它的 less 为0。我们的总数已经是总价格全部都为0。这两个参数其实都是对应在页面里面的。如果我们的数组不为空，我们就可以看到。
+
+
+首先把我们数组里面的一个长度 lens 赋给我们的总数。总数其实就是你选中的那些数量，几个件数直接赋个值。赋值完毕之后，随后下面的一部分我们就要去进行计算了，把总的价格去算一下，来看一下。
+
+
+首先把价格定义为零，我们要从购物车里面，其实也就是我们的 cookie 里面获得购物车，它是一个list，在这个 list 里面就可以去做一个循环了。循环它的目的其实主要就是把每一项的内容给拿出来，每一个 item 拿出来以后，把它的一个价格，可以看到它是一个 discount 价格，就是一个优惠价，乘以它的一个购买的件数。最后再做一个累加，累加完了之后，一开始是0，当程序进行到这一行的时候，其实它的价格会发生变动，其实也就是一个总价。计算完毕之后，只要通过 this 点 total amount 做一个赋值，页面里面的 total amount，它就会有一个相应的值了。其实就是去计算总的件数以及是总价格的。这个是反映到哪里？其实我们可以到页面里面看一下。在这个位置，在这里有一个合计，这里是一个总的价格，总价格是以分为单位，出 100 就是多少元。
+
+
+上方会有一个 all select counts，这就是已经选择的键数，只键的键数在这边会有一个展示。OK，其实就是通过脚本去实现的。好。这一块内容都是和前端相关的，有兴趣的同学可以去读一下前端的源码，也是有帮助的。而且其实本身对于架构师来讲，你在精通后端的同时，其实你也需要有一定的前端的拓展，这样子才是一个好的架构师。
+

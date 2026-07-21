@@ -1,0 +1,21 @@
+---
+title: 2-16 本章小结和作业
+---
+
+# 2-16 本章小结和作业
+
+
+**2-16 本章小结和作业**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/eb8e08ab-86cd-4fcf-abd6-b9f83a280c1a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46653J3ESJQ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225629Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCIx9g%2BP8qphn56g4XL0co%2F0T%2BKNRUuH7BHqWQfWXZF7gIhANBbWhEE188Gv5IWthCfd%2BO0H5Jb3T2Ehhw9VFhhQ6ZnKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgwGTrCQlYsBQdP03xkq3AMwgExDXRYqx2aBLIBjmQjYyX0%2FV1G8neSfrm9H5eUSBcA%2FUvJJDBJEt%2FYc6h8NWNGr2doplpj4WdTImRD%2BiScsVafZuKo3WWDYFAzOJ6koLzuK3wbP%2B74X23oQb59avAh93QTRyxoXNvXE%2FY0C8InBX0wDjJuFA8NAZaCru0fuMZ3oycnLP9TsnzRpd6Ku3q%2Fnh%2FdbsJ2gav97tYn2uKVJF2qRmISQJsctqoDRr1HNOcjIZvACM31DCT1aAHX1vNNFQhBGheeyLuY8hGqxzUISK%2BisZt2aFlFMxJIF141uZDxOEhNOw%2BFVK1C7z%2FFoUNohj7EQ0oheUS8GitIcfkTbbqqsTfciw9etf3TI962CmjmWITquBCzu73OaK2175qi06ruRvN8ZYt9E4h94TVSZfAN0krOuRmTlWrcAjwWbUNUI0S%2BWF5pW3NEl%2B%2F3mKXLhL%2FU8hoLjT07cmSx1RVDFTVvJwaezvYHUY7ywaC6i7ex6SXv53TN21ffHb0QKKVFobtEPwxbDBSm5GUDoGLFzD7oD6Sn%2F8rbWwR2afhfvtf%2BvGV7Kjzp6DVUT%2BJd%2BFhRPgGVEnSTdRgxaohs86NCoRU4X7NySNX4t3hkClNUuXIkgF1q168qdSynUWDDet%2F%2FSBjqkAe6JcNzzzXz%2BKsqquM0c%2Fgq6iBJyZOu2abhOffTM%2BkQ24hAxjtr%2BReqU6xi3ccd%2FEgvyYZTjk9GeMNmVPWPbWFPujzKEBANbnM%2Bgx9z1hlXXtRe04d8ARt5cqPLThjGh%2FdXdhBShzC7BLgmKHOTF%2BuJ5J2dI3LcdO6Cm8nbmSI85hmGt%2F7tZf3VkgQLhThVzBgqjESVTTZhUOoTVxc1oxiFPZLfm&X-Amz-Signature=f05d662d6a85879072e60201626a763c5987c6a82f650f1781edd5dd6a031821&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+**作业时刻**
+
+又要布置新一轮的作业了，上一章还拖欠作业的同学们，赶紧行动起来啦。
+
+将Feign接口应用到电商项目其他的模块当中
+
+从头到尾动手debug一遍Feign底层的调用轨迹
+
+

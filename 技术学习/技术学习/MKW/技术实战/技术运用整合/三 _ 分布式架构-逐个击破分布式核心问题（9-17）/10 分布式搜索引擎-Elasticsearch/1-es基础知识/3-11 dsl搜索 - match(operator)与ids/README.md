@@ -1,0 +1,58 @@
+---
+title: 3-11 dsl搜索 - match(operator)与ids
+---
+
+# 3-11 dsl搜索 - match(operator)与ids
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0aa24b99-c415-49a8-b33b-8ee5db10d6ea/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665X37XMCW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225139Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAMBrPbi0FrLlBYD5OhwaZ81U%2BGRnzLeRQ%2BCQdcBiYfLAiEAxhqqTr9qbuNnJxFgW9%2F8MfmbqwTpDTbBy7hRGm%2FDGRcqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGWGsL1s5o5yNcxC8yrcA%2FDnRCpChLW9TSPmX%2BypDLDyMEXDvQ%2BrW8bOSI5o4rxrjbiOfceXCGkTsd3vr%2F43qOHswX81pKUzctO20prba8Hb4mQZIx6bsW3tx54vDKZg4o13%2Bq5NEFYx4vQ9sGY2hTqFVxMJpagHrxpK%2B4FFX6ubIdxdmVm%2FcC5YwF7DUOI30XjPGGdIM2VlBRGiTOW5gfCUJUSwL0n4wHxu1QNiQ17bBg65yjSAf3l6EgAdYn%2FJ3Ks%2FMoYFArqdfb6XttQ4cAyM22QiQm8XIfesHJo%2BHi8VBkFvz4kKJyLRFnYUwBaAEKEiViStTH7S1KU9PsuTuVopaWX9M7zu%2B5KCcXCvY2QMQlmgrfL9jfMXg%2Bto17QxQ3auMZ%2FOIehsmUgRcZ%2BBJNqTas6X9%2F2pXGzWEs1aoDQjV%2FNGg9LIN084tFmjT0kZXuVFCA%2FTzvY%2BoNnmFp%2F%2BrVmC3C1LJtPALy0WgMTxuaMt2seLrP8i3UCqzZEKH4tnwlhK2NN1zUr8FQCH1JAjP5BYwbnH7SQkb4NWbXCPw3j8KaLWAcMpY%2F%2BR5DLx35WLApsaRka43gLTQV73yJw3UvAPo4vCDL9Q3trK%2BWiZU7KvbauKAZFs%2FdymGyQqRC02ZgVRliS1CuaojaG5MKG6%2F9IGOqUBjQVQ8TlDl99H%2FSwu7r06YF54DaRNLqh5fZa4uzStq150kWLB5nL%2BoVyxGIcvSUZGDLWyS9bCHAurobiTSe7iMQ1rPGuvQd8bjrd57GPa42Ql0cOcFB2%2FFWEYf85wVvXcdcCHYShuCaGaiR4KKeCo9YmPUNGoM0PQQqDOU5o4UH7i76eoblYWOfxkhO%2FxPTyZ0lYmBrxnxPR%2FSOfEwIi2heybivEv&X-Amz-Signature=20f5c392000b4b78c5581ab916771a6817be999614904fa20520d25b0fef7c3d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6f64a4ab-94d6-4bd0-be53-e91121fbdd2b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665X37XMCW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225139Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAMBrPbi0FrLlBYD5OhwaZ81U%2BGRnzLeRQ%2BCQdcBiYfLAiEAxhqqTr9qbuNnJxFgW9%2F8MfmbqwTpDTbBy7hRGm%2FDGRcqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGWGsL1s5o5yNcxC8yrcA%2FDnRCpChLW9TSPmX%2BypDLDyMEXDvQ%2BrW8bOSI5o4rxrjbiOfceXCGkTsd3vr%2F43qOHswX81pKUzctO20prba8Hb4mQZIx6bsW3tx54vDKZg4o13%2Bq5NEFYx4vQ9sGY2hTqFVxMJpagHrxpK%2B4FFX6ubIdxdmVm%2FcC5YwF7DUOI30XjPGGdIM2VlBRGiTOW5gfCUJUSwL0n4wHxu1QNiQ17bBg65yjSAf3l6EgAdYn%2FJ3Ks%2FMoYFArqdfb6XttQ4cAyM22QiQm8XIfesHJo%2BHi8VBkFvz4kKJyLRFnYUwBaAEKEiViStTH7S1KU9PsuTuVopaWX9M7zu%2B5KCcXCvY2QMQlmgrfL9jfMXg%2Bto17QxQ3auMZ%2FOIehsmUgRcZ%2BBJNqTas6X9%2F2pXGzWEs1aoDQjV%2FNGg9LIN084tFmjT0kZXuVFCA%2FTzvY%2BoNnmFp%2F%2BrVmC3C1LJtPALy0WgMTxuaMt2seLrP8i3UCqzZEKH4tnwlhK2NN1zUr8FQCH1JAjP5BYwbnH7SQkb4NWbXCPw3j8KaLWAcMpY%2F%2BR5DLx35WLApsaRka43gLTQV73yJw3UvAPo4vCDL9Q3trK%2BWiZU7KvbauKAZFs%2FdymGyQqRC02ZgVRliS1CuaojaG5MKG6%2F9IGOqUBjQVQ8TlDl99H%2FSwu7r06YF54DaRNLqh5fZa4uzStq150kWLB5nL%2BoVyxGIcvSUZGDLWyS9bCHAurobiTSe7iMQ1rPGuvQd8bjrd57GPa42Ql0cOcFB2%2FFWEYf85wVvXcdcCHYShuCaGaiR4KKeCo9YmPUNGoM0PQQqDOU5o4UH7i76eoblYWOfxkhO%2FxPTyZ0lYmBrxnxPR%2FSOfEwIi2heybivEv&X-Amz-Signature=d7dbd79faa411585a100c130251a2bc7e28dfb2a609d292091ba80feadde6dde&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上节课我们讲了这个 match race 接下来我们继续来讲这个 match 就是全文检索。那么我们把这个恢复一下，把这个恢复成单个。
+
+
+现在我们在进行搜索的时候，只要是包含少年和研究生的，其实都能够查出来。那么目前只有一条，我们改一下改成这个慕课网学习，去点击一个查询，点击一个查询的时候。那么现在只要是包含慕课网或者说是学习的，那在这里面目前其实总共是有几条数据，有四条数据，那么四条数据里面其中是包含慕课网的，有一些另外也是有包含学习的，也有一些另外这个是慕偶。那么也就是说只要是在这个分词以后，那么包含其中一个，那就会被他所查询出来。那么这样子的话其实它查询出来的内容是比较多的，这样子就相当于是我们在使用数据库去做查询的时候。那么我们的条件匹配采用的是一个 or 那么我们能不能使用 and 其实也是可以的。在这边我们可以把这个可以去做一个翻译，就是说可以把它再去扩展一下，把这里 dispip 还是一样把它改成一个 GS 的对象。那么在这里面写上一个 query 把这个给加过来。
+
+
+那么这个就和我们刚刚写的其实是一样的，你去做一个查询的话其实还是四条数据。只不过现在我们在这个下方我们可以为它去增加一个操作符，叫做 operate 然后写上它是一个 or 这个其实也是和我们刚刚所等同的，因为它默认的查询方式就是 or 点击线的，然后还是 4 条数据。
+那么在这边现在我们改成 and 这个时候我们的条件匹配，它其实就是做一个必须两者都满足所有的词语我们用户输入的幕后网学习。那么这个必须要在我们的文档数据里面都要包含它才能够被检索出来，所以这就是一个 and 并且的一个意思。点击 send 那么很明显目前我们就只有一条记录在这边，是包含了慕课网和学习。Ok 。那么当然这个的话顺序是无所谓的，我们把学习放在前面，点击 send 这样子其实也是有一套数据，这个顺序和我们之前的 March 瑞斯是不一样的，这个是没有顺序之分的，只不过在这里你是必须要有一个操作符 and 你必须要包含这里面的词语，才能够把相应的一些记录给查理出来。
+
+
+那么这样子说的话，其实它就是一种匹配度精度是比较高的一种解锁方式的。Ok 。那么既然有 or 和 and 的话，那么其实它们是两个极端，你要么是至少有一个，你要么就是全部都符合我的条件。那么有没有一种比较居中一点的一种方式让我去匹配其中的几个内容呢？比方说我们在这里我们可以去我们来搜一条记录，我们可以来看一下我们的数据，在这边有一条这个像今天生日什么什么的，我们这样子到这个里面去写一下。
+
+
+比方说来一个女友生日送我好玩的 xbox 游戏机，那么这个我们给删掉，我们这样子改成 all 随后我们去做一个查询。那么这个时候匹配的记录总共是有四条记录，像这个是女友游戏，另外下面的就是有 X box 再下面这个是这个应该是匹配了一个和 B 老外，然后带给我很多好吃的。有一个好，这个好的话其实也是被带进去的。另外的话还有是我们最后一条。那么最后一条的话是包含了这个，有一个的和这个里的匹配了，所以他也能够被查出来对吧，你总共是有这几条内容。这个时候那么其实如果说用户他觉得他查询出来的数据十分的多，他能不能给他一个指定的比例？比方说你只要匹配我这其中的几个词语，那么就可以把相应的内容给查询出来。那么这样子的话它的一个匹配进度不是很高，但是也能够让用户更加的精准，让他去搜索到一些相应的内容。那么其实我们也是可以这样子去做的。那么如何去做呢？那么在这里比方说我们它有一个关键字叫做 million 叫做 mini man 然后下划线有一个 should 拿一个 match 那么这是什么意思？那么这个是最小也就是最小应该被匹配到的。那么在这里面它是可以去输入一个百分比的。比方说我输入一个60%。那么这个时候我们来点击搜索，那么你会发现这边搜索到的一个记录数就只有一条了。
+
+
+那么这里面是什么意思？所以说我现在 60% 的话是指当我们这一条词语用户再去做搜索的时候，肯定会先经过一个分词。那么分词过后，假设它有 10 个词语，这里 60% 的话就代表我只要满足 6 个或者 6 个以上的词汇，就可以把相应的文档数据给我们搜出来。那么那些低于六个的就不会再去搜了。
+
+
+对于用户来讲，因为可能它本身它的一个精度太模糊了，我不需要这么多数据对吧，我做一个筛选，只要 60% 满足它的一个内容就可以了。那么这样子其实它就可以逐步的把它的一个精准度给提高。那么还有一种方式，就是说我们的这个你不仅是可以写一个百分比，你也可以去写一个数值，你只要是满足比方说 1 的话就是只要满足其中的一个词语，它就可以帮我们查询出来，我们点击一看一下点击的话，那么其实就是四个，如果说是两个的话查询，那么在这里就是两条数据。那么这两条数据的话，一条数据这里面是符合了两个以上的。那么另外一条数据在这里面是包含了 X box 和游戏，只要满足两个，它也能够被查出来。
+
+
+那么如果说你把这里调成为 3 的话，那么你再去做搜索，那么还是有两条记录，我们可以逐步往上面调，4的话也是两个 5 的话，那么这个时候只要是调到 5 了，那么这里现在我们就只有这一个记录，4的话，那么其实也就是另外一条记录里面所包含的一个内容，要满足 5 的话，这里面其实就包含不了的也就是这条记录。
+
+
+OK 吧，那么这个就是数值和百分比的一个使用方式，也就是可以逐步提高它的一个搜索精度。那么对于它的一个百分数来讲的话，那么刚刚我们也说了，如果说这边分词过后是 10 个的话，那么 10 个的 60% 是 6 个。那么如果说是8，假设这分词过后是 8 个词语的话，那么六八四十八，四十八的话其实应该是 4.8 向下取整。那么其实就是四个满足四个词汇的话，它就能够被查证出来。
+
+
+OK ，其实是这样的一个意思。我们现在这个我只是举了一个例子，这个具体分了多少个词的话，可以自己去看一下，我这边就不去看了。 OK 吧，当然你也可以去推算，60%是一个对吧，像低点，30%的话就是两个，因为下面这条距离的话，它其实符合的数量比较少，所以 30% 是能够把两条数据更粗的一个力度把它的数据给拉出来。那么这个其实就是最小匹配，也就是最小应该卖出的一种方式，你可以设置为一个百分数，你可以去设置为一个具体的数值。那么这两者其实都是可以的，都是没有任何问题的。Ok 。
+
+
+好，随后我们除了这个以外，我们再来讲一下有一个叫做 ID 查询。那么其实我们在之前我们写一下，我们之前使用了一种 get 方式，我们是可以去查询具体的某一项 ID 的文档的 ID 比方说有一个 1001 你可以去查查的话，那么这样子的话是可以去查询出来某一条特定的数据对吧？那么这是在我们的 get 里面去查的，那么它是一个 query 死讯。
+
+
+那么如果说我们要使用咱们现在的这种 gsl 结构化的一种搜索的话，其实也是可以的。那么去搜索的时候其实我们就可以去包含多个 ID 了。那么如何去做啊？那么在这里可以去做一个对应的修改。在这边我们使用 query 在这边不再是 match 它有一个叫做 idsids 其实就是 ID 的复数，可以有多个 ID 对吧？所以在这边你要去写上一个叫做太版，你要去查什么内容？这个时候我们要去查询的内容的话，我们这样子，把这个删掉，这个改成 type 我们现在是要去查文档吗？我们这个 type 所有的其实都是下划线，Doc在这里的话那么就是我们的值了。
+
+
+fados 这是它的一个使用 ids 的一个语法结构，就说你要去匹配多个 ID 那么 fail 的话在这边其实我们就应该去写上一个对应的数组写一下。比方说我可以查 1001 我们再来查一个叫做1003，再来查一个1009。然后我们再去做一个搜索，然后报了一个错 type 是一个 freezing 解析的一个异常。然后在这个 ids 下方它会有一个 unknown field 其实就是我们的 K 碟乐中的 K 也就是我们的键是写错了，有一个叫做 value 这个东西解释不了对吧，然后这边写错了。
+
+
+白鲁斯。所以我们在做一个拼写的时候，其实你在使用 vs 其实经常会出现这个问题，拼写错误的话它会报错根据它的问题去定位就可以了。写上一个 Windows 我们再点直线的。好。OK ，那么这个时候我们在这里面的数据就能够被我们查询出来了，总共是有三条，那么1003，然后是1001，再来一个1009，那么是可以被我们查统下的，你要去改成 1010 去做一个查询，那么也行，甚至你可以来一个 10101 去查的话，那么这样子的话其实是有一条数据是没有的，所以它只能够命中两条记录。
+
+
+OK ，那么这个其实就是它的一个ids ，通过 ids 我们也是可以去做查询，所以很明显我们能够看得出来，使用 gsl 去查询的话，那么这种方式很明显你要比这个科尔斯逊来的更加的丰富，你可以写上多个 ID 那么这里的话其实看上去就比较的简约，虽然简单，但是一旦我们要条件多了，那么使用这个 gsl 来做的话可能会更加的好一些。 OK 吧。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f2a8783e-6ae5-4a61-9e65-b8d97fdb7500/2020-09-17_175353.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665X37XMCW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225139Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAMBrPbi0FrLlBYD5OhwaZ81U%2BGRnzLeRQ%2BCQdcBiYfLAiEAxhqqTr9qbuNnJxFgW9%2F8MfmbqwTpDTbBy7hRGm%2FDGRcqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGWGsL1s5o5yNcxC8yrcA%2FDnRCpChLW9TSPmX%2BypDLDyMEXDvQ%2BrW8bOSI5o4rxrjbiOfceXCGkTsd3vr%2F43qOHswX81pKUzctO20prba8Hb4mQZIx6bsW3tx54vDKZg4o13%2Bq5NEFYx4vQ9sGY2hTqFVxMJpagHrxpK%2B4FFX6ubIdxdmVm%2FcC5YwF7DUOI30XjPGGdIM2VlBRGiTOW5gfCUJUSwL0n4wHxu1QNiQ17bBg65yjSAf3l6EgAdYn%2FJ3Ks%2FMoYFArqdfb6XttQ4cAyM22QiQm8XIfesHJo%2BHi8VBkFvz4kKJyLRFnYUwBaAEKEiViStTH7S1KU9PsuTuVopaWX9M7zu%2B5KCcXCvY2QMQlmgrfL9jfMXg%2Bto17QxQ3auMZ%2FOIehsmUgRcZ%2BBJNqTas6X9%2F2pXGzWEs1aoDQjV%2FNGg9LIN084tFmjT0kZXuVFCA%2FTzvY%2BoNnmFp%2F%2BrVmC3C1LJtPALy0WgMTxuaMt2seLrP8i3UCqzZEKH4tnwlhK2NN1zUr8FQCH1JAjP5BYwbnH7SQkb4NWbXCPw3j8KaLWAcMpY%2F%2BR5DLx35WLApsaRka43gLTQV73yJw3UvAPo4vCDL9Q3trK%2BWiZU7KvbauKAZFs%2FdymGyQqRC02ZgVRliS1CuaojaG5MKG6%2F9IGOqUBjQVQ8TlDl99H%2FSwu7r06YF54DaRNLqh5fZa4uzStq150kWLB5nL%2BoVyxGIcvSUZGDLWyS9bCHAurobiTSe7iMQ1rPGuvQd8bjrd57GPa42Ql0cOcFB2%2FFWEYf85wVvXcdcCHYShuCaGaiR4KKeCo9YmPUNGoM0PQQqDOU5o4UH7i76eoblYWOfxkhO%2FxPTyZ0lYmBrxnxPR%2FSOfEwIi2heybivEv&X-Amz-Signature=593ac459c7b74c1a753b8f2461d3d4529faa80c272ad902740b27b238a35c6f8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

@@ -1,0 +1,15 @@
+---
+title: 3-10 本章小结
+---
+
+# 3-10 本章小结
+
+本章小结
+这一章节主要讲了关于“数据”方面的知识点，平时大家的注意力都集中在“应用”层面，往往忽视了底 层数据层面的高可用构建。在大型互联网应用中，数据层的高可用方案是很重要的一环，而且这并 非只是“DBA”的工作，比如分库分表和数据异构方案，则是开发团队在搭建系统之初就应该去思考 的环节。
+关于数据方面的其他知识点，我们将在数据库设计章节跟同学们详细介绍。
+
+
+本章知识点总结
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/308537ce-7b22-41b5-93ac-885087b221ca/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RM7CXNRC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230726Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGNerl1mq4KuPmruM8FLGS0NF7hf9oSl7p9fwOGD0O%2BjAiB2865Sxi2pavIOygIULwvAEPJTnYLe4k%2BfxTbMcOS%2FIyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMmKhYeBA78qMHVMjrKtwDI9CishmM%2B0VTxj4mRCN9ZjY4nP2M0t3VfebigAwcWRX4rUqC5HAHRntnA8Cb9RpHjFFSWe8n2aTRR%2B7O18qEnYmarUC3y5AZZqsZx7wIPLTBTYIqCz5VhIPHsc42XgjLaOrb7H035UP81MOJmriq9haMC%2BudnfxvCTALspJnnVeajvqGXUYESSQGPk9W0Ji0w9luPmU8%2Bk8VOMDmyASQu5DSp6vUXCgW1YNOY3SsaxzeYfqJvxOX76Zoa8JDVzmmu%2FXegbPCyI4LrezUS1%2BOqxz2hqltv85vOJhTkFYrNnVPYQ2prdG17UNqROBFS2ENhB%2B4XsXzkWBsW0TpV2I7D4V4jOZcqIPxLgmsrg4faq6%2FR%2B341yUcdhmXjB1Y9GW7UB%2F4b4Seac3yeo58%2Ba6par0ezovj5VTzn0nVvT2oeKuUdBSwc1r%2F3qbtSlLnOcVmAp2hRXQRJKHC6iXG%2BcYZjVuoneZqHEJ%2FWGx9biAO9MpHr%2Fq%2B8JlKvJ2Wbmi%2BfpmRrMNIU5PNmnZYIWmAoWDY7b%2BIUVJ58S2yMore7Qr19C3D3YUXQyhbK%2FHysWx%2FT3mFRQbLWg3%2Bfbahx3sV64TyTLNH7%2FcTCop%2F59MaKzhXXbwZg%2FGSJOK3wbxm8%2Fowurj%2F0gY6pgFW4OtGGYNvaqY6jnNHPZWMbgQT9%2BH9L5dqFj%2BWA3%2BI%2F20qjcAxLRiZCUZEnulrVfhCfqGCrCERqrS7ur2uv7lxOVzRe69XG8PlC6G%2Bd6S0am78M67gvj5U7s5g8sMCJ1bi66leXbWdDsRliqvLIQwjF72w%2FlgCkIVTBPWT%2BUlQXKMob8opJy%2FDLmjQJZmUEB0wK52UG8lsuO1O%2BMYyXKMhyhWbFVJQ&X-Amz-Signature=cd53ef39a36934d0d64dfac49c4f366891f679e496dc819dd9ceb999c547da17&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

@@ -1,0 +1,90 @@
+---
+title: 4-9 数据高可用
+---
+
+# 4-9 数据高可用
+
+架起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，上一个章节我们聊一聊数据的完整性维度，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2db98f3f-2086-436e-ba68-e2ee595707bb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VMFQQZKE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC9GjQaxIiVNsXSbqSbNY8QQZz5PM2hGBL3vQeum9M72QIgCQwh7nJgYbGye2tXpvplbzrk6FTgbfUmxiLMwUXNzeUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEBUmMwD2cIo2o5dvircAycn3072jXntmxg%2FroCuTdJFK9WUcbwZRKGGONsZD9wCFTGr06tdouOmivmHfPdkUHCSVpXiHGbrzFmzBoqlrBJQ8fxc9B8Tkv%2FMz4hBeM8G%2Fo%2BzLGl%2F%2FcKS%2FG7fBJJvu4N8n2hKWhayvN62eY8FSrqRJvctkgz5W%2B29X4YC07KIAvaG%2BaLERxlI3721GzCltOIASv4RqjdMfHW8eQZQ9%2BONJhKhMQRI6IZhvcC06FYFyx%2FpVl%2B%2Balrdye%2FdLQuTqSpne4NDUninaVkgjHPA7IvswSqFEHBklYGn24T7kFtHTsLgAdbKlN6gY7GKddHlV5dkIDUQUurG2Ym7msGJEIDq1OdsczPR2SC%2BHe2BTHzGcsEPiGIuGOkgAfLUmjRgN8ObQO3%2FNKQyKB3ml8B2aGA0148FlWNXMmI5b8K0lthrL%2BZoaVOGcqQUWHUWwXmR1aSa9xMso7Apiei0Q3xGU8ZyfZ4651WTlqV%2F%2FvOTSrVLHA%2FQsG96nCnDdbQ%2BmDm%2B3o%2FhWQK7hVZN5bavn8lgfNCbONdlA49D42qvha7xRdQV8qzdNuxNzpayPqFMlLZ4XMgO8%2F7AOqdBYp5ULHbCk%2BuvN0N2pir0ho%2F7C9%2FXC5xt6WyDn7bcqD%2B5mOz%2BMK%2B3%2F9IGOqUBdHpMn3LqEQUwTR2Rc0ua0tyDHgWyjVlk9n%2Bj9hsuQEjbuv1r8d6hkbbZsUQTITDwJAEkyfYCQ24oGHZ7%2F8KRzcFbQWCCWKzB6rzCNb5VQEJeW7c27lw7w8VKRX%2BYHRzmFpHhDs5kZyKMlTa%2FfjamAW5%2FgYwGTIRp2jGUNuHpmTFULq3M%2F0BRNt8vUfBe99ZVaipxek5bZm2XgdShp5dWgwcXOUTZ&X-Amz-Signature=8f883298d205668361c5e21a5fe674fa09fbcb4b6ee1eafabc4ef7f56c9a82b3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+如何通过数据的逻辑保护、备份恢复来实现数据完整性。那这个章节呢？我们要来看一看数据的可用性维度，也就是安全的第三个维度，可用性维度。
+
+
+那聊到可用性，大家首先想到什么？一个存储设备，一个什么文件系统
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3ceb06ad-0500-4c97-93c6-3ac4cedafccb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VMFQQZKE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC9GjQaxIiVNsXSbqSbNY8QQZz5PM2hGBL3vQeum9M72QIgCQwh7nJgYbGye2tXpvplbzrk6FTgbfUmxiLMwUXNzeUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEBUmMwD2cIo2o5dvircAycn3072jXntmxg%2FroCuTdJFK9WUcbwZRKGGONsZD9wCFTGr06tdouOmivmHfPdkUHCSVpXiHGbrzFmzBoqlrBJQ8fxc9B8Tkv%2FMz4hBeM8G%2Fo%2BzLGl%2F%2FcKS%2FG7fBJJvu4N8n2hKWhayvN62eY8FSrqRJvctkgz5W%2B29X4YC07KIAvaG%2BaLERxlI3721GzCltOIASv4RqjdMfHW8eQZQ9%2BONJhKhMQRI6IZhvcC06FYFyx%2FpVl%2B%2Balrdye%2FdLQuTqSpne4NDUninaVkgjHPA7IvswSqFEHBklYGn24T7kFtHTsLgAdbKlN6gY7GKddHlV5dkIDUQUurG2Ym7msGJEIDq1OdsczPR2SC%2BHe2BTHzGcsEPiGIuGOkgAfLUmjRgN8ObQO3%2FNKQyKB3ml8B2aGA0148FlWNXMmI5b8K0lthrL%2BZoaVOGcqQUWHUWwXmR1aSa9xMso7Apiei0Q3xGU8ZyfZ4651WTlqV%2F%2FvOTSrVLHA%2FQsG96nCnDdbQ%2BmDm%2B3o%2FhWQK7hVZN5bavn8lgfNCbONdlA49D42qvha7xRdQV8qzdNuxNzpayPqFMlLZ4XMgO8%2F7AOqdBYp5ULHbCk%2BuvN0N2pir0ho%2F7C9%2FXC5xt6WyDn7bcqD%2B5mOz%2BMK%2B3%2F9IGOqUBdHpMn3LqEQUwTR2Rc0ua0tyDHgWyjVlk9n%2Bj9hsuQEjbuv1r8d6hkbbZsUQTITDwJAEkyfYCQ24oGHZ7%2F8KRzcFbQWCCWKzB6rzCNb5VQEJeW7c27lw7w8VKRX%2BYHRzmFpHhDs5kZyKMlTa%2FfjamAW5%2FgYwGTIRp2jGUNuHpmTFULq3M%2F0BRNt8vUfBe99ZVaipxek5bZm2XgdShp5dWgwcXOUTZ&X-Amz-Signature=198d2b6f70f4ad48b50d9660a6353bfdff9cb4fe25599ed6e88c95ab05b950fc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+，它必然是有可用性的，它的可用性怎么样来实现？通过后台的磁盘阵列来实现。最常见的实现方法我们叫做 RAID read，就是冗余磁盘阵列的英文单词的缩写一种 read 是最原始的，就是 read 0。最早的 read 什么样实现的？当我一个数据要进行连续读写的时候，我可以把它分成一个片。假设一片是一兆，也就是 1024 K 比特，这个时候我们第一片叫A1，第二片就叫A2，第三片叫A3，那如此我们把所有内容写在一个磁盘上，那就是什么磁盘技术也没用。但是如果我们写在两个磁盘上，而就是轮流写12345678，奇数写一边，偶数写一边，这就是用到了什么？用到了分片技术，这个技术就是 read link。那这里给大家举例是只有两个磁盘， read 0 可以是两个磁盘，可以是 10 个磁盘，也可以是 20 个磁盘，没有关系，只要你什么，你的骗术足够多，然后分散在不同的磁盘设备上。
+
+
+你第一片在磁盘一上，第二片在磁盘 2 上，第三片就在磁盘 3 上，一直全部分配完以后重新回来，这就是read，零基础完全是吧？没有高可用，但是能通过分片来提高性能，出现了 read 0 以后，架构师就会响光。有 0 没有高可用，不行，我有没有一个方法牺牲一点性能？或者牺牲一点容量，我来实现高可用的简单有分片。
+
+
+大家能想到什么？是不是有副本啊？我在第一个磁盘上面写所有的内容， AELS and s，然后在第二个磁盘上做一个副本，也写 AELS and s。这样的任何一个磁盘坏了以后怎么样不会影响我对外的业务的任何功能？因为我还有一个备份，这就是 read 一，标准的 read 一就是两个盘，你备份我，我备份你，你是我的副本，我也是你的副本，除了零一以外还有什么？还有二三次，这些都是钱浪，都已经死在沙滩上。
+
+
+那我们来看一看当前还比较活跃的 RAID 5 read 5 是什么机制啊？我们以四个磁盘为例，第一兆写在第一个磁盘上，叫A1，那第二撇写在第二个磁盘上，叫AI，第三撇是不是写在第三个磁盘上，叫A3？到第四篇，不好意思，最后一个磁盘我不让你写了，我要什么？把前面 3 兆的内容进行一个，亦或也就是A1，亦或A2，亦或A3。最后把结果写在 AP 上，这样有什么好处啊？这就 a p 就是个校验位，当 a p 坏了以后不影响应用吧。当 a 三坏了怎么办？我可以通过A1， A2 和 AP 的 e 或者计算，我能算出A3，这样仍然能保持数据是连续可读写的。所以这就是一种抑或什么校验的机制？那通过这样的校验机制，我可以保证什么 A1LA 3 的可读写同样B1、B2、 B3 的我后面又有三个分片。我也可以通过 BP 的校验保证它业务的可读性，但是这次要做一个调整，我不能每次都把校验写在同一个磁盘上。为什么？因为校验盘平时很少用到，也就是说这个磁盘其实是什么？它的 IO 吞吐量很低，很浪费，所以我要什么把每次的校验位进行偏移？第一次我把 AP 放在第四个磁盘上，那我第二次就要把 BP 放在第三个磁盘上，那同样道理， CP 就在第二个磁盘上，通过校验位的偏离，我可以使什么正常的阿拉伯数字，也就是a，L， a 三，B1，B2， B3 尽量分配在平衡的分配在所有的磁盘上，大家的 IO 吞吐非常平静，这就是 RAID 5。
+
+
+大家看到 RAID 5 会想到什么？ RAID 5 有个缺点，我这四个盘里面死一个没关系，是吧？我再死一个呢？这样我 A1LA 3 就不完整了。我有什么？有数据丢失了？对于银行系统我可不光是死一个盘，我要能扛住死两个盘三个盘怎么办呢？这就出来了，另外一个 5 的下一代 RAID 6。
+rate 6 其实跟 5 很接近，只不过每一次 A1A2A3 写完以后，它要有两个校验盘， AP 和AQ，其实是什么数据几乎是一致的，它都能实现A1、A2、 A3 的，那么出错的时候通过校验来恢复出A1、A2、 A3 里面任何一个内容，内横一个分片的内容，通过这样的机制是不是牺牲掉一个硬盘，但是能实现什么多硬盘故障？这就是 RAID 6。
+
+
+当然了， RAID 5 和 RAID 6 不光是 4 个硬盘和 5 个硬盘的故事，可以是 10 个硬盘和 20 个硬盘的故事。硬盘数越多， read 五和 read 六相对来说它校验位所浪费的空间就越少，所以它就更加经济实惠。大家要问了，有没有夸张一点的？有没有像我们 no SQL 那种又分片又副本的套路啊？当然有，分片和副本不是什么不是，我们应用架构是设计出来的。老祖宗在哪里啊？老祖宗就在磁盘阵列这里。 RAID 0 和 RAID 1 可以合成。什么叫 RAID 10？也就是总体上我们是做 RAID 0 的，然后对每一个 RAID 0 的硬盘，我们给它做一个副本，叫 read 一，这样既能实现可用性，又能实现吞吐量，这才是什么分片副本技术的老祖宗，磁盘技术才是他们的什么鼻祖？我们聊了 no CQ 的鼻祖，也聊了什么如何在磁盘级别实现高可用，大家想一想，磁盘说到底什么？它有磁盘控制器？它有磁盘的什么？ UPS 的供电系统？当整个机房出现故障，当整个数据中心出现故障，该如何？当然是要采用容灾技术，所以容灾是一个比磁盘高可用、更高级、更加强大的什么可用性技术，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/635a81db-b021-4828-8be9-60be9f6ffb3d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VMFQQZKE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC9GjQaxIiVNsXSbqSbNY8QQZz5PM2hGBL3vQeum9M72QIgCQwh7nJgYbGye2tXpvplbzrk6FTgbfUmxiLMwUXNzeUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEBUmMwD2cIo2o5dvircAycn3072jXntmxg%2FroCuTdJFK9WUcbwZRKGGONsZD9wCFTGr06tdouOmivmHfPdkUHCSVpXiHGbrzFmzBoqlrBJQ8fxc9B8Tkv%2FMz4hBeM8G%2Fo%2BzLGl%2F%2FcKS%2FG7fBJJvu4N8n2hKWhayvN62eY8FSrqRJvctkgz5W%2B29X4YC07KIAvaG%2BaLERxlI3721GzCltOIASv4RqjdMfHW8eQZQ9%2BONJhKhMQRI6IZhvcC06FYFyx%2FpVl%2B%2Balrdye%2FdLQuTqSpne4NDUninaVkgjHPA7IvswSqFEHBklYGn24T7kFtHTsLgAdbKlN6gY7GKddHlV5dkIDUQUurG2Ym7msGJEIDq1OdsczPR2SC%2BHe2BTHzGcsEPiGIuGOkgAfLUmjRgN8ObQO3%2FNKQyKB3ml8B2aGA0148FlWNXMmI5b8K0lthrL%2BZoaVOGcqQUWHUWwXmR1aSa9xMso7Apiei0Q3xGU8ZyfZ4651WTlqV%2F%2FvOTSrVLHA%2FQsG96nCnDdbQ%2BmDm%2B3o%2FhWQK7hVZN5bavn8lgfNCbONdlA49D42qvha7xRdQV8qzdNuxNzpayPqFMlLZ4XMgO8%2F7AOqdBYp5ULHbCk%2BuvN0N2pir0ho%2F7C9%2FXC5xt6WyDn7bcqD%2B5mOz%2BMK%2B3%2F9IGOqUBdHpMn3LqEQUwTR2Rc0ua0tyDHgWyjVlk9n%2Bj9hsuQEjbuv1r8d6hkbbZsUQTITDwJAEkyfYCQ24oGHZ7%2F8KRzcFbQWCCWKzB6rzCNb5VQEJeW7c27lw7w8VKRX%2BYHRzmFpHhDs5kZyKMlTa%2FfjamAW5%2FgYwGTIRp2jGUNuHpmTFULq3M%2F0BRNt8vUfBe99ZVaipxek5bZm2XgdShp5dWgwcXOUTZ&X-Amz-Signature=6db1b1c1b6835bc0c695fc25095e1e88068787983ae03a3e2fef12ee49b65d2a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+也是为了实现数据安全性，其中的数据可用性的容灾通常有两个不同的维度，我们从左往右看，左边是用生产重心，从下往上有存储设备、散网络设备、服务器、操作系统、数据库、应用层，以及对外提供的以派网服务。
+
+
+通常容灾，我们先做什么？先做数据容灾，也就是把存储层和散网络层延展到我们的灾备中心。通过这样的方式我们可以保证什么在那里至少是有一份热数据之后，如果有足够的经济基础，有足够的强大的架构师团队，我们就可以把应用容灾做起来了，我们可以在那边快速地恢复出我们的操作系统，甚至于热备很多操作系统。同时我们能把数据库里面的所有数据快速地恢复出来，把应用快速地启动，对外暴露 IP 展现所有的外部的应用服务器的功能。
+
+
+这样一套应用容灾是需要有强大的架构式团队和强大的经济基础的。你要买一套数据中心，还有买大量的冗余设备，那到底一个架构师强不强啊？尤其是在做容灾的时候。怎么比啊？很好比，只要比两个指标就能看出你架构师时什么级别的架构师的哪两个指标，大家回忆一下，有没有记起来呀？就是 RPO 和 RTO 一个容灾架构，最终我们其实就看这两个数值，基本上就能判定这个架构设计的好与坏。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/76a5096b-981f-494f-a17c-df3ce3b2be2f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VMFQQZKE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC9GjQaxIiVNsXSbqSbNY8QQZz5PM2hGBL3vQeum9M72QIgCQwh7nJgYbGye2tXpvplbzrk6FTgbfUmxiLMwUXNzeUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEBUmMwD2cIo2o5dvircAycn3072jXntmxg%2FroCuTdJFK9WUcbwZRKGGONsZD9wCFTGr06tdouOmivmHfPdkUHCSVpXiHGbrzFmzBoqlrBJQ8fxc9B8Tkv%2FMz4hBeM8G%2Fo%2BzLGl%2F%2FcKS%2FG7fBJJvu4N8n2hKWhayvN62eY8FSrqRJvctkgz5W%2B29X4YC07KIAvaG%2BaLERxlI3721GzCltOIASv4RqjdMfHW8eQZQ9%2BONJhKhMQRI6IZhvcC06FYFyx%2FpVl%2B%2Balrdye%2FdLQuTqSpne4NDUninaVkgjHPA7IvswSqFEHBklYGn24T7kFtHTsLgAdbKlN6gY7GKddHlV5dkIDUQUurG2Ym7msGJEIDq1OdsczPR2SC%2BHe2BTHzGcsEPiGIuGOkgAfLUmjRgN8ObQO3%2FNKQyKB3ml8B2aGA0148FlWNXMmI5b8K0lthrL%2BZoaVOGcqQUWHUWwXmR1aSa9xMso7Apiei0Q3xGU8ZyfZ4651WTlqV%2F%2FvOTSrVLHA%2FQsG96nCnDdbQ%2BmDm%2B3o%2FhWQK7hVZN5bavn8lgfNCbONdlA49D42qvha7xRdQV8qzdNuxNzpayPqFMlLZ4XMgO8%2F7AOqdBYp5ULHbCk%2BuvN0N2pir0ho%2F7C9%2FXC5xt6WyDn7bcqD%2B5mOz%2BMK%2B3%2F9IGOqUBdHpMn3LqEQUwTR2Rc0ua0tyDHgWyjVlk9n%2Bj9hsuQEjbuv1r8d6hkbbZsUQTITDwJAEkyfYCQ24oGHZ7%2F8KRzcFbQWCCWKzB6rzCNb5VQEJeW7c27lw7w8VKRX%2BYHRzmFpHhDs5kZyKMlTa%2FfjamAW5%2FgYwGTIRp2jGUNuHpmTFULq3M%2F0BRNt8vUfBe99ZVaipxek5bZm2XgdShp5dWgwcXOUTZ&X-Amz-Signature=8195f6b7779582acf2a02b935c7a3f9a3ea751848f00ca40fd79112e479993a5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+通常我们灾难发生就是那个雷电是一个中间时间点，当灾难发生的时候，我们要往左看和往右看，往左看怎么看？我们看一看。当灾难发生以后，假设我们能把这个灾难给渡过去，我能把数据恢复出来，我们能让应用投产，但是投产的时候，那个时候我们损失掉多少数据？也许是我要回退到一个小时以前的增量备份，那么这个时候我们损失了一个小时的数据，也许我们要回退到一天以前的全量备份，这就损失了一整天的数据。你损失的数据越多，你就浪费的金钱越多，你要承担的什么赔偿和保险就越多。所以左边这个时间点左下角叫 recovery point 恢复点，它的这个指标叫 recovery point objective，就是我们经常说的 RPO 数据丢失指标， RPO 越大，架构是越无能，丢失的数据越多。那同样道理，我们把这个时间点还是回到灾难时间点，这个中间点往右看，我们随着灾难发生以后多少时间能恢复？一秒钟就能恢复， 10 分钟、一小时、一天、一个月。当什么 911 发生什么大灾难的时候，你就看好多什么企业倒闭了，原因是什么？他在一周之内没法恢复业务，导致客户流失了，所以恢复时间也是很关键的啊。
+
+
+恢复时间在右下角叫 recovery time，它的目标就是 recover time objective RTO 也是判断一个企业多久能恢复正常运营，能够什么让所有的这个资金流转起来，让所有的信息流转起，能够真正对外提供 it 服务的一个关键指标。
+
+
+如果一个 RTO 做得很差了，那这个架构师就是什么？就是不合格的架构师，通过这两个指标轻轻松松来判定架构师到底飞扬老师是处于哪一个级别呢。飞扬老师用业绩的七级标准来跟大家分享一下，再跟大家交流交流。
+
+
+付杨老师现在处于哪一级吧？业界怎么样看？
+
+
+业界是通常以 RT o 为主标准来衡量一个架构，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cf26d6c7-013e-47b1-a65b-fcbb0e3dc6e0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VMFQQZKE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC9GjQaxIiVNsXSbqSbNY8QQZz5PM2hGBL3vQeum9M72QIgCQwh7nJgYbGye2tXpvplbzrk6FTgbfUmxiLMwUXNzeUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEBUmMwD2cIo2o5dvircAycn3072jXntmxg%2FroCuTdJFK9WUcbwZRKGGONsZD9wCFTGr06tdouOmivmHfPdkUHCSVpXiHGbrzFmzBoqlrBJQ8fxc9B8Tkv%2FMz4hBeM8G%2Fo%2BzLGl%2F%2FcKS%2FG7fBJJvu4N8n2hKWhayvN62eY8FSrqRJvctkgz5W%2B29X4YC07KIAvaG%2BaLERxlI3721GzCltOIASv4RqjdMfHW8eQZQ9%2BONJhKhMQRI6IZhvcC06FYFyx%2FpVl%2B%2Balrdye%2FdLQuTqSpne4NDUninaVkgjHPA7IvswSqFEHBklYGn24T7kFtHTsLgAdbKlN6gY7GKddHlV5dkIDUQUurG2Ym7msGJEIDq1OdsczPR2SC%2BHe2BTHzGcsEPiGIuGOkgAfLUmjRgN8ObQO3%2FNKQyKB3ml8B2aGA0148FlWNXMmI5b8K0lthrL%2BZoaVOGcqQUWHUWwXmR1aSa9xMso7Apiei0Q3xGU8ZyfZ4651WTlqV%2F%2FvOTSrVLHA%2FQsG96nCnDdbQ%2BmDm%2B3o%2FhWQK7hVZN5bavn8lgfNCbONdlA49D42qvha7xRdQV8qzdNuxNzpayPqFMlLZ4XMgO8%2F7AOqdBYp5ULHbCk%2BuvN0N2pir0ho%2F7C9%2FXC5xt6WyDn7bcqD%2B5mOz%2BMK%2B3%2F9IGOqUBdHpMn3LqEQUwTR2Rc0ua0tyDHgWyjVlk9n%2Bj9hsuQEjbuv1r8d6hkbbZsUQTITDwJAEkyfYCQ24oGHZ7%2F8KRzcFbQWCCWKzB6rzCNb5VQEJeW7c27lw7w8VKRX%2BYHRzmFpHhDs5kZyKMlTa%2FfjamAW5%2FgYwGTIRp2jGUNuHpmTFULq3M%2F0BRNt8vUfBe99ZVaipxek5bZm2XgdShp5dWgwcXOUTZ&X-Amz-Signature=25ff05664a923b10d52d935dd4a2324a150c67cc8c31a7c419a82570766642be&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+或者来衡量一个企业的级别。然后不同的目标是需要有不同的投资成本的，所以光有强大的架构师其实是不够的，需要有强大的企业支撑。我们来先来看看一级架构师和一级企业怎么样实现容灾呢。一级架构师通常是这样做的，我没有灾备机房怎么办呢？可以租一个这种托管中心，然后我把主中心的数据每天做一个磁带备份，把我的磁带送到托管中心。那这样呢？我整个生产中心挡了，崩溃了，没关系，地震了也没关系，我的数据在磁带里，在托管中心哦。然后我让托管中心赶紧给我一些机器，我快速地在托管中心搭一套系统，然后把磁带的数据恢复到硬盘里面，可能要花两天时间。
+
+
+这就是什么一级架构师的思路？如果你是二级架构师，你会怎么考虑啊？我在托管中心，我要提前买一些这个服务器，然后把我的数据库、什么存储设备都准备好，变成一个热备。然后我还是通过磁带把数据每天运过去，以后我每天在那边什么安排一些这个值守人员，比如像 SRE 今天来帮我恢复数据，那这样我恢复的数据可能是一天以前的数据，但是好歹我是有活着的站点的，万一要有什么特殊需要，我可以让我的热备站点临时来顶顶承载一些这个业务压力，这是通常这整个切换过程可能需要一天左右的时间，这就是二级架构师，三级架构师怎么样？三级架构师会想，嗯，我怎么样能够取消掉磁带运输？卡车的磁带运输这种传统行业的套路，是不是现在有很多的高级带库天生就具有什么光纤接入能力，可以把数据复制到另外一个带库。
+
+
+这样我在生产中心放一个带库，我在灾备中心也放一个带库，全部通过光纤网络连接，就去进行数据传输，是不是快一点？这样我丢失的数据也比较少，恢复起来也比较快，可以做到全自动恢复，这就是三级架构师通过这种方法可能损失个几小时，也可能通过半天时间就能快速的恢复出我们的数据刺激架构是怎么想？磁带，毕竟什么它的备份频率太低，同时磁带的恢复时间太长，我们应该采用硬盘技术，采用数据库技术，采用中间件技术。不管是数据库还是中间件，还是我们的存储设备，都支持同步的复制，同时在灾备端可以采用只读的方法把那一套服器、一套数据库给拉起来，对外提供一些查询服务啊。这种情况下我们就设计出了一个在 8 小时以内就能够婉转一套生产系统，快速的恢复对外提供服务的同步热备架构。
+
+
+不错，四级架构师就是一个比较标准的架构师喽，我们来看看五级架构师怎么想，光这样热备似乎不够酷炫。我们应该考虑一下，让我们的两边的业务数据尽量一致。怎么尽量一致呢？我们中间可能有光圈线的关系，有个几秒钟的延时，我们没法完全一致。我们能不能借鉴一些行业里面的酷炫套路，比如 prepare commit 二阶段提交，也就是说我的每个交易其实是我要进行两次操作，这两次操作导致什么？我两边磁盘可能一开始是不一致的，最终我的两边磁盘是一致，一致的时候我最后 commit 出去，我说确实这个订单完全生效，这样在应用改造有限的情况下，我能实现几乎对外全透明的一种 RPO 为 0 的解决方案，是不是很酷炫啊？不错，你现在已经是 5 级架构师了，这么高级的方案才是 5 级，那怎么样才能更进一步呢？我们有没有想过其实大部分的灾难是地震，是火灾，是不是数据中心的断电？也就是说那其实我什么不需要考虑异地的问题？比如说上海浦东跟浦西同时地震的概率并不高，那通常比如浦西的一栋楼被震塌了，那浦东还在，或者浦东发生了洪水或者是风暴，浦西还在。
+
+
+抹弯傀可以吗？跨江而治，在江的两边各人找一个数据中心，实现双火中间的延时可能百毫秒或者十毫秒。这个时候你不需要二阶段提交你的应用全透明，可以在中间件数据库和底层的存储设备之间实现一个偶强意志的解决方案。通过这种通用性、透明性的强一致解决方案，实现完完整整的 RPO 等于0，真的是等于0，这就是六级架构式。
+
+
+菲亚老师说，不好意思，我比你还要再高一级。那飞扬老师曾经做过 7 级架构师，或者说 7 级架构企业的一些项目，这些项目要做到什么？一键切换？也就是行长说，嗯，今天我不爽了，今天我股票跌了，不爽，我要让我的银行做一次大的动作，来让我开心一下。怎么样？是不是放个烟花？不是点一个键，这个键点完以后，整个生产中心在 15 分钟之内切换到灾备中心，在那里运行一个月，等下一次我的股票赚钱，我又开心了，不放烟花。我再点一个键，让数据中心从灾备中心切回生产中心。哇，好酷炫哦。好，孙杨老师在下一章节就会跟大家来聊我如何来实现一键切换银行系统的人在聊这个之前，我们要聊一聊。为了实现这样的目标，为了实现 7 级的一键切换，我们需要做什么？最关键的就是这个 DRP 规划流程，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e238cd65-7339-4f3d-966f-c7217ea30588/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VMFQQZKE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231022Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQC9GjQaxIiVNsXSbqSbNY8QQZz5PM2hGBL3vQeum9M72QIgCQwh7nJgYbGye2tXpvplbzrk6FTgbfUmxiLMwUXNzeUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEBUmMwD2cIo2o5dvircAycn3072jXntmxg%2FroCuTdJFK9WUcbwZRKGGONsZD9wCFTGr06tdouOmivmHfPdkUHCSVpXiHGbrzFmzBoqlrBJQ8fxc9B8Tkv%2FMz4hBeM8G%2Fo%2BzLGl%2F%2FcKS%2FG7fBJJvu4N8n2hKWhayvN62eY8FSrqRJvctkgz5W%2B29X4YC07KIAvaG%2BaLERxlI3721GzCltOIASv4RqjdMfHW8eQZQ9%2BONJhKhMQRI6IZhvcC06FYFyx%2FpVl%2B%2Balrdye%2FdLQuTqSpne4NDUninaVkgjHPA7IvswSqFEHBklYGn24T7kFtHTsLgAdbKlN6gY7GKddHlV5dkIDUQUurG2Ym7msGJEIDq1OdsczPR2SC%2BHe2BTHzGcsEPiGIuGOkgAfLUmjRgN8ObQO3%2FNKQyKB3ml8B2aGA0148FlWNXMmI5b8K0lthrL%2BZoaVOGcqQUWHUWwXmR1aSa9xMso7Apiei0Q3xGU8ZyfZ4651WTlqV%2F%2FvOTSrVLHA%2FQsG96nCnDdbQ%2BmDm%2B3o%2FhWQK7hVZN5bavn8lgfNCbONdlA49D42qvha7xRdQV8qzdNuxNzpayPqFMlLZ4XMgO8%2F7AOqdBYp5ULHbCk%2BuvN0N2pir0ho%2F7C9%2FXC5xt6WyDn7bcqD%2B5mOz%2BMK%2B3%2F9IGOqUBdHpMn3LqEQUwTR2Rc0ua0tyDHgWyjVlk9n%2Bj9hsuQEjbuv1r8d6hkbbZsUQTITDwJAEkyfYCQ24oGHZ7%2F8KRzcFbQWCCWKzB6rzCNb5VQEJeW7c27lw7w8VKRX%2BYHRzmFpHhDs5kZyKMlTa%2FfjamAW5%2FgYwGTIRp2jGUNuHpmTFULq3M%2F0BRNt8vUfBe99ZVaipxek5bZm2XgdShp5dWgwcXOUTZ&X-Amz-Signature=09fb952056fd6c8ce192a0f6d6630306bb5f1cbbeebbdf0648610b07fe3638c3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+作为架构师不是光有一个远大的理想， RPO 为0， RTO 为 15 分钟就可以了，不是光会说我要做到 7 级架构的一键切换就可以了，需要有一套完整的流程和一个强大的团队来支撑。
+
+
+那什么样的流程呢？首先要启动一个 DRP 容灾规划项目，然后通常我们需要做风险分析、恢复分析、业务影响分析，通过分析以后我们才进入到架构设计的环节，这个环节当中有什么？有高层的逻辑架构？比如说策略复制选型、系统设计路线选型，也有底层的实战架构，设计具体的每一个子系统，它的存储中间件和数据库的恢复机制以及网络切换机制、运维机制等等。
+
+
+还要什么跟我们的实战的研发人员，跟我们的项目管理人员，跟我们的SRE，跟我们的运维人员一起真真正正进机房做 it 建设，做数据集容灾和演练，做应用级容灾和演练，最后才能什么很安心地搭建好一套灾备系统，搭建好一套流程，通过培训和什么和知识转移以及项目管理来完全掌控整个DRP。不是一个架构师在作战，这是一个团队，一个研发团队、一个运维团队、一个产品团队和一个架构师团队共同的责任。好，聊完了，我们梦想中的契机架构也聊完了，如何来实现它的DRP？大家是不是很期待飞扬老师的真实案例，下一节敬请揭晓。
+

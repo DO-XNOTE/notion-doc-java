@@ -1,0 +1,78 @@
+---
+title: 2-3+SpringCloud整体架构解析
+---
+
+# 2-3+SpringCloud整体架构解析
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2a75f776-004f-4ea4-84ad-bb08cf58cd3c/SCR-20240720-cyso.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QDPTFQKP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225521Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDmLqz5ADLaTo2M4AczpHPC%2BsdIzQdOSILpYgKipyvSkAiEAvSAQAf9DDNWg%2BKQOaXtvYveWx9aBXyz6notvW0L%2F948qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEGKrMX%2FNG12Xc2pICrcA4Oy4EH6ULu%2FkMl%2BbLDXMjG8DCIvBmQ6gkngra0RyslegaY%2FxUmAP3fx5sfJ7eK35vx8UpHCaBi%2BWRnGesHyTwiS%2FTuSuJ5UKYjeFo5W3hMo7xpQB3zaohZQ9eIrQWhJTM1ED3jJZS7oRuIeWRrPcqOyqUfFRChAeLj9hnS21kuCBEBdbD%2Bnn96WMDZjDz9Sd0KA2k%2FqNe7yzmvy08tFVVB5uW2kW7OyF06%2BTLf9F2mV4e9iTI781EiZg04Ule3Bp8bldzNJQVa2BNJdFUZRw2kUvHernM8SGycrXQHKysbb0HtP5IdVYNOSEovYv1Al4qVFlljaDSvn5FEHxi4fbaEGNL%2FdTzAyE45yA3GjkfQknKaCjknI7tzA56BMsDVEdJ7PKDoCeFYQLxuW1kG%2BIKWYrolCiJpHdUeewOkFfhfAplZKMh0tjDwfVyq62v6PGiv2T%2FOByJrakLFRc%2Bu8DTDdlnCt8rW0RdqabvldSUNHiexm2bTQNFJVhatXC9zFq1QN5S6D7XUCGdDFFWQvtvUr1QruM3W1qEyGCX6%2Fcyn37%2FVSxUJ%2FLfROSUunUaKChJfT4HvZWG1NoU2oXLF9Fat%2Bx%2FlSc4IZdQ0mWkJEvgweu1x0miRoNsVl3NCfMJm3%2F9IGOqUB6%2Bvy5BhXtKzEjxI2XUWXpgA2ShtY36oEuBB9VrjSttVgR3FOU3XQ6Q6O6kON7sinfRIB%2BTPaI3wfrldvQUvjSaFI%2FLDs%2BAo4HCfWeHJr%2F2Mibr%2BFDZzsiznoHgh8W9WJtN7TQo8DSejt8%2Fo4cCXz1r5Z%2FUPzWqjun%2FmAHSqsBMRUwJnhUbNOFKi7dF8K7A4q4y3DJ0BjinuYpNsSkrlSiJnhsXCi&X-Amz-Signature=8f859d9018a3a60ef74e8f4584c43a40ccb807a5ba10eea2b0414c86bd261ce4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**2-3 SpringCloud整体架构解析**
+
+**Spring Cloud整体架构**
+
+Spring Cloud的中文名我们就暂且称呼它为“春云”吧，听上去是多么朴实无华的名字，不过呢一般名字起的低调的都是厉害角色，我们就看看Spring Cloud都提供了哪些靠谱功能吧。
+
+**技多不压身**
+
+我们前面说过，Spring Cloud是一款微服务架构的一站式解决方案，你在微服务化过程中碰到的任何问题，都可以从Spring全家桶里找到现成的解决方案，而且方案还不止一种。
+
+我们先来看一幅Spring Cloud的全景图，再来详细解释其中的每个组件的功能。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c4b67be9-be71-4a3d-8471-bd75d61cc7d6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QDPTFQKP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225521Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDmLqz5ADLaTo2M4AczpHPC%2BsdIzQdOSILpYgKipyvSkAiEAvSAQAf9DDNWg%2BKQOaXtvYveWx9aBXyz6notvW0L%2F948qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEGKrMX%2FNG12Xc2pICrcA4Oy4EH6ULu%2FkMl%2BbLDXMjG8DCIvBmQ6gkngra0RyslegaY%2FxUmAP3fx5sfJ7eK35vx8UpHCaBi%2BWRnGesHyTwiS%2FTuSuJ5UKYjeFo5W3hMo7xpQB3zaohZQ9eIrQWhJTM1ED3jJZS7oRuIeWRrPcqOyqUfFRChAeLj9hnS21kuCBEBdbD%2Bnn96WMDZjDz9Sd0KA2k%2FqNe7yzmvy08tFVVB5uW2kW7OyF06%2BTLf9F2mV4e9iTI781EiZg04Ule3Bp8bldzNJQVa2BNJdFUZRw2kUvHernM8SGycrXQHKysbb0HtP5IdVYNOSEovYv1Al4qVFlljaDSvn5FEHxi4fbaEGNL%2FdTzAyE45yA3GjkfQknKaCjknI7tzA56BMsDVEdJ7PKDoCeFYQLxuW1kG%2BIKWYrolCiJpHdUeewOkFfhfAplZKMh0tjDwfVyq62v6PGiv2T%2FOByJrakLFRc%2Bu8DTDdlnCt8rW0RdqabvldSUNHiexm2bTQNFJVhatXC9zFq1QN5S6D7XUCGdDFFWQvtvUr1QruM3W1qEyGCX6%2Fcyn37%2FVSxUJ%2FLfROSUunUaKChJfT4HvZWG1NoU2oXLF9Fat%2Bx%2FlSc4IZdQ0mWkJEvgweu1x0miRoNsVl3NCfMJm3%2F9IGOqUB6%2Bvy5BhXtKzEjxI2XUWXpgA2ShtY36oEuBB9VrjSttVgR3FOU3XQ6Q6O6kON7sinfRIB%2BTPaI3wfrldvQUvjSaFI%2FLDs%2BAo4HCfWeHJr%2F2Mibr%2BFDZzsiznoHgh8W9WJtN7TQo8DSejt8%2Fo4cCXz1r5Z%2FUPzWqjun%2FmAHSqsBMRUwJnhUbNOFKi7dF8K7A4q4y3DJ0BjinuYpNsSkrlSiJnhsXCi&X-Amz-Signature=7968c44c72cddb33bc5d9f89f075d723952612d330903daa7f8eaa3b25fd7956&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上面眼花缭乱的一大堆组件就是咱微服务章节将要学习的内容了（画外音：哇~~~），那我们挑这里面的哪些组件来讲呢？答案就是：ALL IN！全要了！在后面的章节里我们会深入Spring Cloud每一个组件，从原理到源码，从随堂Demo到商城落地，细细把玩Spring Cloud的方方面面。咱们这一章呢先来对每个技术要点做一个简单的介绍。
+
+**服务治理**
+
+Spring Cloud提供了三款服务治理的组件，分别是Eureka, Consul和Nacus，从这三足鼎立的态势里我们就能猜到，在服务治理领域的背后一定有那么一段恩怨情仇。没错，这三个组件其实是由三个不同的公司或组织来研发的，这背后的故事呢，我们到后面章节里再来跟大家唠一唠。
+
+在Spring Cloud的架构中，服务治理是其中不可或缺的核心环节，它包含了服务从注册到销毁的整个生命周期的管理。用一句话来说，服务治理确保了调用方可以准确的向可用的服务节点发起调用。
+
+**负载均衡**
+
+Ribbon是Spring Cloud中负责负载均衡的组件，Ribbon的一大优势是它能够和各个Spring Cloud组件无缝集成，而且十分灵巧轻便又具备高可扩展性。
+
+负载均衡框架是起到分散服务器压力的作用，可以这么说，没有负载均衡技术的服务器集群就不能叫做集群，只有借助负载均衡技术，集群才能够借助服务节点的规模效应发挥出优势。
+
+**消息间调用**
+
+对于原生态的HTTP调用来说，从Java代码里发起调用并且构造消息体和Header是一件非常麻烦的事情，考虑到Spring Cloud的服务治理组件也是基于HTTP的，因此特别需要一款简化服务调用的组件。Feign的出现就是为了解决这个问题，我们可以借助Feign的代理机制，像调用一个接口方法一样发起远程HTTP调用。
+
+**服务容错**
+
+Hystrix是目前Spring Cloud中应用最广泛的服务容错组件，服务容错从宏观上来解释，就是尽可能降低服务异常所带来的影响。我们经常听到两个词叫做“降级”和“熔断”，降级很好理解，现在大家都会打趣的说“消费降级”，就是说降低咱自己的消费水平，在服务容错这里其实是一个道理，降级就是退而求其次，在异常发生之后选一种备选方案继续提供服务。而熔断则是指在异常达到某个临界值以后，直接切断服务通路，将用户请求统统导向降级逻辑中。
+
+**分布式配置中心和消息推送组件**
+
+Spring Cloud借助Config组件来集中管理集群中所有服务节点的配置，它是一个中心化的配置管理中心，可以采用包括Github、Database等多种持久化方案来保存配置信息，将你的微服务从繁重的配置工作中解脱出来。利用Config组件我们可以轻松玩转环境隔离、配置推送和配置项动态刷新。
+
+提到配置属性的刷新，就不得不说到Spring Cloud中的另一个组件Bus，它承担了批量通知和推送配置变更的工作，而且我们可以通过扩展Bus的事件，实现“消息广播”的应用场景。
+
+**服务网关**
+
+服务网关是微服务的第一道关卡，目前Nginx是应用最广泛的反向代理技术，在各个大厂的核心业务系统中都有大量应用，不过Nginx可不是使用Java来配置的，使用和配置Nginx需要掌握它的语法树。Spring Cloud则为广大的Java技术人员提供了更加“编程友好”的方式来构建网关层，那就是Gateway和Zuul网关层组件。我们可以通过Java代码或者是yml配置文件的方式编写自己的路由规则，并通过内置过滤器或自定义过滤器来实现复杂的业务需求（比如在网关层做令牌验证）。Gateway本身也集成了强大的限流功能，结合使用Redis+SpEL表达式，可以对业务系统进行精准限流。
+
+**调用链路追踪**
+
+微服务的一大特点就是完成一个业务场景所需要调用的上下游链路非常长，比如说一个下单操作，后台就要调用商品、订单、营销优惠、履约、消息推送、支付等等一大家子微服务，任何一个环节出错可能都会导致下单失败。那同学们如何在一个调用链路中定位到出问题的环节呢？生产环境可不是我们的开发机器，不能为所欲为的做线上debug，那我们只能依靠日志线索。
+
+Sleuth是Spring Cloud提供的调用链路追踪组件，它进行线上问题排查必不可少的关键环节，单就Sleuth来说，它就是在一整条调用链路中打上某个标记，将一个api请求所调用的所有上下游链路串联起来。如果从宏观的角度来说，调用链追踪还涉及到日志打标、调用链分析、日志收集、构建搜索Index等等流程，我们在本章中将通过Sleuth+Zipkin+ELK（Elasticsearch, Logstash，Kibana）这五种技术结合使用，玩转调用链路追踪。
+
+**消息驱动**
+
+Kafka和RabbitMQ是目前应用最广泛的消息中间件，很多异步调用场景底层都依赖于消息组件，比如说电商场景中的商品批量发布，或者下单成功后的邮件通知系统等等。Stream是Spring Cloud为我们提供的消息驱动组件，它代理了业务层和底层的物理中间件的交互，至于底层中间件是Kafka还是RabbitMQ，对业务层几乎是无感知的。借助Stream我们不仅可以轻松实现组播（组内单播）和广播场景，同时Stream还提供了对异常处理的丰富支持。
+
+**防流量卫兵**
+
+Sentinel是阿里巴巴开源的一款主打“流量控制”的组件，它秉承了阿里系组件十八班武艺样样精通的风格，与Spring Cloud、Dubbo、甚至GRPC都可以很好的集成，在分布式流量控制（包括秒杀场景的突发流量场景）、熔断、消息驱动下的削峰填谷等各个场景下都有稳定发挥，要知道它可是在背后默默支撑双十一流控业务的顶梁柱。
+
+**小结**
+
+本节我们对Spring的整体架构做了一个简单的讲解，这一小节只是让同学们对Spring Cloud有一个朦胧的概念，大致了解下Spring Cloud都有哪些组件，希望大家看完以后有这么一个感觉-“Spring Cloud真心牛逼啊”！咱现在就像相亲一样，只是跟Spring Cloud打了个照面，然后了解了人家擅长什么，至于Spring Cloud的内在美，还有待同学们在未来的一个多月的课程中深入了解。
+
+在下一小节里，我将跟大家介绍Spring Cloud大家庭中的三个帮派，以及这三派人马之间的恩怨情仇。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/117992c9-1b3b-4ce8-9b8f-d2fdddcd65a1/2020-09-17_051206.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QDPTFQKP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225521Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDmLqz5ADLaTo2M4AczpHPC%2BsdIzQdOSILpYgKipyvSkAiEAvSAQAf9DDNWg%2BKQOaXtvYveWx9aBXyz6notvW0L%2F948qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEGKrMX%2FNG12Xc2pICrcA4Oy4EH6ULu%2FkMl%2BbLDXMjG8DCIvBmQ6gkngra0RyslegaY%2FxUmAP3fx5sfJ7eK35vx8UpHCaBi%2BWRnGesHyTwiS%2FTuSuJ5UKYjeFo5W3hMo7xpQB3zaohZQ9eIrQWhJTM1ED3jJZS7oRuIeWRrPcqOyqUfFRChAeLj9hnS21kuCBEBdbD%2Bnn96WMDZjDz9Sd0KA2k%2FqNe7yzmvy08tFVVB5uW2kW7OyF06%2BTLf9F2mV4e9iTI781EiZg04Ule3Bp8bldzNJQVa2BNJdFUZRw2kUvHernM8SGycrXQHKysbb0HtP5IdVYNOSEovYv1Al4qVFlljaDSvn5FEHxi4fbaEGNL%2FdTzAyE45yA3GjkfQknKaCjknI7tzA56BMsDVEdJ7PKDoCeFYQLxuW1kG%2BIKWYrolCiJpHdUeewOkFfhfAplZKMh0tjDwfVyq62v6PGiv2T%2FOByJrakLFRc%2Bu8DTDdlnCt8rW0RdqabvldSUNHiexm2bTQNFJVhatXC9zFq1QN5S6D7XUCGdDFFWQvtvUr1QruM3W1qEyGCX6%2Fcyn37%2FVSxUJ%2FLfROSUunUaKChJfT4HvZWG1NoU2oXLF9Fat%2Bx%2FlSc4IZdQ0mWkJEvgweu1x0miRoNsVl3NCfMJm3%2F9IGOqUB6%2Bvy5BhXtKzEjxI2XUWXpgA2ShtY36oEuBB9VrjSttVgR3FOU3XQ6Q6O6kON7sinfRIB%2BTPaI3wfrldvQUvjSaFI%2FLDs%2BAo4HCfWeHJr%2F2Mibr%2BFDZzsiznoHgh8W9WJtN7TQo8DSejt8%2Fo4cCXz1r5Z%2FUPzWqjun%2FmAHSqsBMRUwJnhUbNOFKi7dF8K7A4q4y3DJ0BjinuYpNsSkrlSiJnhsXCi&X-Amz-Signature=77a2ba5a792f92cc7b0e0624efe110cca1b705bfa996448d720c6dc3d4edb7a2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

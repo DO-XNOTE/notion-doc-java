@@ -1,0 +1,59 @@
+---
+title: 1-21 虚拟主机 - 使用Nginx为静态资源提供服务
+---
+
+# 1-21 虚拟主机 - 使用Nginx为静态资源提供服务
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/fa3d36a9-9546-49e3-849d-25e076ba54fa/SCR-20240804-eppx.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V2F4SF4I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224849Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCg5dUtRvM7cVyI2yp29R%2FbX%2Bvcz4Ql%2BlmymlEm0jFU%2FQIgGN6j8Cz5CwmlE0SnM35DRM600Yl6529z3Y%2BHV6PRWsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHsyXjJ6JIK31kM1RyrcA5feBF6DRF7OTmThL6hR8VC5GVjgtxgwDWslXcn%2BZMp8KVLBUV%2FHrd6A36ecR5lUhQWzHpjglTZc%2Bm3ZER%2BcoXW9iOnDhTnpzKrm94m4fvI435n%2F6DVSKUfVlD5LMekTx9%2BuC73gZOgPZdfpKjahs2C7dM2wF0grCjoev6Y%2BWjkde0TTaW13VcmfDat%2BLIEXPlvpyXcusluR10jIxMi3cFYaGYApaz7f%2ByOkWUKnz5nK9b7jefCtJJoZ6aF%2FprK2QPMo7WH1uYT1wA1mg%2FM117s7jIsovJFr%2FpKbzBhUrz4gt9bP4cbnaUNDHOFI1xNwXZQtOL3XtThu6SyggR7yXopU2drJFESaYbnFq%2FFAY7TjMG6ETyBreqrHSr2TmyrIoLVbQcGu8JlREUxe9B7l9WPBjtGoqXQ73cgvic%2BgR7GVhzaeGsC%2Bbs7TiDqPYEX88AMhTQu4J6PWAZOCiumR0IfI%2BKR2WwoGPZMMfOwEV21yVNgf9gjG7tgVsGggpgzMELGW2yjvfkTp37PxwXqXw%2BwSx%2FczUBzCQe6rRNLlQuxccGVtWoCI0093L2UMGnQVchYum%2BXZwfS8aEGOkn%2F4J7v5qsdP45HrVUKRfRCoSsxWIDl93kg5Wito7ltWMIG4%2F9IGOqUB7Pw9%2BATUnXch9WuR%2F4WDdJNVn4HxliZXPByfdcS3EH8A%2FC4zxZ1fzshEG%2FFV9ru6kTdOqIie%2B0goIa7ANICBMthIAzvW4%2FajZ6VmeCxsRMB3Zorc1cGq%2BWml1YABMCgKETruvgm7pDPD8pcvXVr6wPy8GVJiGFH714vThkFopkYpAwtY0rkfe%2BIJdIR9ZX04NK%2Ff2OlOS7LzXZ5bInfWpo1uOrZV&X-Amz-Signature=b60928caeebcd815b77231b6c004b358098e9aaa97c75e3b4f4f6e6ce2365a35&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/effff3f1-4421-4424-ab6e-20288635a607/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V2F4SF4I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224849Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCg5dUtRvM7cVyI2yp29R%2FbX%2Bvcz4Ql%2BlmymlEm0jFU%2FQIgGN6j8Cz5CwmlE0SnM35DRM600Yl6529z3Y%2BHV6PRWsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHsyXjJ6JIK31kM1RyrcA5feBF6DRF7OTmThL6hR8VC5GVjgtxgwDWslXcn%2BZMp8KVLBUV%2FHrd6A36ecR5lUhQWzHpjglTZc%2Bm3ZER%2BcoXW9iOnDhTnpzKrm94m4fvI435n%2F6DVSKUfVlD5LMekTx9%2BuC73gZOgPZdfpKjahs2C7dM2wF0grCjoev6Y%2BWjkde0TTaW13VcmfDat%2BLIEXPlvpyXcusluR10jIxMi3cFYaGYApaz7f%2ByOkWUKnz5nK9b7jefCtJJoZ6aF%2FprK2QPMo7WH1uYT1wA1mg%2FM117s7jIsovJFr%2FpKbzBhUrz4gt9bP4cbnaUNDHOFI1xNwXZQtOL3XtThu6SyggR7yXopU2drJFESaYbnFq%2FFAY7TjMG6ETyBreqrHSr2TmyrIoLVbQcGu8JlREUxe9B7l9WPBjtGoqXQ73cgvic%2BgR7GVhzaeGsC%2Bbs7TiDqPYEX88AMhTQu4J6PWAZOCiumR0IfI%2BKR2WwoGPZMMfOwEV21yVNgf9gjG7tgVsGggpgzMELGW2yjvfkTp37PxwXqXw%2BwSx%2FczUBzCQe6rRNLlQuxccGVtWoCI0093L2UMGnQVchYum%2BXZwfS8aEGOkn%2F4J7v5qsdP45HrVUKRfRCoSsxWIDl93kg5Wito7ltWMIG4%2F9IGOqUB7Pw9%2BATUnXch9WuR%2F4WDdJNVn4HxliZXPByfdcS3EH8A%2FC4zxZ1fzshEG%2FFV9ru6kTdOqIie%2B0goIa7ANICBMthIAzvW4%2FajZ6VmeCxsRMB3Zorc1cGq%2BWml1YABMCgKETruvgm7pDPD8pcvXVr6wPy8GVJiGFH714vThkFopkYpAwtY0rkfe%2BIJdIR9ZX04NK%2Ff2OlOS7LzXZ5bInfWpo1uOrZV&X-Amz-Signature=bf340eb195be75923241ee4c13b9c718f5800dc294c37e4178a88af34697ee89&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么这一节我们一起来搭建一下静态资源服务器，对于静态资源来讲的话，其实我们可以分为两类，那么第一类是我们的一些页面，像 h t m c s s e， g s，那么这些内容的话其实都是一些代码，我们可以把这些代码发布到服务上。另外对于我们一些文件，像音频，视频以及是图片，我们也能够把它们发布到网络上，以一个服务的形式让用户去进行访问。那么这些内容的话，其实我们都可以把它们作为一个静态资源，所以这一节的话我们可以发布一些静态资源，然后再去进行一个访问。那么首先我们可以来看一下，还是一样，我们是先进入到我们当前的这个 config 这个目录，那么在 config 目录里面我们要去定义静态资源服务器，其实我们也是要去设置一些相应的server，也就是我们的一个虚拟主机，那么我们会使用 m 点config，这个是我们把这个文件分离了出来，那么通过 include 导入到咱们的 nginx 点 config 里面去的。那么其实在这个里面我们去构建也是可以的。那么在这边我们可以这样子去做一个添加，我们把这一段代码拷贝一份新的，拷贝一份新的之后，那么在这边我们可以去构建一个新的端口号，那么端口号的名称我们改一下，改成90，那么 server name 保持不变，还是 local host。
+
+
+那么下方会有一个location， location 是它的一个匹配的规则，那么我们直接通过斜杠来访问，那么现在我们要去配的话，我们呢先去配一些静态的一些代码样式以及是脚本文件，那么这些内容的话我们会采用我们之前发布的一些相应的代码，那么这些代码的话其实我们也是都提供的在这个部位，那么这个其实就是我们之前所发布的一个福利shop。
+
+
+我们把这个直接要上传到我们的一个服务器上去，我们把相应的这个 f t p 工具打开一下，然后我们要去连一下，连了以后那么我们可以去找一个位置，我们找到这个home，我们把所有的一些静态文件放到这个 home 文件夹里面去也是可以的，这个时候我们是需要选中这个源码直接拖过来，那么等待它的一个上传。好。OK，那么可以看到现在是上传成功了，所有的都在这里，那么这是我们的一些源码，那么除了这个以外，我们在这边还有是一个文件夹，那么这个文件夹里面是包含了一些音频图片以及是视频，那么这些内容的话其实也是可以发布的，所以我们也预先把这个文件夹拖一下拖过来拖到咱们这个服务器里面去。
+
+
+好，那么这样子的话，上传完毕，那么相应的两个文件夹里面就会有内容了，然后回到我们的这个命令。行，那么在这边我们就需要去做一个配置了，那么首先一个我们要配一下咱们的root，那么这个 root 的话其实就是指定我们的一个资源的一个路径，那么这个资源我们是放在了 home 下，然后它的一个文件夹的名称是一个福迪杠shop，那么当我们的用户请求我们服务器的时候，那么只要接听到是 90 这个端口，另外它是从根目录也就是斜杠开始访问的，那么它就会找到 root 下在 home food shop 文件夹里面的内容。
+
+
+另外在下方我们是设置的一个 index 首页，在这里边要写一下 bindex 点h， t m，l，那么后面这个是没有的，这个没有的话其实是可以删掉的。那么这样子的话，其实我们就配置了一个静态资源的服务器，那么这个静态资源服务器配置的形式和我们之前这一块内容其实是类似的，原理也是一模一样的，我们把这个保存一下以后，那么我们是需要去重启一下。我们到 S1 目录使用 engines 来一个杠t。好，没有问题。再来一个杠 s 与 load 好，OK，那么现在那么我们就可以回到咱们的页面里面去，那么到页面里面我们就可以去访问一下，那么现在我们就可以请求 90 这个端口回车一下，那么这个时候你会发现我们的代码是可以成功的运行的，那么成功的运行的时候其实我们的数据其实也是全部都可以抓取到的。
+
+
+另外我们点击某一个商品，那么商品的详情也是会发生跳转，相应的内容也是全部都会展示出来的，那么这样子的话，其实对于我们的一些源码文件，我们是可以成功的发布了。那么随后我们再来做一个配置，来配置一下我们的一个静态的资源文件，那么还是一样回到命令行。那么在这个里面的话，其实我们的一个静态资源我们是可以和这个server，当前这个虚拟主机我们是可以放在一起的，那么放在一起的话，那么他们就可以共用共享同一个 90 这个端口。那么共享的话，那么在这里如何去写？有可写我们可以写多个。
+
+
+在这边我们把这个 location 拷贝一份新的以后，那么在这个地方既然是文件的话，文件是没有 index 首页的，所以我们直接把这一行给删掉，删除一下，那么删除一下以后，那么在后方我们要去指定一下我们的一个目录，那么咱们的一个目录是在 home 下，在 m 可这个文件夹里面。所以我们使用斜杠去匹配我们的m。
+
+
+好，那么现在我们呢可以保存一下以后重新的来一个杠 t 测试一下，那么这个时候你会发现他报了一个错，那么这个错是指我们可以看到这里有一个 location 斜杠，这个是指我们的这个重复了，也就是说当我们使用 location 的时候，我们的匹配规则不可以一模一样。如果说是一模一样的话，对于恩尼克斯来讲的话，他会不知道分配到哪一个，因为它有两个一模一样的，你是不可以去重复的。
+
+
+OK，然后我们就到这里面去修改一下，我们就需要在这个斜杠后方去加上一个相应的匹配的规则，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0b31204c-a903-4239-aea7-4e2e279dcaf8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V2F4SF4I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224849Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCg5dUtRvM7cVyI2yp29R%2FbX%2Bvcz4Ql%2BlmymlEm0jFU%2FQIgGN6j8Cz5CwmlE0SnM35DRM600Yl6529z3Y%2BHV6PRWsAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDHsyXjJ6JIK31kM1RyrcA5feBF6DRF7OTmThL6hR8VC5GVjgtxgwDWslXcn%2BZMp8KVLBUV%2FHrd6A36ecR5lUhQWzHpjglTZc%2Bm3ZER%2BcoXW9iOnDhTnpzKrm94m4fvI435n%2F6DVSKUfVlD5LMekTx9%2BuC73gZOgPZdfpKjahs2C7dM2wF0grCjoev6Y%2BWjkde0TTaW13VcmfDat%2BLIEXPlvpyXcusluR10jIxMi3cFYaGYApaz7f%2ByOkWUKnz5nK9b7jefCtJJoZ6aF%2FprK2QPMo7WH1uYT1wA1mg%2FM117s7jIsovJFr%2FpKbzBhUrz4gt9bP4cbnaUNDHOFI1xNwXZQtOL3XtThu6SyggR7yXopU2drJFESaYbnFq%2FFAY7TjMG6ETyBreqrHSr2TmyrIoLVbQcGu8JlREUxe9B7l9WPBjtGoqXQ73cgvic%2BgR7GVhzaeGsC%2Bbs7TiDqPYEX88AMhTQu4J6PWAZOCiumR0IfI%2BKR2WwoGPZMMfOwEV21yVNgf9gjG7tgVsGggpgzMELGW2yjvfkTp37PxwXqXw%2BwSx%2FczUBzCQe6rRNLlQuxccGVtWoCI0093L2UMGnQVchYum%2BXZwfS8aEGOkn%2F4J7v5qsdP45HrVUKRfRCoSsxWIDl93kg5Wito7ltWMIG4%2F9IGOqUB7Pw9%2BATUnXch9WuR%2F4WDdJNVn4HxliZXPByfdcS3EH8A%2FC4zxZ1fzshEG%2FFV9ru6kTdOqIie%2B0goIa7ANICBMthIAzvW4%2FajZ6VmeCxsRMB3Zorc1cGq%2BWml1YABMCgKETruvgm7pDPD8pcvXVr6wPy8GVJiGFH714vThkFopkYpAwtY0rkfe%2BIJdIR9ZX04NK%2Ff2OlOS7LzXZ5bInfWpo1uOrZV&X-Amz-Signature=ab280519ce7c39bfe882b85824397e5c8fb595cb32064c63523c3c8ae6fde993&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么这个匹配的规则其实就是匹配到我们这个文件夹里面去，所以在这个地方我们直接可以写上一个 m 可，然后把这个给拿掉。那么当我们的用户去请求的时候，那么其实用户只要请求我们的斜杠 m 可，那么这个时候他这个路径是会拼接到这个斜杠 home 的后方，再去请求里面的资源的。它是这样的一个道理。随后我们可以保存一下之后再来一个杠t，你会发现这个没有任何问题。随后杠 s 与 load 回收一下。
+
+
+好，随后我们再来请求一下咱们的这个静态资源的一些内容，那么在这边我们就应该要请求一个 m 课了，这是我们的匹配规则。随后我们可以去看一下咱们的一个图片，那么图片的话是 image 斜杠，来一个face，一点 PNG 回车一下，那么这个时候你会发现我们在本地打开的这些图片，那么在我们的服务器上也可以对外提供服务了，那么提供服务了以后我们是可以通过 URL 去进行访问的。
+
+
+那么这是一张静态的图片，其实我们还会有动态的，我们来看一下，这里面会有一个 m 可1001，我们把这个 g f 拷贝一下，回到我们浏览器里面，把这个路径重新的改一下，按一个回车，那么你会发现我们的 g i f 也是可以去动的，也是没有问题。OK，好。
+
+
+然后这是我们的一个图片，那么除了图片以外，我们还会有一个video，那么我们把视频也来试一下，视频的话把这边全部改掉， video 斜杠 play 点 MP4 回车一下。那么在那么可以看到这个是我们之前的一个课程，我是把这个视频放到了咱们的服务器上，那么通过我们静态资源的一个访问，那么其实我们用户也能够在浏览器访问一下我们的视频，去看一下我们的视频都是没有问题的，那么就是在浏览器里面的一个播放。好，然后我们再来看一下，我们再来看一个音频，也就是一个MP3，把这个拷贝一下，修改浏览器里面的路径，这是一个 audio 斜杠a，b， c d m p 3 回车一下。OK，可以看到这个一首歌也是可以去播放的。那么这样子的话，其实我们就完成了在我们的 engines 里面的一个配置，配置了我们的一个静态资源服务器，那么一个是咱们发布的源码，另外一块就是我们的一个资源文件，也就是图片，视频以及是音频。那么在这里我们有一点是需要去注意的，当我们使用 root 的时候，其实我们在访问的时候，我们的这个匹配规则，那么一定要存在，这个 m 可是必须在这个 home 的后方的，你不可以去配一个斜杠，然后 home 斜杠m。那么这样子的话我们的斜杠它会重复，那么可能有一些同学会问，能不能在这个地方我们去自定义一个名称呢？因为这个 m 可其实对于一些用户来讲的话，如果我们使用了root，那么我们的后面的路径够长的话，那么用户都会知道其实这个路径和我们自己服务器里面的路径是全部都匹配的，所以往往我们可以使用另外一种形式去配置我们的这个所在的目录。
+
+
+那么我们可以采取一种别名的形式，在这里面我们可以去做一个修改。我们在这里我们可以使用一个叫做Alice，那么这个意思就叫做是一个别名，我们通过别名去进行访问，那么这个别名我们可以配一下，取一个名字叫做 home 斜杠，那么我们的一个所在的路径在这个 m 课的里面，然后这一行我们就注释掉，这一行注释。
+
+
+然后在这边我们呢可以去加上一个别名，这个别名的话你可以随便的去取，比方说我们可以取一个名字就叫做是Statical，那么这样子当用户来访问这个 static 以后，那么我们所有的一些内容都会从这个 m 稿后面去找，那么这个路径的话对于用户来讲是透明的，他不知道我们前面的路径是怎样的，所以我们可以使用这个 allies 别名来进行一个设置也是没有问题的。好，然后我们在这里直接可以保存一下，我们这样子我们把这个拷贝一份，两种方式是可以全部都并存的。把这个拷贝一份，然后这个是删掉，那么这个保留，这是从斜杠后方的 m 可去进行访问，那么下面一个就是一个 l s。好，那么这样子我们可以保存一下。之后我们先来杠t，没有问题，再来一个杠 s reload。好，OK，那么随后我们可以来做一个测试的，那么这里我们还是使用图片的话会更加的方便一些。那么现在这个是我们使用 root 所访问的一种方式，那么随后我们可以把它改掉。
+
+
+我们可以使用咱们的static，也就是别名来访问static，那么后方的话就是 image 外加 phase one，那么中间它其实会有一个m，那么这个 m 的话是透明的，是会看不见的，因为我们使用了这个 Alice 回收一下，那么你会发现那么这个图片也是可以访问到的。OK，那么这样子的话，其实我们就实现了通过这种两种方式来实现我们静态资源的一个配置了。
+
+

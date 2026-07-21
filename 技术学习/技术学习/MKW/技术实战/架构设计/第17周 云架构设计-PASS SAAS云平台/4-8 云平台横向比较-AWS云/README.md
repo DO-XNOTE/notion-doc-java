@@ -1,0 +1,89 @@
+---
+title: 4-8 云平台横向比较-AWS云
+---
+
+# 4-8 云平台横向比较-AWS云
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cb80943c-3d3f-4b6c-a580-f56e81df190c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=c977f8b09f2c9819df1a241d7f7ef82569f75b99a274ed4d14041fad6d856f7e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+加起需求到落地的桥梁，构建 IT 新蓝图。我是张飞扬。上一小节我们聊了聊百度云。这一小节我们来聊一聊全球第一大公有云平台 AWS 云。可以说 AWS 云是什么？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ffb2c4d8-aec5-4e76-a1c1-44f29b970437/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=ffc347810fdea62014ccf6e72b2a16094557f1382c3a5be9cf10e600bef9a17f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+是整个公有云的鼻祖老法师了。我们来看一看它有什么特别之处。要说到特别之处，大家想一想，是不是 cloud formation 本身就是 AWS 的一个特别之处。这是第一个什么推出的不可变基础架构的全自动化部署方案，类似于之前聊到的terraform，类似于阿里的什么 ROI 系统，可以实现什么图形化的拖拖拉拉，以及杰森和芽帽文件的配置，完成所有计算、存储核心资源的自动化部署，非常酷炫。
+
+
+
+之前我们已经聊到过，所以不废话多说，我们来聊一聊另外两个 AWS 引以为好的功能。其中一个就叫Landa，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0e553f67-eaa5-437c-bf1a-908f61f6fe48/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=e7567fef4ca72d10755a94040c1568617761138a27e2105f1a134aaba0adebfd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+用来管计算资源。大家有很多套路，比如像容器化Kubernetes，标准的计算节点在 AWS 小叫做 ec two。这些大家都有没有区别？但是 Landa 是什么？是 AWS 首推的 service 解决方案。我们来看一看它首推的方案有多么酷炫。
+
+
+这里是一个实例，是一个我们想查一查当地天气的实力。飞扬老师访问了一个网站，这个网站很有意思，它实现动静分离，它的所有静态代码全部放在左边。 S3 是什么？是a、w、 s 的对象存储上。 S3 是天生就可以对外提供网页渲染的，也就是 JS 文件、c、s、 s 文件以及后台的 JPG 文件，在 s c s 上就可以直接打开，提供网页的读取渲染，所以不需要任何服务器来支撑的。
+
+
+这个时候我们的浏览器就是第二个图浏览器，是飞扬老师的笔记本浏览器。去访问这个网站，其实就默认打开了他 S3 上的所有资源。中间如果发生一些阿贾克思，靠，比如副业老师选了地址，上海选了时间，今天下午 2 点整。我想查一下天气。这个时候会触发一个 r 加 x call，这个 call 会发给 AWS 的 API 网关。这个网关做什么事？它做一个简单的鉴权和验证，看看这是不是一个机器人发出来的请求，还是一个普通用户的请求，有没有一些特征？比如这个地址瞬间发了1万个请求，很有可能是个机器人。这个地址可能在当前几分钟之内只发了几个请求。应该是一个正常用户，他把 a p i 变成了一个在 a w s 内部叫做 inventor 的东西。一个小的事件，这个事件发给了后台一个应用服务器，这个服务器就叫做Landa。它跟普通服务器相比什么区别？你在上传应用的时候，你只要传你的应用就可以了。
+
+
+你不用关心后台是服务器还是虚拟机还是容器，你也不用关心它是 1 颗 CPU 还是 2 颗CPU，是单节点还是 100 个节点，都不用管。它会把你的代码跑在后台一些服务器上。这些服务器对外全部透明的，它能够连接不同的服务。比如像这里提到的 dynamio d、b。这是一套 NO SQL，很强大的 NO SQL，他去读取了数据。这个数据其实来自于哪里？来自于一个e、t、 l 的数据抽取系统。它从什么？从国家气象局每分钟去抽取一下全国的所有的预测信息。比如你这个城市未来 3 小时，未来 10 小时，预计大约会到几度，天气会如何？这些信息全部抽取到Dynamdb。
+
+
+这是一个数据挖掘过程，所以跟我们的应用无关。我们的 Landa 只负责从 dynamic DB 找出对应时间、对应地址的相关的气候信息。比如这里返回了 35 度，它就会什么？通过 API 网关返回给我的浏览器说预计是 35 度，预计是晴天，有点热，请注意你的衣服的更替。这样一段内容就通过 Landa 进行了返回。
+
+
+几个男的其实做的事情很简单，收到一个消息读取数据库。碰到这种简单应用，无脑应用。但是它的体量可能很大，全球不只有一个飞扬老师，有可能有什么？有一个人都在查天气，同时触发了不同的压力。不同的城市，不同的 ip 地址发送了大量的压力。这个时候我不需要关心我后台是 1 个服务器还是 10 个服务器，还是 100 个服务器。你只需要把您应用布在 Lana 上， Lana 会根据压力自动的扩缩容它的服务器的数量。同时它的收费跟CPU，内存服务器完全无关，它只按什么消息或者是 API 调用的次数来收。比如 1000 个消息收 1 块钱，如果当时有 10 万个用户同时在触发压力，他有可能就收了你 100 块钱。这是一个比方兰达的收费方法，被消息或者 API 调用来进行收费。
+
+
+上面是一个浏览网页的例子。我们下面聊一个更酷炫一点的
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/713e3d46-f051-494a-97ac-2aeb1ad63575/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=c93ead5eb069015e0a3862b62d07d8e65bc235f68f4823aadc1fa74175e08929&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+。我去买了一张最近比较火的叫你好，李焕英的票。其实不是一张，是两张。我把其中一张票要发给我的女朋友。怎么发？我说。首先左边是我的 APP 发起一个请求，我希望把一张票发给我的好友，好友的 ID 是多少？发现这样一个请求以后，它会生成一个什么 API 调用。通常移动端的什么所有请求都在后台，都是 API 调用， API 调用会经过 API 网关验证一下你的身份没问题，你的好友身份也很清晰。这个时候就会触发一个event，这个 event 还是发给一个 Lambda 服务。
+
+
+这个 Landa 服务很简单，它只是什么，它只是构造一个消息推送，把消息推送到你的女朋友的手机端的 APP 上面。这个消息里面包含这张票的二维码、扫描码，以及相关的票的时间地点，以后几排几座等等信息就发过去了。这个时候你女朋友就很开心，就可以在 APP 里面再通过互动，或者转其他的社交平台，比如微信来跟你互动，给你点个赞，到时候你们就可以相约看电影了。这样整个一个过程。
+
+
+
+蓝带在里面做的什么？做的是不是中间商的事情？他只是把接收到的消息通过消息推送的方式发给另外一个APP，也是非常简单。但是它的体量可能很大了。有大量的人都是想过年期间像电影很酷炫，我一定要什么给我的女朋友，我的老婆，我的小情人发消息，会有大量的事件可能触发。同时这些事件过程当中，我希望什么？我不要按 CPU 内存扶起收费，我完全应该按照用户体验有多少个词调用，有多少个消息来收费。基于这样的考虑，你就比较适合选 Ladon 系统。
+
+
+Lambda 系统是不是只有 AWS 有了？非自从有了 lander 以后，大量的这种什么不是长作业的任务，就是短时触发的任务，大家都希望转成这种 serverless 的概念，所以相应的像谷歌、微软都推出了兰达，国内阿里、百度、腾讯也都推出了 serverless 的方案。
+有的叫function，有的叫lander，有的叫service。五花八门的叫法，本质都是一样。你不用关心什么容器，你也不用关心福气，你不用关心可用性，你也不用关心安全性。一切都以消息或者是什么事件来驱动，从而快速的进行服务响应，同时按照被驱动的次数来进行收费的一种云服务。
+
+
+好 Landa 之所以还是 AWS 的独家之处就在于什么
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e7bd6abf-6179-4650-92ea-5b4561760b9c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=da18d1461873941eb3255f449680bfbda03a6dcaa3916029730eb49a208550ee&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+ Landa 不光是第一个 service 的解决方案，同时也是跟后台平台兼容性最好的一个解决方案。其他云平台也有很多的 service 解决方案，但未必能像 AWS 一样做到能跟物联网平台能跟对象存储数据库流处理、消息推送、工作任务、资源管理、日志管理等等互动。后面我们就会跟大家实操一个把 Landa 作为什么功能函数，跟 AWS colour formation 做资源统一管理，统一创建，统一删除进行配合。另外跟 Amazon 的 cloud watch 进行资源监控的整体解决方案。
+
+
+好，这就是我们后面的主要的 AWS 的实战例子。除了前面说到的什么 car formation、lander， AWS 还有什么令大家心仪的酷炫解决方案？辅导老师还要推出一个叫独家优势，叫 Amazon RDS。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9c2bbb2b-980c-49c3-b444-a3e0ebcb178f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=cbf4d8ed5dbba627f6078a03a14fa1d528fc2a75f195c3bd24d4ff3d5c8a96f2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+大家说这 RDS 谁都有，阿里云是不是有我们的什么关系？数据库的一个主推套路 RDS， Amazon 有什么区别？首先看一看它有一套自身的引擎，叫 Aurora 引擎。这个引擎是属于什么？ Oracle 和 MySQL 之间的。它既能像支撑 MySQL 一样支撑它的一些常见的 SQL 的查询 JDK ，同时也能支撑像 Oracle 那样复杂的什么存储过程， trigger 等等。
+
+
+好。当然了，作为一个标准的 r d s 的关系型数据库，必然要支撑像Mycqo， Postgresql 这样的基本引擎。除此以外， MySQL 的变种 Merry DB 也能支撑。还有什么好的方案？ SQL server 很多用 Donald 的，很多用 windows 系统的，是不是 cqserver 很熟悉？除此以外，真正 AWS 引以为傲的技术，它能很好的支撑Oracle。大家都知道 Oracle 是所有数据库里面最复杂，它有集群、归档、管理、备份以及各种各样的容灾解决方案，复杂度非常非常高。有大量的存储过程，有大量的触发器，整个解决方案的复杂如此之高，大家在原来的数据中心里能够很好的玩起来，是指靠什么？靠一个强大的 DBA 团队，不是一个人 2 个人，可能是 10 个人、 20 个人的 DBA 团队。
+
+
+在支撑到了云上以后，我们完全可以委托 AWS 的阿玛 RDS 团队帮你完成整个集群备份、容灾的支撑和管理。是不是大难题就解决了？很多语音平台说我都养了很多 Oracle 的s，所谓 Oracle s 就是什么？ Oracle 的真正的大拿是属于低级的。
+
+
+什么 Oracle DBA 这些。 Oracle s 干什么事情？只是帮大家把 Oracle 服务器迁到云上换一个数据库，它会告诉你应该怎么样换去保持你原有的存储过程触发器。但是目标是换一个数据库。换完了以后你其实得不到像 Oracle 那种什么单表支撑几亿条记录的这种强大的数据库服务的。很多时候是通过一些类似于 SQL 转 NOSQL 分库分表来实现强大数据库，变成很多个小的弱的数据库来并发完成原来的任务。这个时候其实应用的改造复杂度是很大的。
+
+
+如果你希望是快速上云，选择 AWS 的 RDS  就是一个很好的方案。最强大的 Oracle s 团队就在亚马逊，最强大的 Oracle 支撑最兼容性的数据上云解决方案。所以这也是什么A 一个独 AWS 家优势。好，聊完了三大a、w、 s 独家优势，我们来聊一聊，如果你真正想玩AWS，会有什么样的情况。其实是什么？是有两个选择的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/911c92d7-4c59-4417-97c0-b19323ae8038/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SR4TCWT3%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231134Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGJqPXTL7NExef1NlV4J6LmjL%2F7tv3cD2bYNFSQiPleiAiBodR9QlbQrYUfzyBEO1JvXFcGpVqNQibokiPATQj54MyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMIyTFSck3sZVFn3W7KtwDDztnX%2BFAyRHwoZOKeYM0RHc0Vtn6FpvXYHF9JmI7fqLKcuximTOZAy5Va8XfarHFAT5CD2C1W2bhiY0Tm7pRQ78tdIzj2lLM1YwsL3KphId92QaJWdl1RhjYY%2BUpFt3wvJGcvNtAh8G%2FX1wtg2CRsvv%2BAB15k5%2B8mIMSNlTOIRYPhAA1nYF0u3%2BgI3bb6rrSp3w5CXSQKgOctfOWJyn3Tpn%2FHphaAACuqKJ5Zq4BPTHEAT3w0HnCiY96ehm%2FZT%2BfpGn%2BR74oAobOpilp3Q8fEFPeFterCKnYNzgCWeBW05dinxVvdKK5BIt%2BAWnoTnVmch%2FAh0lQ9%2FB1OWN3%2BVPnBia2TReI5o4MIU224gBChaX4pefJCQ99eWczUXsAGKghxzAObf4NML8q0wZUPNZ4bM64JMN%2BGsP5LzyOSYVinCOssRHs3aSN7dfoWiJFDttPFUdAE4FijrJTdlRQYPDmjTAoikOeJfVfuCLfCUsmn4LKQQ8W0A2UfNh6BVQjx0JINBI4e35OnW7fUvDYwz2Q4SEL1GVcwV9jRJ4lbPnhTP9BLD3ePmIlx8VRn1Uiws8d3fdDZh4Z%2Br6O2mE6YsslU0CA0a71icPjQZFaOe2qywSAcpn29y33VQb%2FlFcwtLj%2F0gY6pgEfrUPYXNQHkDolPRXjOAM0UcKR8nPQFeuPLk4KTRCmvWp8%2BN5dfxjsR2pGHxfKLVJJIw7%2Fok0ReI123MizPuKWzWt%2FvjbYI8TA4PI%2B9nGSnZR4Pd0iCumJYSBlzQO49xksN3WkxnBCHEfda4WGh4hGJacpG6gGSTp5Oqb7OtWznuT9pDpCPQPOw8Ra%2BtQS1SNbi2kVoLCiYuP8DuPAqUZ8g3lLmW2b&X-Amz-Signature=b30ee48dc1073b8a4bde59623368b59626b86099341b852fcd0215401c3724cb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+第一个选择就是全球第一大云平台运营商 AWS 全球网站，这是一个真正的第一大平台。第二个选择就是剪裁版，又称阉割版。国内的AWS，它是把什么 AWS 的主要功能在国内做了一个克隆，但是因为什么中国和国外的用户的认证体系的不同，所以宁夏和北京两个数据中心形成了一个独立的 AWS 集群。这个集群其实跟全球集群是不通的。在这种情况下，你就会有两个选择，是在全球注册还是在什么国内注册。
+
+
+菲亚老师建议是在全球 AWS 注册，因为如果你要练手，应该拿最强大的原因就是全球 AWS 同时国内注册有一个难点，就是它不支持个人用户，它企业用户，你要提供企业资质、企业法人护照、企业法人代表相关的个人信息等等，相对来说有点烦。所以我们不妨后面我会带着大家看一下如何去公有的 AWS 全球平台去注册一个账号，在这个账号上实现 Lambda 的全自动的应用的发布，以及 RDS 选择 Oracle 数据库来搭建什么数据库系统，做数据库迁移等等。这里还要强调一点，不管你是选国内的AWS，也加在光环新网上的AWS，亦或是全球的AWS，你都可以享受如此多的免费服务。尤其是在第一年，几百个小时的什么免费计算服务，几 g 的对象存储服务，RDS 几百个小时的支撑服务，以及一项但 DynamoDB 这样的大型的 NOSQL，还有像 Lambada  这样的 100 万次的服务请求和调用，是不是很酷炫？好，付洋老师就用这免费套餐来跟大家聊一聊Lambda，聊一聊 RDS 大家敬请期待。
+
+

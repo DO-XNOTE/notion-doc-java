@@ -1,0 +1,49 @@
+---
+title: 2-6 文档的基本操作 - 添加文档与自动映射
+---
+
+# 2-6 文档的基本操作 - 添加文档与自动映射
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0db232f5-dfde-4f86-94cd-da5c726f9483/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YGTZFIMC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225131Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDW%2Fs2fkuZe1O9PVWjU6f2Hhbgwr7%2BSnE05iKtmA%2FpNWwIgYmUDynbYa04wrYGOgeq7EOXGmwmCVjUcaZ6N59fxVKQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDB3klmTXrM4npYH4eSrcA6YMri9a8PyTlBE2toknohYyzebFOWcpJokTB2xehuSeWw5qm7L4h7cWgL8dIX682twZ1hrw8ON6KXlcRetMP1R6grWLu9ZjPCReFnUVQf8v%2F4uiZln8mmoUu08fNQ11EJVzMhXjt%2BmcmKk67BW5LqmyK%2Bhwyq7Y0%2FnFdw3Fkij2rhrAmPVqz0rC%2FMloH9UAeyv1Nxg1qJzFk10E9K4EqELev7HZbwwPUVV1UMPyE140GeX3QI5MhPqr38wyiH%2F2Vja5DboKoDIad1VwGJuVkbHa8JUrIOf1Vky0hUSYr1kR0OhCdzepUVIubkZZLO%2F44WGQt%2F6mfYictMARGvU3ekyYrRBpvSQf%2FziicyH4d4uu8wLilGHyrdT2ECnb1tOMOC7gSR%2F2x5Zl8cT1dg42fp2eTwVgAltrGSwq85y4UyeO6x0O1T5Fp1kVPdcxQZqE%2FVv0CQby987LlPTbgjFoslU74zuEx2ia3%2BD7X16f4sNpK%2F784hn0dkfe0ZGWX2JcN51ghzxZIsfCPz5BQLu7x19pPPAakQ0n1sia3b1i1qgKixvDoRbxkDjh0gwINiCHzisus4cfZPmEHGj%2FS3CaCM76Hg0j6jzR22q1BoEAfNYwvY9wf4T2fd6T9C6cMMS5%2F9IGOqUBHUPfpiXUpm1I5tqmsbcG1hzMpMZ3rQ%2FNXQqfCz5EegURbjAZ3KEkdh7yowr37H0u9zWMrJFF8ZznIoNI9BTNemn2g4q%2B8bUReE7uVmpr%2FyC6hTB9GyM3NWedpUJDFjpWIUZn2lPj5Z5zkwzgXk326c2ApUhi31FOqgfjEOB4%2B7M1wZ2tzSYgwIC8n%2FRe9TBjVko7ybwxeTSlrqTKvADAjO76w2RL&X-Amz-Signature=1e82047a9bf8c1a84986aeb2e694f64bc91e9590bad83d9e24dc307071c63613&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b1f2be86-61d5-4301-a959-a5dcb023574e/SCR-20240805-owzd.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YGTZFIMC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225131Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDW%2Fs2fkuZe1O9PVWjU6f2Hhbgwr7%2BSnE05iKtmA%2FpNWwIgYmUDynbYa04wrYGOgeq7EOXGmwmCVjUcaZ6N59fxVKQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDB3klmTXrM4npYH4eSrcA6YMri9a8PyTlBE2toknohYyzebFOWcpJokTB2xehuSeWw5qm7L4h7cWgL8dIX682twZ1hrw8ON6KXlcRetMP1R6grWLu9ZjPCReFnUVQf8v%2F4uiZln8mmoUu08fNQ11EJVzMhXjt%2BmcmKk67BW5LqmyK%2Bhwyq7Y0%2FnFdw3Fkij2rhrAmPVqz0rC%2FMloH9UAeyv1Nxg1qJzFk10E9K4EqELev7HZbwwPUVV1UMPyE140GeX3QI5MhPqr38wyiH%2F2Vja5DboKoDIad1VwGJuVkbHa8JUrIOf1Vky0hUSYr1kR0OhCdzepUVIubkZZLO%2F44WGQt%2F6mfYictMARGvU3ekyYrRBpvSQf%2FziicyH4d4uu8wLilGHyrdT2ECnb1tOMOC7gSR%2F2x5Zl8cT1dg42fp2eTwVgAltrGSwq85y4UyeO6x0O1T5Fp1kVPdcxQZqE%2FVv0CQby987LlPTbgjFoslU74zuEx2ia3%2BD7X16f4sNpK%2F784hn0dkfe0ZGWX2JcN51ghzxZIsfCPz5BQLu7x19pPPAakQ0n1sia3b1i1qgKixvDoRbxkDjh0gwINiCHzisus4cfZPmEHGj%2FS3CaCM76Hg0j6jzR22q1BoEAfNYwvY9wf4T2fd6T9C6cMMS5%2F9IGOqUBHUPfpiXUpm1I5tqmsbcG1hzMpMZ3rQ%2FNXQqfCz5EegURbjAZ3KEkdh7yowr37H0u9zWMrJFF8ZznIoNI9BTNemn2g4q%2B8bUReE7uVmpr%2FyC6hTB9GyM3NWedpUJDFjpWIUZn2lPj5Z5zkwzgXk326c2ApUhi31FOqgfjEOB4%2B7M1wZ2tzSYgwIC8n%2FRe9TBjVko7ybwxeTSlrqTKvADAjO76w2RL&X-Amz-Signature=13d292159591aa1e61e9bf78758140d153faab23eed81db7239631d5268d6d86&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，那么目前我们是有了一个索引信息中的这个 mapping 对吧，这个是我们之前是手动去创建的，手动去新增的。除了手动的形式的话，其实我们也可以通过一种自动的方式去帮我们做一个动态的映射。那么其实我们也是可以这样子去做的，这样子的话我们就需要有一个新的一个索引了。那么我们在这里去，创建一下这个索引的名称，比方说叫做 my dog 然后分片数一个，然后副本0。好 OK 刷新一下，创建了一个新的 my Doc 在这个里面的话，其实我们的这个 mapping 里面是空的，什么都没有。随后我们就可以来做一个创建。我们这一节课，一起来看一下。
+
+
+先来看我们如何去增加数据，其实也就是添加新的文档数据，那么还是要打开咱们的这个 post 面在这里面。那么要去新增的话新增在这里首先它是一个 post 随后在这个后面，那么就是它所要去新增加到某一个索引之下的。那么这个索引的名称你是需要有的。那么在这里我要去写下写上这个 my Doc 这是我们刚刚新增加的一个内容。然后在它的后面，因为由于我们现在是要去创建一个文档，所以我们要给它加上一个相应的类型。下划线 Doc 下划线 Doc 就是代表我们要去创建文档了。那么这个 Doc 其实也就是和我们可以来看一下在开的插件里面。那么我们在这个之前里面所对应的这个这是我们之前的那个在这个 mapping 下方有一个下划线 Doc 就是他们的道理其实都是一样的，都是文档。好随后我们再到这个下方。那么我们要去创建一个文档的话，那么你是需要有相应的一个 ID 的对吧，这个 ID 我们是可以去指定的，比方说我们来写一个叫做。这个 1 的话就是我们目前新增加的文档的组件，这个是属于是我们 ES 中的一个组件，和我们现在要去新增加的一个数据是完全没有任何关系的。好随后我们在这里面我们就要去添加一堆相应的内容了，也就是我们的一个文档数据。那么这个文档数据的话在这里我就直接给复制一下，把它给复制过来。其中会有 idname 迪斯科品以及是 create date 这个 ID 这是一个数值。然后我们的 name 和迪斯科品其实都是字符串。另外我们的克瑞斯 date 它是一个日期类型，然后我们来执行一个创建。
+
+
+好，所以创建成功，来看一下。其实它在这里会有一些相应的信息，比方说我们的一个索引，它是放在了 my Doc 之下，它的文档类型本身就是一个文档，因为我们早期老版本中其实它会有一个菜品，现在我们没有了，所以统一都是这个下划线 Doc 然后这个 ID 这个其实就是我们现在新增加的这一条数据的一个 ID 那么它是编号为1，然后版本号本身就会有，如果说你修改的话会累加结果是 create 也就是我们创建是成功了。
+
+
+Ok 。好，随后我们到咱们的 head 插件我们来。刷新一下之后，我们来一个数据浏览来看一下。在这里面我们可以在这边索引，其实可以点一下这个 my Doc 点一下。点一下之后，那么其实就是代表我们是要选中当前这个索引下，展示它里面的一些数据。那么很明显在这边能够看得出来，有 index type ID 其实全部都有。另外这是它的一个 score 就是相关性的一个分数。那么随后后面这一段内容从 ID name description 一直到 create 那么这一块内容其实就是我们的一个数据，这个数据里面也包含一个 ID 这个 ID 是跟着我们这个数据走的，这个 ID 和我们这个下划线 ID 本质上没有任何区别。
+
+
+OK ，这个下划线 ID 是我们当前这个文档的 ID 这个文档在我们当前索引中的一个 ID 是它的一个索引库中的一个组件，这两个是完全不一样的。那么这个 ID 这个 ID 001 是我们当前这个数据，它是从哪里来的？它有可能是从数据库中来的吗？那么从数据库中来的话，那么这个就是它数据库中的一个 ID 是它的业务 ID 这两个 ID 是完全不一样的。当然我们在设置的时候，这两个 ID 你都设置为101，那么其实也可以在这里为了区分，所以我这两个都是设置成不一样的了。OK ，那么这个就是它的一个新增加的一条相应的数据。
+
+
+好，随后我们可以到它的前面，我们可以到概览中去，我们看一下它的索引信息，然后在这个地方我们就能够看到这个 mapping 之前是一个空的对吧。那么现在就已经是有了，其中包含了 nameidcreatedate 还有是 description 那么其中我们的 name 和 description 由于都是字符串，所以它统一的都给我们了 text 然后日期它有，因为我们的日期它会自动做一个格式化匹配的话就是一个 date 另外 ID 我们是一个数值，所以是一个浪。
+
+
+那么随后我们再来看就说当我们的一个数据类型，如果说是 text 的话，它其实会有一个 fields 这两个其实都有吧。那么这个 fields 里面包含了一个 keyword 以及是 ignore above 蔡牌 Q 的。那么这个是什么意思呢？那么就是说就是说我们没有通过自动去设置，我们手动去设置的话，我们可以单独只设置一个 text 那么它其实是为我们丰富了一个额外多的一个 fierce 一个属性，也就是 Q word 那么当我们额外增加了一个 Q 的以后，那么其实就相当于是说我们是可以针对于我们的一个字段，可以去提供多种的索引模式。
+
+
+那么之前我们是一种，现在我们有两种，那么这个是 text 和 Q 的两个都在一起了，那么使用 text 我们是可以去做到一个相应的全文检索的。当我们有了一个 Q 的以后，其实我们是可以去做一些聚合和排序的一些额外的操作。那么这个我们在后面会去提到的聚合和排序我们后面会有。此外它还包含了一个 ignore above 256。那么这个是什么意思？其实这个就是指的我们的一个强度，就是说我们当前这个属性它的一个索引的存储的一个长度，这个字符串的长度如果说它超过，256是它的最大的限度，那么如果说超过的话，那么就会被忽略了，就会不去使用了。Ok 。所以这个 Q 的就是起到这样的一个类似的作用，两个放在一起，就是多种索引模式的一个结合。Ok 。
+
+
+好，然后我们再来看一下，现在我们数据是有一条对吧。那么有了一条以后，我们现在可以为它去增加额外多的一些数据，我们可以去新增加一下我们还是用这个 post man 在这里面的数据。那么像这些数据的话，其实我预先也是已经是准备了一些，所以我们就不需要再去手动的去写了，我在这边直接通过复制的一个形式就把它们做一个运行好。
+这边我们设置文档号为2，点击线的时候我们再来复制一条。在这边我其实总共是有准备了差不多 89 条数据，所以我们在这边我们都可以去做一个新增，这是1003，然后这是1004，这是第 4 条数据，新增一下，随后定条创建一下。然后我们现在之前创建的时候，其实我们都是带上了一个 ID 的对吧，这边有一个 5 这个 ID 然后我这 5 我就直接不写了，我直接来点是一个 send 那么直接点击 send 以后我们来看一下，其实它会自动的帮我们去分配一个 ID 的可以看到吧。
+
+
+在这里有这样的一个 ID 其实也是可以的。只不过如果说你通过它的这种方式去生成的话，它的 ID 其实是对应的，全部都是一些它自动帮你去分配的都是一些相应的字符串。OK ，那么使用这种方式其实也没有什么问题，只不过看上去的话没有那么的好看。好OK ，现在全部都创建了。
+
+
+随后回到我们这个页面回到展开的插件数据浏览一下，点击买 Doc 来看一下。目前总共是在这里面有 9 条数据对吧。那么这其中的 9 条数据的话有五条数据，就是 51345 都是通过我们的手动去分配一个 ID 的方式去分配的。那么下面这四条其实都是通过它自动生成的一个组件的方式去帮我们做。其实这两种方式都可以这样子，其实在我们这个里面就包含了总共是有 9 条数据的。 OK 吧，都是我们通过这个在 post 那里面去做的一个插入。然后其实在我们这个海岛插件里面，你也可以尝试的去做一些搜索，比方
+
+
+说在这个下方有字段，那么这个字段其实就是一种过滤，在这边我们可以去找一下，比方说我们可以找一个迪斯科平 esc 在这里面你可以去搜 IMock 你会发现这个会帮我们去搜索到吧，因为它本身就可以帮我们做到一个对应的分词。然后如果说你要去搜一个慕课网的话，你会发现它其实是搜不到的。那么这个问题其实我们也进行细说了，因为它默认知识的分词其实全部都是一些英文的，中文的话它只会帮我们拆分成单独的单个的一些字。所以你要去查目控网的话，你直接写一个单个中文的字，查一个目，它就可以帮我们去把只要包含目的内容全部都可以去帮我们给搜出来的。 OK 吧。这样子其实我们就已经是这节我们把这个插入新增加的一个内容，我们做了一下。
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/fa4116b2-7405-440e-b74a-16513b56f277/2020-09-17_174544.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YGTZFIMC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225131Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDW%2Fs2fkuZe1O9PVWjU6f2Hhbgwr7%2BSnE05iKtmA%2FpNWwIgYmUDynbYa04wrYGOgeq7EOXGmwmCVjUcaZ6N59fxVKQqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDB3klmTXrM4npYH4eSrcA6YMri9a8PyTlBE2toknohYyzebFOWcpJokTB2xehuSeWw5qm7L4h7cWgL8dIX682twZ1hrw8ON6KXlcRetMP1R6grWLu9ZjPCReFnUVQf8v%2F4uiZln8mmoUu08fNQ11EJVzMhXjt%2BmcmKk67BW5LqmyK%2Bhwyq7Y0%2FnFdw3Fkij2rhrAmPVqz0rC%2FMloH9UAeyv1Nxg1qJzFk10E9K4EqELev7HZbwwPUVV1UMPyE140GeX3QI5MhPqr38wyiH%2F2Vja5DboKoDIad1VwGJuVkbHa8JUrIOf1Vky0hUSYr1kR0OhCdzepUVIubkZZLO%2F44WGQt%2F6mfYictMARGvU3ekyYrRBpvSQf%2FziicyH4d4uu8wLilGHyrdT2ECnb1tOMOC7gSR%2F2x5Zl8cT1dg42fp2eTwVgAltrGSwq85y4UyeO6x0O1T5Fp1kVPdcxQZqE%2FVv0CQby987LlPTbgjFoslU74zuEx2ia3%2BD7X16f4sNpK%2F784hn0dkfe0ZGWX2JcN51ghzxZIsfCPz5BQLu7x19pPPAakQ0n1sia3b1i1qgKixvDoRbxkDjh0gwINiCHzisus4cfZPmEHGj%2FS3CaCM76Hg0j6jzR22q1BoEAfNYwvY9wf4T2fd6T9C6cMMS5%2F9IGOqUBHUPfpiXUpm1I5tqmsbcG1hzMpMZ3rQ%2FNXQqfCz5EegURbjAZ3KEkdh7yowr37H0u9zWMrJFF8ZznIoNI9BTNemn2g4q%2B8bUReE7uVmpr%2FyC6hTB9GyM3NWedpUJDFjpWIUZn2lPj5Z5zkwzgXk326c2ApUhi31FOqgfjEOB4%2B7M1wZ2tzSYgwIC8n%2FRe9TBjVko7ybwxeTSlrqTKvADAjO76w2RL&X-Amz-Signature=bc45cec69d48e808e6834d07bed4a9b3905dbe03016485f2f2f50bd908a857e3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

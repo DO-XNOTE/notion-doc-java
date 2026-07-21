@@ -1,0 +1,60 @@
+---
+title: 2-22 【技术改造】电商系统集成Stream- 关闭超时订单
+---
+
+# 2-22 【技术改造】电商系统集成Stream- 关闭超时订单
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3cdec449-fd2f-4afe-9c4e-f874e10e5f91/SCR-20240722-eknj.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZNKIDUKA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225824Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFMmPU2eO5hAMeD78gsk2CpZA0Rn8Roqd3cOwJIwl%2FfdAiEA1vg6zhBMBUpd1G35iQHrqi5x%2FEtRHQqY3%2FUIFlpatD0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPNxHeK%2BxijRtiHJNSrcAx2yneWt%2BfsSJntO%2BcWEafFfueRLHwbHMpl8oqXm1KV36XwfO7epkgeg9saPh1iFUZO%2B7J909HHgS6vL5x4nYDr4o0bZop7Q0%2BiCSvbLrinpubawWaeDyO69L2N929P%2BwXTkxBno7STsXxUg4MoAAUQNnu08iwZdjCCakqbzAH1CxpGGTntF1rHJ70w3C12GRfJaJ08E4imStYPwtMcf4L1K31BSJxHx8MO6h7kS2OP2h1dvF3QSq%2FlnJry50laLslH5KXwz8ub0CCzpeYbjHDQzmnAhRGsMLeFI%2FTf%2FVyQuAUu38ptKWLZA3fcqE2Nbk%2FKHaw1TazA2w0ZhmSRJ4FQrjV4eFl2s%2BZJQNAUGsmI2Unn6jK05by5A9nMbGxPPIPhO%2BkTot1Aps5mK2jnR8jHuBTodphLN4xJGWwDPj%2BK793AEad6zhoqR1wYngdxbstupOqsykiXGwexVxzoCFhk%2B%2BOPz%2Fhu21IGNENrvrTmLOvxt4u3F1aifs%2F6KcJKB%2Bmx4yRUKemRToKxVSCW6afgkb9Hmsa7HlCG3FDNN4nlUGsgkozdAiqleMZtVSaAUuE4pidrCdbs53VDXU7THi60O0C%2FZD1F5yPgtbHQ9MKmkDiInFsfDs12N4AWiMLu5%2F9IGOqUBi%2FwXKuq4ZXrqvdB2WBpBtvAPlaa7%2BwhABuWoZEh%2FUMobRUdhQv4SeALq4J0ZTak6PWkprMwSXWcAR3cEL1LfASHYj8uu%2FLAGEhcPkwQBAlNLJRWqiGniauf5d%2BdTb5lMLTcFTT%2BU%2FJUc14D0PkJ54IghgM8S2aMg5CpscFGNknrOydI7nkrgJ%2FEKEtYquj9gB7AZCXO3Tly0Vhd5X3KjaoaHIvab&X-Amz-Signature=d01fbff9ac61d7d3e3cabe34202302e499a1e71099447c9e1390e899d47674d9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d55ff11c-e87e-421e-8050-cfd99ecd4f63/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZNKIDUKA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225824Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFMmPU2eO5hAMeD78gsk2CpZA0Rn8Roqd3cOwJIwl%2FfdAiEA1vg6zhBMBUpd1G35iQHrqi5x%2FEtRHQqY3%2FUIFlpatD0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPNxHeK%2BxijRtiHJNSrcAx2yneWt%2BfsSJntO%2BcWEafFfueRLHwbHMpl8oqXm1KV36XwfO7epkgeg9saPh1iFUZO%2B7J909HHgS6vL5x4nYDr4o0bZop7Q0%2BiCSvbLrinpubawWaeDyO69L2N929P%2BwXTkxBno7STsXxUg4MoAAUQNnu08iwZdjCCakqbzAH1CxpGGTntF1rHJ70w3C12GRfJaJ08E4imStYPwtMcf4L1K31BSJxHx8MO6h7kS2OP2h1dvF3QSq%2FlnJry50laLslH5KXwz8ub0CCzpeYbjHDQzmnAhRGsMLeFI%2FTf%2FVyQuAUu38ptKWLZA3fcqE2Nbk%2FKHaw1TazA2w0ZhmSRJ4FQrjV4eFl2s%2BZJQNAUGsmI2Unn6jK05by5A9nMbGxPPIPhO%2BkTot1Aps5mK2jnR8jHuBTodphLN4xJGWwDPj%2BK793AEad6zhoqR1wYngdxbstupOqsykiXGwexVxzoCFhk%2B%2BOPz%2Fhu21IGNENrvrTmLOvxt4u3F1aifs%2F6KcJKB%2Bmx4yRUKemRToKxVSCW6afgkb9Hmsa7HlCG3FDNN4nlUGsgkozdAiqleMZtVSaAUuE4pidrCdbs53VDXU7THi60O0C%2FZD1F5yPgtbHQ9MKmkDiInFsfDs12N4AWiMLu5%2F9IGOqUBi%2FwXKuq4ZXrqvdB2WBpBtvAPlaa7%2BwhABuWoZEh%2FUMobRUdhQv4SeALq4J0ZTak6PWkprMwSXWcAR3cEL1LfASHYj8uu%2FLAGEhcPkwQBAlNLJRWqiGniauf5d%2BdTb5lMLTcFTT%2BU%2FJUc14D0PkJ54IghgM8S2aMg5CpscFGNknrOydI7nkrgJ%2FEKEtYquj9gB7AZCXO3Tly0Vhd5X3KjaoaHIvab&X-Amz-Signature=08532aa03c162537ad8cff1409302ad491c7013494330ef63ad007bbbbf97759&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2be0bb3c-9dda-4afb-ad34-e1cb5f5598af/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZNKIDUKA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225824Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFMmPU2eO5hAMeD78gsk2CpZA0Rn8Roqd3cOwJIwl%2FfdAiEA1vg6zhBMBUpd1G35iQHrqi5x%2FEtRHQqY3%2FUIFlpatD0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPNxHeK%2BxijRtiHJNSrcAx2yneWt%2BfsSJntO%2BcWEafFfueRLHwbHMpl8oqXm1KV36XwfO7epkgeg9saPh1iFUZO%2B7J909HHgS6vL5x4nYDr4o0bZop7Q0%2BiCSvbLrinpubawWaeDyO69L2N929P%2BwXTkxBno7STsXxUg4MoAAUQNnu08iwZdjCCakqbzAH1CxpGGTntF1rHJ70w3C12GRfJaJ08E4imStYPwtMcf4L1K31BSJxHx8MO6h7kS2OP2h1dvF3QSq%2FlnJry50laLslH5KXwz8ub0CCzpeYbjHDQzmnAhRGsMLeFI%2FTf%2FVyQuAUu38ptKWLZA3fcqE2Nbk%2FKHaw1TazA2w0ZhmSRJ4FQrjV4eFl2s%2BZJQNAUGsmI2Unn6jK05by5A9nMbGxPPIPhO%2BkTot1Aps5mK2jnR8jHuBTodphLN4xJGWwDPj%2BK793AEad6zhoqR1wYngdxbstupOqsykiXGwexVxzoCFhk%2B%2BOPz%2Fhu21IGNENrvrTmLOvxt4u3F1aifs%2F6KcJKB%2Bmx4yRUKemRToKxVSCW6afgkb9Hmsa7HlCG3FDNN4nlUGsgkozdAiqleMZtVSaAUuE4pidrCdbs53VDXU7THi60O0C%2FZD1F5yPgtbHQ9MKmkDiInFsfDs12N4AWiMLu5%2F9IGOqUBi%2FwXKuq4ZXrqvdB2WBpBtvAPlaa7%2BwhABuWoZEh%2FUMobRUdhQv4SeALq4J0ZTak6PWkprMwSXWcAR3cEL1LfASHYj8uu%2FLAGEhcPkwQBAlNLJRWqiGniauf5d%2BdTb5lMLTcFTT%2BU%2FJUc14D0PkJ54IghgM8S2aMg5CpscFGNknrOydI7nkrgJ%2FEKEtYquj9gB7AZCXO3Tly0Vhd5X3KjaoaHIvab&X-Amz-Signature=e70fdac17d290cdc199fc788ceb1ab244b93c9dea509652ae042ed376896782e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b1381590-2804-4514-bc84-8bca2fb00304/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466ZNKIDUKA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225824Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFMmPU2eO5hAMeD78gsk2CpZA0Rn8Roqd3cOwJIwl%2FfdAiEA1vg6zhBMBUpd1G35iQHrqi5x%2FEtRHQqY3%2FUIFlpatD0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPNxHeK%2BxijRtiHJNSrcAx2yneWt%2BfsSJntO%2BcWEafFfueRLHwbHMpl8oqXm1KV36XwfO7epkgeg9saPh1iFUZO%2B7J909HHgS6vL5x4nYDr4o0bZop7Q0%2BiCSvbLrinpubawWaeDyO69L2N929P%2BwXTkxBno7STsXxUg4MoAAUQNnu08iwZdjCCakqbzAH1CxpGGTntF1rHJ70w3C12GRfJaJ08E4imStYPwtMcf4L1K31BSJxHx8MO6h7kS2OP2h1dvF3QSq%2FlnJry50laLslH5KXwz8ub0CCzpeYbjHDQzmnAhRGsMLeFI%2FTf%2FVyQuAUu38ptKWLZA3fcqE2Nbk%2FKHaw1TazA2w0ZhmSRJ4FQrjV4eFl2s%2BZJQNAUGsmI2Unn6jK05by5A9nMbGxPPIPhO%2BkTot1Aps5mK2jnR8jHuBTodphLN4xJGWwDPj%2BK793AEad6zhoqR1wYngdxbstupOqsykiXGwexVxzoCFhk%2B%2BOPz%2Fhu21IGNENrvrTmLOvxt4u3F1aifs%2F6KcJKB%2Bmx4yRUKemRToKxVSCW6afgkb9Hmsa7HlCG3FDNN4nlUGsgkozdAiqleMZtVSaAUuE4pidrCdbs53VDXU7THi60O0C%2FZD1F5yPgtbHQ9MKmkDiInFsfDs12N4AWiMLu5%2F9IGOqUBi%2FwXKuq4ZXrqvdB2WBpBtvAPlaa7%2BwhABuWoZEh%2FUMobRUdhQv4SeALq4J0ZTak6PWkprMwSXWcAR3cEL1LfASHYj8uu%2FLAGEhcPkwQBAlNLJRWqiGniauf5d%2BdTb5lMLTcFTT%2BU%2FJUc14D0PkJ54IghgM8S2aMg5CpscFGNknrOydI7nkrgJ%2FEKEtYquj9gB7AZCXO3Tly0Vhd5X3KjaoaHIvab&X-Amz-Signature=7dae4bf6b3e54594aa26e960f13ba8af4685683108d3bbc8325feaaa23d1112c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello 慕课网的各位同学们，大家好，我是姚半仙，在这里终于来到了 stream 电商改造中的最后一节。这一节我们就去处理一个历史遗留问题。那就是关闭超时订单。在最早的版本里检测超时订单是用的后台的一个 job 那这样的话在订单量比较大的时候容易造成一些性能问题。那咱这里怎么改造呢？二话不说，延迟消息走起。
+那小伙伴们转战 intelligi 咱立即开搞。接下来我们定位到 foodie order service 这个模块当中。那第一步就是在 palm 当中把它的 stream 这个依赖给它加入进来。那我这里已经预先把它添加到了 palm 文件当中。下一步我们打开它的代码，模仿前面咱做用户强制登出时候一样的操作。
+
+
+我们在这个 come.imok.order 这里创建一个文件夹 package 给它起名叫 stream 那在 stream 下面，咱创建的第一个类应该是这个 topic 的名称，我们给它起名叫 check order topic 好了，那在这里面我们同样的也要定义 producer 和 consumer 这里就不用花功夫一个一个字打了。
+咱前面不是有个现成的，对不对我们在 user 这里刚刚创建好的那一个topic ，咱把它原封不动的内容给它 copy 过来。好到这里，拿过来。拿过来之后抄作业要改名。咱这里把 input output 给它改成叫 order status consumer 或者咱也可以叫 other status check 都可以了只不过是个名字，大家不用深究。
+
+
+OK topic 创建好了，那接下来咱要去创建一个 consumer 给它起名字叫 check order consumer okay 那这里面的方法，我们这里定义一个 public 的入口，那它的名字叫做 consume order status message okay 那它的入参，我们先暂时把它空下来，它的头顶这个方法要给它绑定到一个 stream listener 上。
+这个 listener 是咱们前面创建的 check order topic 好选中它，然后这里的 input OK 那这个类它的头顶，我们不要忘了，把 log 组件引入进来，然后紧接着信道开启 enable bending 那这里面的值，就是咱在下面露脸的这个类了，叫 check out topicok 那这个方法接收什么参数？我这里下一步就要来定义了。
+
+
+那接收参数，我们可以给它一个纯 string 类型的就叫 order ID 但是考虑到以后的扩展性，假如我们想在订单检查的业务流程中，加入一些新的业务，它可能需要其他字段，对不对？所以我们这里要定义一个类来传输这些参数。那这个类定义到哪里呢？自然是想到这个了，foodie order PO 9 okay 我们到这个 PO 9 类下面，找到它的必有 business object 在这个 BO 下面咱创建一个 class 给这个 class 起名就叫 order status check BO 证明它是专门去检查订单状态的。那它有哪些属性呢？目前来说只有一个属性就叫 order ID 那往后我们还可以去添加一些其他属性。那这些添加好的其他属性是用来做什么的呢？那是为了在未来丰富咱的订单状态检查。
+
+
+Ok. 好，这个类我们在上头给它安一个 long book 的 data 注解。好，那这里就可以放心大胆的使用它了。咱把刚才创建好的 order status check 给它拿过来 check dealok 那它的名字属性名就叫病。好了，那咱方法题里面，保持好习惯。好习惯是什么？一个log ，我打一个 info 级别的 log 这里面写什么呢？写 received order check request 然后把这个 bin 它的 order ID 给它打入进来，跟上 bin.get order idok 接下来的主体业务逻辑，我们就要调用到另外一个类了，订单状态检查，咱是用的一个 mapper 叫 order statusmapper 咱们把它写上去，然后 out wired 加进来。那下面怎么用呢？这里就可以仿照咱在后台 job 是如何关闭超时订单的一样的逻辑。咱声明一个 other status 直接把它 new 出来。然后在这个过程中，给它加入一些参数，比如说 set order idorder ID 哪、来自咱传入的这个 bin 里面的 order idok 还有其他属性吗？当然还有一个 set order status 这个 order status 是来自于一个 in num 对象叫 order status in num 好， in num 中的哪一个属性是叫 closed 在这 close OK 最后一步，把这个 close time set close time 给它添加进来，就是一个 new day OK 然后二话不说直接把它给 update 掉删除掉。
+
+
+update by primary key primary key 在哪在这好嘞，那你删除掉之后有没有删除成功怎么来判定，那就看你最终返回的这个 count 是几。如果是1，那就证明你已经删除了一个目标订单，如果是0，说明它的这个订单号有可能给错了，那没有删除掉。
+
+
+好，那最后打一行 log 叫 closed order 然后把 order ID 以及这个 count 都给它添加进去。这样的话咱就知道目标 order ID 是什么，最终有没有把它删除成功。 OK 看下来是不是还少了点什么逻辑啊？那咱这二话不说就把人家删除了，那该不该删除啊？判断逻辑还没有加进来对不对啊？那咱的判断逻辑在哪找呢？我们打开 order service 好，在 order service 里面，我们定位到这个 close order 方法。 OK 那这个订单逻辑就在这了，我们把这一段都给它 copy 下来，然后回到刚才的 consumer 里面，一股脑的给它加进去。
+
+
+OK 那上面这段这里就是你检查超时订单的地方，那原先咱都是使用 order status 来做判断的，咱这里也不一样了，我们拿到了 order ID 所以在查询条件里面，咱把这个 order ID 也给它塞入进去。 OK 那这查询出了结果之后，我们要先加以判断，判断什么条件呢？我们调用 collection utils 调用这个方法的 is empty 来看一下，你这个结果集是否为空。那如果你结果集为空，那表示着什么呢？表示你当前的订单已经被付款了或者是已经 close 的。那我们打一行log ，叫 order paid or closedok 那同时把这个 order ID 也给它打上去。那咱可以把这个 order ID 声明成一个变量，这样看起来会舒服一下。那在这个方法打完这行 log 之后，我要把它中断对不对？因为它不用再执行下面的逻辑了，但凡走到下面逻辑的，都是已经获取到了一个正在等待付款的订单。
+
+
+那我们这里就要把这个判断逻辑在这里加上了，取谁来判断？我们假定这个 list 没有什么子母订单这一说，它一个订单号，只能查询到一个订单。那如果在复杂的电商业务场景中，你可能会有一些子母订单这种区别。我们这里拿到订单的创建时间做一个比对，如果大于等于一天超过一天关闭订单。那这里就用到了下面关闭订单的逻辑。好，我们把这段逻辑给它 copy 下来。 OK 那这里的 consumer 逻辑就已经结束了。那同学们如果觉得这个订单时间大于一天有点长，你不想让这个队列中保持过多的消息。那其实可以这样，有一个最简单的方式，在生成订单的时候，咱发送延迟消息，我们在延迟消息里可以只设置延迟 1 小时或者两小时。那时间到了之后，如果已经付款，那这个消息就被消费掉了。那如果发现还在等待付款状态，怎么办呢？很简单，咱在后面可以再把这个消息重新给它投递出去。对不对？那这样的话，可以保证咱消息队列中消息尽可能的少。
+
+
+OK 那 consumer 这里处理完了，接下来我们要到 producer 那里去操作一番了。那咱打开小桌板，定位到 food order web 在这个 order web 里面创建 order 的地方是 order controller 它的 creator 方法。好，我们在 creator 方法里面要动一些手脚了。那在这之前，我们先要把前面定义的这个 topic 给它引入进来叫 check order topic 好，然后给它起名就叫 order status producerok 一个 out wire 的给它加上。那我们往下走再创建订单的哪个步骤加这个订单检查比较合适呢？这是调用支付中心的。那我们在调用支付中心之前，也就是在这里我们给它创建一个 order status 的状态检查请求，这里打一个注释。
+
+
+order status 检查这里咱怎么来发送呢？很简单， order status producer 我们直接调用，拿到它的 output 拿到这个通道之后，我们 send 一个请求。那这个对象我们通过 message builder 把它其中的 with payload 的对象给它传入进去。在这之前我们先要把这个对象给它声明出来。 order status BO outstates is check BO 那这个变量名随意一起给它叫 message 好了，那直接这里把它给 new 出来 new 一个，然后在它的参数列表里把这个 order ID 给它 set 进去。 OK 那接下来的请求我们就直接把这个对象扔进去，扔进去之后就可以直接调用 build 方法把这个消息体给它 build 出来。但是在这之前咱说过是个延迟消息对不对？那延迟消息我就自然要设置一个消息头 set header 这个 header 是 X delay 那它的内容是多大。老师数学不太好，我要算一算。 1000 毫秒，咱一小时是 3600 秒，然后 3600 秒再乘以 24 小时。好大的数字，那其实为了保险起见。因为有可能它有一个 timing 的问题，你消息到了，但是它离这个一天就差个几秒钟。所以我们这里留一个buffer ，给它加个 5 分钟，也就是 300 秒。好嘞，300秒乘以1000。那这个小数点不要打错了，这里多打个零，那就是天上一日人间一年时间可就长了。
+
+
+OK 那我这里再给同学们提个醒，可以采用更短的时间。那这个时间就是指你在 header 里面传入进来的 delay 时间。 OK 采用更短的时间之后，我们要在 consumer 里面根据状态来判断，把消息给重新投递。 OK 好，那到这里，咱的 producer 也已经很快的完成掉了。
+
+
+OK 最后一步，咱的配置文件，我们为了节省时间，已经在这里给它打好了，是在 application dive 当中。好，看到这里有一个 cloud 那这下面的就是延迟消息了。好，我这里把注释给它打上。那这个延迟消息配置了一个 order statusconsumer 和 producer 那他们的 topic destination 都是同一个叫 other status topic 那其中 consumer 我这里也给它加了一个消息分组，那它的 group 是叫 order groupok 那延迟消息在这里面，我配置在 stream 下面的 rabbit 节点下，后面跟 bending 然后这里跟的是 producer 的名称，接下来是个 producer 节点，最后指定 delay 的 exchange 等于 true 那这一行配置和咱之前随堂 demo 是一模一样的，只不过之前是 properties 形式，这次我把它转换成了 YAML 的形式。
+
+
+那到这里，咱微服务阶段中的 spring cloud 的专题就不知不觉的结束了。括弧此刻请响起难忘今宵的歌声。那正如老师在开篇之前说的，咱的 spring claw 微服务其实应该说是整套架构师课程当中最简单的部分，虽说组件是多了一点，看起来眼花缭乱，但是使用起来那真的是行云流水，无丝毫障碍。 OK 同学们，那这一节就到这里结束了。那同学们打半精神，我在下一章当中给大家准备了一个小小的题目总结，请同学们准时参加。小伙伴们，我们下一章再见。
+
+
+

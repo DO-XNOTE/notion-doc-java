@@ -1,0 +1,72 @@
+---
+title: 3-9 响应式编程框架：Akka-3
+---
+
+# 3-9 响应式编程框架：Akka-3
+
+前面讲到的都是相对来说比较通用的 x 模型当中都会存在的这样一些特性，当然中间我讲这个层次的时候，用actor，用 a architector 来讲解了一下，但是其实基本上都是通用的一些。
+
+
+那我们相对于可以讲一下 archiactor 模型下面它有哪些特殊的地方？第一个就是 actor system 这个概念，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2b725ffc-5554-453a-9928-b6b53b1aa3a3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664U4E2DFW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230957Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8Xb%2BEmHWJLWc19pcQvV0%2BQVAkfcMXbdYcPGtkD2s2xQIgBsIzdP%2Bkxq8093SDUmt0yBSJ97lNzLAakF4z0lfk5G8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDI4BAxRCSVSH2dez%2FircAx7Hd5hfjwZS2QhUVbyAN1LrHrD8%2BGjRV7%2Bl76%2Fkb3JKk29cSlj6CN8Q5II2qal8uwT%2Fr%2FbKv%2FpOMy5jBn3tqeDpfZoLp3%2FVOZEmA1g6mVateLq%2FB8G0NqPY5oiWarBx8stE9AMkhMicnmNG3LmqBdnKkeQH2Zw9r9xDWgP9gqvsWQzLNpKjBTbhq9bGs9DlamYW11TjHn%2ByN09v%2FgkWT44DHwEsdlMB%2FUEPFGBMUROFzqIN7eHZalyTow5cInjvyNCNxpbYFszAGR8%2Fg5QMudinoOYKPE7pXNyttMTvAcmz4c4cb2gBgheTW8BloCQ0VhM1OfUZhi6jHbSmmvFTbOGF9CTy66Ep8U8IihB3jv2zzX73L%2F7Z5IYke6ALbdkBhtvuwFV7GSVfGkwFysetPEVP4BpPqFReah%2B5sj%2BsaBKKjrYxPKczHO56SMb%2BPlPPv0sKhcm2Qwm9VUWe6RGz19acpF2unN0gupN3rJSPllCRhnCrCYb%2Bvm%2B5TUHithKjaYR1eNgPXFtA1t4sywusSBJf%2BaUA0e6o7iPKFxi%2BFMxqaw42SkXLVX%2B8%2FpHvns%2BeYDRyuAtLC1wqscxKC7k1t3SDYXkJBq0RwNv28c8L8zaS%2BoYnq%2BTZX4UtFbv0MPK6%2F9IGOqUBxD7h786x35oAB7R8ShZwr%2Bzo2uXkYbzlyetIhxDiw2BJhn7klYYrWhPMaAp4B47BAjpRvcHrG0fPRyLOaN%2FBKXpcFaC28SEoPKphpFXvet4mrz74V0M2%2FMEgqjXE7ONvUYJP%2FmfuY8qKf5V0E0UPEgOux%2BFvwyN8gynWVSOEfoj10rMPVjMHGmfgleJtQxtQi51qVPmVCJMOyyFEdTaG2IZ0unxA&X-Amz-Signature=5daa106f88f07b9506c76eca4347a66145b41280243e9df0e865db47528fdbd3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+其实就是有点像是整个 actor 所有的actor，它是怎么被创建出来？怎么运营起来的？哎呀，回答这样一个问题，首先我们知道阿卡是运行在 JUM 之上的这样一个框架，如果从这个角度来看，它是运行在 JOM 上的一个程序，那这个程序它在启动的时候，第一件事情它就要创建一个 actor system。为什么这么说？创建 acquisition 的作用在哪里呢？它就在于所有的 actor 最根结构里面的 actor system，因此在创建出 actor system 之后，再能够创建出其他的actor，也就是说 actor system 就是 actor 结构提升的。
+
+
+真正的跟的 actor 就最顶层的那个actor，这个前面我们有讲过一个 actor system，就是一组共享的通用配置。比如说程序调度、部署、远程功能地址什么之类的，这都是一种通用的配置。然后 ecosystem 从代码的角度来讲，到了你前面有画过它提供了 actor of 这种方法来创建新的 actor 实例的这样一个能力。所以说在任何的阿卡在讲一个应用程序中，
+
+
+ actor system 那是最为重要的，它是一切后续活动的源头。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/de1ed54d-b36d-42a0-876f-a574c028a05e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664U4E2DFW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230957Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8Xb%2BEmHWJLWc19pcQvV0%2BQVAkfcMXbdYcPGtkD2s2xQIgBsIzdP%2Bkxq8093SDUmt0yBSJ97lNzLAakF4z0lfk5G8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDI4BAxRCSVSH2dez%2FircAx7Hd5hfjwZS2QhUVbyAN1LrHrD8%2BGjRV7%2Bl76%2Fkb3JKk29cSlj6CN8Q5II2qal8uwT%2Fr%2FbKv%2FpOMy5jBn3tqeDpfZoLp3%2FVOZEmA1g6mVateLq%2FB8G0NqPY5oiWarBx8stE9AMkhMicnmNG3LmqBdnKkeQH2Zw9r9xDWgP9gqvsWQzLNpKjBTbhq9bGs9DlamYW11TjHn%2ByN09v%2FgkWT44DHwEsdlMB%2FUEPFGBMUROFzqIN7eHZalyTow5cInjvyNCNxpbYFszAGR8%2Fg5QMudinoOYKPE7pXNyttMTvAcmz4c4cb2gBgheTW8BloCQ0VhM1OfUZhi6jHbSmmvFTbOGF9CTy66Ep8U8IihB3jv2zzX73L%2F7Z5IYke6ALbdkBhtvuwFV7GSVfGkwFysetPEVP4BpPqFReah%2B5sj%2BsaBKKjrYxPKczHO56SMb%2BPlPPv0sKhcm2Qwm9VUWe6RGz19acpF2unN0gupN3rJSPllCRhnCrCYb%2Bvm%2B5TUHithKjaYR1eNgPXFtA1t4sywusSBJf%2BaUA0e6o7iPKFxi%2BFMxqaw42SkXLVX%2B8%2FpHvns%2BeYDRyuAtLC1wqscxKC7k1t3SDYXkJBq0RwNv28c8L8zaS%2BoYnq%2BTZX4UtFbv0MPK6%2F9IGOqUBxD7h786x35oAB7R8ShZwr%2Bzo2uXkYbzlyetIhxDiw2BJhn7klYYrWhPMaAp4B47BAjpRvcHrG0fPRyLOaN%2FBKXpcFaC28SEoPKphpFXvet4mrz74V0M2%2FMEgqjXE7ONvUYJP%2FmfuY8qKf5V0E0UPEgOux%2BFvwyN8gynWVSOEfoj10rMPVjMHGmfgleJtQxtQi51qVPmVCJMOyyFEdTaG2IZ0unxA&X-Amz-Signature=8d2f7ea31d5dc3b09805d268b207cc492f4f1b118f18e998986aa1a8e970e9a5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+只有先创建出了 actor system，再由它创建出更多的actor，整个系统才运转的起来。
+
+
+Ark 的 reference 这个概念跟加来做类比的话， add reference 这个词你就可以看出来，一个 reference 就是一个句柄，你用句柄来干嘛？它是要操作这个actor，那在 Java 当中就是所有的对象都是通过句柄来操作对象。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8e9978cb-6e5e-4649-a6f3-df038b062ad1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664U4E2DFW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230957Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8Xb%2BEmHWJLWc19pcQvV0%2BQVAkfcMXbdYcPGtkD2s2xQIgBsIzdP%2Bkxq8093SDUmt0yBSJ97lNzLAakF4z0lfk5G8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDI4BAxRCSVSH2dez%2FircAx7Hd5hfjwZS2QhUVbyAN1LrHrD8%2BGjRV7%2Bl76%2Fkb3JKk29cSlj6CN8Q5II2qal8uwT%2Fr%2FbKv%2FpOMy5jBn3tqeDpfZoLp3%2FVOZEmA1g6mVateLq%2FB8G0NqPY5oiWarBx8stE9AMkhMicnmNG3LmqBdnKkeQH2Zw9r9xDWgP9gqvsWQzLNpKjBTbhq9bGs9DlamYW11TjHn%2ByN09v%2FgkWT44DHwEsdlMB%2FUEPFGBMUROFzqIN7eHZalyTow5cInjvyNCNxpbYFszAGR8%2Fg5QMudinoOYKPE7pXNyttMTvAcmz4c4cb2gBgheTW8BloCQ0VhM1OfUZhi6jHbSmmvFTbOGF9CTy66Ep8U8IihB3jv2zzX73L%2F7Z5IYke6ALbdkBhtvuwFV7GSVfGkwFysetPEVP4BpPqFReah%2B5sj%2BsaBKKjrYxPKczHO56SMb%2BPlPPv0sKhcm2Qwm9VUWe6RGz19acpF2unN0gupN3rJSPllCRhnCrCYb%2Bvm%2B5TUHithKjaYR1eNgPXFtA1t4sywusSBJf%2BaUA0e6o7iPKFxi%2BFMxqaw42SkXLVX%2B8%2FpHvns%2BeYDRyuAtLC1wqscxKC7k1t3SDYXkJBq0RwNv28c8L8zaS%2BoYnq%2BTZX4UtFbv0MPK6%2F9IGOqUBxD7h786x35oAB7R8ShZwr%2Bzo2uXkYbzlyetIhxDiw2BJhn7klYYrWhPMaAp4B47BAjpRvcHrG0fPRyLOaN%2FBKXpcFaC28SEoPKphpFXvet4mrz74V0M2%2FMEgqjXE7ONvUYJP%2FmfuY8qKf5V0E0UPEgOux%2BFvwyN8gynWVSOEfoj10rMPVjMHGmfgleJtQxtQi51qVPmVCJMOyyFEdTaG2IZ0unxA&X-Amz-Signature=a5e7fc77dd9720b60eda54b98aac280b63821d228535bc473cfbcf834e9444ec&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+一样的道理，每一个 actor 在被创建出来的时候都会被赋予一个地址，那地址就是 actor reference，这点跟 Josh 是不是非常相像？所有的 Java 对象串起来的都会有一个句柄，然后我们通过这个句柄进一步操作对象，其实你也分不清楚到底是怎么操作的，但是通过这种 reference 的机制，你就是可以操作到这个对象或者这个actor。
+
+
+拿到这个 reference 之后你要做什么呢？在 actor system 当中，它的运作原理稍显不同，就是跟 Java 对象来做对比的话，在 Java 当中你是拿到句柄以后对它进行方法调用，在 extra 系统当中，就像前面反复强调的，那就是通过这个 reference 向它关联的这个 actor 发消息，就跟 Java 的方法调用一样，你拿到一个对象的句柄，然后你通过这个句柄来操作这个对象调用它的方法，那在 exercising 当中就是一个actor，它具备了另外一个 actor 的 reference 之后，它就可以利用这个 reference 向那个 actor 发送消息。
+
+
+如果你没有reference，前面举的例子，你没有另外一个的电话号码，你是无法与它通信的。就像你要找一个人，首先在现代之后你肯定要先拿到电话号码，拿电话号码之后你才能进行通信，没有那个电话号码你是无法进行通信的。在 actor 系统当中没有 reference 你是无法跟它进行通信的。这个比喻我觉得非常恰当，你把一个 actor 当成一台服务器，甚至这么说也没有任何问题啊。
+
+
+因为前面我们已经讲过了，对于 actor 系统来讲，它其实并不在意你要运行的这个 actor 是运行在本地内存里面，还是在另外一个网络的远程上面？所以说你把一个 actor 就当成一台服务器， preference 就是帮助你来对它进行定位，就跟你要去访问木克网，那木克网有自己的网站，那你输入这个网址才能访问布克网，对不对？那在这个地方你要向一个 actor 发送消息，就一样，你要定位布克网，你要用网址，那你要用 actor 消息发送机制，那么你就要先获得这个 actor 的reference，就像先知道它的地址，你用这个地址才能够对它进行访问，也就是发送消息。
+
+
+在讲我们的 actor 层次结构的时候，大家还记不记得有很多斜线来表达了一个路径？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3be635f2-6e0a-4c06-95c4-66a828ddb69a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664U4E2DFW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230957Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8Xb%2BEmHWJLWc19pcQvV0%2BQVAkfcMXbdYcPGtkD2s2xQIgBsIzdP%2Bkxq8093SDUmt0yBSJ97lNzLAakF4z0lfk5G8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDI4BAxRCSVSH2dez%2FircAx7Hd5hfjwZS2QhUVbyAN1LrHrD8%2BGjRV7%2Bl76%2Fkb3JKk29cSlj6CN8Q5II2qal8uwT%2Fr%2FbKv%2FpOMy5jBn3tqeDpfZoLp3%2FVOZEmA1g6mVateLq%2FB8G0NqPY5oiWarBx8stE9AMkhMicnmNG3LmqBdnKkeQH2Zw9r9xDWgP9gqvsWQzLNpKjBTbhq9bGs9DlamYW11TjHn%2ByN09v%2FgkWT44DHwEsdlMB%2FUEPFGBMUROFzqIN7eHZalyTow5cInjvyNCNxpbYFszAGR8%2Fg5QMudinoOYKPE7pXNyttMTvAcmz4c4cb2gBgheTW8BloCQ0VhM1OfUZhi6jHbSmmvFTbOGF9CTy66Ep8U8IihB3jv2zzX73L%2F7Z5IYke6ALbdkBhtvuwFV7GSVfGkwFysetPEVP4BpPqFReah%2B5sj%2BsaBKKjrYxPKczHO56SMb%2BPlPPv0sKhcm2Qwm9VUWe6RGz19acpF2unN0gupN3rJSPllCRhnCrCYb%2Bvm%2B5TUHithKjaYR1eNgPXFtA1t4sywusSBJf%2BaUA0e6o7iPKFxi%2BFMxqaw42SkXLVX%2B8%2FpHvns%2BeYDRyuAtLC1wqscxKC7k1t3SDYXkJBq0RwNv28c8L8zaS%2BoYnq%2BTZX4UtFbv0MPK6%2F9IGOqUBxD7h786x35oAB7R8ShZwr%2Bzo2uXkYbzlyetIhxDiw2BJhn7klYYrWhPMaAp4B47BAjpRvcHrG0fPRyLOaN%2FBKXpcFaC28SEoPKphpFXvet4mrz74V0M2%2FMEgqjXE7ONvUYJP%2FmfuY8qKf5V0E0UPEgOux%2BFvwyN8gynWVSOEfoj10rMPVjMHGmfgleJtQxtQi51qVPmVCJMOyyFEdTaG2IZ0unxA&X-Amz-Signature=f1366d079c0f3f9e3dd844c877c1182cdbaec2e036b610a0ec1da0c9f8b0ef18&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+当时我没有详细的说，其实在阿卡这个 system 里面，就是阿卡的 actor system 里面，这叫做 actor 的pass， actor pass 它主要就是来定位和查找一个actor，因为有些时候你并不知道某一个 actor 的reference。那你一向它发生消息怎么办？当然你得先找到它。那怎么找呢？如果说你不知道它的 reference 就是没有直接的方法来获得，那你就通过 extra pass 的方式来查找它。举个例子，你想在慕课网上查找某一门课程，你怎么找呢？首先我们有慕课网的域名，你打开慕课网的这个域名，可能课程下面有很多分类，然后层层深入你不同的分类下面去找对应的课程，不停地找，你翻它几次，多个层次应用，你总可以找到这门课程。
+
+
+在这个 extra pass 上面也是一样的道理， pass 它是按照层级结构来分的，跟我们每一个网站这种层级结构几乎是一模一样的类比。所以说我可以用这种比喻的方式来让你理解这件事情，你要定位到一个actor，就相当于你定位到木可往下的一个课程一样，你通过层层目录关系或者分类方法你找不到它，你就是一样的道理，你或者想象成你在 Linux 下面或者 Windows 下面哪一种文件管理权限一样，它都是一个 folder 结构层层展开的。就这个地方其实也就是一样的道理，如果你对 Linux 很熟悉的 find 命令的时候，你是可以通过各种路径表达来定位到一个文件或者说一个 folder 的。就是一样的道理， actor 的层次结构与 URL 的路径结构非常相似，所以说我们才可以利用网站的这种比喻来比喻一个 actor 的查找。或者说用 Linux 的路径方式来映射这种 actor 的方式都是有层次结构形成了一个路径，每一个 actor 都会有一个名字，这个名字在层次结构中的每个级别上都必须得是唯一的，任意 actor 都不能使用相同的名称，这其实就跟我们 URL 是一样的道理。你只要这么理解就对了， URL 的在同一个层次结构下面，它能相同吗？相同它就无法定位了，所以说肯定是不能的，这一点我觉得没有什么歧义。
+
+
+最后就是我说的，你可以通过 actor pass 来定位任意的一个 actor the reference，也就是说你通过这种 pass 你可以查找到你想要查找的某一个actor，并且通过消息与它交互，这就是它存在的最大意义，因为有些时候你只知道某一个 actor 在什么路径下，因为作为开发者，你是知道这个路径它是怎么创建出来的。
+
+
+就是这个 at 的层次结构是怎么创建的，你心里是有数的，但是你可能那个时候你并不知道它的reference，你觉得你不知道它的地址，那个地址和我们这个 pass 和体制不是一个意思，那就是它的句柄，也不知道它这个句柄是什么。你通过这种 pass 的方式定位到那个actor，然后就可以和它进行通信，这就是 actor pass 存在的很大一个意义。
+
+
+我们再来了解一下阿卡的 actor 中最重要的一个特征，dispatch，或者叫dispatcher。这个说简单也简单，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0af64a5a-4b83-497c-8ff5-03296fd4e049/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664U4E2DFW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230957Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8Xb%2BEmHWJLWc19pcQvV0%2BQVAkfcMXbdYcPGtkD2s2xQIgBsIzdP%2Bkxq8093SDUmt0yBSJ97lNzLAakF4z0lfk5G8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDI4BAxRCSVSH2dez%2FircAx7Hd5hfjwZS2QhUVbyAN1LrHrD8%2BGjRV7%2Bl76%2Fkb3JKk29cSlj6CN8Q5II2qal8uwT%2Fr%2FbKv%2FpOMy5jBn3tqeDpfZoLp3%2FVOZEmA1g6mVateLq%2FB8G0NqPY5oiWarBx8stE9AMkhMicnmNG3LmqBdnKkeQH2Zw9r9xDWgP9gqvsWQzLNpKjBTbhq9bGs9DlamYW11TjHn%2ByN09v%2FgkWT44DHwEsdlMB%2FUEPFGBMUROFzqIN7eHZalyTow5cInjvyNCNxpbYFszAGR8%2Fg5QMudinoOYKPE7pXNyttMTvAcmz4c4cb2gBgheTW8BloCQ0VhM1OfUZhi6jHbSmmvFTbOGF9CTy66Ep8U8IihB3jv2zzX73L%2F7Z5IYke6ALbdkBhtvuwFV7GSVfGkwFysetPEVP4BpPqFReah%2B5sj%2BsaBKKjrYxPKczHO56SMb%2BPlPPv0sKhcm2Qwm9VUWe6RGz19acpF2unN0gupN3rJSPllCRhnCrCYb%2Bvm%2B5TUHithKjaYR1eNgPXFtA1t4sywusSBJf%2BaUA0e6o7iPKFxi%2BFMxqaw42SkXLVX%2B8%2FpHvns%2BeYDRyuAtLC1wqscxKC7k1t3SDYXkJBq0RwNv28c8L8zaS%2BoYnq%2BTZX4UtFbv0MPK6%2F9IGOqUBxD7h786x35oAB7R8ShZwr%2Bzo2uXkYbzlyetIhxDiw2BJhn7klYYrWhPMaAp4B47BAjpRvcHrG0fPRyLOaN%2FBKXpcFaC28SEoPKphpFXvet4mrz74V0M2%2FMEgqjXE7ONvUYJP%2FmfuY8qKf5V0E0UPEgOux%2BFvwyN8gynWVSOEfoj10rMPVjMHGmfgleJtQxtQi51qVPmVCJMOyyFEdTaG2IZ0unxA&X-Amz-Signature=3e4c82900f3f4e7b244e93d26de3eccbee42d3851e626e791b544db8773f0799&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面有我们有讲过，在阿克当中的 actor 都是跟自己的专用线程绑定的，也就是说它是运营在一个特有的线程上面，不会出现多个线程同时在光顾一个actor，就像 Java 的这种多线程访问一样，它不存在这种它怎么运行的这个 Dispatch 来控制的？ Dispatch 又是怎么运作的呢？我们来看一下在阿卡系统当中， Dispatcher 它最初第一件事情就是负责挑选 actor 和他的消息，也就是说先选择一个actor，再从这个 actor 对应的 milebox 当中选择一条消息，这样就选定了一个 actor 或这个消息，然后 Dispatcher 会把这个选择的 actor 和相应的这个被选择的消息分配给一个线程去执行，这个线程就会被映射到某一个处理器上面，也就我们的一个 CPU 时间之上。
+
+
+如果对 German 或者 Java 的线程很熟悉，就知道其实所谓的THREAD，你可以把它理解为 CPU 上的某一个计算时间，那我们用个图来表示，有一个actor，有一个 my box，里面有很多消息。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d79bae6a-5c97-4b66-bd56-83476b258ecd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664U4E2DFW%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230957Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8Xb%2BEmHWJLWc19pcQvV0%2BQVAkfcMXbdYcPGtkD2s2xQIgBsIzdP%2Bkxq8093SDUmt0yBSJ97lNzLAakF4z0lfk5G8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDI4BAxRCSVSH2dez%2FircAx7Hd5hfjwZS2QhUVbyAN1LrHrD8%2BGjRV7%2Bl76%2Fkb3JKk29cSlj6CN8Q5II2qal8uwT%2Fr%2FbKv%2FpOMy5jBn3tqeDpfZoLp3%2FVOZEmA1g6mVateLq%2FB8G0NqPY5oiWarBx8stE9AMkhMicnmNG3LmqBdnKkeQH2Zw9r9xDWgP9gqvsWQzLNpKjBTbhq9bGs9DlamYW11TjHn%2ByN09v%2FgkWT44DHwEsdlMB%2FUEPFGBMUROFzqIN7eHZalyTow5cInjvyNCNxpbYFszAGR8%2Fg5QMudinoOYKPE7pXNyttMTvAcmz4c4cb2gBgheTW8BloCQ0VhM1OfUZhi6jHbSmmvFTbOGF9CTy66Ep8U8IihB3jv2zzX73L%2F7Z5IYke6ALbdkBhtvuwFV7GSVfGkwFysetPEVP4BpPqFReah%2B5sj%2BsaBKKjrYxPKczHO56SMb%2BPlPPv0sKhcm2Qwm9VUWe6RGz19acpF2unN0gupN3rJSPllCRhnCrCYb%2Bvm%2B5TUHithKjaYR1eNgPXFtA1t4sywusSBJf%2BaUA0e6o7iPKFxi%2BFMxqaw42SkXLVX%2B8%2FpHvns%2BeYDRyuAtLC1wqscxKC7k1t3SDYXkJBq0RwNv28c8L8zaS%2BoYnq%2BTZX4UtFbv0MPK6%2F9IGOqUBxD7h786x35oAB7R8ShZwr%2Bzo2uXkYbzlyetIhxDiw2BJhn7klYYrWhPMaAp4B47BAjpRvcHrG0fPRyLOaN%2FBKXpcFaC28SEoPKphpFXvet4mrz74V0M2%2FMEgqjXE7ONvUYJP%2FmfuY8qKf5V0E0UPEgOux%2BFvwyN8gynWVSOEfoj10rMPVjMHGmfgleJtQxtQi51qVPmVCJMOyyFEdTaG2IZ0unxA&X-Amz-Signature=c5d05ccb89d7b937a24b4fe3b91a7cdf9dbe654703a278d446a5fbe4d579dd50&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+然后我们有个dispatcher，它先从 actor 和 my a box 里面去挑了一个组合，就是挑了一个 actor 和它 my a box 当中的最前面的一个小型。因为它们是顺序处理的， Dispatcher 会把它分配给 THREAD pool 中的某一个THREAD，就从 THREAD pool 当中去挑选一个THREAD，这个 THREAD 和它绑定在一起。这样子就形成了我们所谓的actor，指着运行在它特定的某一个线程之上，最后这一个线程在于 CPU 上的真正的计算单元分配到一个时间来进行执行，这样就完成了一个线程和 actor 绑定，也完成了 actor 上面对某一条消息的响应。执行过程就是通过这样一种方式来完成的。 despiter 可以说是在 actor 这个 system 当中扮演了非常重要的角色。就是最后 actor 真正在执行过程中必不可少的一个分配任务的重心点。
+

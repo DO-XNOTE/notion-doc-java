@@ -1,0 +1,25 @@
+---
+title: 4-9 批量操作 bulk 之 ind
+---
+
+# 4-9 批量操作 bulk 之 ind
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b048e44a-9018-4f26-abfb-43360ab944ee/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666ORJXVML%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225148Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDbCc75C1pRxZLvdrmixqWR3okFaaFETl8nkt1hW1SGHAiEA1WbnjMRJ9KJ3lCrIzqXBn%2BJXrKhjftacA4NJOWjFMuUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEfGPCFOr2HIEUVBESrcA%2F8g1FDb0k9SaBNXu4CZQy%2FGzC82cxe5ODbDJG%2BX3K1UApHzoPb72JoxELvmNupobhFxkm7%2BtXVY6eimTEtOLHE%2BKy3%2FKPs18DK6cCZPYeAmKsDuB44FNdMiJbyNQYrApEUw6k34%2F84amL5zHzo61Km9tfMucpUUoY1HDj49ievmxj5d8ZgPgejm1IUJ7LH59%2BgqKc2C7kAYGJPn9A7%2BeLLgKISERDbUoy7%2BkMZejlLpiboSwy7Dh2mGfPqiszcbUaGQR0c9cJ90O2JjrZ5zg9O34okr6qdAvPFtzecd9rY2W7CGVG8cv7msQfCxijQ3yhcFxUH%2FDER3NuhPkcPZ45TKlg0CuFpXO1NSjN3Yg0zWe%2FZfA%2FMlEN3grreoXf8bi8Mz3vf08yJIpD7ysoBkZf%2B1hBmBkLbln6ncbIL9duqrYet9Afn8aWQkbToQZ2pN%2FNNLrbKI0OlQ8Qtzf2mItDCYuv5CKKQbfYC3uIECXAwuNY8M4pxVQhwja0BtMsM2HQeSQUYyJfUPBfvzONhNPsH9yDJaPKOc%2BGXGjMzpf%2F%2BRGrXcGfGZaqlYbqoNGuvxCr3hOfODDhI0PRNcc1tPfiLjxt37GbiNztC1JMVOZxYBUJgk3wbZek5wbtNQMKy3%2F9IGOqUBEJ51wljZ2xOCz0%2F6E1A%2FRd0quq7y1yTUOTm3u0cGU%2BkAtdjJPjWdpCsIa8Fi%2FrfssQHcEheXMggIs5mMta97qzAzycbhgLXVxq6koURls3G6IVO1UHtLWBbLNTENPkPibaPiIP5Qr7Rks9sJsns%2BVEWAtj72GlbSQMxajBqmhwq%2BcnuL0xRxlDd3%2B%2FOwRj%2BM5EgWHpURVrbsiy9AiJIv3azzs4pr&X-Amz-Signature=43d3dbf2cdaea16cf507eb41843a7a4ed529ef56aab6f6b57a1b38de6bfddd11&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/150db778-ef9b-4928-adcb-0e18891d8300/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666ORJXVML%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225148Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDbCc75C1pRxZLvdrmixqWR3okFaaFETl8nkt1hW1SGHAiEA1WbnjMRJ9KJ3lCrIzqXBn%2BJXrKhjftacA4NJOWjFMuUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEfGPCFOr2HIEUVBESrcA%2F8g1FDb0k9SaBNXu4CZQy%2FGzC82cxe5ODbDJG%2BX3K1UApHzoPb72JoxELvmNupobhFxkm7%2BtXVY6eimTEtOLHE%2BKy3%2FKPs18DK6cCZPYeAmKsDuB44FNdMiJbyNQYrApEUw6k34%2F84amL5zHzo61Km9tfMucpUUoY1HDj49ievmxj5d8ZgPgejm1IUJ7LH59%2BgqKc2C7kAYGJPn9A7%2BeLLgKISERDbUoy7%2BkMZejlLpiboSwy7Dh2mGfPqiszcbUaGQR0c9cJ90O2JjrZ5zg9O34okr6qdAvPFtzecd9rY2W7CGVG8cv7msQfCxijQ3yhcFxUH%2FDER3NuhPkcPZ45TKlg0CuFpXO1NSjN3Yg0zWe%2FZfA%2FMlEN3grreoXf8bi8Mz3vf08yJIpD7ysoBkZf%2B1hBmBkLbln6ncbIL9duqrYet9Afn8aWQkbToQZ2pN%2FNNLrbKI0OlQ8Qtzf2mItDCYuv5CKKQbfYC3uIECXAwuNY8M4pxVQhwja0BtMsM2HQeSQUYyJfUPBfvzONhNPsH9yDJaPKOc%2BGXGjMzpf%2F%2BRGrXcGfGZaqlYbqoNGuvxCr3hOfODDhI0PRNcc1tPfiLjxt37GbiNztC1JMVOZxYBUJgk3wbZek5wbtNQMKy3%2F9IGOqUBEJ51wljZ2xOCz0%2F6E1A%2FRd0quq7y1yTUOTm3u0cGU%2BkAtdjJPjWdpCsIa8Fi%2FrfssQHcEheXMggIs5mMta97qzAzycbhgLXVxq6koURls3G6IVO1UHtLWBbLNTENPkPibaPiIP5Qr7Rks9sJsns%2BVEWAtj72GlbSQMxajBqmhwq%2BcnuL0xRxlDd3%2B%2FOwRj%2BM5EgWHpURVrbsiy9AiJIv3azzs4pr&X-Amz-Signature=c4842bd161150a9def4a7b37bf14784da3a5d03186514fc7de606b75c328e842&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那我们是讲了一个 bug 它的一个 create 也就是我们在批量新增。那么我们来看一下这个批量新增里面就是我们在每一段 meta data 里面都包含了 index 以及是菜板还有是 ID 那么 ID 的话我们每一次输入其实它都是不一样的，前面的这个 index 和这个菜板其实每一段内容都是一模一样的。
+
+
+那么我们能不能把它给提取出来呢？因为如果说我们都放在一起的话，随着我们批量操作的行数越来越多，那么这一部分的 next 和 tap 也会越来越多。相应的那么这些其实都是字符串，字符串越多，那么它的长度也会越大，肯定会占用我们的一个内存的所以我们可以把这段内容给提取出来。那么如何去提取呢？我们可以把这一部分内容放到咱们的一个 URL 里面去。那么在这里写一个斜杠，指明我们的 index 名称叫做 shop 2，随后再来一个咱们的菜板，也就是下划线 Doc 写好，那么这样子就可以了，我们把这下面的内容全部都给删掉，我们只保留这个ID。那么这个时候我们再去做一个操作其实也是可以的。那么这样子我们保持这个数据的不变，点击 send 那么它这个时候其实会有相应的一个其实会已经是执行了，他报了一个相应的错。因为我们的 20042005 以及是 2003 其实都是存在的，所以它会出现一个这样的问题，但是这个是没有任何关系的。因为我们把这个一段内容提取出来，代表我们这个是可以被解释是可以被成功的运行的。
+
+
+
+最后我们来讲下一个也就是我们的第二种批量操作它的一个类型，它还会有一个叫做 index 来看一下我们把这个改成 index 那么这个 index 是什么意思？那么它也可以用于去创建文档。那么它有一个前提就是说如果说我们这个文档的 ID 比方说2004，目前如果说我们已经是存在了，那么它会做一个覆盖或者说是个替换。那么如果说这个 ID 不存在，那么他就会去创建一个新的文档数据。那么接下来我们来一起演示一下。
+
+
+首先在这里我们还是基于这个2004，那么这样子我们把这个改掉改成比方说我们来一个index ，把这个改成 index 杠2004，那么其他的我们就保持不动。那么随后下方的我们都改成 enx 然后它的数据我们分别改为一个，比方说2007，再来一个2008，这样子这边我们都改不掉。那么这样子的话我们一会会来做一个验证。那么一方面我们要验证这个 2004 里面的这个 nike name 它的名称会被修改成 index 另外我们的一个 2007 和 2008 会做一个新增，我们点击 send 那么这个时候可以看到我们首先针对于我们的 2004 来讲的话，它的一个 result 是一个 update 也就是被更改了。那么随后在下方 2007 是克瑞特，然后 2008 也是克瑞特。那么这个就验证了我们刚刚所说的好所有的我们来看一下，我们刷新一下，再来浏览咱们的一个数据 shop2 来看一下2004，这里它的一个尼克内改成了一个 index 然后我们的一个 07 和 08 这个是新增的，06的话我们没有，因为我们太过了，那么这个 index 我们就已经是验证了。
+
+
+那么除了这个 index 以外，现在目前我们已经是讲了一个科瑞则还有一个 index 这个 index 其实就相当于是我们在调用数据库的操作。有一个常用的叫做 great or update 它其实是同的一个方法。如果说这个 ID 存在，那么就去修改。如果说这个 ID 不存在，那么就去做一个新增。他们的道理其实是。
+

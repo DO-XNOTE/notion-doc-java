@@ -1,0 +1,33 @@
+---
+title: 3-7 dsl搜索 - term与match
+---
+
+# 3-7 dsl搜索 - term与match
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/10fcfe44-3967-429d-9515-9247e8a93bbb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QZIY2F5D%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225138Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFQ%2FKfHNIIZOQq1NOJK3yVYf9NAi9vi%2BQpdI5Wgx4mrQAiA09sfyduK2PorJR5X2rzvB2bY8yd4NiUvpkQXtADOxYyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMozYyF9x3nRvOX2UqKtwD3OJakR68G%2BUewlRYclD2tja99L61PPPYYFaubrnflWk6Qr5eJvvMC%2FTSIt%2B94%2Byu64O%2BCCYfHabko%2BwZkfCvBBJy0s5TJwS07%2Bc3VuC7TxTIBTFFu5G3yi0rraIJbckNWAikCHnEnU2s5Bt01FGqmp%2BhYgttJwx%2FK4v1HkWeUfFPbXL6mfUIDhnL6fAENzPHRsf6rFSndztyodbJkHkEwObZwoejyvd4aIt7IhvbPuYH6fF2qpqbqgNUWF%2FDt456eL88CVq5YBSJTAtTchY2ew2btsupmirj5CLUTg3I0ATMZ6sZ1EOPCz%2FpHMkNJJJyEUn8kGkno%2BH7rGYehQssPS5Va0pF5RssZnIktkR9MZDr14aynNVMo3F6hjkC1cF7m9g97hhdYwlJcVtFrcoLQT0bYCnDP2%2BB6bgB324Oc7F7MXoD4NGp%2BOoSkpkv5u61dFdqvQU%2BL4P7lAidvgOJ5NvOElIxWlSjb3hgSjHuXjfouwK1j7Psk6Pw%2FH9SkTESuZCSzzmJiD0Ga0K3YBIdOTjB7NJcqN%2BXSrrsXP5j3ZvYjHYJaqDRCqOX1%2BYQei8oC1w97xkzUk1w13FvDO5gY8MOppAtVA1Io4pVEWGlzeaCy5TNio1PLeneg3Qws7r%2F0gY6pgFb%2FL9O2y4jrzGmowxa6pQpyp2j6eJf9gH7G4rTxkleAlprEsOOYD9zyJzJGoaOAfFQx1qK9E8WRKr6yIJ1ypSJKogBQukYvHHpaieuzGsoHSV32MoarGCCnGv49SS4lHLW%2Bz77f6GAcV30gcvEwvJQANj9c7%2Bw8LpnsvhR2FJwprtYIKgg0K62edMi2RlkKOEhSj510VRXvf9sd4hsl9VrINCbaiCl&X-Amz-Signature=cf922924804aee0f8591e6793b1ec47907f4acb79b978c5138225b705051e38d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么这一节我们继续来讲 GS 2 的一个查询。接下来我们来看有一个叫做 term 关键字的一个查询。那么这个 term 什么意思？那么这个 term 其实是指的我们一个用户当他去输入一个词条的时候，是不会去进行一个分词搜索的，我们通过咱们的一个操作来进行查询，在这里分页以及是这个 source 我们都去掉。然后对于这个 term 我们就可以让他去做一个查询。查询的话我们是可以使用 term 去查询某一个 field 也就是属性。在这里我们来写一个 gsc 也就是我们的 discussion 最后我们来搜一个叫做慕课网，我们点击线的。那么你会发现它是可以查询出来的，总共在这里是有三条记录，只要是匹配慕课网的，它都可以把它给查询出来。
+
+
+那么这个我们还是恢复一下这个，我们把它恢复到这个 source 这里面，测查这个穆克瓦尔这个 source 因为这里面的数据比较多，所以把这个我就加上一个 ID 和尼克 name 也就是 description 再来点击一个搜索，这样子数据量会稍微减少一些。在这里面可以发现只要是包含慕课网的，那么我们都是可以去搜索到的。然后我们再来看一个 match 这个 match 点击搜索，它搜索的时候会发现有四条记录，match的话它其实是进行了一种分词的操作。就是说当我们的用户在把这个幕后网进行一个搜索的时候，其实这个幕后网它会进行一个分词分析以后，其实也就是按照我们之前做的一个自定义的词库，只要是符合木客网或者说是木客客网，木客网的只要是符合这些词的，他都可以帮我们去查询出来。也就是说 much 其实它是一种全文解锁。那么我们可以来看一下。
+
+
+在我们的数据的里面，其中有一条数据在这里有一个我叫凌云木，这个木的话其实就是单个的木，因为它会进行一个分词的拆分，所以这个目是做到了一个匹配，所以这一条数据是可以被查出来的。那么如果说我们在这里使用 term 的话，那么这个时候我们来做查询这个 term 那么这个慕课网它是不会进行一个分词的，也就是说它相当于是把这个 term 当作是了一个 keyword 当作是一个关键字，它不会对它分词，它是直接把这个东西拿到我们的词条里面去做对比，只要符合只有慕课网它才能够被搜索到，所以在这个地方它只能去此只能命中三条记录。那么像刚刚的那一条凌云木的话它是不会被查询出来的。
+
+
+OK ，所以这个就是 term 和 much 的一种方式。OK ，在搜索的时候，所以我们的使用 term 用户的一个搜索的数据，词条的内容，它是不会被进行分词的，使用 match 的话它是会被分词，它是先对我们的用户搜索的一些内容进行分词，分词了以后，那么再去做一个逐个的匹配， term 的话是不会的。
+
+
+OK 吧，我们可以在这里加一个，比方说我们来写一个慕课网强大点击搜索，那么这个时候很明显它是不会搜出来内容的。因为慕课网强大这一整个词汇在我们所有的内容里面是匹配不到的，所以是不行。如果说你把它改为 match 那么这是一个全文解锁，会把这个慕课网进行拆分，所以它是可以被查询出来的。所以在这里它是可以查询出来，总共是有四条。虽然这个强大没有的话，但是这个前面的慕课网它是有内容，它是有数据的。所以在这边只要是符合条件的，它都能够被查询出来。
+
+
+OK ，这个其实就是 match 和 term 的这两种不同的查询方式，一个是精确的一个是全文解锁，也就是分词过后的查询。当然我们也可以通过 tag 插件去做一个搜索，在这个里面的基本查询里面其实也有。那么我们可以选择一下使用 shop 再去找一下这边的这个条件是无所谓，我们把这里可以选择找到我们的 description 那么在这里面你就可以去搜了。其中就会有一个 match 在这里你可以去写一个叫慕课网，强大点击搜索相应的数据，总共是四条，它是可以被搜出来的。如果说在这里面你不使用 match 使用 term 的话它是搜索不了的，是没有任何数据是 0 条被命中。OK ，这个就是 term 也就是 match 这两种不同的一个区别。
+
+
+除了像这个特米以外的话，其实 ES 它还会有一种查询叫做这个写一下叫做 chance 那么特姆斯话和特姆的区别就是特姆斯其实它是一个形式，复数的形式的话，那么其实我们就可以有多个关键字去做一个相应的查询。在这里我们之前使用 term description 在这边其实它就是一个单个字符串，现在的话其实我们就可以去匹配多个整个词汇的一种查询方式。在这里我们是可以去使用一种数组的形式查询的，我们可以来写一下。比方说我们来匹配一个叫做慕课网，然后逗号，再可以去搜一个学习，再去搜一个，比方说叫少年。好。那么这个时候我们点击搜索的话，只要是我们所有的数据里面包包含了慕课网、学习和少年这三个词条的话，那么都会被查理出来。
+
+
+现在总共是有四条数据，一个是幕后网相关的，然后这里面也包含了一个学习，此外还会有少年这条数据。那么这条数据里面是不包含学习和慕课网的，所以它是可以被查询出来的。OK ，在这里如果说你把这个幕后网去掉的话，它就会匹配包含学习或者说是少年这两个词条的。再点击。OK ，我们在这里面这一条是包含了学习的，这条是少年总共是有两条数据。 OK 吧。那么这个就是 term 和 term 的一个区别。 term 是单个词的匹配，特 MS 的话你可以传一个数组，这样子，只要符合这种条件的话都可以被查询出来。 Ok.
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d05cb3e9-b9dc-49e1-81f9-b257a63a7d65/2020-09-17_174843.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QZIY2F5D%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225138Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFQ%2FKfHNIIZOQq1NOJK3yVYf9NAi9vi%2BQpdI5Wgx4mrQAiA09sfyduK2PorJR5X2rzvB2bY8yd4NiUvpkQXtADOxYyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMozYyF9x3nRvOX2UqKtwD3OJakR68G%2BUewlRYclD2tja99L61PPPYYFaubrnflWk6Qr5eJvvMC%2FTSIt%2B94%2Byu64O%2BCCYfHabko%2BwZkfCvBBJy0s5TJwS07%2Bc3VuC7TxTIBTFFu5G3yi0rraIJbckNWAikCHnEnU2s5Bt01FGqmp%2BhYgttJwx%2FK4v1HkWeUfFPbXL6mfUIDhnL6fAENzPHRsf6rFSndztyodbJkHkEwObZwoejyvd4aIt7IhvbPuYH6fF2qpqbqgNUWF%2FDt456eL88CVq5YBSJTAtTchY2ew2btsupmirj5CLUTg3I0ATMZ6sZ1EOPCz%2FpHMkNJJJyEUn8kGkno%2BH7rGYehQssPS5Va0pF5RssZnIktkR9MZDr14aynNVMo3F6hjkC1cF7m9g97hhdYwlJcVtFrcoLQT0bYCnDP2%2BB6bgB324Oc7F7MXoD4NGp%2BOoSkpkv5u61dFdqvQU%2BL4P7lAidvgOJ5NvOElIxWlSjb3hgSjHuXjfouwK1j7Psk6Pw%2FH9SkTESuZCSzzmJiD0Ga0K3YBIdOTjB7NJcqN%2BXSrrsXP5j3ZvYjHYJaqDRCqOX1%2BYQei8oC1w97xkzUk1w13FvDO5gY8MOppAtVA1Io4pVEWGlzeaCy5TNio1PLeneg3Qws7r%2F0gY6pgFb%2FL9O2y4jrzGmowxa6pQpyp2j6eJf9gH7G4rTxkleAlprEsOOYD9zyJzJGoaOAfFQx1qK9E8WRKr6yIJ1ypSJKogBQukYvHHpaieuzGsoHSV32MoarGCCnGv49SS4lHLW%2Bz77f6GAcV30gcvEwvJQANj9c7%2Bw8LpnsvhR2FJwprtYIKgg0K62edMi2RlkKOEhSj510VRXvf9sd4hsl9VrINCbaiCl&X-Amz-Signature=19f25e04ec48fe0b2bf6dfd6691faa47a9fc5b2283be66e708d581f0f3b9b0e5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

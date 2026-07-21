@@ -1,0 +1,39 @@
+---
+title: 2-5 威胁模型（下）-DREAD风险评估
+---
+
+# 2-5 威胁模型（下）-DREAD风险评估
+
+加起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，上一节我们看了看攻击术该如何生成，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d6dc47e0-5c01-4845-a7b9-1b4709efb2ec/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QVNNK5ZV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231009Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICbIAyDHeNldtWypsK6ufBCWhFHG64a5d09ZTWRcqQBSAiB4%2Fc%2BHhRgLLT6ibuNEDOpPNbtveOQoKSQwHg5eb2YvnyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwNOa8rKSk%2BS%2FyJS4KtwDTQCVyAUZDXhPXKLW4HyS%2BSbmSSekVLa5%2Bziro10LLb2dZp%2FidqN36ZjXfbtPtaRtnN%2B%2FJ6iCy2dmxbk779B5i80dR4%2BBbGojq9HSdHtztGwf0F8KLz8bwnB2XT6f6QqO5HeVExb8nXaYw1zo4fHJmLfIaW223uSDelBB2%2FZQHAdhKEUhFKvmy%2BcuGgPJnvLQVC8o3%2Fi5Zww8umM2Mtk3%2FihA1cC7OJqdEae4bC0QyeBxdRcXbNkFw9xD6gKxsgio%2B6SqKqdZ1hJfA2ifsCbQgHnNTFE30OczcBER6ZKR1ZslNpkMAuDHa6wU%2B%2B4Ey9Kt46x2Cf3WhV6e7m0%2B27Fj6poVZ%2FXExFtfG%2Bb5GfZo3xpx%2FVzbbj6pqnJrV2GSeEzkSxQs64JtsbF%2B95fFF5FTGDgo3Q34FrVDkmzWrvyuLG5GY1WPjCJoH%2F5gSpuxTd4ZjBWDZeLh%2FtWajTSpUthlWyGfcBit6Y7ps8NyKZoE%2BPokOO0ZbHR1KiBdM0Td4Yj%2BroafcPDiZ01fwKRlF355zt7cBseJdF%2F02mlXjVKWEqe3%2FWaSkSH8Dr7dTwEg9vz6LC3WpBFard70wr%2BL4vMqqJUgvF%2BVUXSSv3a00Ubv83jzrw9jHuPdEzsRb%2F4wwbf%2F0gY6pgFLpo4E9Mmhx%2FXccrXXhFyJnvCMWV%2BVfvnJE8Jb9h1GJlTUveTEEgI%2BdIo3mHa8utclj2vQkcDjqsaeoz9bRRx8sCZkdvOd98S%2BbPNboqc7fa6LEeYcC5fJ3cfg2AaHbxc0VhF0zbmcWXzwlJif8oTxGqkfZMAFaU1UkCNkBOwTtTmqNj65gw0aF0t51CFo9G0MuPIFdRvNjMYGhSYRqXdNYfmMMQiJ&X-Amz-Signature=dde404409716e622427443970db2fc2b62902656046fd25117964c9f165611a0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+如何从资产到端点到可能有的信任级别，以及最终形成一棵攻击树。当一旦有了攻击树生成出来以后，这么多攻击方法孰优孰劣，孰重孰轻？我们就可以用非常拽、非常拉风、非常酷炫的拽得风险分析法，拽得英文单词拽得不是什么危险恐惧的，这个名词的这个英文解释好像是什么五个英文单词首字母通常翻译成中文就是拽得风险分析，看看怎么拽它什么？
+
+
+第一个维度就是d，第一就是 damage 破坏性攻击能够产生的潜在的破坏性，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c87343a6-d795-4847-8678-ba4d2d8b7f66/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QVNNK5ZV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231009Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICbIAyDHeNldtWypsK6ufBCWhFHG64a5d09ZTWRcqQBSAiB4%2Fc%2BHhRgLLT6ibuNEDOpPNbtveOQoKSQwHg5eb2YvnyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwNOa8rKSk%2BS%2FyJS4KtwDTQCVyAUZDXhPXKLW4HyS%2BSbmSSekVLa5%2Bziro10LLb2dZp%2FidqN36ZjXfbtPtaRtnN%2B%2FJ6iCy2dmxbk779B5i80dR4%2BBbGojq9HSdHtztGwf0F8KLz8bwnB2XT6f6QqO5HeVExb8nXaYw1zo4fHJmLfIaW223uSDelBB2%2FZQHAdhKEUhFKvmy%2BcuGgPJnvLQVC8o3%2Fi5Zww8umM2Mtk3%2FihA1cC7OJqdEae4bC0QyeBxdRcXbNkFw9xD6gKxsgio%2B6SqKqdZ1hJfA2ifsCbQgHnNTFE30OczcBER6ZKR1ZslNpkMAuDHa6wU%2B%2B4Ey9Kt46x2Cf3WhV6e7m0%2B27Fj6poVZ%2FXExFtfG%2Bb5GfZo3xpx%2FVzbbj6pqnJrV2GSeEzkSxQs64JtsbF%2B95fFF5FTGDgo3Q34FrVDkmzWrvyuLG5GY1WPjCJoH%2F5gSpuxTd4ZjBWDZeLh%2FtWajTSpUthlWyGfcBit6Y7ps8NyKZoE%2BPokOO0ZbHR1KiBdM0Td4Yj%2BroafcPDiZ01fwKRlF355zt7cBseJdF%2F02mlXjVKWEqe3%2FWaSkSH8Dr7dTwEg9vz6LC3WpBFard70wr%2BL4vMqqJUgvF%2BVUXSSv3a00Ubv83jzrw9jHuPdEzsRb%2F4wwbf%2F0gY6pgFLpo4E9Mmhx%2FXccrXXhFyJnvCMWV%2BVfvnJE8Jb9h1GJlTUveTEEgI%2BdIo3mHa8utclj2vQkcDjqsaeoz9bRRx8sCZkdvOd98S%2BbPNboqc7fa6LEeYcC5fJ3cfg2AaHbxc0VhF0zbmcWXzwlJif8oTxGqkfZMAFaU1UkCNkBOwTtTmqNj65gw0aF0t51CFo9G0MuPIFdRvNjMYGhSYRqXdNYfmMMQiJ&X-Amz-Signature=c2d69b082b5ab8b8dfe49df395313eb8223a14a17e1b1a63bb7667dfffd73396&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这句话不够直白，怎么说呢？就是它到底会不会让你法人的代表你这个老总锒铛入狱？这就是破坏性很强。
+
+
+其次让你企业倒闭，那也破坏性蛮强的，或者让你企业什么亏损个好几年，破坏性也比较强，再或者让你企业亏损个 100 万，好像破坏性不算很强了，最后让你企业亏损 100 块，是不是破坏性很小啊？这就是不同级别的破坏性，那除了这个第一个 d 以外，第二个字母 r 其实也是跟破坏性相关，但它表示什么？可重复性，也就是很容易反复对你进行破坏，比如说我对你破坏 100 块是不是并不是很严重？对，不严重。但是我一分钟能破坏一万次，那就是什么？一分钟破坏你 100 万，一年是不是就把你搞倒闭了？可重复性也是什么？对企业来说很关键的一个点，这个漏洞很容易被利用，而且反复重复的就可以利用，你也防不住它，这里面也能产生很大的威胁。
+
+
+第三个点叫 e 可利用性exploratability。什么叫可利用性呢？就是我到底用多大的成本、多大的技术的情况下才能够利用到这个漏洞，比如我要偷你 100 块，每次我偷你，我要是用着超级计算机，花一个月的时间，总共开销是 100 万，也就是黑客用 100 万的成本能投你 100 块，那他会怎么样做？不会，所以你企业的安全性非常高，如果黑客花 100 块就能够完成一次密码破解，就能偷取你的 100 万，那这个时候你的企业估计离倒闭已经不远了。
+
+
+前三个呢？ DRE 聊完我们看看后两个 a 是什么？ a 就是影响面有多少用户被影响，那我们刚刚说的破坏都是对企业的破坏，更多的时候其实是什么？是一些黑客尝试偷用户的一些信息，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4d8d5f31-bbd2-4240-bf25-a6144dbdf3b4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QVNNK5ZV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231009Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICbIAyDHeNldtWypsK6ufBCWhFHG64a5d09ZTWRcqQBSAiB4%2Fc%2BHhRgLLT6ibuNEDOpPNbtveOQoKSQwHg5eb2YvnyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwNOa8rKSk%2BS%2FyJS4KtwDTQCVyAUZDXhPXKLW4HyS%2BSbmSSekVLa5%2Bziro10LLb2dZp%2FidqN36ZjXfbtPtaRtnN%2B%2FJ6iCy2dmxbk779B5i80dR4%2BBbGojq9HSdHtztGwf0F8KLz8bwnB2XT6f6QqO5HeVExb8nXaYw1zo4fHJmLfIaW223uSDelBB2%2FZQHAdhKEUhFKvmy%2BcuGgPJnvLQVC8o3%2Fi5Zww8umM2Mtk3%2FihA1cC7OJqdEae4bC0QyeBxdRcXbNkFw9xD6gKxsgio%2B6SqKqdZ1hJfA2ifsCbQgHnNTFE30OczcBER6ZKR1ZslNpkMAuDHa6wU%2B%2B4Ey9Kt46x2Cf3WhV6e7m0%2B27Fj6poVZ%2FXExFtfG%2Bb5GfZo3xpx%2FVzbbj6pqnJrV2GSeEzkSxQs64JtsbF%2B95fFF5FTGDgo3Q34FrVDkmzWrvyuLG5GY1WPjCJoH%2F5gSpuxTd4ZjBWDZeLh%2FtWajTSpUthlWyGfcBit6Y7ps8NyKZoE%2BPokOO0ZbHR1KiBdM0Td4Yj%2BroafcPDiZ01fwKRlF355zt7cBseJdF%2F02mlXjVKWEqe3%2FWaSkSH8Dr7dTwEg9vz6LC3WpBFard70wr%2BL4vMqqJUgvF%2BVUXSSv3a00Ubv83jzrw9jHuPdEzsRb%2F4wwbf%2F0gY6pgFLpo4E9Mmhx%2FXccrXXhFyJnvCMWV%2BVfvnJE8Jb9h1GJlTUveTEEgI%2BdIo3mHa8utclj2vQkcDjqsaeoz9bRRx8sCZkdvOd98S%2BbPNboqc7fa6LEeYcC5fJ3cfg2AaHbxc0VhF0zbmcWXzwlJif8oTxGqkfZMAFaU1UkCNkBOwTtTmqNj65gw0aF0t51CFo9G0MuPIFdRvNjMYGhSYRqXdNYfmMMQiJ&X-Amz-Signature=83db6a558ed28544e8227476f856a4f901ca8a0464bc134ba4761a7fbb571f55&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+比如说他偷到了用户的信息，假设 10 个用户，那这 10 个用户被影响，不至于什么导致你整个的这个电商网站倒闭。但是如果你所有用户的所有信息都偷掉了，甚至于你所有用户在你这里存的钱我都从中偷 100 块。就算你只有 100 万个用户，我也偷了1亿元，导致你整个电商平台所有用户、 100 万用户，所有的用户的钱都被偷了 100 块，这种信息一旦暴露到互联网上，这家企业的什么信用级别就会降低到非常差。这个时候银行贷款很多的，各种各样的正常的交易渠道都会被封禁，所以对企业的影响面非常之大。影响面试其实也是影响一个企业的信誉和资产的一个很关键的点。
+
+
+除此以外还有一个可发现性。什么叫可发现性啊？就是你这个漏洞是不是很容易被发现？比较经典的就是你用的操作系统，比如说是微软，比如说是 red hat，微软和 red hat 其实每周都会在网上公布那些脆弱点。那这些脆弱点如果你不采取防御，那就是什么黑客就采取零日攻击，所谓灵日攻击就是一旦官网上操作系统官方发布出这个脆弱点，然后他立马就什么开发一个破解这个脆弱的一个小的这个黑客工具，尝试全球进行扫描，各个网站进行扫描，一旦扫到你们企业，你们没有做当天的补丁防御，这个时候直接破坏你的系统，偷取里面的数据，甚至于破坏里面的数据，那这种漏洞就是很容易发现的，因为什么已经被公知在公众的网络上这种漏洞你就不防。那你的漏洞的可发现性就非常高，它对你的攻击的成功的概率就非常高。那还有一些漏洞是只有你知道，或者说是只有知道了企业的源码才能够找出这个漏洞，那这种漏洞的可发现性就很低，虽然也许它能造成很大的影响，但是它造成影响的概率非常低，因为黑客很难拿到你的源码。
+
+
+聊完了DREAD，我们就要说一说它为什么这么拽了？因为它什么 DREAD 几乎是所有分析模型里面最简单的一种模型。这个模型就是这样子，不管你影响了 1, 000 个人还是1万个人，不管你对这个企业造成的风险是 100 万还是 100 亿，它就分三档，低一分、中 2 分、高三分。然后这 5 个因素也不做乘起来，它做一个求和，简不简单？每个因素打 1- 3 分，然后求出来，如果你是 5- 7 分，那就认为你这个整个的这个攻击数的这个攻击分支就是低风险，如果是 12 分到 15 分就是高风险，其他就是中风险。非常简单，对每一颗公鸡的树枝很轻松，通过很拽的这种分析方法就能够实现最终确定你这个攻击手段到底需不需要防，以及需要投多少钱来防。这样的一个优先级很快就能定出来，清晰明了，这就是转折分析法的特点。
+好，我们后面就会拿慕克网进行实战分析一下怎么样去攻破慕克网的攻击术是什么，以及用拽的分析法来分析一下我们应该怎么样去帮助慕课网来防御攻击。但是这个内容我要卖个小关子，我要把第三个篮子讲完，理论讲完以后我们才进入实战环节。第三个蓝词就是什么？就是渗透测试，大家敬请期待。
+

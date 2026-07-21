@@ -1,0 +1,75 @@
+---
+title: 5-5  性能规划-构建性能基线
+---
+
+# 5-5  性能规划-构建性能基线
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ba7ad731-289e-403a-9ea0-94ec5a93c154/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QJONFXAK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230737Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCUU%2FsmgSmmA79vKAq2uPaSoZBvEhmupX7AzsFFbINgsgIgeOYT2%2FUl7GodgHiusoKPqEmLV6ajwH5Bz4LPAquoHCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDELdNWKmQzZP%2BflUQyrcAy9ethytFRz5ttEL4bTztKXb7s%2FzKryFYnwIN%2Bb0pU3Bhkk4ykC%2FLkqmh5uM7c7q1YFTnumR5JUwojDrjVXv%2BjuRNVfJiWv4kFDt7i0zF7Zhj0tdh1SaLHBd4hjjHSV8tfyULUlsID6Fp8Jh9hKVC5E6Tof6px8t9aRpEoUWx5nI1NSlCvIDom%2BSR842Nuo2v542wROpH12x7qRebmsG5Y%2FuM91o02ERP%2BF1Ho9QRkRwqs%2BPZq%2BXC2qTNyer3kjV9L5zjsr%2BFCVz20nJONUM%2BE9ycCMB6HXPN0ckr5nJ2GMyA0vE0dINqiBmjUno6ems6Tz5TFtWtwYGmHgMq8wCio7vYtR38caYSWy7WKTm%2BMcnmFfntZumGUY30xwqIC%2BNwwHTnR9mUClhvDOneYkHJ0Ye54WqJHnaVbB0wzPw%2Fqr2%2BI84Vac7vG4xWjcbv8n7b%2Bg8eJZn65xeAK1DTatatXlhynhnr39%2BLlF%2FJYEXOGRpj5exvWXo2KhhcbR6InwqTCZccErp6nE8uRdKDDT%2FYsj5gXZ3lFHoWd9vLT6BmWfp3GHHRjw2WT3oqgCDqsY8B5CTHl0J4uTLhbB5c1L0O%2F6pyp3xqbGdc8JnhG3ll%2BpzTTq5zi9KsDrmMYJTMJS3%2F9IGOqUB0vr1qeSs24enRiUO%2BP742m2MV26C2CVC7xWq6lXl3LgBHZ4yBN4nXFzoyC0vB935MlgrORIvlbE84WWWofmyT7s6W3gCrLS6j3rpxHwA8LzkE1AOWPGW1HUlApkcrSoEJrZvLVaWYGSF%2ByYVMYSQHLu%2BIwzFM3I91cppk%2FbfLVhl6U6guNdNuErwItY5PsvCbMdATria3zOMz2zD%2FRkryNxPwITf&X-Amz-Signature=54107dce51e903680b08dbeabdc7fdefb154bb68e4e842e18fa31a56456ffbb0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4211f057-e995-4b1e-aa6a-d21c5b468bd7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QJONFXAK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230737Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCUU%2FsmgSmmA79vKAq2uPaSoZBvEhmupX7AzsFFbINgsgIgeOYT2%2FUl7GodgHiusoKPqEmLV6ajwH5Bz4LPAquoHCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDELdNWKmQzZP%2BflUQyrcAy9ethytFRz5ttEL4bTztKXb7s%2FzKryFYnwIN%2Bb0pU3Bhkk4ykC%2FLkqmh5uM7c7q1YFTnumR5JUwojDrjVXv%2BjuRNVfJiWv4kFDt7i0zF7Zhj0tdh1SaLHBd4hjjHSV8tfyULUlsID6Fp8Jh9hKVC5E6Tof6px8t9aRpEoUWx5nI1NSlCvIDom%2BSR842Nuo2v542wROpH12x7qRebmsG5Y%2FuM91o02ERP%2BF1Ho9QRkRwqs%2BPZq%2BXC2qTNyer3kjV9L5zjsr%2BFCVz20nJONUM%2BE9ycCMB6HXPN0ckr5nJ2GMyA0vE0dINqiBmjUno6ems6Tz5TFtWtwYGmHgMq8wCio7vYtR38caYSWy7WKTm%2BMcnmFfntZumGUY30xwqIC%2BNwwHTnR9mUClhvDOneYkHJ0Ye54WqJHnaVbB0wzPw%2Fqr2%2BI84Vac7vG4xWjcbv8n7b%2Bg8eJZn65xeAK1DTatatXlhynhnr39%2BLlF%2FJYEXOGRpj5exvWXo2KhhcbR6InwqTCZccErp6nE8uRdKDDT%2FYsj5gXZ3lFHoWd9vLT6BmWfp3GHHRjw2WT3oqgCDqsY8B5CTHl0J4uTLhbB5c1L0O%2F6pyp3xqbGdc8JnhG3ll%2BpzTTq5zi9KsDrmMYJTMJS3%2F9IGOqUB0vr1qeSs24enRiUO%2BP742m2MV26C2CVC7xWq6lXl3LgBHZ4yBN4nXFzoyC0vB935MlgrORIvlbE84WWWofmyT7s6W3gCrLS6j3rpxHwA8LzkE1AOWPGW1HUlApkcrSoEJrZvLVaWYGSF%2ByYVMYSQHLu%2BIwzFM3I91cppk%2FbfLVhl6U6guNdNuErwItY5PsvCbMdATria3zOMz2zD%2FRkryNxPwITf&X-Amz-Signature=e3fe2b7988b5d6aa0a7b0a66c37932582b1c26d96d78087a9d1cec9124be99f3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，幕后网的各位同学们，大家好，我是姚半仙。咱这一小节继续上一节的性能规划这个话题，跟同学们聊一聊在应用设计的时候，如何在这个开发还有迭代过程当中构建性能机械，是咱在这个开发、测试等过程当中摸索出来的一套指标。经常当你有新功能上线的时候，需要对性能基线进行一定的回归，来确保你的新功能不会对现有系统的一些性能构成影响。[后面有专门的章节跟同学们探讨质量保证。](/efbb46b77ae44c71bd3e35987682dead)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f4016d12-ae40-405d-91b4-fff0e66875bf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QJONFXAK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230737Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCUU%2FsmgSmmA79vKAq2uPaSoZBvEhmupX7AzsFFbINgsgIgeOYT2%2FUl7GodgHiusoKPqEmLV6ajwH5Bz4LPAquoHCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDELdNWKmQzZP%2BflUQyrcAy9ethytFRz5ttEL4bTztKXb7s%2FzKryFYnwIN%2Bb0pU3Bhkk4ykC%2FLkqmh5uM7c7q1YFTnumR5JUwojDrjVXv%2BjuRNVfJiWv4kFDt7i0zF7Zhj0tdh1SaLHBd4hjjHSV8tfyULUlsID6Fp8Jh9hKVC5E6Tof6px8t9aRpEoUWx5nI1NSlCvIDom%2BSR842Nuo2v542wROpH12x7qRebmsG5Y%2FuM91o02ERP%2BF1Ho9QRkRwqs%2BPZq%2BXC2qTNyer3kjV9L5zjsr%2BFCVz20nJONUM%2BE9ycCMB6HXPN0ckr5nJ2GMyA0vE0dINqiBmjUno6ems6Tz5TFtWtwYGmHgMq8wCio7vYtR38caYSWy7WKTm%2BMcnmFfntZumGUY30xwqIC%2BNwwHTnR9mUClhvDOneYkHJ0Ye54WqJHnaVbB0wzPw%2Fqr2%2BI84Vac7vG4xWjcbv8n7b%2Bg8eJZn65xeAK1DTatatXlhynhnr39%2BLlF%2FJYEXOGRpj5exvWXo2KhhcbR6InwqTCZccErp6nE8uRdKDDT%2FYsj5gXZ3lFHoWd9vLT6BmWfp3GHHRjw2WT3oqgCDqsY8B5CTHl0J4uTLhbB5c1L0O%2F6pyp3xqbGdc8JnhG3ll%2BpzTTq5zi9KsDrmMYJTMJS3%2F9IGOqUB0vr1qeSs24enRiUO%2BP742m2MV26C2CVC7xWq6lXl3LgBHZ4yBN4nXFzoyC0vB935MlgrORIvlbE84WWWofmyT7s6W3gCrLS6j3rpxHwA8LzkE1AOWPGW1HUlApkcrSoEJrZvLVaWYGSF%2ByYVMYSQHLu%2BIwzFM3I91cppk%2FbfLVhl6U6guNdNuErwItY5PsvCbMdATria3zOMz2zD%2FRkryNxPwITf&X-Amz-Signature=03c6ebe17e435f1e00e916ddd7b17fa2f0ea02e2740bdc2d970459800d6364f0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+那么这一节里咱就抛砖引玉，一带而过，跟同学们简单聊一聊性能基线的一些大框架层面的东西。我们这里画一个横轴纵轴的直方图，这个横轴是你的并发数，也就是衡量你系统访问压力的一个轴，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4ad11a98-fd38-4baf-95f1-1fea2079a8e2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QJONFXAK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230737Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCUU%2FsmgSmmA79vKAq2uPaSoZBvEhmupX7AzsFFbINgsgIgeOYT2%2FUl7GodgHiusoKPqEmLV6ajwH5Bz4LPAquoHCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDELdNWKmQzZP%2BflUQyrcAy9ethytFRz5ttEL4bTztKXb7s%2FzKryFYnwIN%2Bb0pU3Bhkk4ykC%2FLkqmh5uM7c7q1YFTnumR5JUwojDrjVXv%2BjuRNVfJiWv4kFDt7i0zF7Zhj0tdh1SaLHBd4hjjHSV8tfyULUlsID6Fp8Jh9hKVC5E6Tof6px8t9aRpEoUWx5nI1NSlCvIDom%2BSR842Nuo2v542wROpH12x7qRebmsG5Y%2FuM91o02ERP%2BF1Ho9QRkRwqs%2BPZq%2BXC2qTNyer3kjV9L5zjsr%2BFCVz20nJONUM%2BE9ycCMB6HXPN0ckr5nJ2GMyA0vE0dINqiBmjUno6ems6Tz5TFtWtwYGmHgMq8wCio7vYtR38caYSWy7WKTm%2BMcnmFfntZumGUY30xwqIC%2BNwwHTnR9mUClhvDOneYkHJ0Ye54WqJHnaVbB0wzPw%2Fqr2%2BI84Vac7vG4xWjcbv8n7b%2Bg8eJZn65xeAK1DTatatXlhynhnr39%2BLlF%2FJYEXOGRpj5exvWXo2KhhcbR6InwqTCZccErp6nE8uRdKDDT%2FYsj5gXZ3lFHoWd9vLT6BmWfp3GHHRjw2WT3oqgCDqsY8B5CTHl0J4uTLhbB5c1L0O%2F6pyp3xqbGdc8JnhG3ll%2BpzTTq5zi9KsDrmMYJTMJS3%2F9IGOqUB0vr1qeSs24enRiUO%2BP742m2MV26C2CVC7xWq6lXl3LgBHZ4yBN4nXFzoyC0vB935MlgrORIvlbE84WWWofmyT7s6W3gCrLS6j3rpxHwA8LzkE1AOWPGW1HUlApkcrSoEJrZvLVaWYGSF%2ByYVMYSQHLu%2BIwzFM3I91cppk%2FbfLVhl6U6guNdNuErwItY5PsvCbMdATria3zOMz2zD%2FRkryNxPwITf&X-Amz-Signature=b174722954560d6b8a536f790e3e3e84314cdcc0bbfae48cfb1de379af79d8db&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么纵轴我们先把它划定为 QPS 或者是TPS，那在开始的一个阶段，随着你的并发数量增高，那么你系统所能承载的 QPS 也会相应的增高。那么这个阶段我们的系统属于一个最舒服的一个阶段，那么咱系统设计的容量基本上是根据你这个阶段的所能承载的 QPS 来计算的。那同学们观察这个曲线可以看到并发量的增长可以相对来说比较线性的体现在你 QPS 的增长数量上，也就是说你系统所处理请求的这个能力基本上可以跟得上你并发数，也就是访问压力的增长。
+
+```java
+回归测试--
+-------------
+回归测试是一种软件测试类型，主要目的是确保软件在修改或升级后，原有功能仍然正常工作，没有因为新代码的引入而受到影响。以下是关于回归测试的详细解释：
+
+### 回归测试的含义：
+- **目的**：验证软件修改后的版本是否仍然能够正常工作，确保新代码没有破坏原有功能。
+- **重要性**：在软件开发过程中，回归测试是确保软件质量的关键步骤，尤其是在迭代开发和持续集成中。
+
+### 如何进行回归测试：
+1. **确定测试范围**：根据修改的代码或功能，确定需要回归测试的范围。
+2. **选择测试用例**：选择或创建测试用例，确保覆盖所有可能受影响的功能点。
+3. **执行测试**：运行测试用例，检查软件的行为是否符合预期。
+4. **记录结果**：记录测试结果，包括通过和失败的测试用例。
+5. **分析问题**：如果发现问题，分析原因并修复，然后重新进行测试。
+6. **回归测试自动化**：为了提高效率，可以使用自动化测试工具来执行回归测试。
+
+### 何时使用回归测试：
+- **代码修改后**：在软件代码发生修改或添加新功能后，进行回归测试以确保修改没有影响现有功能。
+- **版本发布前**：在软件发布新版本前，进行全面的回归测试，确保软件的稳定性和可靠性。
+- **集成测试后**：在完成集成测试后，进行回归测试以确保各个组件的集成没有引入新的问题。
+- **修复缺陷后**：在修复软件缺陷后，进行回归测试以验证修复是否成功，同时确保没有引入新的问题。
+
+### 回归测试的挑战：
+- **测试用例的覆盖率**：确保测试用例能够覆盖所有可能受影响的功能点。
+- **测试自动化**：自动化测试可以提高回归测试的效率，但需要投入资源来开发和维护自动化脚本。
+- **资源分配**：回归测试可能需要大量的时间和资源，尤其是在大型项目中。
+
+通过有效的回归测试，可以提高软件的质量和用户的满意度，减少因修改导致的潜在问题。
+```
+
+
+那么到了下一个阶段，即便咱的这个并发数量在增长，但是体现在你 QPS 数值上并没有明显的增长，也就是说基本上你的系统的承载能力已经到达了一个临界值，那如果在这个时间点，它的并发数量进一步的增高，那么这种情况下有可能会把你的系统打崩，你的所有请求将会逐渐变得不可响应。
+
+
+那我们在这整个曲线当中，通常来讲可以在这个谈笑风生阶段稍稍往后的位置，或者是在笑容逐渐消失稍稍往前的位置，设置一定的限流规则以及降级熔断规则。那咱这三条虚线的纵线，其中中间这条线，我们尽可能保证让当前系统承载的并发数和访问压力不要超过这条线，否则你这整个集群的响应能力会不增反降。
+
+
+OK，那这是 QPS TPS 的响应，如果我们把这个纵轴把它替换成RT，也就是 response time，我们同样能够得到这样一个类似的曲线平稳增长，直到它在最后一段这里它的响应时间是一个急剧增长的一个曲线，也就是说到最后它很可能成为一个服务超时的这样一个现象。
+
+
+因此咱在做一些性能基线的时候，做一些性能规划的时候，要时刻的去关注自己应用的这些关键点。那当新的功能上线的时候，作为回归测试，去确保你的系统在集成了新功能之后，依然可以在相应的这个并发数量之下保持之前优异的表现。那要保证你的系统的性能应该是一个逐步提升的过程，而不是说每次新功能加入，那你的系统整体的吞吐量会降低。OK，那这个是咱的性能基线构建的一个目的。
+
+
+除此以外，我们还有一个叫稳定性测试的这样一个方向，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9ae89447-5569-486d-8e89-b39058357792/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QJONFXAK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230737Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCUU%2FsmgSmmA79vKAq2uPaSoZBvEhmupX7AzsFFbINgsgIgeOYT2%2FUl7GodgHiusoKPqEmLV6ajwH5Bz4LPAquoHCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDELdNWKmQzZP%2BflUQyrcAy9ethytFRz5ttEL4bTztKXb7s%2FzKryFYnwIN%2Bb0pU3Bhkk4ykC%2FLkqmh5uM7c7q1YFTnumR5JUwojDrjVXv%2BjuRNVfJiWv4kFDt7i0zF7Zhj0tdh1SaLHBd4hjjHSV8tfyULUlsID6Fp8Jh9hKVC5E6Tof6px8t9aRpEoUWx5nI1NSlCvIDom%2BSR842Nuo2v542wROpH12x7qRebmsG5Y%2FuM91o02ERP%2BF1Ho9QRkRwqs%2BPZq%2BXC2qTNyer3kjV9L5zjsr%2BFCVz20nJONUM%2BE9ycCMB6HXPN0ckr5nJ2GMyA0vE0dINqiBmjUno6ems6Tz5TFtWtwYGmHgMq8wCio7vYtR38caYSWy7WKTm%2BMcnmFfntZumGUY30xwqIC%2BNwwHTnR9mUClhvDOneYkHJ0Ye54WqJHnaVbB0wzPw%2Fqr2%2BI84Vac7vG4xWjcbv8n7b%2Bg8eJZn65xeAK1DTatatXlhynhnr39%2BLlF%2FJYEXOGRpj5exvWXo2KhhcbR6InwqTCZccErp6nE8uRdKDDT%2FYsj5gXZ3lFHoWd9vLT6BmWfp3GHHRjw2WT3oqgCDqsY8B5CTHl0J4uTLhbB5c1L0O%2F6pyp3xqbGdc8JnhG3ll%2BpzTTq5zi9KsDrmMYJTMJS3%2F9IGOqUB0vr1qeSs24enRiUO%2BP742m2MV26C2CVC7xWq6lXl3LgBHZ4yBN4nXFzoyC0vB935MlgrORIvlbE84WWWofmyT7s6W3gCrLS6j3rpxHwA8LzkE1AOWPGW1HUlApkcrSoEJrZvLVaWYGSF%2ByYVMYSQHLu%2BIwzFM3I91cppk%2FbfLVhl6U6guNdNuErwItY5PsvCbMdATria3zOMz2zD%2FRkryNxPwITf&X-Amz-Signature=242bbe7568d1121b65177493b2215f3b0ab6921dcb2467ff2ef9ba3e9159fade&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+因为有些系统的bug，或者说是一些潜藏的一些问题，它在短时间的压测内有可能不能被暴露出来。而当你的系统经过一段比较长时间的运行之后，可能会产生一些突发情况，比如说有一些 out of memory 之类的错误，那在压测过程当中可能无法发现。但是在稳定性测试过程当中，也就是说你系统经过一段较长时间的运行的稳定性测试，这里就可能暴露出一些 out of memory 或者一些潜伏的bug。
+
+
+OK，那这一节的内容就到这里结束了，非常的短平快跟大家做了一个抛砖引玉的关于性能测试的一个介绍，那咱关于性能测试，稳定性测试、压测以及质量保证里面的细节内容，同学们可以关注我们后面章节的专题介绍。那么在下一节里再跟同学们唠一唠缓存方面的一些注意的点。好，同学们，我们下一小节再见。
+
+

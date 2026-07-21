@@ -1,0 +1,167 @@
+---
+title: 3-7 响应式编程框架：Akka-1
+---
+
+# 3-7 响应式编程框架：Akka-1
+
+通过前面的理论知识和两个框架的介绍，相信大家已经对详实编程有所认知。并且如果说你是很勤快的人的话，那相信已经开始动手写一些小小的实验性程序来验证我们之前讲过的框架，更深入地了解响应式编程，在实际编程中，对我们整个不管是开发效率还是程序性能或者其他方面的与传统的用编程方式的差异在哪里？那我们现在再看看我个人比较喜欢的一种响应式编程框架阿卡。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/53985627-dd2c-465a-9bf9-d02586ed530c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230955Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=2a03f51cbaf611351edbaed58ed1836c57365618f72e528e0a48c9cf91da5170&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那其实阿卡按理来说应该不能把它称之为一种框架，更像是一个平台，它提供了很多特性、很多工具，所以说把仅仅称呼为框架可能相对过于简单。那我们来看一下阿卡它主要有哪些值得我们去了解的地方。第一，首先就像我前面讲的，它具有一些平台特性，如果大家在上这个课程之前已经对阿卡有所耳闻的话，那么你就知道阿卡它整个是运行在 GVM 上面的。但是它提供了很多构建工具，你要构建一个阿卡的程序，你就要特殊的构建工具，你才能构建出来的，这是其一，其二它提供了 Java 和 SCARA 两种API，也就是说你如果熟悉 Java 的话，你就使用 Java 的这种API，你喜欢 SCARA 这种编程方式，你就使用 Scarlet 这种编程方式。这个你都可以灵活的选择，最终通过一系的构建工具，你可以让构建出来的代码运行在 GVM 之上。
+
+
+这就是阿卡的一个特点，那可能其他的点包括它天然就是支持高并发的，而且也是支持分布式的。怎么理解这个事情呢？我们后面会详细讲，这里我简单说一下阿卡的高并发，它并不是我们传统的这种像通过多线程或者通过一些其他的手段在 GM 上实现的这种方式，它是完全不同的。这里甚至大家应该了解一个并行和并发的这样一个概念，我这里也不详细讲述，大家可以简单地这么认为，并行就是真正的在执行两个相同的或者不同的任务，并发只是说你有两个任务的交替进行，简单来说是这样子，大家可以去找一下相关的资料，自己看一下它详细的解释。
+
+
+但是我刚刚讲的就是最重要的点，分布式，我们后面会介绍为什么它特别适合分布式，因为阿卡它是符合 actor 模型的这种平行方式的，在阿卡框架里面， actor 这种实现它本身是不区分你是远程的 extra 还是本地的extra。所以说你这个系统很容易切换到分布式代码，都不用我们修改，弹性来讲就是我们讲过的，第一它是恢复起来很容易，因为它本身的状态是不会被外界所修改的。
+
+
+此外消息驱动这件事情大家应该相信，应该非常容易理解。首先来讲它是基于 actor 模型的，那自然消息驱动这就没什么好说的。 reactive 它的特征有哪些？第一就是最核心的一点，阿卡它接近 erana 里面最初的一些特征就是actor，阿卡里面的很多写法其实就跟这个尔兰里面的写法其实是非常接近的。当然这个你可以说是借鉴，因为毕竟最早出现的是Erana，后选的是打卡这套东西，所以说整个 actor 模型是它的核心理念和思想，这一点不容置疑，同时它也是支持这种stream。
+
+
+对于阿卡而言的话，大家有没有了解过为什么会有阿卡这种框架出现？大家有没有想过这个问题？其实从原理上来讲，就是因为我们当前的这种编程的方式，它出现了一定的瓶颈，我们再有想实现更好的分布式、更好的 scalability 和扩展性很困难。因为大家都知道在面向对象的编程当中，对象里面是封装了状态和行为，对象与对象互相交互，然后状态是他自己的，但是外面的对象是可以去通过方法或者说直接修改它的状态，这都是允许的。 Java 为例，使用多线程模型编程的话，不同的线程对状态可能就会出现各种操作状态，有些时候如果说你做得不好，它就会失控。简单来说为锁就出现了，就在 Java 这个里面，那有了锁之后才能够保证整个的执行顺序。
+
+
+如果大家有读过结论规范的知道没有锁的话，很多执行顺序其实都是无法保证，所以说为了保证这种执行顺序，它也有了锁的概念，但是有了锁也有它的坏处，第一就是锁它限制了这个并发性，因为它在不同性质进行切换，这个代价其实是非常昂贵的，而且维护线程的这个成本也是非常高的，如果在一个应用里面启动了很多个线程，在不同的线程之间切换，其实是废资源的。
+
+
+2 就是锁，还有可潜在的一种可行，带来什么？死锁征用 risk condition，各种各样的有一些潜在问题，它都为我们系统的扩展性或者性能带来一定的影响，这显然不是我们想看到的，而且线程还有一个阻塞问题，当线程被阻塞的时候，我都浪费掉了，所以这也是有资源在浪费，因此多线程编程哎，很多情况下是被大家诟病的。
+
+
+当然只不过有很多原因大家还使用了不同的方法去解决了这种问题。中国人有一句话叫治标还是治本的问题，这其实是值得商榷的。所以说基于这些问题，才慢慢出现了类似像阿卡的这种编程模型，就是基于 actor 的这种 actor 这种模型它到底有什么好处呢？我们来看一下。
+
+
+首先来看一下 item 模型它大概长什么样呢？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9518fc24-87d7-4fce-bfb1-250c87543176/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230955Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=bebced24ba737f57e6d7f7f3459ea5d031c22e4c27a0c9b632d0f4accd5f808b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在阿卡里面或者是别的 actor 的实现，这基本上没有特别大的差异，我这里讲的都是 actor 模型的一些共性，并不是特指在 academy 的 actor 它是怎么实现的？基本上我在接下来这些关于 actor 模型里面讲的内容都是 actor 模型的一些共性。
+
+
+首先我们来看它有几点，就是我这个图现在画出来的，大家应该可以看出这个含义，每个 actor 它自己封装了数据和行为。这个其实跟我们 Java 里面的这个对象还是比较接近的，但是它其实有挺大的差异的，后面我们会讲差异在哪里？其次每个 actor 它有自己独立的一个Mailbox，所有的 actor 它都是运行在自己独立的线程之上，所以说就不存在像面向对象里面这种多个线程去访问一个对象这种情况说它的截然不同的为什么会有这样子，而且保证它不会出现这种锁的情况来实现的高并发我们后面一一讲解。
+
+
+首先来看一下这个特点，就是前面我讲过了actor，你可以把它想象成是一种轻量级的对象，也就是说与 Java 里面的原来讲的这种对象来讲，它相对，它叫轻量，它的成本比较低一点，所以说整个系统在运行的时候可以创建很多个 actor 来达到并发去一个 actor 的力量是微小的，但是如果有很多actor，成千上万的actor，那么它实现并发的效果可能就比你在 Java 的原有的这种系统里面使用这种多线程要高很多。为什么？因为它的并行性其实是有差异的，前面我已经简单的讲解过了。
+
+
+其次就是前面我已经讲过的，每个 extra 在运行的时候，其实它是自己的专属线程，就是在那一刻这个线程只与它绑定在不在阿卡怎么来执行这个事情上面我们后面有专门的章节来讲解怎么来把一个线程和一个 extra 绑定在一起。然后第三一点就是 share nothing，如果大家有听我之前讲的课程，大家就知道 share nothing 是要做这种并发移植啊。最关键的一个点，如果你这个 share nothing 做得好，在这个系统不管是从 main 对象的设计结构，还是从大型的这种架构设计来讲，你做到 share nothing 的话，其实就迈出了 scalability 的第一步，因为你把它叫对象一罢，还是叫其他 actor 一把或者一个系统一把？它只要不和别人共享它自己的状态，但不管是它要恢复自身还是要扩展自身，都相对来说较为容易。
+
+
+为什么？因为它不需要一个集中的点来维持一种状态，所以说它要扩展就很容易，它的对象的状态或者是这个 actor 的状态，或者这个系统的状态都由它自身来维护，它并不需要一个单点来维持它们共享的这样一个状态。所以说 theorizing 是很有优势的异步消息驱动，这一点虽然是显而易见，但是我要谈一下，所有的在 actor 模型里面的消息都是异步的。也就是说你发完一个消息之后，那你就马上返回了，不是跟线程执行方法一样，你执行方法调用，那可能如果它不是一个异步方法的话，那么他就必须得等待，直到这个方法结束为止。
+
+
+在 actor 模型里面它不存在这个同步的问题，它所有的都是发送消息，然后返回对应的被接受消息的这个 actor 做出响应，它开始做一些计算，在它计算完毕之后，再将相应的结果返回给发送消息，就是前一步发送消息给他的这个 actor 这样子一种方式来完成的。
+
+
+异步消息驱动整个系统，然后消息是整个系统的驱动员。同时任何一个 actor 这种轻量级对象上，它都有一个自己专属的 my box。这个 mailbox 顾名思义就是专门来接收消息的，所有的消息发给他，他就会重启的，供系统一条一条的处理。也就是这个 actor 它要一条条的来处理这个 my box 里面的消息，一次只处理一条消息，不要小看这句话，其实这句话非常重要。
+
+
+一次指出了一条消息，就是区别了我们多线程里分配计算资源，是在线程之间不停地切换，但是一次只处理一条下去，因此它就不需要锁。为什么？因为它处理完这一条，再处理完下一条，这就不存在之前讲的 raise condition 死锁这些问题。因为它的状态在当前执行的时候只有这个对象可见，别的又见不到，所以根本就不存在。我需要一个锁来保护这个可见性、可访问性这些事情还有执行先后顺序它都不需要，因为它只要有一个线程在执行，只有一个线程在执行，所以它不存在，需要锁来保证执行顺序和可见性。
+
+
+了解了 actor 模型的这种特点，我们再看一下就 actor 自身这些特性在哪里？首先 actor 本身是一种轻量级计算实体，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/eabc262a-e7f0-4719-9d27-797f47c2a14a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230955Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=262038cc6debdb152f2906005d2e0eb73e4d040f41126a9d76e76ecf56fa0545&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面我已经提到过了，轻量级最重要的好就是你可以创建更多，和对象相比也许它的代价还要更小，所以说你要实现高并发就是举个简单的例子，假如说在一个特定的机器上面，你可能创建 Java 的一个原始对象，你可能只能创建 5, 000 个。那 actor 如果说代价比较小，可能就创建了5万个，那如果说它都是可以做并行的，那这样子的话，自然 actor 它跑得比还快啊。因为是对象多嘛，简单来讲就是这样子，但这个比喻有点过于简单粗暴，但是我相信大家都能够明白我的意思。只要采用了 actor 这种模式编程的系统当中所有的计算是一个广义的，计算的含义不是说专指的真正的计算的意思。
+
+
+所有的计算都是在 actor 中执行，意思就是所有的业务逻辑都是我在 actor 中完成的，因为前面我们的图里面有讲到 XR 本身是封装的状态和方法，你觉得它的所有的计算能力都是有所谓的这种行为，或者你摆教方法来定义的，只有它才有这个能力，别在没有任何地方可以做这件事情。所以说 extra 就是你实现逻辑的地方，这一点我相信没有什么特别好疑问的东西。
+
+
+answer 之间它只能通过消息进行通信，而且消息是不可变的，就是这个消息发出去之后它是不可篡改的，你只能消费这个消息，但是你并不能修改这个消息起步。也就是说一个消息一旦生成并被发送到某一个 actor 以后，这个消息它就是确定 100% 的，它不可能再动，不像 Java 的对象传递，有些时候如果说你没有做一些特殊的处理的话，这个对象其实它是可以被修改的。
+
+
+但是在 actor 使用消息通信的时候它就不行，消息它是不可变的，除了说内容不可变，还有它的顺序也是不可变的，这个顺序不可变就是先到先得，至少在目前的这个阿克的 editor 里面都是 first in， first out 这种，在进 my box 以后， actor 它要消费这些消息。
+
+
+我已经说了是 first thing first out，所以它是串行处理，一条处理前面有说过每个 actor 一次只挑选一条消息进行响应，它只有把它做完了之后再挑下一条，以此类推。所以说它是一个串行处理，但是为什么串行处理还跑得快？大家都可以思考一下，因为我说过的如果是多线程的话，它需要有个切换的代价，而 answer 它因为轻量级创建的比较多，所以说任务在分配以后，特别是你的任务，如果切分得特别到位的话，那 accent 的效率肯定是比你这种多线程要高，就是这个原因，当一个 actor 响应消息时，它只能做特定的操作，除此之外它都不能做。
+
+
+当然这个响应消息就是我前面说的，它从 Mailbox 里面挑了一条消息来对你进行处理，这就是叫 actor 响应消息，它只能做三件事情，它进行了操作，更改状态或者行为，也就是跟 actor 之间的状态有一定的关系，这就简单的说是它的一个业务逻辑。
+
+
+这个我觉得很好理解，然后它可以发送消息给别的actor，这点你用一个类比，就相当于它自身是一个 orchestration 的功能，这种 actor 他把消息委派给别的actor，那别的 ector 去做一些任务，有点像 Java 里面的这种 Controller 一样，创建有限数量指的actor。
+
+
+后面我们会讲到actor，特别是在 ACC 的 actor 里面，它是有层级的，所以说一个 actor 它也是有能力去创建一个自己的指的actor，并且控制这个actor，而且只有他了解这个 actor 的地址，在阿卡里面，这种地址是发送消息必须要知道的这样一个东西。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a8d21907-1988-46d2-be49-f2968bc6293f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=809c278349365df4f1c8f8e26866d58ad9029385a2f20d40fc1a64f394eecbd1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+The extra system. extra 之间只能通过消息交互，这一点我觉得特别值得来讲一讲。首先 actor 只能与拥有地址的 actor 交互，也就是说 actor 系统里面它有成千上万个actor。但是 actor 之间的交流并不是那么随意的，必须得知道另外一个 actor 的通信地址，它才可以与那个 actor 进行交互。其实这里做一个简单的比喻是很容易理解的。就相当于茫茫人海有这么多人，每个人几乎都有手机，但是你能随便跟另外一个人通信吗？当然不是，你必须得有他的电话号码，你没有他的电话号码，你怎么和他去聊天？这里的道理也是一模一样的，一个 actor 你想象成一个人，另外一个 actor 也是一个人。如果他们其中的任何一方都不知道对方的电话号码，他能通信吗？放在 actor 上，就是他不知道对方的地址，他就不能去访问x。它有一个属性就是地址，只有知道地址的 actor 之间才能互相通信，就这么简单。
+
+
+一般来讲，当你创建一个子的 actor 的时候，那这个 actor 就知道这个子的 actor 的地址可以和这个子的 actor 进行通信，这是一个很好理解的逻辑。还有一种他发送了消息， a actor 给 b actor 发送了消息，当中它是要包含这个发送者的地址的，所谓说接受消息的这个actor，它也是可以拿到发送者的这个 actor 的地址的，为什么？这是必须的，当你的方法要返回，那在这里就相当于说我们的 actor 里面执行了一些计算之后，它要把这个计算结果告诉这个调用者，他怎么告诉我？他只能通过消息去告诉他，他要通过消息去告诉我，那他就必须得知道地址。
+
+
+怎么知道？那在最初调用者访问他的时候，发送消息的时候就把自己的地址写在这个消息体当中，这样子接受消息的 actor 处理完毕之后，就可通过原来的调用中得到的地址信息通知调用者，结果出来了，你要不要看一下？类似于这么一个工作机制，消息是不可变的。
+
+
+前面已经讲过了，消息在这种互相异步通信的 actor 模型当中，消息是不可篡改的。因为如果消息一旦流进某些地方被你改了的话，不管出于什么样的目的，那这个结果可能就和最初的预期产生了出，这就相当于说是一个敏感信息在通过任何取代性传输的时候，它就要防止篡改一样的道理。因为在这个地方所有的消息传递就是我们的方法调用，你能让他方法调用里面的数据随便乱变吗？现在是不能的。
+
+
+顺序执行前面已经讲过了，所有的 Anchor 它都有一个milebox，这个 milebox 就是用来对外接受消息的，消息到达之后它自然有个先后顺序。另外一个接受消息的actor，它就根据这个先后顺序来一条一条的执行，是严格顺序执行，这样子就避免了前面讲过的和 Java 模型的这多线程变成不一样的方式，每一次它拿到一条消息，按照顺序前后顺序先到先得，从 my box 里面挑选消息，然后进行处理。
+
+
+这样子一个顺序执行的方式，在所有的这个 actor 模型为主导的语言或者系统当中，都讲究一句话叫做万物加actor，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a72aef42-a3a5-440e-9c98-674da73fd6fd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=29cc44cd8b8be937f00d7606afd1f0680ea73923dceb8bb99f92350ffc9b4505&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+就是里面所有东西它都是 actor 组成的。你可以把它想象成 Java 面向对象这种说法里面的仪器劫持对象一样的道理，所有的东西你都有创建对象这个地方，就和 Java 提倡万物阶对象一样，这里就是万物阶actor，其实元音和到底是一模一样，就是因为它里面使用这种 actor 来做编程的话，你只能是向 x 的发送消息，类似于在 Java 中创建的对象获得对象并解调了它的方法。
+
+
+一个 actor 不是 actor 系统。在 actor 系统当中所有的东西都是actor，这一点只要你是有 Java 变成经验的同学，相信大家应该很好理解这件事情，我就不花更多的精力来讲这件事情。前面我们也讲过actor，它必须得有一个地址，否则其他的 actor 是无法向它发送消息的，它如果没有地址，他也无法接受自己发出消息之后想要得到的计算结果。所以说每个 actor 都有地址这个属性就是相当于他自己的电话号码，其他的 actor 想要和他订通信，以消息的形式，那不知道他的电话号码，他显示无法通信的就是这个道理。
+
+
+Mailbox 每个 actor 都有Mailbox，前面我已经大概讲过，那么这个 mailbox 的作用是什么？简单的说就是临时存储其他actor，发送给当前 actor 这么一个 message q 一样的实现里面它是奉行先到先得的原则。
+
+
+前面我已经提过了，先到的 message 会先被挑选出来进行响应，这就是 my box， my box 你可以简单英文就是一个消息暂存的地方，在 actor 里面维持了一个私有状态，这个状态永远不能被另外一个 actor 直接更改。这个地方就跟 Java 里面的这个面向对象的设计是有很大的出入的，虽然说我们现在的编程手段里面都不提倡直接更新 Java 对象中的状态，但是在语言层面它是有这个口子的，你是可以直接去操作另外一个对象的变量。你是它的状态，对象的属性设成public，那其他的任何一个对象都可以对它的状态进行修改。
+
+
+这点就是面向对象编程里面，在这 Java 这个实现上面，它是不是预留了这个口子？这是从语言层面来讲这件事情 x 的这种编程模型下面，它的私有状态是永远不可能被另外一个 actor 直接进行修改的，它只可能是通过发送一个消息到当前的actor，由 actor 自身的逻辑来决定说状态要不要变。而同时它变化之后，或者说在执行过程当中它都只有一个线程在工作，所以说根本也不存在比别的 actor 得到了一个不真实或者一个中间的值这种现象，这就是 actor 在目前这种直线下面，它对私有状态的一个保护。
+
+
+actor 的状态不是你想改就能改，它从语言层面就阻止了另外一个 actor 对当前 actor 的状态的修改，它必须得通过异步的消息交流来完成这些计算之后的决定这些状态要怎么变。简单来讲的话就是对象的状态是可以被其他的对象所修改的，但是在 actor 系统里面， actor 的状态只能他自己修改。
+语言层面就不支持别的 actor 来修改一个 actor 的状态，我们前面有讲过使用 actor 模型来编程的，最希望的就是获得自高并发能力，但是高并发能力，哎，怎么能理解呢？其实有好几个层次来讲解一下这个高并发它是怎么实现的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/fc264e44-392d-44a3-aee8-bf00770a9447/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=a9602c053d12caea5e134706d8643616544e111ff3dfc73177ec535cc20bd67c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先通过异步的消息传递这种方式来进行通信，这一点其实就跟面向对象里面的操作方式有很大的差异。面向对象里面你以 Java 为例，那你操作一个对象调用方法，那有可能是同步的，有可能是异步的，那同步的来讲的话，它就必须得主塞，一直到计算结构出现，并且拿到这个返回值。
+
+
+接下来说完。当然如果说在明显对象当中是支持异步方法调用的，那确实当时也是可以返回的，但是在 actor 系统当中，他永远都是没有办法进直接的这种调用方式，一直等到一个结果，然后返还给我，我才做下一件事情。他并不是这样子。它就是发送一个消息之后去干别的事情，等处理完毕之后，接受消息的 actor 自然就会把结果返回给或者通知到发出这个调用的这个actor，这样子完成一次类似于方法调用的操作，但这个它不是方法调用，只是达到了类似于方法调用的效果。所以异步在支持并发这件事情上是做出了很大的贡献的，因为不阻塞那整个资源的利用率才有可能高。否则的话一个 at 发出一个消息， each 之后，它等待这个消息执行完毕之后返回一个结果，那显然中间等待的时间就是浪费掉了。如，不过对于 actor 来讲的话，它异步的只要消息一发送就可以处理另外一件事情。无数个 actor 组成在一个系统，那你可以想象一下它的效率有多高。
+
+
+第二点就是前面已经反复提到的 share nothing，也就是说一个 actor 对象，我们把它叫对象，它是不会与任何其他的 actor 来进行状态共享的，所有的状态都是私有状态，你要修改某一个 at 的状态，你是无法直接去修改它的。你必须得通过发送消息，然后再由接受消息的 actor 自身按照业务逻辑来确定应该怎么改状态。和 Java 不同的实现在于它是没有在语言层面留下这个口子，让你能够直接改状态，只能通过发送消息来改状态。这样子发送消息的方式它没有这样一个等待的过程，也没有一个状态共享的过程。所以说它要支持这种高并发，比如要复制到不同的这个机器上，这是一种基础。然后第三点也是我在前面已经反复讲过的，每次 actor 它只处理一条消息，从而实现了无所并发。因为没有任何别的线程在这一个 actor 对象上进行操作，所以说它每次操作都是线程安全的，也不需要一个锁来保障它的执行顺序。因为它就一个线程，所以它的执行顺序只对它自己有关系。
+
+
+当它处理完一条消息之后，他处理下一条可能是有新的线程，那这个时候他看到的都是注意的状态，不存在像我们结尾里面各种的这种同步控制锁机制来完成的。所以它不存在这个问题，因此它实现了无锁并发，因为它没有锁，所谓它的并发，只要 actor 能够把消息发送到足够多的别的 actor 之上，那你的任务有可能就可以并发。
+
+
+把复杂的任务拆解为多个简单的任务实现并行性。就是我已经讲过的这个例子，因为我们现代的 CPU 它都是多核的或者多 CPU 的，甚至有可能在一台服务器上面。那这个时候你把这些复杂的任务拆解为很多子的任务，那就是由很多个 actor 来一起执行。利用这种多CPU，这样子才有可能提高了整体系统的效率，因此它的并发性也就提高了。
+
+
+可以做一个不恰当的直接结论，越多的actor，它的并发性可能就越高。这应该不是完全正确，但是从某种层面可以反映这样一个现象，就是它的并发性，其实有的时候是语音，你的 actor 数量的多少成正比，单个 actor 它本身并不具备这种并发性，但是由于整个系统拥有众多的actor，从而实现了并行一个 actor 实验室一次一条消息的处理。但是作为系统的这个拥有者，它可以创建很多actor，然后利用正向 actor 同时来运算得出他想要的结论，从而提高了 slow put。
+
+
+我们再来看看 answer 模型的这个分布式，或者说像 anchor 这种框架，天然就是分布式的，就是天然distribute，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9596758c-4de2-457e-af8d-4bfd1e1eed10/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYQ6PSXP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230956Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDzJNS7PMhgHeC5QHFmb731SYniEQj6AjhNQYP5qjF0gwIhAKnyK5f0nza%2FhKZ%2FZRfqNtj%2BHI9QU0WwQyKmtc3jRZKSKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzDUg441SocKU3C5ssq3AOl9oYuDcplJ5upd5r8jsR%2BdUUOr%2ByVvOfUs6epbhyi9XwpSjeZGuvZ5MZP%2F%2FvHkxgsUWusePAmfyfEpAXllz8RS2ZMwGlHUlIZPtzr0MkAFrNEF9%2FiPNZbW9X%2BEEwzrkh8eMca7BpdsQkk9Qml7gF48%2BHFHy1WZmWIcEYl2mEyxTY3YlKEOdK08dYc%2FuqSnGtTBe2HqdjREhtp5nomX9OMNsLSk0jMXaUEF5jf0SLwPjX3WLST65kn5wNQcU8klwcAkUHUkj0y2Ljj7bxTA7sqQnuVN%2BzQda%2B%2Bla1NiG%2Fp9phMNnTY%2BNFX43GGctPuCbgvEERubYKCKEX1jp4oqgHDTwWR5%2B4%2Fk4uCNY3B2t%2BJb%2BDv1XhsTZ5XZcaxhO53lKM4Tgi0ChmtYgk108Kp5oovPYfWRlsLwCBCiKejwSeJKOVJLRzi0UFgpxSqY%2BF3DPvf2pXt6CvEFK%2FMkf2PJGDfet1%2B0306UXKORSKzKTBfdzH3sjol%2F7FsNJQ3lxsRiCWaKxCryll621x3ZYm%2FLK%2FqUB1TANo6yYmsTu3L2z8GpPAWwUpsKSjYG%2BgQeWU0CNfSEaca%2BqNyvRb%2FipnxbOa3Ul2KEsRYNZH2qCBq37qIKiO%2B1Dw2mT%2B8tdHppzCEu%2F%2FSBjqkAVHWPQx1k4gt84n89gc%2FCZrh9r6lbBBqmvFKflAiNuBSzS%2Fqg73aVoe8Ozjwu1gywKhogyDTqM7srFxsovY48rwKPzllxMkFLJxbD25PURmcBZ0fSJ0FxIbka97s3QUf4pXAI2QBvly5CVghwoEYDQLs91qpn1c2%2F%2FwaUEdecOO8IOa8lpO11YQB903%2F1seZrUB2DZ6wGR%2FgGv0UnpqKANhYIiux&X-Amz-Signature=85b7c28144315409d1efb385f4db951ee21d7af6960ca41a9c3e956afbd793f6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这主要是来自于几方面的原因，第一方面就是调用方法还是发送消息的问题。两个方法如果说都是发生在同一台机器之上，这个就是内存级别的调用，这种调用就相对来说是比较简单的。但是你如果把这种方法调用要迁移到另外一端，这个就加变得很困难了，因为你得知道很多东西，甚至你的代码写的都是不一样，至少说从 Java 的时间层面来讲的话，你调用一个远程方法，不管它是 r p seed 还是 r n i，还是我们的 JSON 这种 agenda 风格的API，你要调用这样一个方法，它肯定跟你调用一个本地的方法，在 Java 里面作为对比来讲，它肯定是不一样的。
+
+
+但是如果换到 actor 模型，或者以 ACCA 这种为例，只要在 actor 模型下面来运作的这种程序，它发送的都是消息，也不管你是在远程的还是在哪里，它的代码看上去都是一模一样的。只是 actor 具体出现在哪里，那才是运行整个系统的一个关键。
+
+
+也就是说，其实当一个 actor 想要使用某种别的 x 的能力，就是说想调用另外一个 x 的方法的时候，它是向它发送了一条消息，在接收这个消息的actor，它到底是在本地 local host 还是在一个 remote 的 server 上面？根本就不重要。
+
+
+因为对于使用者而言，它就是发送了一条消息，这个使用者我指的是开发人员，对开发人员来讲它就是发送了一条消息，所有的代码写上去都是几乎一模一样的，而根据真正的 answer 运行在哪台机上来决定了这个消息会发到哪里去。但是在写代码的时候，至少这一点你是完全不用关心的。
+但是在类似于 Java 中进行方法调用上面，那其实你调用远程的这样一个方法和调用本地的一个方法写的代码差别其实还是挺大的，但是在这种 Edit 模型下面，它的代码的差异就非常小，代码的逻辑也是如此。因为代码的逻辑就像前面讲过的extra，它只能做三件事情，这三件事情其实与你在本地还是在远程都没有关系。你的业务逻辑代码如果是自身的维护这种状态的话，你根本就不需要考虑这个问题。
+
+
+如果你是需要和其他的 act 进行协调的话，那别的 actor 在哪里其实你是无所谓，甚至说不知道的，你只需要像你想要的 actor 或者具备这种能力的 actor 发送一条消息就可以，至于说这条消息是被发送到了别的 server 上面，还是发送了本地，从代码层面或者业务逻辑层面，它是感知很小的，甚至无需感知，而这一点也就是它实现分布时候的 scalability 最重要的一个点，因为它不需要知道接受这个消息的 actor 到底是在本地还是在远程。 actor model 或者 Archa 这种系统 designed 还是 distribute 就是为了分布式而设计的。类似于这么理解。
+

@@ -1,0 +1,46 @@
+---
+title: 3-19 【Demo】启用心跳和健康度检查 
+---
+
+# 3-19 【Demo】启用心跳和健康度检查 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7bd1487c-23ba-4ba7-812a-5950dde8d169/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R6RBMZOL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICKhLsZHnOI1wbfhu1orSlUA2HdNYstXSV1NpZv%2B4XRfAiAntHS569Nog9Vg4B0l2g0QI5FdlIEyE1ZMUFSoOVFfxCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwMsWIOh4MMuStTiXKtwDR%2Bnhpakdu5bGxgb%2B8ZxMeqUF2%2FQIM8TQH7saXq9EPUWHW1zRrYWdDZxYQIobXTvEH%2FIO2n8FiMokyzqL30oMEAIyv14HDNEtzmlCvlQuqxLbOca4%2BvZZKp8ZHoJe2bCWs1QDuC%2Fe1Fkvf8V1fdxwyaJRvox8CxyEajzQs%2BrI%2B%2B1ce5jEcc9HR57Y2EcoNmAOOmrklZsFPt%2BOglMrcljTh1Qj1W43RrtsdEVlvVY60wzZDXOU0dcU31DeQ9dIpMtDhzUP6E7EQE7UNsn0QpxLiMhpXEuVxFhlRFP7IIH5TDjUR3R0OlqdUk0SRjhaawHutj%2BTFjUgeWpwZdOeLSYCmNxdaMXnJtWBt0kXACnk3zW8fpbWq4IkdFb5tN%2Fqj0itzb9C5%2FlCldVvQOjxV3y%2BsQ272QGe%2BkbsAXV%2BsmqZLMcUKyCZFxFlfJJolfP6rn1nkm9ItraQ5OWxv9EW7crcJBwKEL6kH7trI3BBdlS9eNMH2qzACps3pNUSVZbWrmjtmaaS3HtppPmLjBTv2EeUQ8exwCxm8IroCtbpxJ6Ovzd9EyLkZodnMZU5RNFNO9wVW20zrnmxQcy4l6g8sx5hdVGFVd1P%2FGAopYNeZzX6FHtJRrgUcevEpi8te%2FQwg7f%2F0gY6pgFkJ6GS1LuS%2BQa8pp41MRyfM4y2Kb2XqcIUPO1BsCOqJG9NNPMbZI7VOcMJ61C2j4fnebU9OX3DkDsjDMRCkdxTkYcmcZRaD8JBlIsP9iBpwhADATgcPZwFbdUmuOivhHxWxZkoiBLrO3V4OZzDybfX9TkmcD5hy2%2F4Io2jDW7dpdixzlFh4bo3WYdcLoZt841e20YANbKLUeou3Gb%2BH9sP8W9eRZHt&X-Amz-Signature=ce75fc3eea4c8a6e4c61f6646377d86c9c9a1e321584df0d7652d5b57a4893fd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/64949ed1-8b70-4d2b-935b-3c0856a93b27/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R6RBMZOL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICKhLsZHnOI1wbfhu1orSlUA2HdNYstXSV1NpZv%2B4XRfAiAntHS569Nog9Vg4B0l2g0QI5FdlIEyE1ZMUFSoOVFfxCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwMsWIOh4MMuStTiXKtwDR%2Bnhpakdu5bGxgb%2B8ZxMeqUF2%2FQIM8TQH7saXq9EPUWHW1zRrYWdDZxYQIobXTvEH%2FIO2n8FiMokyzqL30oMEAIyv14HDNEtzmlCvlQuqxLbOca4%2BvZZKp8ZHoJe2bCWs1QDuC%2Fe1Fkvf8V1fdxwyaJRvox8CxyEajzQs%2BrI%2B%2B1ce5jEcc9HR57Y2EcoNmAOOmrklZsFPt%2BOglMrcljTh1Qj1W43RrtsdEVlvVY60wzZDXOU0dcU31DeQ9dIpMtDhzUP6E7EQE7UNsn0QpxLiMhpXEuVxFhlRFP7IIH5TDjUR3R0OlqdUk0SRjhaawHutj%2BTFjUgeWpwZdOeLSYCmNxdaMXnJtWBt0kXACnk3zW8fpbWq4IkdFb5tN%2Fqj0itzb9C5%2FlCldVvQOjxV3y%2BsQ272QGe%2BkbsAXV%2BsmqZLMcUKyCZFxFlfJJolfP6rn1nkm9ItraQ5OWxv9EW7crcJBwKEL6kH7trI3BBdlS9eNMH2qzACps3pNUSVZbWrmjtmaaS3HtppPmLjBTv2EeUQ8exwCxm8IroCtbpxJ6Ovzd9EyLkZodnMZU5RNFNO9wVW20zrnmxQcy4l6g8sx5hdVGFVd1P%2FGAopYNeZzX6FHtJRrgUcevEpi8te%2FQwg7f%2F0gY6pgFkJ6GS1LuS%2BQa8pp41MRyfM4y2Kb2XqcIUPO1BsCOqJG9NNPMbZI7VOcMJ61C2j4fnebU9OX3DkDsjDMRCkdxTkYcmcZRaD8JBlIsP9iBpwhADATgcPZwFbdUmuOivhHxWxZkoiBLrO3V4OZzDybfX9TkmcD5hy2%2F4Io2jDW7dpdixzlFh4bo3WYdcLoZt841e20YANbKLUeou3Gb%2BH9sP8W9eRZHt&X-Amz-Signature=fcd43b83f94876f3d01f7b47066f22af73b097c8bfcf6fcc8a1c75de34037da0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这一节，我们来学习如何启动心跳健康检查。好本节的主要内容有，第一条是我们通过配置项在客户端开启心跳和服务续约。第二项内容是在服务端服务自保功能的开启和关闭。最后一点，我们通过上述的两种配置项模拟一个服务剔除的场景，看一看服务剔除服务的续约，还有服务自保，这之间都有什么关系？好，大家准备好就抄起家伙开拔，每天扣定一小时，健康工作 50 年。好，大家又来到自己主场，接下来我们做什么？我们是不是第一步先要到服务的提供者上面定义一些服务续约的属性。那打开小桌板，我们找到 eureka client 这个项目，在 resources 文件夹下找到 application property 那这里是我们存放属性的地方。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e56bf4c5-5b0e-4279-bd9f-39b54f434385/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R6RBMZOL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225549Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICKhLsZHnOI1wbfhu1orSlUA2HdNYstXSV1NpZv%2B4XRfAiAntHS569Nog9Vg4B0l2g0QI5FdlIEyE1ZMUFSoOVFfxCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMwMsWIOh4MMuStTiXKtwDR%2Bnhpakdu5bGxgb%2B8ZxMeqUF2%2FQIM8TQH7saXq9EPUWHW1zRrYWdDZxYQIobXTvEH%2FIO2n8FiMokyzqL30oMEAIyv14HDNEtzmlCvlQuqxLbOca4%2BvZZKp8ZHoJe2bCWs1QDuC%2Fe1Fkvf8V1fdxwyaJRvox8CxyEajzQs%2BrI%2B%2B1ce5jEcc9HR57Y2EcoNmAOOmrklZsFPt%2BOglMrcljTh1Qj1W43RrtsdEVlvVY60wzZDXOU0dcU31DeQ9dIpMtDhzUP6E7EQE7UNsn0QpxLiMhpXEuVxFhlRFP7IIH5TDjUR3R0OlqdUk0SRjhaawHutj%2BTFjUgeWpwZdOeLSYCmNxdaMXnJtWBt0kXACnk3zW8fpbWq4IkdFb5tN%2Fqj0itzb9C5%2FlCldVvQOjxV3y%2BsQ272QGe%2BkbsAXV%2BsmqZLMcUKyCZFxFlfJJolfP6rn1nkm9ItraQ5OWxv9EW7crcJBwKEL6kH7trI3BBdlS9eNMH2qzACps3pNUSVZbWrmjtmaaS3HtppPmLjBTv2EeUQ8exwCxm8IroCtbpxJ6Ovzd9EyLkZodnMZU5RNFNO9wVW20zrnmxQcy4l6g8sx5hdVGFVd1P%2FGAopYNeZzX6FHtJRrgUcevEpi8te%2FQwg7f%2F0gY6pgFkJ6GS1LuS%2BQa8pp41MRyfM4y2Kb2XqcIUPO1BsCOqJG9NNPMbZI7VOcMJ61C2j4fnebU9OX3DkDsjDMRCkdxTkYcmcZRaD8JBlIsP9iBpwhADATgcPZwFbdUmuOivhHxWxZkoiBLrO3V4OZzDybfX9TkmcD5hy2%2F4Io2jDW7dpdixzlFh4bo3WYdcLoZt841e20YANbKLUeou3Gb%2BH9sP8W9eRZHt&X-Amz-Signature=80f166e2ab8cdf56aa8593389591772a0514c7d1a11369fa40074f142ba744b2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，我放大屏幕，那接下来找一块空地，我们就开始写了。那第一个属性我们写什么？大家先来看我写 eurika.instance 刚才说到跟服务续约有关，那这肯定是跟 lease renew 后面跟什么 interval 跟到这大家就知道这跟时间有关系了对不对？在杠 in seconds 它既然是一个跟时间有关的属性，那它的值肯定是个数字，我把它定义成5，是有点长。那它是什么含义呢？它是说每隔 5 秒钟就要向服务中心发送一条续约指令，对不对？Ok.好，那这是第一个属性，定义完之后，我们来定义第二个属性，它跟服务的过期有那么一点关系。
+
+
+好，第二属性名称依然是 eureka instance 打头，后面也是 list 那接下来就不一样了，接下来它是 expiration.duration 再点 in seconds 那它是什么含义啊？它稍微的复杂那么一点，我这边给它定一个大一点的数字。好，30它的含义是说如果 30 秒内怎么样，依然没有收到续约请求。
+那我怎么样判定服务过期？服务过期的意思是什么？就是服务死翘翘了对不对？那就是上西天了。那大家知道服务过期了，宣布服务死亡了。那这种情况下，我作为注册中心，我会做什么事啊？是不是服务剔除对不对？那假设我这里定义了30，不要说 30 秒钟，我 30 分钟都没有收到来自于这个服务端的续约请求。那我注册中心能一定把这个服务剔除掉吗？未必对不对，因为我还有服务自保对不对？当我服务自保开启的时候，我服务剔除是不是不生效啊？ OK 那这里带大家复习了一个前面的小知识点，接下来我将要怎么样去服务的注册中心来定义属性了。弹开小桌板，我们找到服务的注册中心 eureka server 这个应用同样在 resources 文件夹下打开配置文件，这里我们把屏幕放大，再找一块空地开始定义第一个属性。
+
+
+第一个属性是什么？是跟服务自保有关系。我们知道默认情况下服务自保是开启的。然后我们在它的服务注册页面服务注册中心，它页面上会看到一个 emergency 的红字，对不对？那我们这里为了验证服务剔除的功效，先把服务自保功能给它关闭起来，还要看它的应用属性名是 eureka.server 这里不一样，不是 client 这它是 server 了 error 卡点 server 后面是什么？ enable enable 杠 self preservation 它的值是 true or false 的默认就是 true 而如果想把它关闭是强制关闭，那就要写成 forceok 大家要记得就是假设你不设置的话，它这个自保机制是会自动的在后台开启关闭的。那我们图文教程中也提到了它开启关闭的触发情况是哪些？那这里如果我们想把它手动关闭，那就把这里设置成 false 那设置成 false 以后它的自动的关闭开关。这还会有作用吗？不会了，因为这里是强制关闭，所以我们注释里面写上强制关闭服务自保。大家注意，这个强制自动功能不起作用了，自动开关失效不起作用。
+
+
+OK 那接下来一个属性是跟服务剔除有关系的。那大家前面我们提到过服务的续约，服务的自保和服务剔除，这三个是个三角关系是不是啊？我这里给这个属性设置成什么呢？服务剔除的时间间隔 eureka.server.eviction 这是剔除的意思后面是 interval 跟时间有关的，基本都是 interval 开头 interval timer in milliseconds 这个 M S 是毫秒的意思。那它的含义是什么呢？每隔多久触发一次服务剔除？ OK 那所以这里是相当于一个后台的 job 它会定时的去触发这个服务剔除，然后把那些不可用的服务没有心跳服务全部给它剔除掉。那现在因为我们强制关闭了服务自保对不对？那所以服务剔除怎么样？服务剔除只要发现那些需要下线的服务，那就会坚决下线，不会再受到服务自保的干扰了。
+
+
+是不是？ OK 那我这里把服务剔除的时间设置成多少？我设置成 10 秒好了，10秒就是 1 万毫秒。对不对？ OK 那现在这设置好了之后，我们来把服务中心给它启动起来，看一下页面上有什么变化，没有找到服务中心的闷方法，我们直接点击 run 把它启动起来。好看到 spring 成功一半 started OK 这时候移步到浏览器，我们看一下它的效果。好，我们到这个注册中心页面点击一下刷新，再点一下。好往上走。
+
+
+大家看到有什么变化没有？以前这里是不是显示一句很吓人的 emergency 对不对？我们没有强制关闭服务自保的时候显示 emergency 这里关闭以后，这里显示的字有些变化。 the self preservation mode is turned off 这个付字宝机制已经被关闭了。
+
+
+this may not protect instance expiry in case of network or other problems 当你的服务注册节点因为任何的网络原因或者其他问题导致它的过期，那我这个注册中心就不会保护它了。言下之意是什么？你服务过期了，我可以顺理成章把你给踢掉。对不对？ OK 那接下来我们模拟这样一个场景，服务注册。注册以后，服务续约延迟到达，然后让服务中心把它剔除，我们来构造这样一个场景。
+
+
+好，回到 IDA 现在大家看一个 log 大家看到这里，它每隔 10 秒钟都会打印出一行什么呢？服务剔除 task 完成的 log 那这里就是我们前面配置的服务注册中心的服务剔除时间间隔多久 10 秒一次？那他这里每隔 10 秒都会打印一个间隔。那接下来为了构造一个真实的服务剔除场景，我们要怎么样？我们要在服务的发送方这里制造一些手脚。看这里。我们现在每隔 5 秒钟发送一条续约指令对不对？如果 30 秒没有收到续约请求，那么我认为服务过期，那这个数字我们把它改小一点好不好？如果你 5 秒钟内没有受到请求，我认为你服务过气，那这个服务发送间隔相应的就要增大一点了，对不对？那我把它增成60，那这种情况下我 60 秒才发一个请求。但是如果我服务端这个客户端，他告诉服务端你 5 秒钟没收到，那就认为过期了，那是不是铁定会过期。好，那我们就把它重启一下，直接点击 run 方法， spring 成功一半他这已经 started 了，那目前来说我应该成功注册到了服务注册中心。
+
+
+好到服务注册页面，我们点一下刷新。这里出现一个 eureka client 已经注册上了，对不对？那如果服务剔除可以正常作用的话，过几秒钟它应该会消失，再刷新一下。好。果不其然，那为了证明是由服务踢出来操作的，这个步骤我们到 log 里面看一下。 OK 切换到服务注册中心的 log 好，那这里看到在这一行看到吗？这一行有一个 running 服务剔除 task 的 lock 那这里是服务剔除，大 task 正在执行。那接下来就是说他发现了一个过期的服务对不对？他要把它进行剔除。再往后过期的服务是什么呢？这里就告诉你这个服务的地址标签是什么，它是什么端口号 3 万的这个服务对不对？那正是我们刚才启动的 eureka clientok 那最后这一行 log 写的是吗？ cancel 的 instance 那也就是把这个服务 instance 正式下线了。
+
+
+OK 那么到这里，续约、服务剔除以及服务自保的功能就展示完毕了。那这一节，大家看到很多配置项看起来非常不起眼对不对？但是它起到的功能可是非常巨大的。在真实的项目中，我们也经常碰到这种案例，很多 bug 查来查去也查不出什么原因。最后发现原来是落在这么一个小配置项错误上。 OK 那举个例子，之前我们配置的这个属性，每隔 60 秒发送一条指令到服务注册中心。对不对？但是你如果 5 秒没送到，那就是属于过期了。那这个配置明显不合理。那大家在自己项目中也多注意，很多问题，真的就是因为这些小配置，那配置错了或者配置的不合理导致的，但是却要花费很多的时间来做 troubleshootingok 那今天这一节就到此结束了。下一节我们用图文的形式跟大家阐述一下服务下线的流程。
+
+
+

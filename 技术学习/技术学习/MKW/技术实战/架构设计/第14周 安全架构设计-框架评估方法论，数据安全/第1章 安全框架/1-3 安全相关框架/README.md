@@ -1,0 +1,54 @@
+---
+title: 1-3 安全相关框架
+---
+
+# 1-3 安全相关框架
+
+架取需求到落地的桥梁，构建 it 新蓝图。我是张飞扬。好，上一节是一个总数，我们也介绍一下什么是安全纳点式以及安全的基本三要素。在这一章节开始，我们陆陆续续会介绍一些架构、一些模型、一些框架，还有控制和流程。好，这一节我们首先来罗列一下我们待会讲到哪些主要的安全框架，大家不要太惊讶，非常多，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/77b2bd44-9eef-413a-98cf-7344e2ee7447/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V7ONYEZR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231001Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEjZQHHcL%2Bx2ajzlQqmL3d0KwXKWwpW8PE7VQA%2FxqBA5AiBiXwXjcctnMjX0XoxtxSyN3cWGb6f5qV4FUWqgj9EeJyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMs74OcoOs%2F3etjnIKtwDPyDqQkk3w1bxzp7QCGhF9mPGGDZDx0m3%2FgQ%2B%2F2wft6lC0ofJOjdOpsyBztcZgwx%2F86T111fViqNA7luV%2BzfxLzf58d5VoxCDyep%2Fa7c8UaibhOGlrOosNXamxdoxXFRE0TllWxsVq4%2FSIVgfzmDmatanskz8asSbbRO9ZfGRCgs6UffXri3%2BqhzQIm1QDlR2VVmYT0%2FrzlXAX7%2BWj03NJ1QeVTOYgNB%2F2vywPBF0c5jXgewAb5yNqLHPxTBBeX08OkVYUasouPRVWyw%2BNBnGKjLlmu7Nli0LGRd00YZmmd9L05I2DzLbU6RpB8njMktyQ3CtQBA1r%2FuSGZLKj9pgj45BgECfdqg8EZcApsfGoLnly55ifsWtH0xGge40%2Bt%2FpBDjD41bQmevP9B%2FICtuG4rR2MZ53q1P3%2BE0WRysYYizHS1r8F6UpTRNfZwDUnZdZwrQONCxkCUZUSGToZJ3lof%2Br5Nxj%2BhOpA1gapYmXTgcUMgKWveIX8z0n3PLtbZUkd8qMCCrPC2mjPzFs52OPAOZqWYG75ZfayHHqul2OfPSVPT0C6oufEOh5wRMLa5npHxeIKqfLmWCFJKcSJCDo16i1fdOrbvEGNjOxggAi2jgc13i300nwEsz2OLkw8rr%2F0gY6pgF6lBUPz4g2vq0PnO%2FvOzzU5pt0rGC%2FEz9qOk0507gHwouTaVbdtlwSnwaVC1WtxjNKZC8x4myudIcaA6EKlFOpk0aZu4G0O5BeO%2F1Tzz3Cp6fUhxNgMc6%2BnDV6h9Bv%2B8uR1ZOoQU%2FecNrlmzgzGAJcQr%2FnjgcjOLYqgK1pPjSeiYWMjqBUevIwFLyc8%2BowsiJplLhElpPOA9HNZV%2F9IdT8oxr44Ldm&X-Amz-Signature=bb75d9e5a4a8f98de00d60dccaf79134896edec163ee5b27df93357205573f73&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+是吧？ Zuckman p to DR IPDRR 傻不傻？ ITF 还有什么自适应，covid， Mist 等等，那甚至于 idol 六 Sigma 流程性的这些我们陆陆续续会在这几个小节跟大家分享，那辅导老师不希望是长篇大论去聊这些架构框架的细节，我们聊一聊其中一些值得思考的点。
+
+
+这几天我们重点聊两个框架，一个是非常非常经典的 Zack man 框架，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c91fced9-d31d-41f3-b327-8bb829779672/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V7ONYEZR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231001Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEjZQHHcL%2Bx2ajzlQqmL3d0KwXKWwpW8PE7VQA%2FxqBA5AiBiXwXjcctnMjX0XoxtxSyN3cWGb6f5qV4FUWqgj9EeJyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMs74OcoOs%2F3etjnIKtwDPyDqQkk3w1bxzp7QCGhF9mPGGDZDx0m3%2FgQ%2B%2F2wft6lC0ofJOjdOpsyBztcZgwx%2F86T111fViqNA7luV%2BzfxLzf58d5VoxCDyep%2Fa7c8UaibhOGlrOosNXamxdoxXFRE0TllWxsVq4%2FSIVgfzmDmatanskz8asSbbRO9ZfGRCgs6UffXri3%2BqhzQIm1QDlR2VVmYT0%2FrzlXAX7%2BWj03NJ1QeVTOYgNB%2F2vywPBF0c5jXgewAb5yNqLHPxTBBeX08OkVYUasouPRVWyw%2BNBnGKjLlmu7Nli0LGRd00YZmmd9L05I2DzLbU6RpB8njMktyQ3CtQBA1r%2FuSGZLKj9pgj45BgECfdqg8EZcApsfGoLnly55ifsWtH0xGge40%2Bt%2FpBDjD41bQmevP9B%2FICtuG4rR2MZ53q1P3%2BE0WRysYYizHS1r8F6UpTRNfZwDUnZdZwrQONCxkCUZUSGToZJ3lof%2Br5Nxj%2BhOpA1gapYmXTgcUMgKWveIX8z0n3PLtbZUkd8qMCCrPC2mjPzFs52OPAOZqWYG75ZfayHHqul2OfPSVPT0C6oufEOh5wRMLa5npHxeIKqfLmWCFJKcSJCDo16i1fdOrbvEGNjOxggAi2jgc13i300nwEsz2OLkw8rr%2F0gY6pgF6lBUPz4g2vq0PnO%2FvOzzU5pt0rGC%2FEz9qOk0507gHwouTaVbdtlwSnwaVC1WtxjNKZC8x4myudIcaA6EKlFOpk0aZu4G0O5BeO%2F1Tzz3Cp6fUhxNgMc6%2BnDV6h9Bv%2B8uR1ZOoQU%2FecNrlmzgzGAJcQr%2FnjgcjOLYqgK1pPjSeiYWMjqBUevIwFLyc8%2BowsiJplLhElpPOA9HNZV%2F9IdT8oxr44Ldm&X-Amz-Signature=1081f4a82d2b260abbdcb2fb20a8ffc74fd70e2069bd8ebf0ea8f1bfbf7244e1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+几乎是所有企业架构设计的鼻祖。他把一个企业里面所有要干的事情分成什么？六列，然后是六行或者是 6 列、 7 行这样的形式，我们这里选的是一个 6 列 6 行的框架，我们来跟大家聊一聊哪 6 列，其实英文单词里面都是以 w 跟 h 开头，什么how、 why who、where、where，中文，嗯，可以这样来看，要看一看你的这个架构要做什么事情的什么？还有你要为什么要这样做？就是什么，为何？就是最左边和最右边，那中间又有哪 4 个呢？又如何？号哪里？谁何时？这中间讲的是什么？讲的是实现的方法，两头尾讲的是什么？为什么要这样做？以及你希望做到的最终的目标是什么？那这就是 Zack man 的这个 6 列，哎，有很多各种各样的架构，其实都基于这 6 列进行变种和调整。
+
+
+那除此以外，有了列的这个维度以外，我们还有具体从逻辑抽象到什么实际落地的执行层也分成好几行，那 that common 最经典的就是六行结构，那这里我们看一下哪六行呢？最顶上就是目标层，是很空洞的，对吧？就相当于 CEO 关心的内容。然后业务层可能是CTO、CPO，什么CMO，对吧？来关心的内容，然后底下的这个信息层、技术层才是我们，是吧？每个位工程师关心的，那最后的实施层和对象层有可能是类似于DBA、 SRE 这些什么具体干实际操作干系统管理的，让小伙伴们关心的，通过这样的分层维度，把各不同层次的这个人的这个观点以及跟不同的场景结合起来。
+
+
+我们这里其实每一个格子里面都有很多内容，服务员老师挑了几个经典的格子，比如像做什么呢？整体目标层从 CEO 角度来看，就是所有东西都是我的资产，我要把我的资产合理的管理好，又通过一套架构来管理到实施层，就是什么可能就是 DBA 了。他说，嗯，我要管理好我的数据的存储，那具体的对象其实里面存的就是数据和信息。
+
+
+那这是什么？如何how？我也举了两个例子，从业务层看，也就是c，什么OCTO，CPO，首席产品官员、首席这个技术官员，他的角度来看，其实如何来做好，只有业务流程做得足够好，项目都能够完成，系统都是稳定的。但是从我们技术层，从我们，比如系统架构师来看，如何才能做好？要有很强大的系统设计，很强大的什么 architect design 才能把事情做好？再看中间哪里，这里，其实我们以信息技术为例，我们的系统架构师会怎样去分布内容啊？是不是采用分布式的系统？不管是 no SQL 分布式的，还是分布式的文件系统，或者是什么分布式的应用集群，都通过这种方法来部署我们的信息技术是不是好？who？谁什么？是为谁服务？对目标层来看， CEO 永远关注的是客户，对吧？我们 CTU 可能关注的是我们小伙伴，而我们 DBA 关注的可能是我们的数据的访问者，每个人关注的维度也不一样。
+
+
+好，右边两列看核实那一列里面业务相关的是什么？是关键链路。所谓关键链路就是我要决定一个项目的进展，其实关键就看那几个什么老是影响我进度的那几个人，或者那几个关键点，把这个点的速度减少而提升了，是吧？时间减少了，我的项目自然就提高了。而具体对象落到纸面上，可能就是一张时间表。好，最右边一列我挑了一个信息违和，就是y，那信息层怎么样做到 y 就是你怎么样做才是信息是完美的，你要符合一定的规则，在规则制约之下，你的信息才能够正常的处理和使用，所以你要符合它，也因为你要符合这些信息，所以你要采用一些分布式的方法来实现它的性能，来实现它的这种吞吐量等等。
+
+
+好，这是 Zack man 的经典架构，我们快速带过这个架构，其实是为什么为后面傻不傻？架构作为一个引子，好，傻不到架构才是我们这节课要讲的重点。然后我拿出一个小笔来跟大家点化，对吧？看看傻不傻？架构里面的一些关键点。这个笔好像没有成功的点出来。好，出来了。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/be39c774-75d5-4860-bf27-84d4da6169e6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V7ONYEZR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231001Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIEjZQHHcL%2Bx2ajzlQqmL3d0KwXKWwpW8PE7VQA%2FxqBA5AiBiXwXjcctnMjX0XoxtxSyN3cWGb6f5qV4FUWqgj9EeJyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMs74OcoOs%2F3etjnIKtwDPyDqQkk3w1bxzp7QCGhF9mPGGDZDx0m3%2FgQ%2B%2F2wft6lC0ofJOjdOpsyBztcZgwx%2F86T111fViqNA7luV%2BzfxLzf58d5VoxCDyep%2Fa7c8UaibhOGlrOosNXamxdoxXFRE0TllWxsVq4%2FSIVgfzmDmatanskz8asSbbRO9ZfGRCgs6UffXri3%2BqhzQIm1QDlR2VVmYT0%2FrzlXAX7%2BWj03NJ1QeVTOYgNB%2F2vywPBF0c5jXgewAb5yNqLHPxTBBeX08OkVYUasouPRVWyw%2BNBnGKjLlmu7Nli0LGRd00YZmmd9L05I2DzLbU6RpB8njMktyQ3CtQBA1r%2FuSGZLKj9pgj45BgECfdqg8EZcApsfGoLnly55ifsWtH0xGge40%2Bt%2FpBDjD41bQmevP9B%2FICtuG4rR2MZ53q1P3%2BE0WRysYYizHS1r8F6UpTRNfZwDUnZdZwrQONCxkCUZUSGToZJ3lof%2Br5Nxj%2BhOpA1gapYmXTgcUMgKWveIX8z0n3PLtbZUkd8qMCCrPC2mjPzFs52OPAOZqWYG75ZfayHHqul2OfPSVPT0C6oufEOh5wRMLa5npHxeIKqfLmWCFJKcSJCDo16i1fdOrbvEGNjOxggAi2jgc13i300nwEsz2OLkw8rr%2F0gY6pgF6lBUPz4g2vq0PnO%2FvOzzU5pt0rGC%2FEz9qOk0507gHwouTaVbdtlwSnwaVC1WtxjNKZC8x4myudIcaA6EKlFOpk0aZu4G0O5BeO%2F1Tzz3Cp6fUhxNgMc6%2BnDV6h9Bv%2B8uR1ZOoQU%2FecNrlmzgzGAJcQr%2FnjgcjOLYqgK1pPjSeiYWMjqBUevIwFLyc8%2BowsiJplLhElpPOA9HNZV%2F9IdT8oxr44Ldm&X-Amz-Signature=01d73cae194ca4bbae309dabcf74434f00c65dd3ba6da710b9f1959d2bd445c6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，我们看一看傻不傻？架构分成什么？为什么、如何谁、何地何时，是不是跟前面的 Luckman 一模一样，只是把什么前后顺序替换了？少不少说我要作为一个独立的这个架构框架，我必须要有自己的特点，那就把顺序调换一下，就是它的特点，除此以外左边还是 6 层，只不过描述语言不一样，也是从抽象到什么到具体，从上下文、概念、逻辑、物理组件到运营，是不是也是从抽象到具体？这本质没有变，但是它所有的元素都是以安全为角度。
+
+
+比如说这次我们看什么？他不是看的，实际上让实现一个客户的总体的业务目标，那么框架化或那么空洞的话了，我具体的内容就是要实现业务，然后在业务过程当中我要保证他什么它的这个保密性，对吧？它的这个可用性，还有保住它的完整性等等。所以它的目标就是一个业务，那它落地下来其实就是最后的业务连续性、业务的可用性、业务机密性等等，这就是什么呢？从顶上到底下，我这里依然是挑几个方格来跟大家分享。
+好，为什么？里面为什么要来做这套系统呢？就是因为什么我们要降低业务的整体风险？所以从业务风险模型的角度来看，这样角度来入手，然后来去操盘，看一看里面具体怎样去实现每个不同的什么，每个不同的环节。而同时我们在实际物理层，也就是真正落到纸面的时候，我们应该怎么样去考虑为什么要符合一定的安全的规则章程和一些基本的什么 best practice 最佳实践？在这种情况下，所有的系统才会是什么比较完整和优美？好？这是为什么？那如何呢？那也有很多了，比如概念层上有什么？有战略逻辑层上有服务的安全服务，比如说你上云，你可以买到很多的软件产品，他会说我这个人提供什么应用层防御，我那个能提供这个杀毒功能，这就是安全服务，是逻辑层的概念。那整体安全战略就是有些人喊了口号叫什么？就是 Zero trust 0 信任模型，就是安全战略。
+
+
+那真正到落地到产品叫什么？比如应用层的防御，它就是防御 Oauth 十大攻击的，后面会详细聊什么是 Oauth 不十大攻击防御 OSPO 十大工具的产品有可能就是一个 WAF 产品，那这个产品就是一个完全独立的工件或者组件，它在组件层去实现这个逻辑，最终完成这个战略，这个逻辑层的概念，这就是如何？那谁通常我们什么要在概念层要实现一个叫安全实体模型，这实体模型里面定义的是哪些？是我们的客户？他能够访问哪些内容？那这是概念层，那如果落地到物理层有可能就是一个什么，就是一个a、C、l，对吧？访问列表，谁能访问就是谁。
+
+
+好，何地呢？就是说你要把你的价格部署在哪里，然后实现最终的架构安全。那比如说逻辑上面概念，我们有安全域的概念，不同的安全域里面处理不同的业务，然后不同的安全域有不同的入侵检测，有不同的防偶墙策略，那这是逻辑上的，物理上其实是就是基础架构的，不同的这个物理的网络，不同的物理的服务器，以及不同的物理的防火墙策略运营上一样，对吧？通过网络安全来实现这种逻辑上和物理上的区别。
+
+
+好，何时说的是什么？是你的所有的那些，比如像token、证书、密钥，它的过期时间，甚至于数据的这个生命周期管理概念上有个叫安全有效期的概念，这也是撒不撒里面一个很经典的概念，所有的内容一旦你要有安全这个字样出现，它必然有效期。比如说我们的数据的正常的这个业务数据我们是保留 10 年的，我们的所有的这个管理员数据，我们保留 30 年以后，这个数据不需要再高可用，也不需要再完整性了，它的安全有效期就淘汰了它。
+
+
+一样的道理，很多这种，我们的token，我们的这个密钥，是吧？它有一个安全有效期，是吗？ 7 天以后它不安全有效，我们就不能让它继续工作了，这都是安全有效期的概念，这是在核实里面的一个逻辑概念。那真正到底下落这条，比如像组件层可能就是一个安全的步骤和一个顺序，以及他们一个具体的token，一个具体的这个密码的过期时间，这些就是什么？就是从不同的层次来看，以及从不同的维度来看的安全架构，撒不撒把它统一在一个大的表格里面，其实每一个框里面有很多个内容，非要是指这里挑了几个内容，同时挑了几个框来跟大家分享感受一下，作为一个完完全全从企业的角度来看整体的安全策略应该怎么样去划分好这样的比较空泛的内容？划分完以后，其实最后落地，特别是落地在这了什么，你要做成什么样的内容，以及如何来做，以及何地来做。通过这三个维度，就要用后面介绍的详细的什么安全架构，其中的一些模型和一些具体的框架来实现，大家静听下回分解详细的内容吧。
+

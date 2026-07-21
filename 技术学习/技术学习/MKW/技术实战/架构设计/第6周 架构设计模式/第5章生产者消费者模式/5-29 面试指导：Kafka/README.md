@@ -1,0 +1,53 @@
+---
+title: 5-29 面试指导：Kafka
+---
+
+# 5-29 面试指导：Kafka
+
+前面我们来利用得很重来作为一个简单的面试题，这个就相当于给大家分热身开胃。下面我们相对来说把这个问题简单的提升一下。这道题其实说实话也不是特别难，只要你是了解过的，那回答起来也是比较简单的。简单来说就是 Kafka 这个集群它如何实现的？这个其实要回答这个问题，一般来讲来说对 Kafka 做过相对深度的了解的话，应该都还是可以答得出来的。因为 Kafka 的这个集群本身如果说你去使用过Kafka，而且愿意去花一些时间来了解 Kafka 这个集群架构的实现的话，对于整个来了解这种消息论件的增长，那这实现架构都是很有帮助的。
+
+
+因为我们使用任何一个技术，不管是这种相对我们出现的这个架构设计的方式、理论知识，
+
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ffe59a66-ea11-46a9-9ade-f97e99b31aff/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665MALV5IV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230632Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCieholIHgVrCnINw9M0r01%2B83ZlLeJ%2BtZiawARxQNPoQIhALFrWaKvMFdOAYZIqP0cCIgd9vyPl91Tm1%2BLdLPrQ0MOKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyYjiJzNbmAOb4P2mkq3ANDVnEOEYV%2FpotZ1J%2BPNL94NfOBLgZKQcbZT1Suqw91JNaAnnChb8c4w4vV2JNQWU2iOnOIQl6xFpDZXXpVwYbWZR00ggr2r1bWJqdQNNZDQ7J79ZNx6qx2V8jBl86XSuGcAAGFArtugESl20VsU7fOAHaROP19dBFCyMeiaOgWB33KaO2AIGY%2BCIeF7GGNPolY%2BXvU4HYS4oyzbKps6JnSWVTmkURKMujCQG2%2F1XhH7ov7uLaby%2B20lsebYWC2qRSOCX67nmlymWDnKsZ%2BmuAznYVH2ui%2FpcV%2FRrV%2B6KTDLs6cHqUziDDw9do2qxvllsDziaQMTNH5Pf%2Fvu3WUjLBElM6wEiIPCbT2y50d3qOYxoZGbjKXY%2BKtXr1bdvj7Uny8aoc4VwFpb6BAzD1vPvvP%2BcT7KyxeKwiXDE0pDsYSoiKffnaxvNu2x8jAaUgDw2%2FPKUCpwG5XLDYD0injQaGX7uQ%2FcSlPcCPMqZ4aygAkNtEeJ7LMUhpuY91MtjLfKLk7V1E%2BvaWugtgwGMp39%2B7lyp6EG%2BJXeNJ6T7WnF9Tjpk67LkE3cVETMlqb3OOFH3KjP6imqNMZOqhMRmTokKFmQGfk8Al%2BQsuEjbWLVXQpuGQ6kUNI8tDlyZd7bTCAuP%2FSBjqkAf156s5QyUIGCDwNiOWsls5ISqgYCtyTbrixY7jmoqZL5ZADP0LZegBSyjSfcChlRGUp1xD7Y3x76740yMp7GY1f7ro%2FHALIpdA6Ymoeg9mnSm%2B4XEEtcE8bnzbZ9eaL4%2FE13mPRaychi62UL4kL6cYpc4uvr1HCd%2FeSk8iut4D9Fo8YNmMfFExxm%2FS2i%2BaOsD%2ByeXzl4YOTT3dAgxBk%2FIDwFzyq&X-Amz-Signature=2cc3ee9673aaae22ab2a6bd58fa632f2622edb4d3e4d098960669536452894ec&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+还是说你实践当中去应用一些消息收音线哎来构建你的系统，了解一下背后的这个相关的这个原理，基础设计实现对你整个能力的提升是有很大很大的帮助的。因为是怎么说，就是说咱们作为架构师也罢了，还是作为程序员也罢了？你在刚开始去了解一个技术的时候，其实相对的是比较抽象的把握了这项技术，就是说你可能了解它的大概，了解它的思想体系，了解它的一个架构，从整体上来把握这件事情就非常好，因为我们学习东西的时候是肯定要从整体上来把握的那更细节的东西，其实这对你在实际应用中可能会有很大的影响。
+
+
+如果说你不了解 Kafka 这个句型架构是如何实现的，你说我写几个 hello world，那其实没有特别大的影响。但是如果说你要做一个比较复杂的系统，像我们讲的前面，比如要实现一个 after once 这种，你怎么在 Kafka 里面实现？其实定义的这个集群和了解的知识相关，还是有一定相关性的，所以说在这个地方你怎么来回答这个 Kafka 的集群架构，其实完全取决于你对 Kafka 这套东西有没有了解过，因为我个人看法是，一般你去做这种面试的时候，那你去申请的这个职位，如果是一个价格相关的话，像这种典型的消息中间件说实话一般都会问的。
+
+
+不管是问的 MQ 还是Kafka，肯定会强一个来问你的，因为在现金的企业当中，不管是这个怎么说，就是这种企业级的旅程 ERP 这种系统还是一个开放的，这个互联网公司的一个系统几乎没有不用软件键的，小型软件键这种问题肯定是必不可少的。几乎因为前面我们已经讲过了，各种异步，这种 potential consumer 的实现基本上都是要基于这种消息用英语来完成的，所以说你了解这种中间件，并且最好是实践过，对你来说成为架构师是几乎必不可少的。那前面说的这些东西，我们再来看一下这个题目，如果你要来打的话怎么打？那其实我的个人看法是，你要打的话，其实也可以有相对投机取巧的打法和比较干货的打法。哎，先说一下这个相对比较投机取巧的打法，那你主要就讲一讲，就根据我前面讲这个 Kafka 这套结构体系的时候，讲到一些东西，比如说整个 broker 里面怎么分配的，这些 topic 里面到底是它把 team 怎么分配的？它的选择是怎么选择的？它存在哪里？到底是怎么存的？ master stay with 这样的使用什么消息协议？还有它跟 rookeeper 之间的一个关系， rookeeper 里面存了些什么信息？这些基本上你按照这个套路来答怎么说？就是相对来说比较投机取巧，就说比较 high level 的这样一个打法来把。
+
+
+这个问题呢就说诶，答了一个大概就说证明你是知道跟这个 Kafka 集群的架构还是有些了解的，这种打法就相对来说是比较投机取巧一点，因为我们不谈细节，但有些时候说实话，毕竟如果说，嗯你招的这个岗位不管是架构式还是程序员高情绪，它如果不是让你去做这个 Kafka 的二次开发的话，你有些细节不知道其实也不会称其为特别大的问题。
+
+
+但是如果说你这个岗位刚好就是专门针对这种 Kafka 的架构师或者这个程序员，那你如果不了解细节，那可就很复杂了，这个问题就和说起来就比较麻烦了。所以说你在打的时候另外一种打法就是前面这些，包括我说的什么keeper、海尔达克这个帕斯系这些怎么分配？这东西你都要打出来之外，那你可能还得打一下这个，比如说具体里面的这个消息怎么在这个组合重之间复制的？有哪些因素会决定这个复制？这些东西你要讲，还有就是里面它这个消息到底怎么存储的？它如何保证这个架构在这个可以达到高可用？还有这个一致性，它是怎么做的这些你要把它说清楚来，就是证明是对这个 Kafka 的细节了解得非常清楚了。
+
+
+因为像你如果 Kafka 本身来讲的话，他做的这个就是说集群里面讲的这个消息的复制是一场比较难的事情，你怎么在实现层面来实现的这种复制？ master Snail 这个选主选从它怎么选的？甚至有些情况下还会问你这个选主选从的这个协议，它本身是什么，怎么做的？你现在可能还顺着会问你要跟你如 keeper 相关的一些东西，这都很正常，对吧？所以说你答的时候就要做个心理准备，你到底心里面的这个岗位其实准备投机取巧地打，就相对说直打一些比较泛泛的概念性的东西。诶，还是你深入的细节里面去讲一讲这个 Kafka 集群里面到底是怎么实现的，每一个协议，它里面有哪些协议，它怎么做到的这些东西都得回答出来。
+
+
+这个点其实说实话跟你所面试的这个岗位的职责有一定的关系，因为你如果是做二次开发，你就必须得了解细节，如果你只是做一个架构设计这种相关的话，那相对来说的话，你可能从比较高层次的角度回答这个问题也就够了，所以你不用太在意说你要达到什么样的程度，这个取决于你本身对 Kafka 这个集群架构的实现、设计等理念理解都深入。同时也跟女儿去面试的这个岗位，你对 Kafka 掌握的程度到什么程度这个关系。
+
+
+总之或者这里只是简单的给大家提了一个这个相对来说什么比较抽象的一个入门的说法，具体怎么答你就按照我刚才讲的这个思路，但是细节你可能说的更多一些。首先我这里是比较推荐大家自己还是去把卡普卡的相关的文档还用一些，就说网上的书，一些相关的文章，就解析这开发的集群的实现的东西都找来读一读。
+
+
+对，你了解这个Kafka，还有我们这种 potential consumer 这种架构模式都是有很大的帮助的。因为只有你深入的去理解和了解了这些相关的细节知识的时候，会反过来印证我们之前讲过的这种 4G 思想，各种架构模式，我经常讲的这就是可以叫做相辅相成，互相验证。
+
+
+所以说你从理论上知道这个可能就是 control bug，这种模式它要实现起来其实是非常困难的，在很多意义上你只会保证到每一点，因为前面我们也讲了说，在实现这些容器，包括实现production，实现这个consumer，它每一个细节点上其实有很多问题要解决。那只有你通过去阅读源代码，或者去看相关的书籍，或者对你的资料，你才能把这些细节都掌握了，然后你可以面对各种各样的挑战，就是包括这种面试，包括实际的真正做二次开发这个地方。
+
+
+Kafka 可能并不是作为咱们的一个设计模式的价格模式的一个重点，但是如果说你要成为一名架构师的话，我更建议你不管是就是 Laptam QR、 active QR 还是 Kafka 相关的东西，你还是要去了解去熟悉一下。因为基本上现在公司里面不用消息中间件的是非常少的，所以是希望大家听出我的建议。
+
+
+我在这里抛砖引玉，大家听到我这个建议以后，能够试着先答一下这个题，自己回忆一下你对这个 Kafka 里面前面讲到这个消息到底是怎么分配的，包括有这个集群里面的 partition 怎么划分的，然后里面它是一个什么纯的 program 里面怎么分的，以及怎么是非 over 的选组选层怎么选的。
+
+
+还有消息这个同步是怎么完成的？这些东西你先自己回忆一下之前打上了多少，打完了之后再去找一下相关的官方的大尾巴，还有书籍或者是讲解的资料来看一下。这个对你不论是了解这个 Claude 这种设计模式，还是 Kafka 本身，这是有很大的帮助的，我希望大家按照我说的这个指导原则去尝试一下。
+

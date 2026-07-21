@@ -1,0 +1,30 @@
+---
+title: 3-1 商品评价 - 功能讲解与数据库设计
+---
+
+# 3-1 商品评价 - 功能讲解与数据库设计
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1c021c6d-6f62-492d-bb23-802329975b95/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RIZ2TQ4A%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224643Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCC38oCJG8Wj7opqOGjHqsgPG%2FwS1BTMOh4lWJshHwp6QIgRYj2WPIuBkmyOnP7GEnnj6bxi5ItqA6pqYo%2FeIcQwBUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLkhUZhlddIT9xss%2BCrcA0G%2FhV8clHj7qNcbHuHCqhcIYpfPD7EY%2FHDquTxOBTX8gf%2FDCBcLbYiDPPX2nT2%2BInrF%2B7TKkzDLlALDa4r8qZFrIq6iuNkkxpb%2BgSO%2FvF9MNQGHGrg%2BhxKN%2FnnjONlASB6e7KMEx9G9IdI3IDMR4ulYoKm0z%2BmaUDk5tZYR4DywXrsS2uMbYN7ze4tAB%2BJSbRH1vsIB%2FKDPdNbWc1fAvORsD%2FvQbWjDzQ8%2FxN1Nl6m9puxNjY7jobl5jtauuPf8WHv1XTw%2Fu24dLipaAmkTLsus2U98qfX1Zh18SS2vj39hlv9jAFNoqirPBZ8zhlBM8hXvkmYRcNWP7tIhy03EzabbUxXNlcb8qslx13aFEtSInGvzLerqTqkAxqdhz%2FLj%2BJJG0goyKM4POKzQBpjutekqhFWti8H7mP%2F1cHhuy4%2BS0uu%2BmNG2%2BtxaX%2BEIs5WLG0PVylXgFRT0HgT83pqGpUcr%2FNRnW%2B52SVoMYEPwkaH%2BKvEyPH5nuhDcf9H9Xzh2%2FLlRLfLpxkrMuNNPvHhLqMglr4Zmqa8I2aN6JiMm64%2BBkxMcGC3Imk4255NK5M5fIRB40qApBtl59kLFnQfPa0IL0Unu6bGsI%2FLbDbOpEG5VxHuX3xbA0Os2a8CEMI24%2F9IGOqUBNk3icEWdO5tr4gT%2FFo2Y9S6KSuxYJC%2FVuEmQX2zMlqJ1aYm1%2BleJdXz1EgwaLch37qnpmTnbIBeGfzjsnwh2fLeEgW4AvTrxerNCkOgIemKgryXOBR2wFa3Zh8cPIPKaBeCNEwrdCDcXFBNOAOaankgPy9puIG7tZgfarhZG0SyiIf%2BpEzbfNBCE8q1g1BzGD%2Fn00qxQuGbrRSBbLEq1zx%2BRwEMu&X-Amz-Signature=8808f14ef63823dc5626f289fbc99b1d3e632013c11431546ff8cda3522ee9bc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+商品详情页面现在我们已经是要做完了，做完以后随后我们可以来看一下商品的评价。在这里我们是使用了商品 ID 为 cake 1001，在这个下方我添加了一些相应的评价的数据。商品的评价是在用户购买完毕以后，也就是整个订单流程全部走完了，在用户中心可以去进行相应的一个评价的。我们在这里可以看一下。在评价的地方，其实它分为了两个部分，第一个部分是一个好评度，它里面包含了全部评价，好评，双评以及是差评是内容。下半部分是所有的评价，默认它是会把全部的评价，不管是好评，中评和差评都会在这个下方进行一个展示的。OK，在这里面它包含了一个分页，这个分页是可以每一页翻页去进行查询。
+
+
+另外对于用户来讲，用户的一个昵称在这边是来看一下。我们是做了一个脱敏。脱敏其实我们不要把用户的整个全称给展示出来，因为这个可能会涉及到用户的一个隐私，所以我们会进行一个脱敏，把用户名中间的一部分内容以星号来进行替代就可以了。脱敏它不仅仅是可以用在向用户名昵称，比方手机号，家庭住址、邮箱等等都可以进行脱敏的一个操作的。
+
+
+OK 好。除了下半部分的一个分页查询以外，对于不同的一个等级的评价，它也是可以去点击的。比方我点击好评，点击了以后可以看到目前总共是有 14 条这些内容，全部都是好评，另外点中评、差评下面的内容都是可以发生相应的更改，以及是查询的。
+
+
+OK，这一部分就是我们的一个评价。我们来看一下咱们的一个评价表。在评价表里面，我们还是一样会通过数据库设置工具，可以一起来看一下。商品评价
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d604fc9c-a792-47d5-be74-4ec927259c37/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RIZ2TQ4A%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224643Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCC38oCJG8Wj7opqOGjHqsgPG%2FwS1BTMOh4lWJshHwp6QIgRYj2WPIuBkmyOnP7GEnnj6bxi5ItqA6pqYo%2FeIcQwBUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLkhUZhlddIT9xss%2BCrcA0G%2FhV8clHj7qNcbHuHCqhcIYpfPD7EY%2FHDquTxOBTX8gf%2FDCBcLbYiDPPX2nT2%2BInrF%2B7TKkzDLlALDa4r8qZFrIq6iuNkkxpb%2BgSO%2FvF9MNQGHGrg%2BhxKN%2FnnjONlASB6e7KMEx9G9IdI3IDMR4ulYoKm0z%2BmaUDk5tZYR4DywXrsS2uMbYN7ze4tAB%2BJSbRH1vsIB%2FKDPdNbWc1fAvORsD%2FvQbWjDzQ8%2FxN1Nl6m9puxNjY7jobl5jtauuPf8WHv1XTw%2Fu24dLipaAmkTLsus2U98qfX1Zh18SS2vj39hlv9jAFNoqirPBZ8zhlBM8hXvkmYRcNWP7tIhy03EzabbUxXNlcb8qslx13aFEtSInGvzLerqTqkAxqdhz%2FLj%2BJJG0goyKM4POKzQBpjutekqhFWti8H7mP%2F1cHhuy4%2BS0uu%2BmNG2%2BtxaX%2BEIs5WLG0PVylXgFRT0HgT83pqGpUcr%2FNRnW%2B52SVoMYEPwkaH%2BKvEyPH5nuhDcf9H9Xzh2%2FLlRLfLpxkrMuNNPvHhLqMglr4Zmqa8I2aN6JiMm64%2BBkxMcGC3Imk4255NK5M5fIRB40qApBtl59kLFnQfPa0IL0Unu6bGsI%2FLbDbOpEG5VxHuX3xbA0Os2a8CEMI24%2F9IGOqUBNk3icEWdO5tr4gT%2FFo2Y9S6KSuxYJC%2FVuEmQX2zMlqJ1aYm1%2BleJdXz1EgwaLch37qnpmTnbIBeGfzjsnwh2fLeEgW4AvTrxerNCkOgIemKgryXOBR2wFa3Zh8cPIPKaBeCNEwrdCDcXFBNOAOaankgPy9puIG7tZgfarhZG0SyiIf%2BpEzbfNBCE8q1g1BzGD%2Fn00qxQuGbrRSBbLEq1zx%2BRwEMu&X-Amz-Signature=6424800005c7f092ce89834a4b3b5d63d6ad807eecbb7106ef2af6b2d8892a25&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在这里首先第一个是组件，不去多说。随后第二个是用户的一个外进ID，另外商品的外进ID，这两个其实都需要有，因为是谁评价的，另外这个评价是属于哪个商品的，所以这两个外件都必须要有。最后下一个是商品的名称，在我们进行一个商品评价的时候，商品的名称保存一下。另外在评价的时候，每一条评价它其实也会对应到某一个商品的规格，因为商品它会有多种规格，你评价的是哪一个规格的商品。在这里商品的规格 ID 在外键写一下。此外，对应规格的名称，我们在这里也可以做一个保存。
+
+
+随后我们商品评价具体的一个内容了，一个是等级，一个是内容。内容就是你输入的一些内容。评价等级它是一个整数，是一个整形的 common level，这个 level 里面它包含了哪些内容，我们可以来看一下。评价等级在这里会有一个注明，类型为 1 是好评， 2 是中评， 3 是差评。123，分别是有对应的。
+
+
+好在下面的两个，一个是创建时间，一个是更新时间，这两个我们就不去多说了。OK，在我们的数据库里面，其实这张表也已经是预先的生成了，叫做 items comments，双击一下，里面也是包含了一些相应的内容，我们重新打开一下。OK，这里面这些就是我们的一个测试数据，我们可以通过测试数据就可以去进行相应的查询。OK，这节课我们针对商品的评价里面所涉及到的两部分进行的一个功能的拆分讲解。
+
+

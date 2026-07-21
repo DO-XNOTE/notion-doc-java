@@ -1,0 +1,73 @@
+---
+title: 4-7 微信支付 - 生成支付二维码
+---
+
+# 4-7 微信支付 - 生成支付二维码
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d9a4ebf4-24ac-4473-9e4a-3566d15a2d9f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WWR3FEYE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224712Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEmhZmQcjgkPXDwQiF3aXNANzOqF6%2FEbUxfKNdGSdSSSAiEA2lIGdpCF%2Fm0%2BHoz1V0dmAqaVDdykSlJTWfPUo2Q5a5EqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDNXgh5RwwFGA54JsCrcA7IeBBASpYyvbHyYZ%2BUmrcPOONdA34hW9nVBi6tfri4DbStetVKPVQ%2FixzYOOwOzzOL4FFe0b2PVC%2BeJ3lj5ybMhOh1T4JjC5D0k9RNnichPIkxvZrV6gbvq8rxL8zy49JXAKvk%2FhAyqH7aExn68qGOBoQUx7cq73lxqrpAP9vu6YxgqJ4uOXZhJHnOFAC%2FAuc7vzvXU4zPXKeU45%2BDDX478n7EQhxZkCn7Ly%2BC78SsvhHvd1NgCnNr4ezWvFs58E9huTCEFEuA6tFFxLhBJJRoUb6KgzFpH2PdxTQ0caj%2B%2B9rRW3T0zJ2L28vkQfIqzf1fyi6Wq0eZPAgZPXpEtP4LPu8z01Plm3SAnUQLVkVYMDOydsBuE0VYn11HfWfVIIMP6bBdbaUkVYWWOMW4UP2YD3WlIArAKtFoR2d%2F66z5mTpYkhPlqxUkvc%2BTWXpAetEDGpch7SapXuswm1AHyO%2FoX3KjvAhcWaMwgI9g06vl7Be2JDJ%2BsmdgTXRUeoJLNhaG%2Bk%2F7DZ20fFiwhcOk4pVC7O6PynNjKkjkLr06XFwsiXbSMXGKb0Rq1i2I5ZeSzromUaLdallwnNqSyJLEzonTmrLceJuTyQmstfsPg8vn5yq75mLPDxkUr0wjkMIW3%2F9IGOqUB1sxAA7zixSbzZt7IUP0ldF2%2FMlmZrj2DOi%2BOISUg8NDCK4BeNT22LIHCQIroVvmT9id6ItEGAIWNehKocAsCaDmS2mQwJz%2FqREba4ZsVDGbJB9bUf%2FYtqTrS2nknOns%2BAedZAuAjQXjTvVH041LjY2Z1SYwWZVn2V%2BiK4i1VybXHCfLTo%2FVnwCJSCm8NHUosQ1tcoKXuSB0NzPRSLnVVdQv2pc7g&X-Amz-Signature=9a6e9f3c979065245e4dce015ef163a78833f31df72687dccf8436b3c0e919b0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面几节我们所做的其实都是为微信支付做的一些铺垫，接下来其实我们就可以来看一下我们在微信它的二维码是如何去生成的，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0c2d1a76-844d-4f3f-9391-20173b72823c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WWR3FEYE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224712Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEmhZmQcjgkPXDwQiF3aXNANzOqF6%2FEbUxfKNdGSdSSSAiEA2lIGdpCF%2Fm0%2BHoz1V0dmAqaVDdykSlJTWfPUo2Q5a5EqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDNXgh5RwwFGA54JsCrcA7IeBBASpYyvbHyYZ%2BUmrcPOONdA34hW9nVBi6tfri4DbStetVKPVQ%2FixzYOOwOzzOL4FFe0b2PVC%2BeJ3lj5ybMhOh1T4JjC5D0k9RNnichPIkxvZrV6gbvq8rxL8zy49JXAKvk%2FhAyqH7aExn68qGOBoQUx7cq73lxqrpAP9vu6YxgqJ4uOXZhJHnOFAC%2FAuc7vzvXU4zPXKeU45%2BDDX478n7EQhxZkCn7Ly%2BC78SsvhHvd1NgCnNr4ezWvFs58E9huTCEFEuA6tFFxLhBJJRoUb6KgzFpH2PdxTQ0caj%2B%2B9rRW3T0zJ2L28vkQfIqzf1fyi6Wq0eZPAgZPXpEtP4LPu8z01Plm3SAnUQLVkVYMDOydsBuE0VYn11HfWfVIIMP6bBdbaUkVYWWOMW4UP2YD3WlIArAKtFoR2d%2F66z5mTpYkhPlqxUkvc%2BTWXpAetEDGpch7SapXuswm1AHyO%2FoX3KjvAhcWaMwgI9g06vl7Be2JDJ%2BsmdgTXRUeoJLNhaG%2Bk%2F7DZ20fFiwhcOk4pVC7O6PynNjKkjkLr06XFwsiXbSMXGKb0Rq1i2I5ZeSzromUaLdallwnNqSyJLEzonTmrLceJuTyQmstfsPg8vn5yq75mLPDxkUr0wjkMIW3%2F9IGOqUB1sxAA7zixSbzZt7IUP0ldF2%2FMlmZrj2DOi%2BOISUg8NDCK4BeNT22LIHCQIroVvmT9id6ItEGAIWNehKocAsCaDmS2mQwJz%2FqREba4ZsVDGbJB9bUf%2FYtqTrS2nknOns%2BAedZAuAjQXjTvVH041LjY2Z1SYwWZVn2V%2BiK4i1VybXHCfLTo%2FVnwCJSCm8NHUosQ1tcoKXuSB0NzPRSLnVVdQv2pc7g&X-Amz-Signature=86ca77272ec4b8bd4c1e301d2916e908ccb68cc1eb9a2a69ed402067ee8c47d6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+也对应到我们在实序图流程里面的第二步调用统一下单 a p i 生成预支付交易。随后我们要获得一个 code_url,  OK 这一块内容。好，我们到咱们的一个页面里面先看一下。在咱们页面里面，现在我已经是把服务器重启了一下，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/317f13ab-3aec-4ce7-90c0-eb85ca4855d9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WWR3FEYE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224712Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEmhZmQcjgkPXDwQiF3aXNANzOqF6%2FEbUxfKNdGSdSSSAiEA2lIGdpCF%2Fm0%2BHoz1V0dmAqaVDdykSlJTWfPUo2Q5a5EqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDNXgh5RwwFGA54JsCrcA7IeBBASpYyvbHyYZ%2BUmrcPOONdA34hW9nVBi6tfri4DbStetVKPVQ%2FixzYOOwOzzOL4FFe0b2PVC%2BeJ3lj5ybMhOh1T4JjC5D0k9RNnichPIkxvZrV6gbvq8rxL8zy49JXAKvk%2FhAyqH7aExn68qGOBoQUx7cq73lxqrpAP9vu6YxgqJ4uOXZhJHnOFAC%2FAuc7vzvXU4zPXKeU45%2BDDX478n7EQhxZkCn7Ly%2BC78SsvhHvd1NgCnNr4ezWvFs58E9huTCEFEuA6tFFxLhBJJRoUb6KgzFpH2PdxTQ0caj%2B%2B9rRW3T0zJ2L28vkQfIqzf1fyi6Wq0eZPAgZPXpEtP4LPu8z01Plm3SAnUQLVkVYMDOydsBuE0VYn11HfWfVIIMP6bBdbaUkVYWWOMW4UP2YD3WlIArAKtFoR2d%2F66z5mTpYkhPlqxUkvc%2BTWXpAetEDGpch7SapXuswm1AHyO%2FoX3KjvAhcWaMwgI9g06vl7Be2JDJ%2BsmdgTXRUeoJLNhaG%2Bk%2F7DZ20fFiwhcOk4pVC7O6PynNjKkjkLr06XFwsiXbSMXGKb0Rq1i2I5ZeSzromUaLdallwnNqSyJLEzonTmrLceJuTyQmstfsPg8vn5yq75mLPDxkUr0wjkMIW3%2F9IGOqUB1sxAA7zixSbzZt7IUP0ldF2%2FMlmZrj2DOi%2BOISUg8NDCK4BeNT22LIHCQIroVvmT9id6ItEGAIWNehKocAsCaDmS2mQwJz%2FqREba4ZsVDGbJB9bUf%2FYtqTrS2nknOns%2BAedZAuAjQXjTvVH041LjY2Z1SYwWZVn2V%2BiK4i1VybXHCfLTo%2FVnwCJSCm8NHUosQ1tcoKXuSB0NzPRSLnVVdQv2pc7g&X-Amz-Signature=2a17686f7c5484a06f5a5f0bbe7a8cf7d7ab0ddf0251d19a07571f260ddd2721&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+重启之后来提交一个订单来看一下。提交订单以后其实相应的我们的一个价格，因为我们之前改了，所以现在统一的全部都是一分钱，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/58a4855c-392e-49a4-85c0-f9dd4ac9820c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WWR3FEYE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224712Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEmhZmQcjgkPXDwQiF3aXNANzOqF6%2FEbUxfKNdGSdSSSAiEA2lIGdpCF%2Fm0%2BHoz1V0dmAqaVDdykSlJTWfPUo2Q5a5EqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDNXgh5RwwFGA54JsCrcA7IeBBASpYyvbHyYZ%2BUmrcPOONdA34hW9nVBi6tfri4DbStetVKPVQ%2FixzYOOwOzzOL4FFe0b2PVC%2BeJ3lj5ybMhOh1T4JjC5D0k9RNnichPIkxvZrV6gbvq8rxL8zy49JXAKvk%2FhAyqH7aExn68qGOBoQUx7cq73lxqrpAP9vu6YxgqJ4uOXZhJHnOFAC%2FAuc7vzvXU4zPXKeU45%2BDDX478n7EQhxZkCn7Ly%2BC78SsvhHvd1NgCnNr4ezWvFs58E9huTCEFEuA6tFFxLhBJJRoUb6KgzFpH2PdxTQ0caj%2B%2B9rRW3T0zJ2L28vkQfIqzf1fyi6Wq0eZPAgZPXpEtP4LPu8z01Plm3SAnUQLVkVYMDOydsBuE0VYn11HfWfVIIMP6bBdbaUkVYWWOMW4UP2YD3WlIArAKtFoR2d%2F66z5mTpYkhPlqxUkvc%2BTWXpAetEDGpch7SapXuswm1AHyO%2FoX3KjvAhcWaMwgI9g06vl7Be2JDJ%2BsmdgTXRUeoJLNhaG%2Bk%2F7DZ20fFiwhcOk4pVC7O6PynNjKkjkLr06XFwsiXbSMXGKb0Rq1i2I5ZeSzromUaLdallwnNqSyJLEzonTmrLceJuTyQmstfsPg8vn5yq75mLPDxkUr0wjkMIW3%2F9IGOqUB1sxAA7zixSbzZt7IUP0ldF2%2FMlmZrj2DOi%2BOISUg8NDCK4BeNT22LIHCQIroVvmT9id6ItEGAIWNehKocAsCaDmS2mQwJz%2FqREba4ZsVDGbJB9bUf%2FYtqTrS2nknOns%2BAedZAuAjQXjTvVH041LjY2Z1SYwWZVn2V%2BiK4i1VybXHCfLTo%2FVnwCJSCm8NHUosQ1tcoKXuSB0NzPRSLnVVdQv2pc7g&X-Amz-Signature=864a4790dc2086f2310bf1b5574514ed07a889e6684b67f8ff8bcb9e50d728ae&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+现在要去做一个支付，肯定是可以支付成功的。好，我们就来看一下二维码是如何去生成的。来看一下我们的一个支付中心。来看一下它有一个方法叫做 create and chance order，这个是和我们的一个前端所对应的前端。在微信配点 html 里面就会有这样的一个这个函数。在这里主要它也是要用于去请求我们的支付中心。请求支付中心它在这里会携带两个参数，一个是用户ID，一个是订单ID，这是需要去携带的。当然你自己的一个账号，也就是请求支付中心的账号和密码，这两个在你联系老师之后，你有了以后就可以去请求，是必须要放到海德斯里面去的。
+
+
+OK，在这里进来了以后，我们可以来看一下。在这里不对，应该是在下方，在下方有一个 get 微信配 q r code 是这个方法。在这里我们就可以去拿到相应的一个订单 ID 和用户ID。通过订单 ID 和用户ID，我们要去进行一个查询。我们来看一下查询是用来干嘛的。在这里要根据用户 ID 和订单去查询出来我们的这笔订单，并且它设定了一个额外条件，就是我们的 order status。
+
+
+订单状态。在这里来看一下，我们传入的是一个未支付状态。OK，所以我们是需要把这一笔订单要查询出来。如果查询出来为空，来看一下，它就会提示该笔订单不存在或已经支付。这个就是我们在之前的一节课里面，再进入到微信支付页面，它会骑士的一个弹珠框，它会弹出来的。OK，好，我们继续拿到了一个 wait pay order，也就是我们的一个订单，准备要去支付的整个信息了。以后，随后我们就可以去执行我们相应的具体的业务了。
+
+
+首先在这里我们是定了一个商户订单号，商户订单号是 chant old ID，我们拿出来，我们把它作为 Alt trade number， out trade number。其实这个字段是和微信那一段的参数是匹配的，我们都可以拷贝一下。打开浏览器，这个是我们之前的看到的一个微信的官网吧，在这里有一个 API 列表来看一下。有一个统一下单，点一下。进来以后可以看到在这里有一堆的参数， Ctrl f 搜索一下，你会发现有一个商户订单号值字段是一模一样。这些内容都是我们在请求统一下单接口的时候，我们要传入的，相关的一些参数都是需要去传的。OK，只要这里它的一个必填项就必须要去填。在这里会有很多的一些解释，大家可以课后去看一下，去了解一下。因为你要去做支付，是必须要去了解每一个字段是用于去干嘛的。OK，好，我们下一个。如果不为空了，我们就进入到这样的一个内容了，来看一下。
+
+
+在这里首先我们会去我们的一个Redis，也就是从缓存里面去拿到一个相应的支付二维码，为什么会这么做，主要是因为我们的一个二维码，它其实我们在之前也说了，之前我们在这里看到的时候，它的二维码的有效期是两个小时。因为两个小时，所以我们就可以把这两个小时的一个二维码的地址把它给缓存起来，因为没有必要。每次用户刷新code， URL 都去重新生成一个新的地址，没有必要。所以我们就把 URL 放到了我们自己的一个缓存里面来看一下。放到了一个这里，在这里面其实缓存的一个时间其实也是为它去定义的。缓存时间来看一下。缓存时间在这里定义的是7000，微信官方其实是两个小时，两个小时相对应的应该是七千二，在这里我们会略小于两个小时，这样子就可以了。因为我们接触到微信那一端的一个数据的时候，二维码其实在我们设置之前，它在微信其实就已经是两个小时了，所以我们要稍微略小于两个小时，设置为7000，或者你设置为 7100 也可以。OK。好在这里我们是从缓存里面去获取的，如果缓存里面 is empty 会判断一下，如果缓存里面没有，这个时候没有，我们就会去调用微信。我们就要去生成一个 q r code 了，如果它没有，我们的这个 q r code 说错了，如果它不为空的话，这个 q 的它就是有值的。有值这一部分我们就不会再从微信支付系统再去走一遍了，直接会进入到下面内容。
+
+
+下面内容其实就是把相应的数据做一个封装，直接会传递到咱们的前端了，可以看到它会有一个支付的信息，直接通过 OK 传递到前端，前端页面接收之后再去做一个相应的处理。我们先不看，我们来看一下为空的时候，因为主要 QR code 生成是要根据它是否为空来生成的，它为空了才会去生成。首先在这里会有一个订单的金额，订单的金额。其实这一句话没有用，因为我们在之前已经是设定好了，它是永远是一分钱。我们是在自己的商户系统里面去做一个设置的，所以这个可以不用。当然如果你在这里去设置为 2 分钱， 3 分钱去做测试也OK。好在这里就会有一个统一下单的 service 调用。统一下单其实对应到我们的这一步骤，统一下单 API 来看一下我们service，进入到 service 以后，首先它会创建一个预付单对象，预付单对象其实就是生成预支付交易，它里面所提供的一些预支付订单的基本信息。在基本信息里面，也就是o，我们会设置一些相应的内容和参数。
+
+
+首先我们一个来看。首先第一个是设置一个 APP ID。什么是 APP ID？我们来看一下它的一个官方的文档，a、b、p、i、 d 是在下方搜一下。在这里有一个公众账号 ID APP ID，其实它上面写的是一个公众账号ID，其实对于我们来讲，它就是一个应用的ID，或者属于我们天天吃货平台的一个 APP ID，它是独立的，是唯一的一个ID，是由微信分配给你的。你只需要根据它的视力值去设置就可以了。这是它的一个视力值，它是一个必填项，叫做 APP ID。在我们的系统里面，我们是这样子去设置的。我们通过微信配 resource 去获取。
+
+
+微信配 resource 是什么？我们到这里面来看一下。我们在这里面封装了一个对象，这个对象都是和微信相关的一些参数。我们都是放在 prompt 属性资源文件里面的，也就是文件。来看一下。我们的一个公众账号ID，我们是可以去通过关联去获取的。 resource 可以看到通过 class pass 去获取。定义到它的一个惹 k 型位置，它有一个前缀，在我们的 prompts 里面，所有的前缀都叫做微信配，所以在我们的 resource 里面就可以以它的某一些的属性名去获取的。OK，这就是它的 APP ID。好，这是它的一个公众账号。现在我们是，设置好了以后，下一个来看一下。
+
+
+下一个是设置一个body。什么是body？ body 是我们在这里所定义的，它有一个body，这是一个商品的描述。我们是在这里是这样子写的，是天天之祸付款用户，再加上一个付款用户的一个ID。这个其实是可以让大家去自定义的。在用户去支付的时候，其实会看到一个支付的title，这个 title 其实就是 body 的一个描述。好，下一个是一个畅查ID，这是简写 m c、h、i、d。这就是你的一个商户ID。这个商户 ID 来看一下官方的文档也。什么是商户号？你要去使用微信支付，你必须要以一个企业的资质入驻到微信商户平台，入驻到微信商户平台以后，你就是一个微信的商户了。所以商户号的 ID 是必须要去拿的。OK，这是它的一个视力值，在我们的系统里面在这里定义了一个商务号。OK，好，下一个。我们在这里面设置的就是一个 notify URL，这个其实就是一个回调通知的地址。这个回调通知其实是由微信来通知我们的一个支付中心，支付中心的一个 URL 地址是在这里是需要去写明的，所以在这边会有一个地址。来看一下，有一个 notify UI 在这里，这是它所定义的一个地址。
+
+
+好，再下面是一个 out trade number，这是一个商户的订单号，在这里是一个判断它的金额，如果它为空，默认的使用一分钱。好。在下面是一个set。一个 north string 来看一下，这个其实是一个生成的随机字符串。再下一个有一个吹的type，吹的type。
+
+
+在我们的一个资源文件里面，属性文件里面，我们定义的是一个native。这就是你所调用的一个微信支付的方式。其实我们在之前的文档里面有提过，文档里面，其实在这里 native 支付。OK。如果你是其他的一些微信支付类型，根据他所提供的类型，j、s、a、p、i、付款码等等，自己去做一个设置就可以了。我们在这里设置为 native 就行了。
+
+
+好。下一个是一个 create IP，这个 IP 其实是一个写死的，在这里有一。这个是 APP 和网页支付提交的一个用户端的IP。在这里其实我们写死为幺二七点零点零点幺就可以了。写死这个值就行了。其实就是调用微信支付 API 的一个机器IP，写死写这个就行了。
+
+
+好，下一个其实就是要做一个签名了。上方这些内容其实都是我们的一个预支付订单的信息。设置好之后是需要传给微信的支付系统的。下方值，里面设的一些值和我们上方的值都是差不多的，在这边主要是获得一个签名，签名会把对象传进去。在这边会有一个 secret key 签名，因为每一个商户去发起一个支付，他都会进行加密，加密会使用一个密钥，这个密钥在我们系统里面是商户密钥，使用的是商户密钥，其实也是由微信去提供的，所以提供以后在这边去写一下就行了。好，下一个。清完名了以后，在我们的预付单对象里面，你是需要去把签名给设置进去，因为你要传递到微信那一边的。好，接下来，接下来对象我们就要去转换成叉秒，因为微信其实它的传输它并不是一个 JSON 形式去进行传输的，你是需要去把它转换为一个Jason，所以会有一个有跳，直接把它转换成一个查秒就行了。它其实就是一堆的字符串。好，随后我们就可以去进行一个调用了。
+
+
+在这里会有一个统一下单的地址，统一下单的地址，在这里看一下是一个 place o 的URL，这个地址其实就是在微信文档里面也有的，在这里面没搜到，应该是这个吧。 place order url。重新再搜一下，我们把搜一下，刚刚我们搜的是一个属性，这个属性肯定是在微信文档里面是没有的，搜一下有吧，这个地址。这就是我们统一下单的一个地址，使用就 OK 了。好，下一个设置好了以后，随后在这边我们就可以去调用。调用了以后你会发现其实它其实是一个 HTTP 语调去进行的发送，是一个 pose 的形式，去发送的 URL 地址以及是我们的一个插票。
+
+
+数据发送过去以后，我们会获得微信传给我们的一堆信息，这一堆信息其实也是一个叉庙，随后在这里把叉庙进行一个转换，转换成一个预订单的对象，这是它的一个结果，这个结果会返回给我们的一个 Ctrl 了，也就是在这里是获得一个 pro 的result。点进去看一下。在这里会拿到一堆的信息。这里面的这一堆信息其实就是和我们的一个参数来看一下。在这里面一些参数都是相互对应的。这边会有一个返回结果，可以看到返回结果。在这边会有一堆的内容，大家可以在课后可以去看一下，这里面全部都有的。对于我们来讲，最主要的我们要拿到一个 code UL，也就是二维码支付的一个地址，在这里面来看一下。有一个二维码连接。其他的一些参数，其实都是包含了一些注释的，这些注释我都是预先写好了的。 code UR 我们就可以拿到了。拿到了以后在这边就 OK 了。有了以后怎么办？我们就可以把 URL q 的 URL 传递到前端，让前端去进行处理就行了。在这边我们包装了一个支付的一个信息Fu，把它的一个支付金额在这边写一下，再把我们的一个订单 ID 以及是用户 ID 也传一下。最重要的还是 code UL，随后 feel 我们就可以传出去就行了。
+
+
+OK，这一块就是我们在我们的一个 QR code 从缓存里面查出来是空的时候，我们才会去进行一个微信端的调用。如果是有值的，我们就会直接的把这一堆信息包装好，再传递给前端。好，现在我们就可以来到前端去看一下了。我们到前端去看一下。我们打开前端的一个前端 VS code 来看一下。在这里我们是会判断一下它的一个状态是200，如果状态是200，我们就可以拿到一个 payment info。在这里面我们来看一下他会拿到一个 QR code 了。以后在这边我们会调用在前端的一个二维码的小插件，这个小插线其实就可以看得出来，通过点 q r code，在这里面会设定二维码的宽度和高度，设置好了以后，你把 URL 给传进去，随后它就可以生成一个相应的二维码了。
+
+
+二维码的地址来看一下，这个是在页面上把这一段内容拷贝一下，在这个位置，在这里他会直接替换掉这一段内容，他会把相应的一个二维码直接展现在这里，随后用户就可以直接去进行一个扫码，这样子就 OK 了。好，现在我们来测试一下。我们到前端，这里现在二维码是展开的，所以我们可以来做一个相应的测试。测试我可以把打开一下，我把远程桌面开一下，好拆下来以后在我就直接可以扫一下二维码。扫一下二维码可以看到在这里会有一个title，这个 title 其实就是一个body，这个 body 内容其实就是在我们的一个这里面所设置的。这边的一个宝典，其实主要是用于去展示给用户去看的。好，OK，现在我们来点击一下支付。好，点击支付，现在是支付成功，支付成功之后相应的其实就可以。我们现在是 OK 了。
+
+
+其实现在支付成功对应到我们的一个步骤是在这里是在这个步骤可以看到，支付成功，我们会有一个支付的结果，这个结果它是直接会推到微信端的。可以看到是在微信端，我们刚刚是在这里处理的一些业务，是生成了二维码。可以看到这边是 code UL 返回给我们的商户，会推到前端页面，前端页面会通过一个 g s 的插件，随后就会生成一个二维码，从这里开始就是用户的一些行为了。用户的行为扫描二维码一直到这里，一直到我们的支付成功。这一堆的这下面一堆的非红色的部分，全部都是用户的一个操作，现在其实我们就可以做到。在这里。第9步我们同步返回的一个结果，在微信端显示是支付成功了，OK。
+

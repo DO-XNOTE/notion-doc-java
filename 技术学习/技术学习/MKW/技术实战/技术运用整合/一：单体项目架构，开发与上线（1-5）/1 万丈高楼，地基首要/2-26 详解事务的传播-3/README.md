@@ -1,0 +1,40 @@
+---
+title: 2-26 详解事务的传播-3
+---
+
+# 2-26 详解事务的传播-3
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c5532dba-3d6f-4efb-a6de-282daa6ce024/SCR-20240816-swis.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466U4Q6YEJO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224618Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA0OlJRmS%2FoInZWcJMMFxXhlkQDLJbAnJWsRhgN5ZGD5AiAKmMS1INhm649dIRHCFBsye%2FJQSwk5hvf%2F1Ba41Us9hyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMUn8iOmZfrl8x2zADKtwDw1xWvtMaDtcngDTBs28l4DaH1xBDr9Peyp0abIwgl%2BQ5S%2FEW2H5zbOSH8G7wCOIqBLsx2%2FO%2FG5mlu0i%2B7PxCZCw1NzV9AAi5nBxOplSVunpE9CHa3LjE%2Fz2hrjOJC8HLwptS5eePRaSrtH7Mxc7OP15UFlVCgFKKLk3tfGrakedATVyLLFNAS%2Ft%2B2u9XtQahz7JZ2TAEd7iupDhLMJeyP8PQ1ilD2Ru%2F5nw5ELrTs94dVK1jCflZe61oPTf41s26Kjud%2FrMgsJAgpC2ywp4JRqg%2FfnX8ETaaBwqeLMHb6f7hBxjFSVHpCcNqWrjWUwkj39qZSiM%2FZqBM%2BTRcCM6eimWLYM%2FJR7zx3Ezn6cTDLytNkiGKC3QdJXWPaHD%2Fa9cgYZ57eJaV1xnK3i%2FiWvDgd8%2BDZXs7w7MF2s5njluyVBQNQWcj17zpS7dwznJS1O1J%2F617AQ6FR%2FdP9Cz60Su%2FhQZ4VO6L%2FgizqOtm1AiHCDxqVXoGszqvGt3a8J%2BcBD8k6jXZaTa%2F%2FL0b1a68Tx1U%2Br1qZcuBFUUkDk4SokTm9DJjKXnKvd%2BAwUDcZe4CXzVPeZSO7rby555UeudyPxkXDRdqL1aYfPAe3ACovjZAvhXfw1gHbGLe6SkRbjMwobj%2F0gY6pgEr93W1%2FTgrvE6SSZc7TFXGb8Ycn%2BZwI4Jd%2B2lP8StS%2FCMQvmFZiHm3Nti8aU7HgIDNAGLR5i0wsSt%2BVcH2SiHSplH46xO6ojAnNTzxM3OejmCcVAgFSwlxr5mG6hfvF%2B9RRU80aKWG%2B822vF1L7cO28wjzMc86R8Ahv3fp8RvfEyEwexuWjLfOPpl6mdv1dtka8NAa3tBsUVwEa0qBKI6CfhjFcjRG&X-Amz-Signature=ea23704c7f29153657a93a2da7b5d518265ab888f3491f321d3ef5ab73fd506e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7946ceec-8fd7-4f4e-99c5-8ffdeebfbe9d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466U4Q6YEJO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224618Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIA0OlJRmS%2FoInZWcJMMFxXhlkQDLJbAnJWsRhgN5ZGD5AiAKmMS1INhm649dIRHCFBsye%2FJQSwk5hvf%2F1Ba41Us9hyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMUn8iOmZfrl8x2zADKtwDw1xWvtMaDtcngDTBs28l4DaH1xBDr9Peyp0abIwgl%2BQ5S%2FEW2H5zbOSH8G7wCOIqBLsx2%2FO%2FG5mlu0i%2B7PxCZCw1NzV9AAi5nBxOplSVunpE9CHa3LjE%2Fz2hrjOJC8HLwptS5eePRaSrtH7Mxc7OP15UFlVCgFKKLk3tfGrakedATVyLLFNAS%2Ft%2B2u9XtQahz7JZ2TAEd7iupDhLMJeyP8PQ1ilD2Ru%2F5nw5ELrTs94dVK1jCflZe61oPTf41s26Kjud%2FrMgsJAgpC2ywp4JRqg%2FfnX8ETaaBwqeLMHb6f7hBxjFSVHpCcNqWrjWUwkj39qZSiM%2FZqBM%2BTRcCM6eimWLYM%2FJR7zx3Ezn6cTDLytNkiGKC3QdJXWPaHD%2Fa9cgYZ57eJaV1xnK3i%2FiWvDgd8%2BDZXs7w7MF2s5njluyVBQNQWcj17zpS7dwznJS1O1J%2F617AQ6FR%2FdP9Cz60Su%2FhQZ4VO6L%2FgizqOtm1AiHCDxqVXoGszqvGt3a8J%2BcBD8k6jXZaTa%2F%2FL0b1a68Tx1U%2Br1qZcuBFUUkDk4SokTm9DJjKXnKvd%2BAwUDcZe4CXzVPeZSO7rby555UeudyPxkXDRdqL1aYfPAe3ACovjZAvhXfw1gHbGLe6SkRbjMwobj%2F0gY6pgEr93W1%2FTgrvE6SSZc7TFXGb8Ycn%2BZwI4Jd%2B2lP8StS%2FCMQvmFZiHm3Nti8aU7HgIDNAGLR5i0wsSt%2BVcH2SiHSplH46xO6ojAnNTzxM3OejmCcVAgFSwlxr5mG6hfvF%2B9RRU80aKWG%2B822vF1L7cO28wjzMc86R8Ahv3fp8RvfEyEwexuWjLfOPpl6mdv1dtka8NAa3tBsUVwEa0qBKI6CfhjFcjRG&X-Amz-Signature=d029b59be3fc76db5c5180a1c664b70c0974c81364097997e62c548be48a5849&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+接下来我们就剩下最后一个，也就是 Nested 这个事物传播。我们还是来看一下它的一个源码是怎么说的。它是说如果我们当前是存在了一个事物，它就会开启一个嵌套的事物。这个是要必须当前有一个事物存在的情况下，它才会以一个子事物的情况去包裹我们的方法。这就是一种父子事物是嵌套的，它这里会有一个behavior，这个是指。否则如果它当前没有一个事物，它的一个执行，它的 behave 动作就和 required 是一模一样，是一致的。所以我们在这里讲，我们只会以一个存在事物的例子去进行一个讲解。
+
+
+什么是一个子事物，什么是一个嵌套事物。其实和 request new 和我们之前所说的是要进行一个区别的request。 new 是指我们当前有事物，它会开启一个新的事物，也会有两个不同的事物，它们提交的时候其实也是分别去进行提交的。如果像这种父子事物，嵌套事物，它其实是在一起去进行提交的，这一点是需要去区别开来的。在这里我们可以去做一个演示，我们还是一样。
+
+
+首先一个我们 y 层调用方，也就是负事物，我们是使用一个request，我们肯定会有，随后我们在它的一个方法里面，在这里我们就可以使用一个Nastiga，嵌套，这样子我们把异常我们可以去掉这样子了。以后如果我们在外层这个地方，我们是发生了一个异常，我们可以来观察一下我们的数据库会出现一个怎样的情况，目前数据库先把数据给删掉好，随后我们可以来执行一下。其实很显然，我们应该能够猜到它的一个结果，就是它在报异常的时候，这里报了一个异常的时候，我们的部分其实应该要被回滚的。我们来看一下数据库里面什么数据都没有，一片空白。也就是当我们现在有一个父子嵌套事物的存在，它如果在我们的主方法里面，如果发生异常，我们的嵌套事物，它里面的数据是会被回滚的。这一点是需要去注意的。
+
+
+如果我们现在没有使用 master 的，如果我们使用的是 request new，其实我们之前演示过，我们再来执行一下。如果使用，由于它是会新开启一个新的事物，所以当我们的调用方，也就是主方法，主事物里面发生一个异常，我自己是不会被它受影响的。OK，可以看到我们数据库里面是有数据的，我们之前是演示过的，这一点是需要去注意的。也就是 nesty 的和 request new 的它的一个区别。可能有同学会说，现在我使用required，我们的一个被调用者，这里使用的是一个nasty。其实可以发现它的现象和我们在两边都使用 required 的时候是一样的。但是如果两边都是request，其实他们的方法其实都是在共用的同一个事物里面，所以在这边发生异常会一直进行回滚。
+
+
+但是现在我们一旦使用了 nesty 的以后，其实它的主方法受到影响以后，它的子方法也就是子数才会被回滚，这一点是需要去注意的，也就是我们的主事物如果发生异常，子事物是要跟着它去进行一个回滚的，是这个道理。如果我们的子事物发生异常，我们可以来看一下，把子事物的异常给开启 1/ 0，在这边我们把可以注释掉数据库，把数据全部都清掉。好，我们再来跑一下，这个时候发生了异常。发生异常以后，我们可以来到数据库来看一下，数据库并没有任何的内容，我们来看一下。
+
+
+由于我们在抛了一个异常，抛了异常之后在这里异常在这个地方其实没有被 catch 了，以后它会影响到我们的处方法，但是其实我们在这里是可以为他去追加一个 try catch，追加了一个 try catch 以后，其实在这里它又有另外一层意义，它就是一个 save point，是一个保存点。这个是在数据库里面有的一个概念，我们写一下，称之为是 save point。
+
+
+在这个地方，其实当我们进行一个 catch 了以后，我们的主方法里面的其他的事物就可以不被它所受影响了，我就可以去执行我自己的一些内容，哪怕我在这个下方会有一些，比方我有 delete 操作，还有 update 操作，其实都不会被我们的子事务所受到影响。
+
+
+这个就是我们的一个 master 的事物的一种使用方式。我们在这里可以写一下，如果当前有事物，则开启子事务，加个括号，这是嵌套事务。嵌套事物是独立提交或者回滚。如果当前没有事物，则同 require 的和 require 的方式是一模一样的。OK，在这里我们说的是嵌套事物是独立提交或者回滚。但是如果主事物也就是它的一个嵌套的副事物提交，则会携带子事务一起提交，这个是放在一起的。
+
+
+好，我们再写一下。如果主事务回滚，则子事务会一起回滚。这一点的话要注意。相反指数异常。则也就是这里。对于我的副师傅来讲，他可以选择性的回滚，也可以不回滚，也就是决策权在他手里的对吧。则- 15 可以回滚或不回滚。和我们的 request new 区分开来就可以了，因为 request new 它是两个事物分别去进行提交的。还是一样。举个例子，相当于是如果在我们以这个例子来，如果我主事物发生异常，我其他的事务子事务会连带着一起回滚。如果领导犯了一些错误，或者是决策不对，这个时候老板会怪罪下来，老板怪罪，然后领导带着小弟一同受罪。反之，如果说小弟出了差错，领导可以推卸责任，对吧？也就是和我们所说的是一样的，领导可以推卸责任，也可以帮小弟去分担一些责任，都可以。这个就是负事物可以选择性的去进行回滚或者是不回滚。
+
+
+OK，以上其实就是我们这里面所说的这些相应的事物传播propagation。在我们的一个开发过程中，其实 required 和 suppose 这两个是使用的是最多的， nasted 其实用的比较少，用的是相当少的。其他这几个大家可以在课后多去尝试的去操作一下，去理解一下。因为这一块内容其实在绝大多数的面试过程中，面试官可能都会提一下，会问你一下的。
+
+

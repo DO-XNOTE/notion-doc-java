@@ -1,0 +1,29 @@
+---
+title: 5-3 RocketMQ面试题-RocketMQ的核心组件有那些（0359）
+---
+
+# 5-3 RocketMQ面试题-RocketMQ的核心组件有那些（0359）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6141fc8d-737f-44af-9e5f-c2cf149c851e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YMCMOUEO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T232234Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDvI5Ewym%2FACrIzZeSuQxo8qXhvdNxYQOPPTuIzO4cfmQIhANlYEDubOEkcj8fs6IIfzH4vkgsJ4D8M8nSZbEW3DinVKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxIZKKD%2FJ%2BeTcANyrAq3AOcc30wHdZBIx5nG9iY%2Fpt0R4UXBJKmeB66vFPkteFc8fflSWTAR%2F%2Bz4pSs1lFr1ornK8BwaUlacBBRAfLM%2Bc2L2fHdLE6jgRP1CDBgFtwIz88i8kKQJU4KxEZBDOmkHxk%2BHXTUw4ie2hk9vbGwb7MSRuVkyqPkv2N3Owa0pL4lRAfEbCtYu%2B%2B5zUa1HUOeEIuDmAPYSNtwGX%2FAYzHcPMA8fRk%2Fgt7IkilNhq7S2%2B1uOiycTAWpdNKubvQYDvc8RetXeDVsEcRJ1R0tplsOzCn58K0FpSC6epBswRybUOOnlBK3xNUD9FdI5ZCUfSgoUfpjF%2FLYJyK%2B4q8d749SdYdXkWoLC4eDA2XM7z0HmCXkH6rTNVV5%2B6hk9exlB4VU%2B3kqUQ1Z5qe6at5kCus8DSPRcvqL2pXSkKqrNWBwQyvylRuQm40K5O9cBW0aD2OR0enlUwvrhOb8BdEi4Rop64u4nX3E6b0cPj7TCbCY9P%2F0tNZQH4jSFGeU9iOx4NcoTEg0dxFT5QQ4l2P4x7rgYr8mrVrmhDMX9vM8QLgiFXu5iCR0XoBhX5TqFufA%2BA3DVZAnvgOY1VKnSzODyMGn12xgmzo9tHMcOmjm0d8tGzzZzcpDfGANvjyLYeaCcDDBuv%2FSBjqkAS6Pa0Y%2BULqIako0l9DZg2f7oBMJ2i%2FkCJvX7mhoRmH7kq8416SXoWa90YkLnvL%2FyzuFe%2BgC%2B%2FSnthCJ%2FVCwiA%2FpTqGm%2BUZrWLCw%2FmEn3YTHYGrTr%2BVz%2BNRjCRuLjoFi9WOx4Q8nMlFDkB7iuUcfvx3iPyoteTetxpbekPwzaUVM9m88uffrCYqDuhpdIYaPNlZWtfIK1qZmZN6lcR42XFMsXfRx&X-Amz-Signature=8c64d28940764bdf05d0e32649f8112d7a2933844a5a0d7b7b24acad0433b63e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们来介绍一下 rock MQ 面试题， rock MQ 的核心组件有哪些？通常这个问题问的相对来说比较抽象，也比较宏观，如果说我们只是简单的说一下它的核心组件，比如说我们的producer，我们的集群，我们的consumer，那么如果说只有这三个的话，可能我们做的具体概括，那么如果简单一句话的话面试官可能不是很满意。所以说这里面我们可以进行抽象细致的去拆分。
+
+
+那么如果说我们要去再更详细的解释有哪些核心组件的时候，可以向源码的结构进行引导，那么这样的话去能让面试官知道你对于 rock m 说它的源码有一定的了解，能提高对你的一些印象分，那这里面我们也不要说的过于细致，通常我们提出一个技术问题的话，我们在 3 到 5 分钟之内要答完，如果说的时间更长的话，会影响你和面试官其他技术方面的一些交流。
+
+
+当然如果说你介绍的非常详细，滔滔不绝的讲下去，有些面试官他已经 get 到你对他的认知的话，可能会打断，有些面试官他可能不好意思打断，你就滔滔不绝的去讲，但是面试官没有更多的时间去考察你其他方面的能力，当然这种情况下也不太好。那么这里面我们如果说对核心组件进行介绍的话，我们可以把这个图在脑子里面回忆起来跟大家介绍。首先对于我们的 rock Mike，它分我们的服务端和 client 端，那么服务端包括我们的 name Server 和我们的BROKER，其实我们通常沟通更多的是我们的BROKER，也就是说我们知道对于服务端的 BROKER 集群是更重要的。那么这里面我们再去介绍一下producer，我们的生产者集群和消费者集群，他们跟我们的 broker 之间交互的关系，那么这也能去引导我们面试官去理解我们对于这个 rank 的一些认知。
+
+
+那么如果说我们在交流的过程一定要注意面试官他的一个感觉，如果说他希望你更多的去深入，去介绍的时候，你可以挖掘你对罗卡米克认知的一些知识点，比如说像博客里面它的一些部署方式，比如说它是双住双重，我们的同步的一个数据同步和我们的异步刷盘等等这些知识点甚至你也可以。
+
+
+如果说面试官感兴趣的话，甚至你可以切到我们源码里面，对于 rock MQ 里面的各个模块的一些之间的一些依赖关系，它的功能是什么？比如说我们这里面对于我们的common，我们的 star 模块等等。 common 模块通常是一些常量的枚举积累方法或数据结构，按描述的目标来分，通俗易懂。比如包括报名有admin，consumer， filter 等等这些信息。那么 remoting 模块它是用于 net 写的一个客户端和服务，那么它基于发射 Jason 去做一些序列化，进行一些定制，一些二进制的协议。
+
+
+这里面还有像我们的 store 模块，它其实是被 broker 依赖，它是做一个存储服务，消息存储索引存储我们的卡米 log 存储等等一些信息。那么 Claude 端就是我们的客户端了，它会包含我们的 producer 端和 consumer 端，可以发送消息和接收消息的一些API。通常我们在业务同学关注最多的也就是 rock campaign， handle 端的一些信息。那么 broker 它是对我们 consumer 和我们 producer 的来说的一个服务端的接收，我们接收 producer 发来的消息，同时也接收 consumer 端的一些请求来拉取消息等等这些信息。那这里面向这些兔子模块里面提供了哪些工具，以及我们的 distribution 里面的各个配置，我们也可以把它做一个简要的介绍。
+
+
+总之还是我们在回答面试官的面试题的过程中，不仅仅是一个知识点的拷问，我们也要注重跟面试官的沟通，去理解他的意图。他想让你介绍到一个什么样的一个抽象层次，或者说一个底层实现的一些细节，这些可以去在沟通过程中去慢慢探索，去达到你在回答的过程能满足他的一个预期。OK，那么关于这个 rock 的核心组件的内容，我们可以先介绍到这里。
+
+

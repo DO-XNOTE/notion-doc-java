@@ -1,0 +1,29 @@
+---
+title: 2-27 为何不使用@EnableTransactionManagement就能使用事务？
+---
+
+# 2-27 为何不使用@EnableTransactionManagement就能使用事务？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/df7de381-63a8-475d-8c81-00d71c2c7dcc/SCR-20240816-sxpp.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QZSDTFV2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224619Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCKIfcTMgwhSai5rEVYQFwBy%2FAHR97y8XjSdwDgcqNYbQIgayrlGbuQT8jhYahEaQc67rPRSg5Pz%2BeGI896ZHePc0gqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIV%2BF4uj1DLDW8wE%2BCrcA%2BJ7pWqrb5FiA%2BKWAFTiwAsF%2Fg78fHg8Gu3Uo7iqUr6qr77CEqGQgCOvHwHOAB6VDM3uI9tLHP3KmlZqt%2B3Xa%2BuigOgcJ0ogKEmPPBxXFeDfSSjxcljnVJuV3IJSajRQdCMETG2gjgxepZf86JWYzlp%2BQhMnctY%2Fmo6Nz%2Fev8fQ3V7q6GMkqNsb3vgf%2FgYTJvWpS3xgbd59R9VdWHzPqeOxKbc77sLWjF%2B%2FkdiJpQhfsdkwp4zdocm0UleJuIEBgc4Ue4rFOh4cqHfzBFEv2GWAehbPDkvS6UG%2BHzwliZhQVtYFw0dUv2OBVkXbhAkNqg38Dbx%2FOOCEXlPjtltZmpVIWYwKdlUufJBYpsEd5L7qM4O1guhsR1DNh3L9qUkQIolbWG4k916SfFjBKM89Jzh0%2FgTUO3fF7Ha%2FAqEIXoSWK0clAw4CdRwXxwYraA9dlOTNuHfRbUjGYAeOEXywk2RZVy3Qgy3lDOR3r9AlBWoBx6fX%2BU13Aut0IFQM%2BplruLI4ZpqD8T%2BYRx423DYHHp%2BzdSdCHpc8JTFj9PrW59DowvJf%2FR%2F0speRhmOCHGN3tdAtNEisaSKk3G9GdDfWVPTAneyrYoE74dbqnEF33Q%2BLK4pJH9UCL4w%2BWZgjSMIe3%2F9IGOqUBsOSzDsStOO%2Bm1NCRpEJTTUMA5QpJ74acdg6kSgjc7s0CfI9fNyksv5iT9P59tzqLTA%2FDLlttcpmNnnMevzixezkFnOpr7T8V1lYJdUKCtKldl4vvepPnCahuAGBwrf314pR4nz8d7eBr8izlQj2R%2FFZrOE0R40IT0NNgWxMPU%2BIZWQlWFLYZglHSo52cIrljg6VUaukGL%2Bni81fdM8vQluzCmo5N&X-Amz-Signature=22aff5fe43be6027f3a0c9be449b9007c516fadb75daa7bb6a271f577faae706&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/523e301d-c095-4eb5-874a-d032ada998ac/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QZSDTFV2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224619Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCKIfcTMgwhSai5rEVYQFwBy%2FAHR97y8XjSdwDgcqNYbQIgayrlGbuQT8jhYahEaQc67rPRSg5Pz%2BeGI896ZHePc0gqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDIV%2BF4uj1DLDW8wE%2BCrcA%2BJ7pWqrb5FiA%2BKWAFTiwAsF%2Fg78fHg8Gu3Uo7iqUr6qr77CEqGQgCOvHwHOAB6VDM3uI9tLHP3KmlZqt%2B3Xa%2BuigOgcJ0ogKEmPPBxXFeDfSSjxcljnVJuV3IJSajRQdCMETG2gjgxepZf86JWYzlp%2BQhMnctY%2Fmo6Nz%2Fev8fQ3V7q6GMkqNsb3vgf%2FgYTJvWpS3xgbd59R9VdWHzPqeOxKbc77sLWjF%2B%2FkdiJpQhfsdkwp4zdocm0UleJuIEBgc4Ue4rFOh4cqHfzBFEv2GWAehbPDkvS6UG%2BHzwliZhQVtYFw0dUv2OBVkXbhAkNqg38Dbx%2FOOCEXlPjtltZmpVIWYwKdlUufJBYpsEd5L7qM4O1guhsR1DNh3L9qUkQIolbWG4k916SfFjBKM89Jzh0%2FgTUO3fF7Ha%2FAqEIXoSWK0clAw4CdRwXxwYraA9dlOTNuHfRbUjGYAeOEXywk2RZVy3Qgy3lDOR3r9AlBWoBx6fX%2BU13Aut0IFQM%2BplruLI4ZpqD8T%2BYRx423DYHHp%2BzdSdCHpc8JTFj9PrW59DowvJf%2FR%2F0speRhmOCHGN3tdAtNEisaSKk3G9GdDfWVPTAneyrYoE74dbqnEF33Q%2BLK4pJH9UCL4w%2BWZgjSMIe3%2F9IGOqUBsOSzDsStOO%2Bm1NCRpEJTTUMA5QpJ74acdg6kSgjc7s0CfI9fNyksv5iT9P59tzqLTA%2FDLlttcpmNnnMevzixezkFnOpr7T8V1lYJdUKCtKldl4vvepPnCahuAGBwrf314pR4nz8d7eBr8izlQj2R%2FFZrOE0R40IT0NNgWxMPU%2BIZWQlWFLYZglHSo52cIrljg6VUaukGL%2Bni81fdM8vQluzCmo5N&X-Amz-Signature=74f820ae0b7cb3f0d16a04428aaae12582f4388d3fb30ac0628cd0d2b909b57b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在前面几节课里面，我们是花了一些时间针对师傅的传播进行了一个讲解，这一节我们再来根据师傅我们再来说一点是一个什么问题，我们可以来看一下。在我们的 service 里面，其实我们使用了注解，也就是transcation。使用注解的时候，其实我们没有去设置一个注解的启动，或者是注解的一个开启，其实是在启动类里面，
+
+
+我们可以来看一下。在 application 启动类里面，启动类的这一个地方，其实它会有一个 enable transcation management 开启事务的管理。这个问题其实在我的实战课程里面，其实有几个同学是提出过，也就是最近一段时间，他们是这么问的。为什么我们没有开启注解，只需要在相应的 service 里面使用事务的注解就可以开启事务管理的。这个问题就是我们在之前讲到自动装备的时候其实有提到过，在这里我们再来讲一下。首先这是一个 enable transcation management，我们可以点进去看一下，其实可以看到它本身是一个interface，是一个接口，它就是用来去开启事务管理的接口，我们可以先打开。
+
+
+随后我们再来看一下之前我们所说的 spring boots application 注解，我们点进去看一下。我们前面说过了，所以我们就快速的点一下，找一下 enable or to configure。这是一个开启自动装备。再点一下进去以后找到 select 选择器，针对所有的一些自动装配的内容去做选择的。再点一下，往下面找，找到一个获得自动装配的entry，再点进去拿到candidate，再点在当前的类里面，我们之前有说过 spring 点factress，我们再来到这里，点击小圈会帮我们定位到部位展开 Meta info。
+
+
+双击 spring 点factories，其实我们就已经是打开了。以后在当前里面，其实我们就可以去找一下。我们在其实我们之前说过的，我们带了一下 transcation or to configuration 事物的自动装配，也就是在我们的 spring boot 容器启动的时候，会帮我们把去进行一个加载，也就是它会自己去进行一个自动装备的过程。我们可以点进去看一下。
+
+
+点进去看了以后，我们可以来看一下，在它的类的上方，它在这里其实也帮我们做了一个解释，帮我们开启自动装配。自动装备是用于为 spring transcation 也就是 spring 的事物去提供的。OK，在当前这个类里面，其实我们就可以来搜一下，我们来看一下。在这里其实就可以看到 enable transcation management 就是开启事务的管理。开启事务的管理其实也和我们的类在这里也是一模一样，也就是我们直接从这边开始开始的事务管理的注解。
+
+
+点一下这个类的名称，和我们在这里搜一下，可以看到是一模一样的。并且其实我们也可以看得出来，事物管理它是基于 spring 的 a o p，也就是面向切面的编程。 a o p 的原理又是什么？在这里是不是有两种，这是 spring 部分，一个是j、d、 k 的动态代理，另外是一个c、 g 内部的动态代理。这两个动态代理我们在这里就不去细说了。这也是 spring 里面的一些相应的基础部分的内容。其实我们就顺从着我们的一个启动类，一步一步往上面找到了我们的自动装配，自动装备。其实也就是在我们运行 spring boot 容器的时候去帮我们做到的这样的一个过程。所以在我们的使动类里面，注解其实可加可不加都是没有问题的。好，这节课就是我们针对注解做的一个相应的解释。这样子我相信大家在开发项目的过程中可能就没有这样的疑惑了。  
+
+
+

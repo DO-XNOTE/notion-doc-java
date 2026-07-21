@@ -1,0 +1,42 @@
+---
+title: 1-4 multiGet 批量查询优化
+---
+
+# 1-4 multiGet 批量查询优化
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e8cefe6f-b908-4828-896e-1a5b6a921169/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46642RMSYI5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225002Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD8dFPZ4Aaw9%2BBE3fPK0xYz3vheqlA4TNxNiJQepT1jTwIhAIEHPtdctztKLe7pHiC4BNPBczMc5RVn%2FnK2wFECO1xuKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyfgeEqxlyG%2FjCUB2Qq3APHFgSgXW8JZ7Qg7nLiaAcDAQ3%2BP9Xyw5D59eX07t8MVtfDwdVS5yv9V5URJFzIkU2rlDIEgHLhyqKgXUTpOCJFbz8%2Bp7gc4OM8jR3JFj9Fft0KQ45L05zGVQHGt2VaDWzVWFDIRnAbGciPaaIDkYInDwuSdPg9iKbO3sOxCSeDwpIeuJDrRXW%2F9VCQQgZ8KSBVPhP68PYrdnCobKF9wlavgEFCKtenWghQBvLPF7%2B6AK8%2FcBeX6NzeDNeUzx1QX8zHqT%2BnwCii%2FJBGMxjDvI6Md5vzNqecvo8Ycsu%2Fdw6qBE2OWJ6o8cLDU0%2FsaNu2JnkTDGMEcRX5ukpb4Yz%2BxFk%2BraMOZXyxjc21lp4j08ckKVJjUpHPs%2BFPhMCZ4VzvwiWkbgZKvc04StSejUHsSKdxwb20p3ABrjLnXgXw5KKCQaBBRFlgd1durDwNH%2BOgDO4gorbFUyWS01m0MxzoEbaWLsRaQ1I9yLGHHPuG%2FKV623ltC4VLGJOn5m7MIXVFNzksGKKyLByfl4rKy7FDTX%2FMSu%2BTAV8dwRPywdc%2Fuc8mbfNcU0mTzDu9t558z%2FmM4%2F0ZCM2o1Jv338E6ExM5rd%2FDs2dx4ZSlQGRDvmKAE4ILzF5gbliMYrFo1ZhPZDDuuv%2FSBjqkAQnRE%2B%2B%2BqpWtSLR7ySy2aHMlkqM6L0jF%2Fn%2FPNErakRaPcdMgutlCjNUTPKmLVyvubutAJ%2B%2FglO27gzs91o2je2LQbvLTGYxFKo5W1POF59yBAJJkSwvKstNVS5Trny4osK%2BNzxRWrTs5%2F15e%2BEB%2FwTkUjd%2BQWBNrND284z1e1zzcoQvaJlaFdAFOQgDXAggHH%2BYNu0N6JnZXBQ8WCL5D5XF6iZAQ&X-Amz-Signature=263fa12372b24ffbbb57b694c8b51bf5735090e798b6ff390195798beaae98eb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c674ef0a-ee0d-468a-a4c4-5b48f0d35388/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46642RMSYI5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225002Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD8dFPZ4Aaw9%2BBE3fPK0xYz3vheqlA4TNxNiJQepT1jTwIhAIEHPtdctztKLe7pHiC4BNPBczMc5RVn%2FnK2wFECO1xuKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyfgeEqxlyG%2FjCUB2Qq3APHFgSgXW8JZ7Qg7nLiaAcDAQ3%2BP9Xyw5D59eX07t8MVtfDwdVS5yv9V5URJFzIkU2rlDIEgHLhyqKgXUTpOCJFbz8%2Bp7gc4OM8jR3JFj9Fft0KQ45L05zGVQHGt2VaDWzVWFDIRnAbGciPaaIDkYInDwuSdPg9iKbO3sOxCSeDwpIeuJDrRXW%2F9VCQQgZ8KSBVPhP68PYrdnCobKF9wlavgEFCKtenWghQBvLPF7%2B6AK8%2FcBeX6NzeDNeUzx1QX8zHqT%2BnwCii%2FJBGMxjDvI6Md5vzNqecvo8Ycsu%2Fdw6qBE2OWJ6o8cLDU0%2FsaNu2JnkTDGMEcRX5ukpb4Yz%2BxFk%2BraMOZXyxjc21lp4j08ckKVJjUpHPs%2BFPhMCZ4VzvwiWkbgZKvc04StSejUHsSKdxwb20p3ABrjLnXgXw5KKCQaBBRFlgd1durDwNH%2BOgDO4gorbFUyWS01m0MxzoEbaWLsRaQ1I9yLGHHPuG%2FKV623ltC4VLGJOn5m7MIXVFNzksGKKyLByfl4rKy7FDTX%2FMSu%2BTAV8dwRPywdc%2Fuc8mbfNcU0mTzDu9t558z%2FmM4%2F0ZCM2o1Jv338E6ExM5rd%2FDs2dx4ZSlQGRDvmKAE4ILzF5gbliMYrFo1ZhPZDDuuv%2FSBjqkAQnRE%2B%2B%2BqpWtSLR7ySy2aHMlkqM6L0jF%2Fn%2FPNErakRaPcdMgutlCjNUTPKmLVyvubutAJ%2B%2FglO27gzs91o2je2LQbvLTGYxFKo5W1POF59yBAJJkSwvKstNVS5Trny4osK%2BNzxRWrTs5%2F15e%2BEB%2FwTkUjd%2BQWBNrND284z1e1zzcoQvaJlaFdAFOQgDXAggHH%2BYNu0N6JnZXBQ8WCL5D5XF6iZAQ&X-Amz-Signature=e3cb1429d4ddf0bb86cfd031ca4d1ff3c7c3cd85d5f547e044eb481025cdffab&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么在我们平时的一个开发过程中，可能有一个接口在进行一个调用的时候，或者说是我们在某一个页面上可能会有很多很多的一些key，也就是在我们的一个 Redis 里面的key，我们要去做一个大量的查询，那么这个时候我们应该如何去做呢？那么我们这节课的话，就针对这样的一个现象，我们可以来做一个优化的一个工作。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2100dce2-b4c1-4927-84d0-1aa9fb507dba/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46642RMSYI5%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225002Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD8dFPZ4Aaw9%2BBE3fPK0xYz3vheqlA4TNxNiJQepT1jTwIhAIEHPtdctztKLe7pHiC4BNPBczMc5RVn%2FnK2wFECO1xuKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgyfgeEqxlyG%2FjCUB2Qq3APHFgSgXW8JZ7Qg7nLiaAcDAQ3%2BP9Xyw5D59eX07t8MVtfDwdVS5yv9V5URJFzIkU2rlDIEgHLhyqKgXUTpOCJFbz8%2Bp7gc4OM8jR3JFj9Fft0KQ45L05zGVQHGt2VaDWzVWFDIRnAbGciPaaIDkYInDwuSdPg9iKbO3sOxCSeDwpIeuJDrRXW%2F9VCQQgZ8KSBVPhP68PYrdnCobKF9wlavgEFCKtenWghQBvLPF7%2B6AK8%2FcBeX6NzeDNeUzx1QX8zHqT%2BnwCii%2FJBGMxjDvI6Md5vzNqecvo8Ycsu%2Fdw6qBE2OWJ6o8cLDU0%2FsaNu2JnkTDGMEcRX5ukpb4Yz%2BxFk%2BraMOZXyxjc21lp4j08ckKVJjUpHPs%2BFPhMCZ4VzvwiWkbgZKvc04StSejUHsSKdxwb20p3ABrjLnXgXw5KKCQaBBRFlgd1durDwNH%2BOgDO4gorbFUyWS01m0MxzoEbaWLsRaQ1I9yLGHHPuG%2FKV623ltC4VLGJOn5m7MIXVFNzksGKKyLByfl4rKy7FDTX%2FMSu%2BTAV8dwRPywdc%2Fuc8mbfNcU0mTzDu9t558z%2FmM4%2F0ZCM2o1Jv338E6ExM5rd%2FDs2dx4ZSlQGRDvmKAE4ILzF5gbliMYrFo1ZhPZDDuuv%2FSBjqkAQnRE%2B%2B%2BqpWtSLR7ySy2aHMlkqM6L0jF%2Fn%2FPNErakRaPcdMgutlCjNUTPKmLVyvubutAJ%2B%2FglO27gzs91o2je2LQbvLTGYxFKo5W1POF59yBAJJkSwvKstNVS5Trny4osK%2BNzxRWrTs5%2F15e%2BEB%2FwTkUjd%2BQWBNrND284z1e1zzcoQvaJlaFdAFOQgDXAggHH%2BYNu0N6JnZXBQ8WCL5D5XF6iZAQ&X-Amz-Signature=c480ec0c383601783e6c0f72914bff45f6b49096f8e2f9938a167bc751d678ca&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么我们可以先来写一段代码，我们先来看一下取个名字 get a lot，然后这里我们传入进来是一个 key 的数组，取名叫做kiss，那么这个其实我们就可以把它当做是我们从英文上传过来，有很多很多的kiss。OK，那么这些 case 我们是要去根据这些内容去从 Redis 里面去查到相应的一个具体的值，然后我们再以一个 list 的形式再返回到咱们的一个前端。那么在这里的话，那么我们就可以针对这样的一个 kiss 去做一个循环，写一个 for 循环，然后在这里它是一个 string 型的，所以我们定义一个就叫做 key kiss。然后在循环的过程中，在这里我们就可以通过 Redis operator 点get，然后再把这个 key 传进去，也就是它数组中某一个元素。
+
+
+那么这样子我在进行循环的时候，那么我就可以循环的把这个 kiss 里面所有的一些内容全部都拿出来，然后拿出来以后在这个地方那么我们是需要去加上一个list，所以我们是要把这个 list 给写上，它是一个 string 类型的，然后这是一个kiss，写上一个result，这是一个result。把它给 new 出来。然后每当我们 get 完一个内容之后，那么我们直接向这个 result 里面去添加一个，通过 add 把它给放进去，那么最后我们只需要把这个 result 给丢出来，那么就可以了。
+
+
+OK，那么这个是一种大量的 key 做的一个查询，写一下，大量的 key 的查询，然后在目前 Redis 里面给大家来看一下。我预先是放入了一些相应的内容， kiss 讯号，那么这里面我是从 C1 一直放到C0，然后每一项里面其实都包含了相应的内容，比方说这是一个C9，其实都是有戒指队有映射的，那么现在我们在前端要去通过一个调用去获取，要大量的或者说是批量的获取我们相应的一个内容，那么我们可以完全使用这种循环的方式去把这个 key 一个循环的去获取，那么这个肯定是没有任何毛病的。所以我们在这边我们来启动一下服务器，来看一下我们运行之后的一个结果。
+
+
+好，OK，现在是运行成功，然后在我的这里看一下，目前这个 URL 我已经是事先的写好了，然后随之的挑选了一些key，然后去做一个查询，然后我们回车一下回收之后你会发现我们是可以去查询出来相应的一个内容，它里面所包含的值最终我们其实是一个j， s and list 的一个形式返回出来。OK，那么这个没有任何的毛病。但是其实我们在之前我们讲一个 string 类型，也就是在我们的命令行里面 Redis 有数据类型，那么对于 string 类型的话，它其实会有一个 and get，那么它其实是通过一种批量的形式去获取的。那么在这里其实在我们的命令行里面可以这样子去做，比方说你写一个C1，C3，C5，C7，C9，那么这样子它其实也是以一种批量的形式，一次性把对应的 t 从我们的一个缓存里面给拉出来，然后在这里面去进行一个反馈。
+
+
+那么对于我们的一个代码来讲的话，我们也是可以这样去做的，来看一下，那么在这边我们就不去以这种形式去做，这种形式的话可以这么写，但是会比较的 low 对吧，因为这并不是一个批量的，它其实本质上还是循环的一个一个的去拿。那么我们可以来到咱们的 Redis operator 在这个地方，那么在这里呢，我们可以去写一个方法，这个方法专门是用于提供给我们去做一个 m get，其实也就是一个批量的查询。写一下，先把这个拷贝一份，拷贝一份然后传入进来的话，那么很明显它就应该是一个list，在这里写一下这个，它会传进来一个 string 类型的list，那么它是一个kiss。
+
+
+那么在这里面来看一下，通过 Redis template，然后这个我们删掉，然后我们来点看一下，在这里面有一个叫做 multi get，那么这个其实就是对应到我们的一个命令行中的 m get，在这里面很明显可以看到它是一个collection，它是一个集合，你可以放入一个集合，其实也就是很多的 case 给丢进去。那么丢进去以后，那么它其实就可以做到一个相应的批量的一个查询了。
+
+
+那么在这边我就直接可以把这个 kiss 给放进去，那么这样子当我们查询完毕以后，那么它其实就是会返回一个，我们把这个贴过来，它就是会返回一个 string 类型的一个list，那么在这里其实我们拿到以后，那么直接我们就可以在页面上去进行一个展示返回给前端去做一个对应的渲染。我们在这里加上一个注释，我们就是一个批量查询，然后对应 m get OK，好。那么这个方法写好了之后，我们到 Ctrl 里面我们去写一下。在这边我们就直接写上一个 m get，加上注释，那么这是一个批量查询。 m get，好，OK。那么在这里的话我们就不需要使用这种负循环的形式了，因为负循环在这里其实显得会比较的low，所以我们在这个地方直接这样子。
+
+
+我们这里是一个result，然后我们可以使用有一个叫做 array areas，有这样的一个工具类，其中有一个方法叫做 s list，那么在这边我们直接把这个 keys 给丢进去，丢进去了以后，那么这样子它就会转变成一个list，那么当然这边我们改掉，这边我们就取名叫做 keys list。
+随后我们再去使用的话，那么我们就只需要使用这个 Redis corporate 点有一个 m get 这个名字，咱们看一下，这里加一下这是一个 m get，那么这样子我们就可以去使用了。随后我们只需要把这个 kiss list 给丢进去，那么这样子他就可以去发起一个批量查询，把我们相应的一个 case 统一的给查询出来。OK，好。随后我们在这里再重启一下。
+
+
+好，OK，那么我们回到咱们的页面，那么在页面里面我换一个来看一下，在这里给我 m get，然后kiss，在这里我加上一些内容。K1，我们这样子。K2，好，应该是C2，C4，C5，C6，再来一个 C10 回车一下。OK，那么这样子的话，其实我们也是通过 m get 这样的形式去把它相应的内容给获取了出来。OK。
+
+

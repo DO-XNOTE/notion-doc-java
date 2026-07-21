@@ -1,0 +1,65 @@
+---
+title: 1-18 【案例解析】敏捷项目管理系统-EventStorming事件风暴（一）
+---
+
+# 1-18 【案例解析】敏捷项目管理系统-EventStorming事件风暴（一）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/07d83b5a-3988-49c2-a91c-565c89ac6d38/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230919Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=af625715566e67520eef9cddf151d92bde4b10e4eb68b144ce3611a080c8b16e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b1ca24fb-f1cb-4364-87d9-3cd027b1937d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230919Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=a6253fa4a08fa2b208b5b08193fa69b5b9511ae69e9d063cbd7f236b53a89ab7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+加急需求和落地的桥梁，构建 it 新蓝图。我是张飞扬，上一节我们聊了聊CQIS，聊了聊事件溯源，那这一章节开始，我们就来进入什么最酷炫的事件风暴领域建模的环节了。那整个环节可以分很多个小节，但是我们什么全过程，不讲理论就实操，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/11553a0a-f5b7-4af2-af1e-fee08d07c529/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQPYSH72%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230919Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQD%2BN8a0%2BBU2yTS%2FCbjNjr3moH6REQPk%2FoDuaz9wtxTs%2BAIhAOus1RLf0r%2FRPRxCoYOlujw%2F0bgKHkE46K9Aowd3BiwNKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxhH%2Frlzh9hHsa8wSwq3AMDKsGoP9jwe8IuDu4RGf4kbK0SLVoHwB2lziSrl9EczvhRf%2Fuj9WKgrzCSxKaZmKwdgNGzvco0VoykXaYvpIINJDUw2bu6m8EfeYOQj3VIWsjdBZOZ2YJKu5IyB%2Fl%2FVNF1176F1kp8QkbdU%2BzfiIq%2B6DmJhu%2B3tloODKBsIznnphUuevgVWplkOlPdpmqH8KXNW6TnQLVBTrQ3jNV6TP7r71V9XTvPwqgsWdsefq6f5ohYvVWdLFEQx9I6Ck5pXhmNlnDlefHUUIPYcWMGlnc9OkoXvoZRQZdDXqXvQKCRVuMhznTnPmYYifNI4V8cKlGGu%2BvE6qOLa7rtiAYq3si7fKxOG3PaTekzRTzxveEWkOeTQUiyQLMXAu2OJwhyU%2F0eVfmKwBjOWGtKB%2BHMNtp5kCKY3y%2FDDmvmrHhWyzGpv8lGfEBWeo2Q5g5ZRbbwI7pLZ%2BPZGYS8%2F2r%2FWQZJeZgFpzj06BG82BoTc1c1RSOUQ0VyqQNIVlYr6vYkHtu8L7i5qMbU7536VGXBxNEBo5gfbqfEbeTxWvwl4qH2yrSK%2BR7cell6UE16N4GZYhnSSOAnwyWnIEmOHVIig9dyQe5Njdz9E5sGWKyNK9FaZ%2FyQ1PY75MF8jHPKhbJPkzCLuv%2FSBjqkAeHg5UTYag4ZQybeSEmE71Tcb2s9Z7LvQvYMrMtUppwzyy2Mxm41dwXbOKKq7oKXymj6JjAzwN3J3i%2BtLTsbnImbd61IQVGNVR7lmiHdu4aPtWdsA%2BiHzzj9RUmYv1BsX0PYVG3FRCiux9jxT5QPC2d%2BOpgZi5LU7B%2F%2BILmxIQhQuNg6vaLcRcNK45AJStN%2BRwAfZvOZ1OJSb%2FJfNjeSzdX5UaO9&X-Amz-Signature=4a74ff695b6f5dae4063345b09d685aecc6abe6f2f2997e80e7320dd60cf2a8b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+整个过程大概花一个小时左右的时间，把完完整整的我们的敏捷项目，这样一个整个的子系统完全给拆分开来，变成一个一个的微服务，一个一个的聚合，以及聚合里面的实体和值对象。就让我们来实战，那要做一套系统，通常什么我们要看一看跟它对应的竞标系统，那对标的系统是什么呢？就是这样一套系统。
+
+
+好，马云的一套在线的这种项目管理系统，这套系统可不是敏捷系统，所以存在的一些缺陷，我们先来看一看跟我们对标的系统长什么样子，然后我们就可以从中考虑出用户行为，或者说从产品的思路应该怎么样来开发一套系统了。首先正常的一个系统里面也会有多个项目，或者说是多个产品，点击任何一个产品进去，我们看一看这产品里面可以有什么发挥的地方，通常什么这个产品里面最常用的方法就是看板，这就是一套看板，在看板里面我们可以很方便的点击右上角，是吧新建任务，然后添加一个标题，对吧？叫什么 event storming 这样的标题，然后在这里面定义一个协作人，是吧？谁是负责人，然后谁是协作者？除此以外，我们可以设置一些里程碑，对吧？叫体验一下这种里程碑。
+
+
+现在有一种老土了，通常我们会叫什么？我们会叫什么？发布，对吧？每一个里程碑其实都是一个发布，为了发布之前，我们有一个一周或两周的这个开发时间，我们叫它冲刺。所以先要把这个任务，是吧？指定好未来，在某个时间点发布，然后我要把它安排在某一个冲刺里面，那这个冲刺可以完成开发和测试的工程，以及为未来发布做好准备。然后我们描述一下开工的一些文字， whose day one 打些标签，这到底是一个 feature 还是一个什么bug？这其实是一个 feature 新的功能。那另外我们还可以设定优先级，这个优先级有一点差了，对不对？应该设定什么？我们这个项目如果做成功，或者做个任务做成功以后有多少收益，对吧？做不成功有多少这个惩罚？除此以外，我们做它的时候需要有多少的人？天的cost，这些都应该作为一个严重等级，或者是作为重要等级在这里标注出来。
+
+
+好，那除了这些以外还有什么？我们先建出来再看，当它建出来以后，你看到什么？我们可以有多个人的，不管是我们的负责人还是我们的协作者，都可以在这里进行评论和讨论。另外我们还可以关联更多的子任务，同时我们这个任务是状态，是待办的，也就是什么，也就是 backlog 没有做代办代做，我们还可以把它拖到什么进行中，甚至于拖到已完成这种不同的状态转译也是什么？我们这种敏捷项目管理里面很重要很核心的功能。
+
+
+看完了这个看板里面的大致功能，我们心里有数了，我们要做到什么样的系统，要大概哪些功能？那这时候我们就可以按照什么世间风暴的套路开工了。世界风暴需要什么？是不是需要一台电脑？是不是需要鼠标键盘？不需要，就这么几样东西。需要一堵墙，在墙上贴一张 A1 的纸，不是 A4 也不是A3，是非常大的 A1 的值，然后买一刀厚厚的标签，而且是五花八门不同颜色的标签，那这种便利贴都可以。然后就贴在这张白纸上就可以开工了。那我们呢？没法把分杨老师在墙上贴纸的过程录下来，也录不清楚，那我只能找了一个这种网上的这种什么贴纸工具，或者说是画图工具，这个工具里面现成有些黄颜色贴纸，我们就拿这个贴纸为例，我们就以背后的这个格子当成我们的墙，我们来开始带着大家实操。那大家可不要在电脑前面应该什么买好一张 AE 纸，然后买好大量的黄色、蓝色、红色、紫色标签，跟着我开始实操。
+
+
+好，首先我要描述一下我们事件风暴的第一步，它的名称就叫事件风暴，所以我们关注的就是事件本身，所有事件默认都是用黄色标签，为什么黄色标签最容易买到，而事件是我们最关心的内容，所以用黄色来代替事件。好，我们想一想我们刚刚的整个过程当中有哪些常见的事件？事件在中文里面默认都是用移，对吧？脑袋已打破，对吧？就是脑袋坏了，是吧？就是脑袋已打破，是吧？什么产品已创建，对吧？这就是产品已创建，这就是一个事件，就是说一个东西被怎么了，对吧？这种叫什么？什么已什么？什么产品已创建，这是一个事件吗？这个产品创建出来了，就是我们刚刚创建的什么安卓 APP 研发产品，好，创建出来了，创建完了以后我们要在里面去分配一些用户了，对不对？你在这个分配之前，其实我们什么我们跳过了一些步骤，我们逐一写这个事件风暴，就是想到一个比较复杂的案例，总结有很多环节，然后从左往右一路上把这些事件全部写下来，这就是世界风暴的第一件事件。
+
+
+风暴我们类似，我们想想看是不是有小组，我们先要建一个小组来开始研发这个东西，然后也是以创建好。一路上创建下去，我们还有什么？我们是不是要来一个成员？要添加些成员，其成员已添加好，我们再录弄下去。容成员当天我们刚刚看了什么，其中有负责人和普通成员，只判断那么叫负责人，以添加两种不同的人，一种协作者叫成员，还有一种是负责人。
+
+
+除此以外，我们有一个这个任务跟某个 milestone 关联起来，这是老式的写法，我们其实应该是什么？应该是跟某一个发布关联起来，所以发布以安排的，首先要安排这个发布，也就是创建这个milestone，然后再把它给关联进去，对吧？好，这个箭头拿掉，除此以外，我们是吧？我们除了安排发布以外还有什么？还有冲刺，对吧？冲刺也是什么以安排，我们要安排一个冲刺，就是从今天到两周以后的这个同样这个日子。好，我们今天比如说周日，两周以后的周日我们要完成这个冲刺，完成它的研发和测试。然后在三周以后的发布上，我们用了用小火车的发布方法把它给发布出去，就是冲刺与安排。
+
+
+除此以外，我们在刚刚的这个界面上点出的那个叫什么？叫什么？叫 backlog item，我们简单写法就叫任务好不好，也不写什么叫什么，待定任务这样写就叫任务已创建，对吧？我们刚刚创建出一个任务，然后我们对这个任务我们可以修改。它之所以要一堵墙就是因为什么？如果是一个很长的案例，它是很长的，也没有一堵墙那么长，对吧？你是没法写下这么多内容的。
+
+
+任务已安排完了以后，我们要给任务安排一些什么优先级，对不对？好，来个什么优先级，以什么以设定，或者叫已分配。好好分配完优先级以后，我们是不是还要给这个任务里面的这个具体的内容分配一些？这个打分，对吧？也就是故事点，故事点就是看一下我们这个任务的复杂度，需要多少个人天来完成好故事典已分配，那也可能是一个比较重要的事件，除此还有什么？是不是还可以有一个叫做标签已添加，可不可以？我们刚刚其实是可以添加一些标签的，我们也添加了，比如像 feature 这样的标签，对不对？标签已添加好还有什么功能？还有就是把它发布到真正的某一个，什么某一个这个发布里面，也就是任务的发布与安排。任务发布已安排，那这前面的发布已安排是什么？就我创建好了一个发布，比如三周以后有这样一个火车发布，那我把这个任务呢？发布到这个火车发布里面，就叫任务发布与安排。
+
+
+那同样道理，我们说从这周开始建了一个Sprint，叫做什么 Sprint 1，那我们什么任务？什么任务冲刺一安排就是把这个任务分配到当前这个 Sprint 1，这个冲刺里面还有什么？是不是还有一个讨论已创建？对，我们刚刚还说还可以创建。讨论好，我们最起的右边叫讨论一创建，这样一些是我们从无到有过程当中经常会做的事情，对不对？我们都把它列在这里。好，列完以后是一个事件风暴的一条线。弄好，那我们想一想除了这些事件以外，还可能有些什么事件？我们最常见的就是什么增删改查，都会有些事件，比如产品创建完以后说感觉说，嗯，不爽，我的名称取得薄。什么叫安卓 APP 开发？我们应该是什么？我们应该是火箭 APP 的开发，对吧？某个产品，那么产品名没写好，那为什么叫产品名称？或者产品定义修改，定义，已修改，那这也是一种事件，对吧？那除此以外是不是还有什么产品已删除？这些都是一些常用的事件，我们可以把这个列在一起，大概就差不多的内容，对吧？增删改查，我们就竖着列的，这是一些事件。
+
+
+那除此以外小组也一样的，小组也可以，是不是删除也没有什么小组修改的说法，就把它删除好。那成员呢？成员有添加删除等等，大家都有类似的这个套路，我们把这几个都复制一下，快速的完成剩余的内容。
+
+
+好，那发布发布，除了创建以外，一样的也有什么删除的工作。好，那后面有大量的删除，我们这里跳过飞老师会在后面单独给他们补上这些删除的这个内容。那重点我们要看看除了删除以外，是不是有些东西会修改。比如说优先级。优先级可能之前是说我们的这个优先级很高，那就是高优先级的，所以它什么它的代价是很大，然后它的收获也很大。那现在发现它其实代价很大，收获很小。为什么？优先级是可以修改的，是吧？那故事点也是经常会有修改的，我们就可以把这种不同的状态的改变都写在这里。本来是要 5 个人天天完成的，现在我发现这个代价很大，但是收获很小。所以我去问了一下我们发现什么。我们还是简单起见，用两个人贴完成一个基本功能，然后就发布了，我们也不用完成很完整的功能了。那标签其实什么也是可以修改的，对吧？有很多可以已修改，然后也可以什么已删除的内容。
+
+
+好，我们这里暂停一下，然后我们直接会给大家看一看后面完成以后的样子。在整个过程当中，我们的架构师边跟我们的研发工程师，边跟我们的产品经理以及我们的业务负责人吹吹牛、打打屁，然后贴一些重复的标签，就基本上完成了大部分的事件。那其中有争议的事件，比如说是这样，产品经理说，嗯，小组跟成员我想是固定的，比如说我们这个领域的整个这个新项目领域，我们是有一套小组，然后其中有一两个负责人，其他大部分人其他就是普通成员。但是我们对每次一个任务发布的时候，我应该单独指定什么？指定他的负责人和他的协作人员？这个负责人也许是整个 team 或者小组的负责人，也许是一个普通成员。我要需要有这种灵活度，应该怎么设计？这时候我们就聊聊天，想想看。嗯，也许我们可以增加几个不同的这个世界，比如说我们在什么任务创建完了以后，我们可以什么？来一个叫做负责人以指派的任务负责人以指派。我们整个团队的负责人不一样，那团队的负责人可能是团队的研发经理，那任务负责人可能是其中的一个小兄弟。
+
+
+好，怎样道理？我们任务还有个什么？还有一个协作人，也可以把协作人给指派。好，你这个协作人是什么？协作人可以帮助我们完成大部分的一些什么底层的沟通准备的工作，那负责人可以指挥协作人，也可以安排一部分内容让协作人来帮助完成。比如子任务可以发布给协作人，然后主任务还是以负责人为主体。
+
+
+好，这是一些事件。然后我们再聊一聊，说什么。当一个任务被发布到我们的这个，被准备安排到我们的发布和安排到冲刺以后，其实经常有这个情况，我感觉我这个发布可能来不及发布这个功能了，或者我的代码来不及的冲刺没有完成，我可以从这个发布和这个什么，这个任务安排里面什么拿出来。这个任务还在，这个发布也在，我只是把他们的关联拿掉了。
+
+
+我应该叫什么？应该叫已取消。我们用什么？用产品和业务的术语来说，比如说产品经理认为我们平时都叫已取消，那我们就完全可以来一个任务发布已取消和任务冲刺，已取消，没有发布，已经没有冲刺好，那这两个弄完以后基本上主要的什么我们的事件就已经完成了，这又完成了事件风暴的第一步。在吹牛打屁和什么我们的产品经理和我们的业务负责人建立好良好关系的过程当中，就完成了世界风暴的第一步，那下一步我们就会进入什么？进入命令风暴章节，大家敬请期待。
+
+

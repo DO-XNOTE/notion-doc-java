@@ -1,0 +1,87 @@
+---
+title: 2-7【架构探讨】架构师不得不面对的问题，当开源项目停止更
+---
+
+# 2-7【架构探讨】架构师不得不面对的问题，当开源项目停止更
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b2b94ebe-ada2-4dea-bcf7-85f3e7b8a590/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PMW6MBH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225659Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID7X4e5aCJfu6RGKlJKrQdGiJYPp0zq6815iqZWozpxMAiBI2eS6wlZFZt0PvWtejHJpXB3zpAqkOGH9P5yu9deE8SqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMVjoX%2FcGb7v2hCVWKKtwDmb1MB6EsTn6gaz8ZXaDo8lnV0ACqU%2FR12Gq7%2FEcJ7X8m5fdBd65OVsH9hpVfZk1v1AQdk%2BfEhytJO6VK%2BprdlvNEFRvs9KsHsXzV1mnWJrvgTJrXfEVHBeNLH5uCwpyn3XhYZBdgfp3B46cDANx6V3ryh3XwAaQpMFytLdTfOmUV76C3kMLtWHQ42I67Hakfx9CdePnCHy%2BpMfF2htiJAAkZijoocYFhbx3PfCyBbMOp1OnkeXEv8ENHltekWtE6VLfJ%2Bsm7k3YlfoHC8boJFbKxsU1LQgCFTAJXAmiFYLWfBau%2F4LPnmlmPegC7j4lZhozB4hIaF%2BbKRDLhIbSwoscK%2BUfQgh1Txmh%2F9qWRHuWFHCpeYbpYGYA0G8HTnk4ggVrHTuN9BBii2daBwvnmL5sMS3sSFG227osTAPLJ0y%2BQ3HC6xU1KQ%2FbIP3ZJwRwP7YDzZwuAESGsOvecfphkJYDJJk3w5qSdWEIK%2BcGxZFY9t1MG2AGqxqJ8Zb2dE9DKB%2BPStL9IxJ4qLdRN3NVqsYNK6l63q1vC%2FSXT9kio7w0eGs95WKBOOClVbgCDiBFYzIG4ptAj2gToFccYkNg5F8L3vbIaHpw2y2qVNSsB1Nv3EFkoX4Dk5cdxL8Uwzrf%2F0gY6pgHqb4MedRo%2BEovlFSk9XXGqCz4PIwtE0ZTTWKXcwDUwoyoFUWA4T6YbLG8twj%2FyQErzMbJHy43glsJyRsCcMXw5b8kjbxNv0BhmMsQC36uQiURvKQE5sfnfkRBY3X4JwmulPzn3ONQa7CCci3BfryH8%2FSjXsTKRuIzoyiu%2Bv6mZO622cT2EJj%2FSXDNk2QE7PjORP6f1xRb%2FgObmGqbS7bkpW9UxLz0Y&X-Amz-Signature=f5138fb6592bd0f61dc375166d917118de007ce4b9a197fe95973adc556af3a0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f87842a4-7c6d-4bd4-a0ad-5a439bc6ac0b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PMW6MBH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225659Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID7X4e5aCJfu6RGKlJKrQdGiJYPp0zq6815iqZWozpxMAiBI2eS6wlZFZt0PvWtejHJpXB3zpAqkOGH9P5yu9deE8SqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMVjoX%2FcGb7v2hCVWKKtwDmb1MB6EsTn6gaz8ZXaDo8lnV0ACqU%2FR12Gq7%2FEcJ7X8m5fdBd65OVsH9hpVfZk1v1AQdk%2BfEhytJO6VK%2BprdlvNEFRvs9KsHsXzV1mnWJrvgTJrXfEVHBeNLH5uCwpyn3XhYZBdgfp3B46cDANx6V3ryh3XwAaQpMFytLdTfOmUV76C3kMLtWHQ42I67Hakfx9CdePnCHy%2BpMfF2htiJAAkZijoocYFhbx3PfCyBbMOp1OnkeXEv8ENHltekWtE6VLfJ%2Bsm7k3YlfoHC8boJFbKxsU1LQgCFTAJXAmiFYLWfBau%2F4LPnmlmPegC7j4lZhozB4hIaF%2BbKRDLhIbSwoscK%2BUfQgh1Txmh%2F9qWRHuWFHCpeYbpYGYA0G8HTnk4ggVrHTuN9BBii2daBwvnmL5sMS3sSFG227osTAPLJ0y%2BQ3HC6xU1KQ%2FbIP3ZJwRwP7YDzZwuAESGsOvecfphkJYDJJk3w5qSdWEIK%2BcGxZFY9t1MG2AGqxqJ8Zb2dE9DKB%2BPStL9IxJ4qLdRN3NVqsYNK6l63q1vC%2FSXT9kio7w0eGs95WKBOOClVbgCDiBFYzIG4ptAj2gToFccYkNg5F8L3vbIaHpw2y2qVNSsB1Nv3EFkoX4Dk5cdxL8Uwzrf%2F0gY6pgHqb4MedRo%2BEovlFSk9XXGqCz4PIwtE0ZTTWKXcwDUwoyoFUWA4T6YbLG8twj%2FyQErzMbJHy43glsJyRsCcMXw5b8kjbxNv0BhmMsQC36uQiURvKQE5sfnfkRBY3X4JwmulPzn3ONQa7CCci3BfryH8%2FSjXsTKRuIzoyiu%2Bv6mZO622cT2EJj%2FSXDNk2QE7PjORP6f1xRb%2FgObmGqbS7bkpW9UxLz0Y&X-Amz-Signature=f6f9bdf683449c6218aaf296a6a8da8eb4ea4d6eda6e1be24b3b1e6cebdc3308&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+2-7  【架构探讨】架构师不得不面对的问题，当开源项目停止更新
+
+前面一节我们将  Hystrix  集成到了项目中，这一小节，我们就来聊聊  Hystrix  的前途问题。
+
+当山峰没有棱角的时候
+
+当河水不再流
+
+当时间停住日夜不分
+
+当天地万物化为虚有
+
+当当当当当当当，生活里哪有这么多当？当开源项目停止更新怎么办？着急什么，我们先来细数一下那些年状况频出的开源项目：ReactJS 协议再起争端：2016年7月Facebook在ReactJS 开源许可协议中的附加专利条款，使用  ReactJS  的公司不能做构成与  Facebook 竞争的事情，引发广泛争议
+
+Java8 更新收费：Oracle Java8 的公开更新将不向没有商用许可证的业务、商用或生产用途提供 Netty5 被废弃：2015  年  11 月份，Netty5  主干分支被删除。使用ForkJoinPool 增加了复杂性，并且没有显示出明显的性能优势。同时保持所有
+
+的分支同步是相当多的工作，没有必要Hystrix 休眠：2018  年  11  月份，Netflix 公司宣布  Hystrix 将从  active development 阶段转入维护模式，从全面进攻转为战略防御阶段我滴个神额，憋说了大兄  die，你就直接说怎么办吧！
+
+- Hysrix 为何断更？
+官方正史：最后的一个  Release  版本  v1.5.18  已经足够的稳定，足以满足  Netflix  现有系统的需要。官宣详见  [https://github.com/Netflix/Hystrix](https://github.com/Netflix/Hystrix)半仙野史：Hystrix  写的太复杂了，接手的人维护不下去了（摊手）
+
+- 技术选型的几个维度
+在 Eureka 的章节我们探讨过 Eureka 2.0 开源计划搁置对我们技术选型的影响，那么这次我们从更 high-level 的角度，谈一谈在已经上线的项目中碰到开源组件断更的情况该怎么办
+
+- 昨天，今天和明天
+我们要正确评估一个开源项目断更的影响，不妨想想它的昨天今天和明天
+
+昨天：有的时候即便官方项目停止更新，但在开源协议的开放性下，有的活跃社区甚至会创建分支来开发社区版本。我们可以参考项目原先的孵化路径，开源机构的支撑力度（比如是否 Apache 孵化器），社区力量（开源社区活跃度），重点是从这些过去的项目发展路程里，评估未来可以从开源社区获取的支持程度
+
+今天：对当前的业务支持程度，现有组件是否可以支撑当前业务运行。有哪些目前掣肘业务的问题，这些问题是否有可替代的开源方案，替代后给当前项目带来的收益是什么，这部分收益是否大于替换组件的成本
+
+明天：估算业务增量（比如一年后每日交易单数，或者日均访问请求数等），判断当前组件是否可以支撑起未来业务量。评估未来 1-2 年的业务规模，建议根据预估值乘以 2 或者一个合理的系数，来保证系统架构有足够的设计余量（避免出现业务爆发，冲破架构设计所能支撑的业务量上限）。在这个预估的业务量级下，评估组件的指标：
+
+性能：是否在业务增量下仍然可以满足性能要求场景能力：当前组件的功能是否能够满足未来业务的新场景稳定性：评估系统可用性和负载压力的关系，若是线性相关，需要评估业务增量下系统可用性是否达到公司要求（很多公司在核心系统上要求 99.9%
+
+以上的可用性，也就是说，全年宕机时间小于 9 个小时）性能和稳定性可以借助压测来获取准确数值，系统评估不能只靠猜，也要通过压测等手段获得准确的量化数据。经过以上量化标准，你可以做出一个心理预估：
+
+更换技术栈的紧急程度当前技术栈在多少业务量范围内可以稳定支撑系统运行对待更换技术组件这个问题，我们不要为了更换而更换，如果说不出来新技术对当前项目可见的利益，单纯只是因为新技术更“新”，那么就不要轻易做替换的决定。
+
+- 外部依赖
+评估系统对上下游业务的依赖和被依赖的程度。对  Hystrix  来说情况还好，毕竟这是一个存在于“客户端”的限流控件。假如我们在考虑替换一个在上下游系统都有广泛使用的组件，比如  Eureka，我们就不得不考虑更多的问题上下游系统的对接：更换组件对上下游系统的影响，是否需要同步更换
+
+中间件的依赖：通常来说，业务层要和底层组件隔离。就拿消息组件来说，不管你使用的是  ActiveMQ 还是  RabbitMQ，对业务代码应该是无感知的，这样在替换底层组件的时候不需要引入业务层的变动，能显著降低替换成本。但对于Eureka  这样无法做“隔离”的中间件，替换成本非常巨大。
+
+早些年有很多公司选择使用了重量级商用产品，而且广泛在上下游系统中应用开来。到如今，这类早年间国际巨头开发的商用产品已经颓势尽显，不管在性能和维护成本上都不如直接使用开源项目来的划算。对这些使用了此类产品的公司来说，除非下了壮士断腕的勇气，否则绝不可能从这些又笨又重的组件上迁移下来。因为上下游的依赖太深了，牵一发而动全身。
+
+老师目前的公司就深受其害，因为使用了  IBM  的  ILog  组件做决策树，说多了都是泪。这也反过来说明了一个问题，设计系统的时候一定要把业务层和底层基础组件隔离开来，就像 SpringCloud 中的 Stream 组件一样，业务代码不用关心后台的中间件是什么，Stream作为适配层已经屏蔽了底层组件，这样一来即便打算更换底层组件，只要搞定了数据迁移方案，对业务系统的影响就是可控的。
+
+- 未雨绸缪
+不能押宝在一处，积极关注活跃的开源项目，做好技术储备，对技术的替代方案也做到心中有数。
+
+替换成本：对替换组件来说，有这么几个需要考虑的成本项，团队学习成本，运维成本，迁移成本（数据迁移等）。很多同学以为团队学习成本不是一个很大的考量点，非也，打个比方，如果做前端项目是使用 UI5  还是  ReactJS？想必
+
+ReactJS 的学习成本和目前的从业程序员基数是处于绝对优势的。除非很专业的特殊领域，否则尽量不要去选择小众技术，不然招人都可能是个问题 POC：Proof  of  Concept，即概念验证。适当考虑将备选技术方案应用到新项目中。基于微服务架构的项目，特别适合做技术替换，因为每个服务相对独立。
+
+打个比方，你可以在商品服务中使用 Hystrix，在订单服务中使用  Sentinel
+
+- 替代方案
+总的来说，Hystrix  作为一款开发  6  年之久的组件，可以满足绝大多数项目在服务容错领域的需求。如果你喜欢追逐新技术，也可以关注另外两个  Hystrix  的可替代方案：
+
+Resilience4j：它是 Hystrix 的小迷弟，是受 Hystrix 设计理念启发，但面向Java8 和函数式编程理念的服务容错组件。它是功能完备，使用起来也很的轻巧的框架，甚至 Hystrix 的 Github 主页也表达了观点：Netflix 在新的内部系统中尝试使用 Resilience4j
+
+Sentinel：它是 SpringCloud-Alibaba 组件库的成员，除了降级熔断以外，还提供了强大的限流功能（比如基于调用量，调用链路关系的限流）和流量整形功能（相当于流量缓冲，主动调整流量速率的功能），在后面将安排一个完整章节讲解 Sentinel 的限流功能
+
+小结
+
+今天我们探讨了开源项目断更的情况下，技术选型的几个需要考量的方面。下一小节，我们看看  Hystrix  都有哪些替代方案。
+
+学习 Tips：从我个人的使用感受来说，真正牛掰的组件还是来自于各大互联网公司自己的中间件团队。就拿阿里来说，集团内部的中间件随便拿出一个都是可以独步武林的存在，可惜大部分都是“敝帚自珍”，并没有开源计划。老师希望同学们一定要去互联网公司体验一番，确实可以打开眼界。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bfce8ffa-6f7b-46ce-b407-50d7fb7b5ea6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PMW6MBH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225659Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID7X4e5aCJfu6RGKlJKrQdGiJYPp0zq6815iqZWozpxMAiBI2eS6wlZFZt0PvWtejHJpXB3zpAqkOGH9P5yu9deE8SqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMVjoX%2FcGb7v2hCVWKKtwDmb1MB6EsTn6gaz8ZXaDo8lnV0ACqU%2FR12Gq7%2FEcJ7X8m5fdBd65OVsH9hpVfZk1v1AQdk%2BfEhytJO6VK%2BprdlvNEFRvs9KsHsXzV1mnWJrvgTJrXfEVHBeNLH5uCwpyn3XhYZBdgfp3B46cDANx6V3ryh3XwAaQpMFytLdTfOmUV76C3kMLtWHQ42I67Hakfx9CdePnCHy%2BpMfF2htiJAAkZijoocYFhbx3PfCyBbMOp1OnkeXEv8ENHltekWtE6VLfJ%2Bsm7k3YlfoHC8boJFbKxsU1LQgCFTAJXAmiFYLWfBau%2F4LPnmlmPegC7j4lZhozB4hIaF%2BbKRDLhIbSwoscK%2BUfQgh1Txmh%2F9qWRHuWFHCpeYbpYGYA0G8HTnk4ggVrHTuN9BBii2daBwvnmL5sMS3sSFG227osTAPLJ0y%2BQ3HC6xU1KQ%2FbIP3ZJwRwP7YDzZwuAESGsOvecfphkJYDJJk3w5qSdWEIK%2BcGxZFY9t1MG2AGqxqJ8Zb2dE9DKB%2BPStL9IxJ4qLdRN3NVqsYNK6l63q1vC%2FSXT9kio7w0eGs95WKBOOClVbgCDiBFYzIG4ptAj2gToFccYkNg5F8L3vbIaHpw2y2qVNSsB1Nv3EFkoX4Dk5cdxL8Uwzrf%2F0gY6pgHqb4MedRo%2BEovlFSk9XXGqCz4PIwtE0ZTTWKXcwDUwoyoFUWA4T6YbLG8twj%2FyQErzMbJHy43glsJyRsCcMXw5b8kjbxNv0BhmMsQC36uQiURvKQE5sfnfkRBY3X4JwmulPzn3ONQa7CCci3BfryH8%2FSjXsTKRuIzoyiu%2Bv6mZO622cT2EJj%2FSXDNk2QE7PjORP6f1xRb%2FgObmGqbS7bkpW9UxLz0Y&X-Amz-Signature=45220559e327381443d2f363b475825aef901dd15a109fd0f0c0c9fdcd0a7ef2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7f34b9dc-fd45-4255-957f-e5766d702d36/2020-09-17_055023.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663PMW6MBH%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225659Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCID7X4e5aCJfu6RGKlJKrQdGiJYPp0zq6815iqZWozpxMAiBI2eS6wlZFZt0PvWtejHJpXB3zpAqkOGH9P5yu9deE8SqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMVjoX%2FcGb7v2hCVWKKtwDmb1MB6EsTn6gaz8ZXaDo8lnV0ACqU%2FR12Gq7%2FEcJ7X8m5fdBd65OVsH9hpVfZk1v1AQdk%2BfEhytJO6VK%2BprdlvNEFRvs9KsHsXzV1mnWJrvgTJrXfEVHBeNLH5uCwpyn3XhYZBdgfp3B46cDANx6V3ryh3XwAaQpMFytLdTfOmUV76C3kMLtWHQ42I67Hakfx9CdePnCHy%2BpMfF2htiJAAkZijoocYFhbx3PfCyBbMOp1OnkeXEv8ENHltekWtE6VLfJ%2Bsm7k3YlfoHC8boJFbKxsU1LQgCFTAJXAmiFYLWfBau%2F4LPnmlmPegC7j4lZhozB4hIaF%2BbKRDLhIbSwoscK%2BUfQgh1Txmh%2F9qWRHuWFHCpeYbpYGYA0G8HTnk4ggVrHTuN9BBii2daBwvnmL5sMS3sSFG227osTAPLJ0y%2BQ3HC6xU1KQ%2FbIP3ZJwRwP7YDzZwuAESGsOvecfphkJYDJJk3w5qSdWEIK%2BcGxZFY9t1MG2AGqxqJ8Zb2dE9DKB%2BPStL9IxJ4qLdRN3NVqsYNK6l63q1vC%2FSXT9kio7w0eGs95WKBOOClVbgCDiBFYzIG4ptAj2gToFccYkNg5F8L3vbIaHpw2y2qVNSsB1Nv3EFkoX4Dk5cdxL8Uwzrf%2F0gY6pgHqb4MedRo%2BEovlFSk9XXGqCz4PIwtE0ZTTWKXcwDUwoyoFUWA4T6YbLG8twj%2FyQErzMbJHy43glsJyRsCcMXw5b8kjbxNv0BhmMsQC36uQiURvKQE5sfnfkRBY3X4JwmulPzn3ONQa7CCci3BfryH8%2FSjXsTKRuIzoyiu%2Bv6mZO622cT2EJj%2FSXDNk2QE7PjORP6f1xRb%2FgObmGqbS7bkpW9UxLz0Y&X-Amz-Signature=aeb9c6feec62ce46a11fa9bbd17018b5af6acc7c9f3b361576ff19f01dff85d3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+

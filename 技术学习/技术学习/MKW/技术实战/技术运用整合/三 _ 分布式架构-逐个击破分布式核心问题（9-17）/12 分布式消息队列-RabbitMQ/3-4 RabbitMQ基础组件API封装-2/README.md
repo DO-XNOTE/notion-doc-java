@@ -1,0 +1,37 @@
+---
+title: 3-4 RabbitMQ基础组件API封装-2
+---
+
+# 3-4 RabbitMQ基础组件API封装-2
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3fc2bfd1-1b99-4b62-85f6-78d6d7d1484a/SCR-20240806-omjk.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UEYTV6YL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225259Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCD4cRslDAQyaX9zSiTDW9dY%2BCIrw6aygMR%2BS0NkZBQjAIhANSeN%2FnU7PfCx5WajVHQlv179OQFHZFmpPz8DQ6k8dd6KogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igy9J%2BKnc9ZuhcmEI54q3AMiZzzgP8mTyR%2Bf3KueI2KzfmLW0rUmDle0xLimLHTc%2Bv4718CIoGcKSQ3yLsby%2BvUJIgVY8FvIcvvZzTxC%2BbwlEZnsrA6A2B3JenEuryBlpqmVKQ52Zu1pzzh%2BVJiMbKvD0JD6%2FdFgTvjmlLd%2Fsht%2Bkr48plF3Y6oK7EXDbSo6s%2FiUXyeRKF1ZCAwbiUZpQY5zR1HM8JzLm5u%2BC5LsKtcSJC%2BqlnaFQlTNeIepzIwRzPRRyyOt%2FQzbbOHK894XLbfY2mJDdqlmU%2F44zGKBF4TNrlBf1xO7hDEJjEm%2FgXxIufsAKfmaa8ymhHqfHwBXqJXGF84N%2FQuowG6fbumkGGDhnWXvn60dwXzJzAxkzMBXX5EOBP%2Bzdc9dBB0XEorvrl5evme5ZdArmqyPOvDyP1cf%2BKFT8tjaai2aC1O1uazuAEXj6qoVJjHrGONukfF08oaOfuaGuGUZEazrAbpJH37G8LRUkxfzdD%2FcJxqp9oQvk8EoydzJuMiQg0Jnf7BBV9AGP2cryjyRQL8LKghUVhWVVGmjvNYn1RL6%2F3PHYz0zaviKvWGvogHQuJ%2BFgdCgCseJcW%2FuPAIoZGBp0TljwGW%2BGJACrkZWAtYbpiZtNxFi3jF9dEs5VZgNcOkgtjC%2Fu%2F%2FSBjqkAXztX4gwcfwqc8n5FURHGea0JjLgrpMITqqKKWjSQEUnfuLsWi9tlCnlCahJQFF3cjorabAE0LGTDJ92LfJR4ciWB7qBWLEkpH85er0lUFcLYd2HPjTOsMz8Ll4GAieVfb%2B%2F%2BK4z%2BIMtmpMk6zWiGcHrpljQMxsQTm5DMZc1MH2IvbmVXdEuJBqs%2FwdJGaDgpNxh0oaKIzbx71CAAX8%2FohOegD1a&X-Amz-Signature=4e9ba37f041f32762c18aef6cb5126694fb702e3f8b7290411fc8a48586f1bbd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5b8a165c-7c2f-459b-82b0-7b9b5509ae8c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UEYTV6YL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225259Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCD4cRslDAQyaX9zSiTDW9dY%2BCIrw6aygMR%2BS0NkZBQjAIhANSeN%2FnU7PfCx5WajVHQlv179OQFHZFmpPz8DQ6k8dd6KogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igy9J%2BKnc9ZuhcmEI54q3AMiZzzgP8mTyR%2Bf3KueI2KzfmLW0rUmDle0xLimLHTc%2Bv4718CIoGcKSQ3yLsby%2BvUJIgVY8FvIcvvZzTxC%2BbwlEZnsrA6A2B3JenEuryBlpqmVKQ52Zu1pzzh%2BVJiMbKvD0JD6%2FdFgTvjmlLd%2Fsht%2Bkr48plF3Y6oK7EXDbSo6s%2FiUXyeRKF1ZCAwbiUZpQY5zR1HM8JzLm5u%2BC5LsKtcSJC%2BqlnaFQlTNeIepzIwRzPRRyyOt%2FQzbbOHK894XLbfY2mJDdqlmU%2F44zGKBF4TNrlBf1xO7hDEJjEm%2FgXxIufsAKfmaa8ymhHqfHwBXqJXGF84N%2FQuowG6fbumkGGDhnWXvn60dwXzJzAxkzMBXX5EOBP%2Bzdc9dBB0XEorvrl5evme5ZdArmqyPOvDyP1cf%2BKFT8tjaai2aC1O1uazuAEXj6qoVJjHrGONukfF08oaOfuaGuGUZEazrAbpJH37G8LRUkxfzdD%2FcJxqp9oQvk8EoydzJuMiQg0Jnf7BBV9AGP2cryjyRQL8LKghUVhWVVGmjvNYn1RL6%2F3PHYz0zaviKvWGvogHQuJ%2BFgdCgCseJcW%2FuPAIoZGBp0TljwGW%2BGJACrkZWAtYbpiZtNxFi3jF9dEs5VZgNcOkgtjC%2Fu%2F%2FSBjqkAXztX4gwcfwqc8n5FURHGea0JjLgrpMITqqKKWjSQEUnfuLsWi9tlCnlCahJQFF3cjorabAE0LGTDJ92LfJR4ciWB7qBWLEkpH85er0lUFcLYd2HPjTOsMz8Ll4GAieVfb%2B%2F%2BK4z%2BIMtmpMk6zWiGcHrpljQMxsQTm5DMZc1MH2IvbmVXdEuJBqs%2FwdJGaDgpNxh0oaKIzbx71CAAX8%2FohOegD1a&X-Amz-Signature=7ecfa04b7b749c4e86aeae41f55a5592a91ae749fa45b14f35cac0ff3582a0f6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么接下来我们继续开始来讲解这个 rapid API，就是说我们现在已经把 message 以及 message builder 和 message type 这三个比较关键的类定义好。那接下来我们其实要定义什么呢？比如说我们的生产者要发送什么消息，以及我们的消费者消费什么样的消息。那我单独把它拆开来，不是因为它的内容多，而是因为它比较重要。所以说在这里我们先创建一个interface，比如说这个 message ladder producer， message producer，然后接下来还会有什么呀？我们先都创建出来。当然在这里我们的课程主要是针对于生产者进行工作，对于消费者其实也可以有这个课下可以留做作业给大家一个思路。
+
+
+比如说我有一个 listen 叫做 message，OK，那我们先看一看这个生产者要做哪些事情？首先生产者要做的事情就是发消息嘛，所以说其实无外乎我提供的接口就很简单，比如说我们返回值就是 y 的，咱们叫 send message，这个 message 就是我们自己定义的这个类，然后我们就throws，咱们叫做message。
+
+
+刚才我说了，我们创建生产者 new message 之后，可能会出现这个 runtime exception，对吧？就把它去往出抛一下，然后还有比如说批量发送，对不对？一个list，然后呢？message，然后 throws 我们的message， runtime exception 可以了。
+
+
+好了，其他的，比如说有些情况下可能我们需要回调函数去处理这个回调函数，比如说我们发异步消息的时候是不是需要做一个处理？所以说我们可以定一个类，咱们叫做 send call back，或者是 send future，或者是什么都可以，无所谓，我们叫做 send future，或者是 send call back。
+
+OK， send call back。
+
+
+我们比如说成功的时候 on success，不是，然后失败的时候返回什么啊？ seller 可以吧？好了，我们先这么去定义这两个接口，当然这两个接口里边可能也会有一些参数，这个我们后面再说。总之我们可能需要这个 send call back，那其实对于父类来讲是不是应该多一个方法？这里边来一个参数，比如说就是我们的 send call back 对象就是我们可以干什么？我们可以传一个回调函数，回忆调回来我们自己的业务逻辑，我们可以用这个 call back 去封装，然后在这里消息的异步发送，当然是 send 方法，然后这个其实这个我其实它不一定说叫消息的应用发送，就消息的发送，然后附带 hover 回调执行相应的业务逻辑处理，那这个也是消息的发送就完了。然后这个是消息的批量发送，对吧？批量发送。
+
+
+好，这可以了，我们先定义这三个接口，就是很多时候你自己除非说已经胸冷成竹了，就自己知道写什么了。如果当你刚开始设计写 API 的时候，你先尝试去加几个方法，不用加那么多，后面慢慢再完善。OK，好了，那我们 listen 了，那其实 listen 就很简单了，比如说我们来一个方法叫 on message，然后只是比如说，在这里我举个例子，返回值可能暂时我们不确定是什么，但是无所谓了，我们先给它 y 了，然后到最后的时候我们再去确定就好了。
+
+
+好，就这么一个方法，这个就用来，是吧？消费者监听是不是？消费者品类监听消息，OK，搞定。那基本上来讲我们大体上的 API 就到这里，这里就是回调函数了，是不是回调函数处理就是相当于我们的子类，我们必须要写一个子类，要实现它对不对？起码要实现 call back，然后重写这个 on message 和 on l 这两个方法里边具体部分参数我们后面再说。
+
+
+OK，那这个其实就是最基础的API，我们能想到的，暂时能够想到的，那这样的话基本上我们上层 API 也就封装好了，那上层 API 封装好了之后，那下面是不是就是具体的底层如何去实现了？那么这节课我们就先讲到这，希望小伙伴们对于这个 listen 以及这个 mess y 的具体为什么我会这么去想，为什么我要这么去设计？其实大家应该好好思考一下，看看如果你去做，你是不是也是按照老师这个思路。其实我们封装技术组件是想带给大家一个思路，就是说怎么样代码从一行从 0 到 1 一点点去实现的，对吧？那我相信你们自己应该有一个思考过程。好了，这节课就到这。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/763a604b-4d30-4895-8d72-76abbf66555b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UEYTV6YL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225259Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCD4cRslDAQyaX9zSiTDW9dY%2BCIrw6aygMR%2BS0NkZBQjAIhANSeN%2FnU7PfCx5WajVHQlv179OQFHZFmpPz8DQ6k8dd6KogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igy9J%2BKnc9ZuhcmEI54q3AMiZzzgP8mTyR%2Bf3KueI2KzfmLW0rUmDle0xLimLHTc%2Bv4718CIoGcKSQ3yLsby%2BvUJIgVY8FvIcvvZzTxC%2BbwlEZnsrA6A2B3JenEuryBlpqmVKQ52Zu1pzzh%2BVJiMbKvD0JD6%2FdFgTvjmlLd%2Fsht%2Bkr48plF3Y6oK7EXDbSo6s%2FiUXyeRKF1ZCAwbiUZpQY5zR1HM8JzLm5u%2BC5LsKtcSJC%2BqlnaFQlTNeIepzIwRzPRRyyOt%2FQzbbOHK894XLbfY2mJDdqlmU%2F44zGKBF4TNrlBf1xO7hDEJjEm%2FgXxIufsAKfmaa8ymhHqfHwBXqJXGF84N%2FQuowG6fbumkGGDhnWXvn60dwXzJzAxkzMBXX5EOBP%2Bzdc9dBB0XEorvrl5evme5ZdArmqyPOvDyP1cf%2BKFT8tjaai2aC1O1uazuAEXj6qoVJjHrGONukfF08oaOfuaGuGUZEazrAbpJH37G8LRUkxfzdD%2FcJxqp9oQvk8EoydzJuMiQg0Jnf7BBV9AGP2cryjyRQL8LKghUVhWVVGmjvNYn1RL6%2F3PHYz0zaviKvWGvogHQuJ%2BFgdCgCseJcW%2FuPAIoZGBp0TljwGW%2BGJACrkZWAtYbpiZtNxFi3jF9dEs5VZgNcOkgtjC%2Fu%2F%2FSBjqkAXztX4gwcfwqc8n5FURHGea0JjLgrpMITqqKKWjSQEUnfuLsWi9tlCnlCahJQFF3cjorabAE0LGTDJ92LfJR4ciWB7qBWLEkpH85er0lUFcLYd2HPjTOsMz8Ll4GAieVfb%2B%2F%2BK4z%2BIMtmpMk6zWiGcHrpljQMxsQTm5DMZc1MH2IvbmVXdEuJBqs%2FwdJGaDgpNxh0oaKIzbx71CAAX8%2FohOegD1a&X-Amz-Signature=f46ade1e9229360ce1598bcf395bf6cdd79ad172f187283b106224f5ad28a465&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

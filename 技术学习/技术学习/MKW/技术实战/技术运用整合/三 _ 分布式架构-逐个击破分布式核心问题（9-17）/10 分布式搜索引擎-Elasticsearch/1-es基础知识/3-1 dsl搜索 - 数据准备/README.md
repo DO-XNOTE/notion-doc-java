@@ -1,0 +1,42 @@
+---
+title: 3-1 dsl搜索 - 数据准备
+---
+
+# 3-1 dsl搜索 - 数据准备
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/26bf5c44-00bb-4d5e-b5b4-c8e2fa554672/SCR-20240806-cxsf.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TA4WAQGM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225136Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDod1NEwYrDVQm2Y92JIHDZ71qhr1UXdoKuVq%2BHd7Q%2FJAIhALlSU8uzxG9HaOQsQqLWhPKNLklJIQ25yYAhthK%2FHzFYKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxcAaRv%2BX%2FquuzMx%2FEq3ANkS3ZONsQA%2F45mWxUha5PrlYgH81WoCjTzJKCWQtpJ2%2FjGj1HszxRKV0EGhmOsounHDIDJHnnbvti%2BZekcJh5eql1s7zQsEsFyidYduDp7sztj3YDcqXxf7dxfLwo9Dk2qefRW9hhPvL93w2lLrj1fsWiOCyvuAijTEp4%2FHdjIcJuuE%2Fk%2BjCvgeGe0kTh8Z7z2FFM3MgMpcmZwhUMkk6niiA20XA5MLlIUVkOplnuGiX5ONKK%2BGiKxg1r%2FTD96ziql2f1PQLtZdSkwPo5zqauVcyHG3FGkzmJg%2Fho3VZhtEEVLH8o8l5akJvFlWYJbLYm1EYnFmd4bb9tsBqml54i7Ld4EmNJogyGRN9L88UUbxDL3CJFJgDMttsdWRMEC7Pms3RbmsPsk3NemCjTI8cmPkaOCKf2YkXDrjSIpmN1TTDeiD8tjYL0kFIlNxFiXudI4vZwmvVuTtSf1DiWAsYsNrhpkVehluQpl%2BrCfWA4s61HdVbtBybtiI4stzuWQS2GAszz5lNKockcN%2F%2FeANUWZlmedKierLwQOsge3aKQ0d4wHvtjnfVGOOcIbqY33UxD08siOxKQsWj6KYIskHM09uCqE43AFv7HAGuEXH3myPukRBRHQVVJhoF%2BU%2FTDzuv%2FSBjqkAbJdijipqc7y9yWqWEZCDBz8%2ByOG7neygINagnmVuIWqyeVJohMRU9Wx52juGYMgq6pumBnb%2B6%2BdXkK1Wff92yOkdKPUkrv0wAaTb8neOPpttJHh%2BpiOOhUGkNyBtZ5988mqV6XpJSpVqRJIFH48HrqYJPH%2BSYZefqroOH0HrhSGmhk7CU8Y8VVERWgf3nBofdtmWbDb0TAFPY40Ec3ISZZzjfoE&X-Amz-Signature=c9239c9b7d251746b9a3ccf6cbf4c96995dce89dabf1f7c46428329300e5e92c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/00f67aab-4415-46f3-a9d7-5b9553fab6b5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TA4WAQGM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225136Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDod1NEwYrDVQm2Y92JIHDZ71qhr1UXdoKuVq%2BHd7Q%2FJAIhALlSU8uzxG9HaOQsQqLWhPKNLklJIQ25yYAhthK%2FHzFYKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxcAaRv%2BX%2FquuzMx%2FEq3ANkS3ZONsQA%2F45mWxUha5PrlYgH81WoCjTzJKCWQtpJ2%2FjGj1HszxRKV0EGhmOsounHDIDJHnnbvti%2BZekcJh5eql1s7zQsEsFyidYduDp7sztj3YDcqXxf7dxfLwo9Dk2qefRW9hhPvL93w2lLrj1fsWiOCyvuAijTEp4%2FHdjIcJuuE%2Fk%2BjCvgeGe0kTh8Z7z2FFM3MgMpcmZwhUMkk6niiA20XA5MLlIUVkOplnuGiX5ONKK%2BGiKxg1r%2FTD96ziql2f1PQLtZdSkwPo5zqauVcyHG3FGkzmJg%2Fho3VZhtEEVLH8o8l5akJvFlWYJbLYm1EYnFmd4bb9tsBqml54i7Ld4EmNJogyGRN9L88UUbxDL3CJFJgDMttsdWRMEC7Pms3RbmsPsk3NemCjTI8cmPkaOCKf2YkXDrjSIpmN1TTDeiD8tjYL0kFIlNxFiXudI4vZwmvVuTtSf1DiWAsYsNrhpkVehluQpl%2BrCfWA4s61HdVbtBybtiI4stzuWQS2GAszz5lNKockcN%2F%2FeANUWZlmedKierLwQOsge3aKQ0d4wHvtjnfVGOOcIbqY33UxD08siOxKQsWj6KYIskHM09uCqE43AFv7HAGuEXH3myPukRBRHQVVJhoF%2BU%2FTDzuv%2FSBjqkAbJdijipqc7y9yWqWEZCDBz8%2ByOG7neygINagnmVuIWqyeVJohMRU9Wx52juGYMgq6pumBnb%2B6%2BdXkK1Wff92yOkdKPUkrv0wAaTb8neOPpttJHh%2BpiOOhUGkNyBtZ5988mqV6XpJSpVqRJIFH48HrqYJPH%2BSYZefqroOH0HrhSGmhk7CU8Y8VVERWgf3nBofdtmWbDb0TAFPY40Ec3ISZZzjfoE&X-Amz-Signature=60aa19ed804828160ce5eb8265f2e664c927cdf2bb28a9d40554077cb9bed51c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+节课我们是针对我们索引库中的一些文档数据做了一些基本的增删改查。对于我们 ST 社区来讲的话，那么它重要最主要的一个这个搜索部门。所以我们接下来就会基于搜索做一个详细的讲解。这个搜索的话就是我们主要会讲解它的 esl 的一个搜索。那么我们先这样子，我们先来准备一下我们的基础的一个环境，我们会建立一个新的索引库，以及是创建一些相应的数据作为我们的一个测试数据。
+
+
+那么首先我们还是需要去把咱们的一个自定义的词库去做一个扩展。那么我是这样子去做扩展的，先是进入到咱们的一个 IK 肯定的这个目录，然后需要去修改一下这个 custom dictionary 这个文件。那么在这里面我是增加了这些词汇，就是说慕课课网慕课网这些都是做了一个单独的一个自定义的词库，这样子用户再去进行搜索的话，只要是输入其中的一个或者两个词，就会把我们慕课网都给搜出来。Ok 。好，随后我们就可以去创建一下我们的一个索引，打开 head 插件，然后我们到索引里面去创建一下。比如在这边我来创建一个叫做 shop 然后分片的话 3 片点击。 OK 好 OK 可以看到我们这个 shop 就已经是有了。说一下这个 shop 这个名字大家根据自己的一个情况去定，在这边我们只是举一个这样的例子，随后我们就要为他去建立一个 mapping 也就是它的一个映射。那么这个映射打开我们的 postman 把这个地址给敲一下。然后我们把它的这个索引的名称给加上是 shop 之后我们要去建立预设，也就是 mapping 这个我们放大一下，这个其实也是可以去修改的，把这个旁边的侧边栏去掉。OK ，那么就这样子。好，那么我们要去创建一个相应的它的 shop 基于索引的一个映射。那么在这里你是需要去使用 post 然后我们 body 使用这个杰森，关于这里面的内容其实我也已经是预先的准备好了。那么把这一段内容我直接给拷贝过来，在这边我们一起看一下。
+
+
+那么首先我们有这个 ID 然后这个 ID 它是一个浪的，随后是一个 H 那么 H 它是一个硬词类型。随后我们的一个 user name 以及是 nickname 那么在这里 user name 使是 Q word nickname 使是一个 text 这个我们之前其实有做过说明，使用 text 所以说当我们增加一个文档数据的时候，那么它会把这个 make 里面的一个内容去做一个分词，做一个倒排索引。如果说我们使用这个 Q2 的，那么他是不会去做这样的一个倒排所有的事的，也就是说他不会去做分词。那么这一块内容我们一会儿会做一个测试。后面涉及到我们会针对这个 text 以及是 Q 的做一个测试，来看一下他们的搜索情况。
+
+
+随后我们会有一个 money 它是一个 float 另外还有是一个简介 description 这个 description 的话其实也是一个 text 会去做一个大盘索引。另外我们的 sex birthday 也都有，分别是 bat 以及是这个 date 类型。
+
+
+那么最后一个是一个face ，就是说对于我们一些用户来讲或者说是一些商品来讲，它都会有一些图片的。那么图片在这里我们使用这个文本在这边我们就不去对它做任何的一个索引，因为这个东西其实它本身是一连串的强串的一个 URL 地址，我们是不会去基于这个 face 基于图像去做一个这样的索引做搜索。所以这个我们直接 index 设置为 false 就可以了。那么其他所有的一些旧的这些属性的话，那么他们的一个 index 其实默认的话都是 true OK 。
+
+
+好，那么这就是我们属性的一些内容，随后我们点击 send 我们这个视图还是可以修改一下，这样子分为两边。好，那么这样子的话我们创建成功到我们的黑道里面去刷新一下，需要把来看一下信息索引信息，然后对应的这个 mapping 里面这些内容其实全部都 OK 了。好，那么这个索引以及是它的一个 mapping 我们都有了之后，那么接下来我们就可以去录入一些相应的数据。对于数据来讲的话，数据我也是预先的提供了，所以我在这里也是做一个复制，把一些数据快速的给复制进去。那么在这边要去做一个数据的录入，这边是下划线 Doc 再来一个1001，这就是我们的一些数据拷贝一下，总共我是准备了 10 来条数据，这是第一条的一个数据，线的保存一下。
+
+
+好，OK随后我们再来第二条，这边要是改成 1602 点击线的，随后再是第三条远极限的。 OK 然后第四条随后再是第五条再来一个第六条，随后第七这个上节应该是做了一个更新，我们这个没有改，我们重新把这个数据修改一下，随后在这里改成 1007 做一个新增。好。然后再是我们的第 8 条，也就是1008。好，OK再是1009。然后第我们的第 10 条数据1010，然后我们再准备一个第 11 条数据。
+
+
+好。 OK 那么目前我们其实总共是新增加了 11 条数据。那么为什么我们新增加 11 条主要是会演示一下它的一个分页，就是说 ES 的话它默认分页其实是 10 条，比如说超过 10 条的话它就只显示 10 条，这是默认的，当然我们也是可以自己去设置的。那么这个我们再讲到后面的分页的话我们会去说的。
+
+
+然后我们再来一个第十二条，这个第十二条的话里面总共全部都是一些英文的内容。点击 send 好，OK那么我们在这里的话总共就以这 12 条数据作为我们的一个数据的浏览。可以来看一下。在我们的 shop 下面总共是有 12 条记录的一个命中，总共是有这些数据，所以这些数据的话都会作为我们的后续的一个测试。注意如果说我们的文档数据它的一个列比较多的话，那么你是可以在这个下方其实你是有一个滚动条可以左滑和右滑。那么如果说你是 map S 的一个操作系统，你可以使用你的一个 X pad 直接可以左滑右滑，也是可以把你相应的内容是可以去看到的。那么在这个后方全部都会有。当然如果说你单个点击也是可以把它的整个数据都可以去显示的。Ok 。好 OK 那么这样子的话我们基本的一些数据我们都已经是准备好了这些数据的话，那么大家可以根据自己的一个需求，自己的一个情况去进行构建，或者你也可以直接使用老师准备的一些数据也可以。那么这些数据的话我们会通过一个文档提供给大家去使用。
+
+
+那么在这里面其实也是可以来看一下这个整个就是我们的一个 G sl 搜索的一些数据，前期的一个准备建立它的一个 mapping S 这些都有另外录入的数据在这边我也和我这边是一样的，总共是录入了有1002，总共是有 12 条数据。那么大家可以根据自己的情况，把这些数据去做一个添加，然后再去根据我们的步骤往后续去做一个学习，其实也全都是OK ，也都是可以的
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c3a62f80-93ec-4a5d-8373-2db79d3e1399/2020-09-17_174724.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TA4WAQGM%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225136Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDod1NEwYrDVQm2Y92JIHDZ71qhr1UXdoKuVq%2BHd7Q%2FJAIhALlSU8uzxG9HaOQsQqLWhPKNLklJIQ25yYAhthK%2FHzFYKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxcAaRv%2BX%2FquuzMx%2FEq3ANkS3ZONsQA%2F45mWxUha5PrlYgH81WoCjTzJKCWQtpJ2%2FjGj1HszxRKV0EGhmOsounHDIDJHnnbvti%2BZekcJh5eql1s7zQsEsFyidYduDp7sztj3YDcqXxf7dxfLwo9Dk2qefRW9hhPvL93w2lLrj1fsWiOCyvuAijTEp4%2FHdjIcJuuE%2Fk%2BjCvgeGe0kTh8Z7z2FFM3MgMpcmZwhUMkk6niiA20XA5MLlIUVkOplnuGiX5ONKK%2BGiKxg1r%2FTD96ziql2f1PQLtZdSkwPo5zqauVcyHG3FGkzmJg%2Fho3VZhtEEVLH8o8l5akJvFlWYJbLYm1EYnFmd4bb9tsBqml54i7Ld4EmNJogyGRN9L88UUbxDL3CJFJgDMttsdWRMEC7Pms3RbmsPsk3NemCjTI8cmPkaOCKf2YkXDrjSIpmN1TTDeiD8tjYL0kFIlNxFiXudI4vZwmvVuTtSf1DiWAsYsNrhpkVehluQpl%2BrCfWA4s61HdVbtBybtiI4stzuWQS2GAszz5lNKockcN%2F%2FeANUWZlmedKierLwQOsge3aKQ0d4wHvtjnfVGOOcIbqY33UxD08siOxKQsWj6KYIskHM09uCqE43AFv7HAGuEXH3myPukRBRHQVVJhoF%2BU%2FTDzuv%2FSBjqkAbJdijipqc7y9yWqWEZCDBz8%2ByOG7neygINagnmVuIWqyeVJohMRU9Wx52juGYMgq6pumBnb%2B6%2BdXkK1Wff92yOkdKPUkrv0wAaTb8neOPpttJHh%2BpiOOhUGkNyBtZ5988mqV6XpJSpVqRJIFH48HrqYJPH%2BSYZefqroOH0HrhSGmhk7CU8Y8VVERWgf3nBofdtmWbDb0TAFPY40Ec3ISZZzjfoE&X-Amz-Signature=ed4f528c34afbf98ea5f60a9be1275a3e39df2d7b604d4205657916255e618cd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

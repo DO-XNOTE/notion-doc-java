@@ -1,0 +1,70 @@
+---
+title: 4-2 微信支付 - 微信支付时序图
+---
+
+# 4-2 微信支付 - 微信支付时序图
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cc8fd7ae-c003-4ed9-b4af-704d364e21fd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YOFXU23K%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224708Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBIEgsiBDdNod%2Beb2vlWSG9%2FpfiOLe0r1P0tYdf3n%2F1bAiArABpUuNA7EtDiyc34EQimbSS%2FmvzIB1rNkoUt5A0kjyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMstNOPOpo3NDirshoKtwD2XxiekJfvpjoBguak7qA5iJP%2FvQskQDupDojRlSKrH6xWZk%2FUvyJOc4IdMRsoehW%2FveHk%2Bt8jYAZ%2FdnWF9UUy1Kn4h7Fd%2B8ecL09Q%2BE1%2BZIDZQ4LkeM7brhOR%2ByxggFM0x2oiHw41HYbRe65NaJobFZGtI4g9aMHOau180YEx899aV2n9s6OvP3CkIGMXsiGI2vJl6%2FhyZgINYHuNtkwZXaDN0lflWiOao%2BJthBHPqc1JR58HhoWicbhLRZlOljYVfOWlz4H1%2BBuC0NF17hYcJbrfJibOaO0BH9ieeYQGULN1QHusSxc1Si3yX14Hzh1%2BKpueAVgblC38k0IimMgZQuLgDrltulbt0PyzcxDPNEXbXktL4PpVwUM5z5B9JpPcE7u4auRoA55EHawXoEsZ07T1IsPlqbF6aPVnt1HAQrg2nq2hFiXbc7yr54ZfndQmVrG7ihEWVTex60d%2BwQeZ%2BLoh21y%2B37q8jrxbZG81MzTebhdx7az8e6W1wRC%2BFZdnup9IwQ6IPJq9avQscw9hk0PccJneQkG69O7Dcb3dsDbiCvKF2VCI11VS4KOi6I6Wa5acHHRS0ki2b2r9vDxRGY1zHzKZHoLw1x8yLBdSZoMq%2BmBuMLWy9Ta4QQwlbf%2F0gY6pgE%2Fxil%2FjuWsP7Wx2dWKcMAFc8S6XTJ4u1q5Lw8474fWH%2BY%2BUK6CIbv%2Fx3ACMfclY5MUvXIoKBpATiq6%2BN%2Bjn0plA1E07bwcw3QySRbxhSaBwX1lySqKHlBTSumoz1ZxSJxoXl8GQrNuaMqZxcyh6VrLMCtXqeyBzJiByBpQYpvYvHymEjD4Xq%2F8rhZxfMoH0HUMUH%2FtXRJAe%2FW7sLXYTJdC9CoSkPlc&X-Amz-Signature=96be2c5d3421fcfd1df7c9c4529e5398a515f0d99676597b92e9f105985783a0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上一节课我们是针对于支付中心的一个订单做了一个讲解，主要是它的涉及到的一些相关的字段，其中就包含了一个 return y 这张订单。我们这一节我们暂时先不去生成，我们要先理解一下 return Ure。所以我们会先来讲一下支付的一个流程。支付流程里面其中就包含了一个回调的通知，所以我们会来讲解微信的一个时序图。
+
+[https://pay.weixin.qq.com/wiki/doc/api/index.html](https://pay.weixin.qq.com/wiki/doc/api/index.html)
+
+好，我们打开浏览器，在这里有一个网页，这个网页大家可以跟着 UL 去手敲一下，或者也可以自行去百度也可以的。在这个页面里面，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3eb129d5-aa06-4a79-8012-5cd1d7f05a66/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YOFXU23K%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224708Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBIEgsiBDdNod%2Beb2vlWSG9%2FpfiOLe0r1P0tYdf3n%2F1bAiArABpUuNA7EtDiyc34EQimbSS%2FmvzIB1rNkoUt5A0kjyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMstNOPOpo3NDirshoKtwD2XxiekJfvpjoBguak7qA5iJP%2FvQskQDupDojRlSKrH6xWZk%2FUvyJOc4IdMRsoehW%2FveHk%2Bt8jYAZ%2FdnWF9UUy1Kn4h7Fd%2B8ecL09Q%2BE1%2BZIDZQ4LkeM7brhOR%2ByxggFM0x2oiHw41HYbRe65NaJobFZGtI4g9aMHOau180YEx899aV2n9s6OvP3CkIGMXsiGI2vJl6%2FhyZgINYHuNtkwZXaDN0lflWiOao%2BJthBHPqc1JR58HhoWicbhLRZlOljYVfOWlz4H1%2BBuC0NF17hYcJbrfJibOaO0BH9ieeYQGULN1QHusSxc1Si3yX14Hzh1%2BKpueAVgblC38k0IimMgZQuLgDrltulbt0PyzcxDPNEXbXktL4PpVwUM5z5B9JpPcE7u4auRoA55EHawXoEsZ07T1IsPlqbF6aPVnt1HAQrg2nq2hFiXbc7yr54ZfndQmVrG7ihEWVTex60d%2BwQeZ%2BLoh21y%2B37q8jrxbZG81MzTebhdx7az8e6W1wRC%2BFZdnup9IwQ6IPJq9avQscw9hk0PccJneQkG69O7Dcb3dsDbiCvKF2VCI11VS4KOi6I6Wa5acHHRS0ki2b2r9vDxRGY1zHzKZHoLw1x8yLBdSZoMq%2BmBuMLWy9Ta4QQwlbf%2F0gY6pgE%2Fxil%2FjuWsP7Wx2dWKcMAFc8S6XTJ4u1q5Lw8474fWH%2BY%2BUK6CIbv%2Fx3ACMfclY5MUvXIoKBpATiq6%2BN%2Bjn0plA1E07bwcw3QySRbxhSaBwX1lySqKHlBTSumoz1ZxSJxoXl8GQrNuaMqZxcyh6VrLMCtXqeyBzJiByBpQYpvYvHymEjD4Xq%2F8rhZxfMoH0HUMUH%2FtXRJAe%2FW7sLXYTJdC9CoSkPlc&X-Amz-Signature=f74c54ef623066e874de0f80b2236e105bf8f8da7083470ee3f60498eceef0e6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+其实就是涉及到微信支付的几种方式，其中我们可以分别来看一下。
+
+第一个是付款码支付，付款码支付你打开微信，把自己的付款码展示出来，对方如果你去超市或者去店里面吃饭，对方会有一个小机子去扫一下，你直接是可以扣款了。这是一个付款码。
+
+
+下一个是 js  api 支付，用户是要通过扫码关注公众号，其实也就是在公众号内部发起的一个支付。这是在微信内部调用的一个 js sdk 完成的支付
+
+
+下一个是一个 native 支付。这是一个扫码支付，用户打开微信扫一扫，扫描商户的二维码后完成支付。这个就是我们课程里面所用到的一种支付方式，也就是二维码扫码支付。
+
+
+第四种是一个 APP 支付，这个是由一些 APP 端集成了微信支付以后发起的一个微信跳转后的支付。另外下面几个还有是 H5 支付，这个是用户在微信以外的手机浏览器请求微信支付。需要注意 H5 是在手机端上的浏览器，而不是在我们的电脑浏览器。如果是在电脑端的浏览器，使用 native 支付，使用一个二维码扫一扫就可以了。下一种是小程序支付，因为在微信小程序端其实也有一个相应的支付场景，因为小程序它也可以有一些电商平台。最后一种是人脸支付，这个是比较先进的，只要是有一个相应的机子扫一下你的人脸，就可以去完成相应的一个支付功能了。
+
+
+好在这里我们直接点击 native 之处来看一下，点击以后在有很多的文档，
+
+[https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5&index=3](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5&index=3)
+
+对于我们来讲，我们只要来看一下就可以了。在有一个导航场景介绍中的模式 2 点击一下，在模式 2 里面来看一下，会有一个业务流程。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f853b742-9978-4eee-be11-b7a0e78e6296/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YOFXU23K%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224708Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIBIEgsiBDdNod%2Beb2vlWSG9%2FpfiOLe0r1P0tYdf3n%2F1bAiArABpUuNA7EtDiyc34EQimbSS%2FmvzIB1rNkoUt5A0kjyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMstNOPOpo3NDirshoKtwD2XxiekJfvpjoBguak7qA5iJP%2FvQskQDupDojRlSKrH6xWZk%2FUvyJOc4IdMRsoehW%2FveHk%2Bt8jYAZ%2FdnWF9UUy1Kn4h7Fd%2B8ecL09Q%2BE1%2BZIDZQ4LkeM7brhOR%2ByxggFM0x2oiHw41HYbRe65NaJobFZGtI4g9aMHOau180YEx899aV2n9s6OvP3CkIGMXsiGI2vJl6%2FhyZgINYHuNtkwZXaDN0lflWiOao%2BJthBHPqc1JR58HhoWicbhLRZlOljYVfOWlz4H1%2BBuC0NF17hYcJbrfJibOaO0BH9ieeYQGULN1QHusSxc1Si3yX14Hzh1%2BKpueAVgblC38k0IimMgZQuLgDrltulbt0PyzcxDPNEXbXktL4PpVwUM5z5B9JpPcE7u4auRoA55EHawXoEsZ07T1IsPlqbF6aPVnt1HAQrg2nq2hFiXbc7yr54ZfndQmVrG7ihEWVTex60d%2BwQeZ%2BLoh21y%2B37q8jrxbZG81MzTebhdx7az8e6W1wRC%2BFZdnup9IwQ6IPJq9avQscw9hk0PccJneQkG69O7Dcb3dsDbiCvKF2VCI11VS4KOi6I6Wa5acHHRS0ki2b2r9vDxRGY1zHzKZHoLw1x8yLBdSZoMq%2BmBuMLWy9Ta4QQwlbf%2F0gY6pgE%2Fxil%2FjuWsP7Wx2dWKcMAFc8S6XTJ4u1q5Lw8474fWH%2BY%2BUK6CIbv%2Fx3ACMfclY5MUvXIoKBpATiq6%2BN%2Bjn0plA1E07bwcw3QySRbxhSaBwX1lySqKHlBTSumoz1ZxSJxoXl8GQrNuaMqZxcyh6VrLMCtXqeyBzJiByBpQYpvYvHymEjD4Xq%2F8rhZxfMoH0HUMUH%2FtXRJAe%2FW7sLXYTJdC9CoSkPlc&X-Amz-Signature=3f240455150080b90c643f0a23bcfc7c1f652395b8cafda7fb4fadbd42d8e27a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+时序图其实就是用户发起支付的整个一个流程，在这里会有整张图。这张图我是放到了 PDF 里面，我们在 PDF 放大了，一起来看一下。首先在时序图里面，在整个交易的流程其实总共是涉及到了四端，哪四端？
+
+
+第一端也就是我们的用户，用户要去购买商品时候的用户，微信实际付款人。下一个是微信的客户端，因为你要去扫码，扫码你肯定使用微信码，所以微信的客户端你是必须要有的。下一个商户后台系统，他的文字写的不太清楚，但是我在这里描述之后，大家应该能够知道商户后台系统在我们这里其实是包含了两块。在我们其实主要就是支付中心，因为大家没有企业资质，不能够去集成支付，所以我提供了一个支付中心，所以支付中心在这里就是商户后台系统。如果你有一个企业的资质，你自己可以去集成支付场景，相应的你自己的一个后台系统，你自己的一个所有的接口所在的服务端，就是这里所说的一个商户后台系统好。
+
+
+另外一端支付网关，也就是微信支付的第三方支付，整个系统好。首先我们来看一下，先看第一步是生成一个订单，在这里生成订单是我们在商户后台，也就是在支付中心生成的一个订单，这一笔订单现在我们还没有生成，对吧？好，下一个。当我们的订单也是我们自己的订单，在我们自己商户这一端，也就是天天吃货的订单。生成完毕之后，你需要调用一下下单API，这是统一下单API，这是第二步。这一步操作是由我们的系统，发送到微信端的，以后在这里可以看一下，它会生成一个预支付交易。
+
+
+什么叫生成预支付交易？虽然有一些拗口，其实这个步骤对于微信这一端来讲，是微信在他微信的系统里面帮我们生成了一个订单，也属于微信那一端的订单。只要是涉及到支付场景，你经历过多个系统，每一个系统其实都是应该要有相应的一个订单，这个订单其实就是你历史的一个凭证，OK，因为在后面真实发起交易的时候，其实对于微信来讲，他是认的一个交易的订单号的。也就是一个预处理订单号。浅白点讲，大家只需要知道这一步操作，就是在微信这一端生成自己的一个订单就 OK 了。随后它会返回一个预支付交易的链接，其实就是一个 URL 地址。 URL 地址就是一个二维码的 URL 地址。这个二维码是需要由我们自己去生成的。看一下在我们的商户，我们拿到了 code URL 连接以后，我们是需要自己去生成一个二维码的图片，二维码的图片随后你再提供给用户去扫码就可以了。
+
+
+关于 code UL，也就是二维码，它其实会有一个时效性。来看一下它的官网。在这里它有一个 code UL，它的有效期为 2 个小时，过期后如果你再扫码，它是不可以再发起一个支付了。也就是UL。在微信这一端，它会帮我们保存 2 个小时的时长，好随后再继续。当我们生成了一个二维码了以后，这个时候是需要把二维码提供给实际付款的用户，让他们去看一下的。看到以后掏出手机来看一下。用户打开微信，使用扫一扫功能扫描二维码。
+
+
+扫描二维码其实是在微信客户端，在这一步的一个操作，扫描完了以后，它会直接把相应的内容数据提交到哪里，它是不经过我们的商户后台，这个时候他是直接跟微信的支付系统进行交互了，可以看到在这里随后他有自己相关的操作。第六步是验证链接的有效性，也是需要验证一下 code UL 是不是OK，随后没有问题，它会返回需要用户支付的一个授权。其实在微信端你是需要让用户去授权，这些操作都不是让我们的开发人员去做的，在这些都是由用户去操作的。OK。随后用户是需要去确认支付，可以输入密码，或者是可以扫描人脸去支付，也都是没有问题。这个是在微信端去实现的，随后会提交一个支付授权。当微信那一端拿到了一个相应的授权以后，它是需要去进行验证、验签等等操作，随后再去完成支付交易。完成支付交易以后，到这里了，以后也就是第八步。
+
+
+到了第八步，其实我们的一个支付可以支付的过程是完结了。随后在下方它会有一个并行的处理，这几个字是并行处理，也就是这一个框，它帮我们框起来的。并行处理它其实会有两步操作，第一步它会返回支付结果，返回支付结果其实就是在我们的微信端看到，在这里它是返回到微信端，它会有一个提示，支付成功了。这一步操作其实就是一个同步操作，是在我们的微信上同步的，把相应的一个是否成功的一个结果展现出来的。好。它随后还会有另外一部操作，有一个异步通知。异步通知区别于同步，同步通知，它是直接在微信端去进行展示的，开发者是由我们的服务端是不可控的，但是它会有一个第十步，也就是异步通知。异步通知会回调我们自己的支付中心。在我们的支付中心其实就应该要开放一个接口，这个接口是必须要让我们的一个微信端去调用的，是他通知我们这一笔订单，这一笔交易他有没有付款成功，还是失败。当我们拿到这样的一个通知，验签等等操作全部都验证完以后，接收到它的最终的状态。如果它是支付成功的，支付成功了以后，在我们的一个系统里面，我们就需要把我们的这一笔订单进行一个标记，把它的状态改为已支付状态。所以这一步就是一个异步的操作。
+
+
+在我们的整个系统里面，其实我们要以异步的通知为主，因为异步通知才是真正的我们这笔订单是真实的交易的同步，因为它由于是页面的一个跳转，同步有可能会被拦截。在极端的情况下，被别人拦截以后，会通知到你的微信端，说这一笔订单支付成功了。所以我们的异步也是要作为一种强制性的要去验证的。因为我也是遇到过有一些小公司，他们在进行一个微信支付的时候，他们仅仅只是前端以前端的一个支付结果为主的，后端的异步通知他们可能没有去做，尤其是在 APP 端的一个支付，这样子做是不太合理的，也是不太好的。所以异步通知是一定要做的。
+
+
+异步通知当我们接收到了以后，如果是成功的，我们就要告知微信端，我们要通知他说我们当前这一步操作是完成的，是没有问题的。如果在我们自己这一端发生了异常，或者没有通知微信端，这个时候，微信端其实它总共会有 10 次通知来通知到我们的服务端。如果我们的服务端只要返回一个成功的状态码，我们的微信这一端就不再会通知我们的一个服务端了。处理是需要去注意的。
+
+
+微信它其实在回调通知的时候，如果我们发生错误，它其实会一直在通知的，它会有一个通知的频率，也就是通知的次数，它总共是有 10 次。给大家看一下，我记录了在这里微信异步通知的频率，总共在这里是有 9 次，第一次是第 0 秒，也在支付完毕以后，它会立马通知一次，随后有一个 15 秒，再 30 秒。这是一个每次的间隔，每隔多少时间，它会通知一下我们的一个服务端。如果我们服务端一旦成功，以后后续的通知他就不会再发了，因为他每一次的一个异步通知，所发送过来的数据内容其实全部都是一模一样的。因为他要保证我们的后端要接收到微信支付的一个最终的结果，无论是成功还是失败的。
+
+
+好，随后下一个再来看。其实到这里到第 10 步，我们整个处理都是完成了。其实微信也做了一个补充，微信可以让我们的服务端主动的去调用它的相关的查询API，去查询这笔订单到底是成功还是失败的？对于这样的一个操作，往往是可以用于去做一些历史查询。在我们，我们从第一步一直做到第十步，我们的整个微信支付的交易流程可以做完了。
+

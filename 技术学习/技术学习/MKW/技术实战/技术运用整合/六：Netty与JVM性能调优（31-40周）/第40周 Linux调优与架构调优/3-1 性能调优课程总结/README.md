@@ -1,0 +1,29 @@
+---
+title: 3-1 性能调优课程总结
+---
+
+# 3-1 性能调优课程总结
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/54bf95db-5449-4cd7-919e-15571fd10064/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S7NVTWZD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230250Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8ToqNtK3O90TPGxkWukkKdeotYJWD6siHmdxQgRQTXAIgG6QikJ%2FY7zj8j8NeUPB3fFIf96x1xNhceylikkT%2BtGYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPdioMM44AoSaL35LircA9F8SzckaldCEwB1eI7%2FK4yvh8yF2vv%2FCzVEAVdpHuUzFWbaRld%2BjqmoMzlTESYeoVwm8J97axP0sZ2rSGU9Pu7yj8e44bNDK7acaE%2BgH0WuXHqXzJWieNNO0YgYpWqcvdMA3bXTY2xgunT2bIXPOZ%2BfQmy4zm%2FMRe4T56G6sW3feLXQiLwBx%2Ff4m9TDTWKw0r1JcatAO0erM1qxI0MUq7%2Fx%2BrVfxxpt113X8%2FgnIsHVHlGAT48%2BuZSGjVhwMLeKfaLRBTyYtCHc3LkIQOusG%2FguEuQP4nxVHdXJDrUJ6tfMWZ05o2a5N8YIM%2FTOxHBUvf0zga4XtftmQqBuab1JfTQ5aIybvqQ1pf9lnBvO6LkguilM%2F2lmvQfo5W5btsJt5t%2BRjXK4S9hcW8zQOCWJcv3Xbw29GPqfm%2FI1MXxF32jwLpEeo4TKTriCXTUhmXhTiqanhC1iK6WFlfuBq5mYok5KIGuEfM2IVaJi%2FR3CFNuezfTUQ%2FJgg%2BNhfUrPjPANCYib4NyZgn8Q8Q2Y7MlBXiqR9PxrZLnojECI6Yu7H4ue5x81O5YwVUHYj9H8Xc9%2Fzv54cEJAkOmgBancyfUzft0tXJe%2FSpDQ4IvGYjvM4p3LUP139uSlLt7Wzw5WMIW4%2F9IGOqUB1pIaAqWjTGCEjkYmaiXV5ZSIEZ3uR8KbR1B3ExxJ1exZd7svc4lkjG6ILWuWXCYXwDxB%2F3H6cwEJ%2BmkdKVd2fq7m0RNBXJqqC86cHd%2BSYt35TzFts161kA7WQ21IJSNkc7UmV7Geg86OyQ50uDk3IHzk28BvHyVn0nBMTiCoFwKya%2F5C1yoFonBbvdW40ACBQEjQWjqqwLIQlqmc2Qjt%2BHbmmZSQ&X-Amz-Signature=651afba19c9396235cece16d4b33b5c2294a5984bfd5bab39053c427f5ad2b08&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9cba061d-54e9-421f-b65d-70d9b34e98ae/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466S7NVTWZD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230250Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD8ToqNtK3O90TPGxkWukkKdeotYJWD6siHmdxQgRQTXAIgG6QikJ%2FY7zj8j8NeUPB3fFIf96x1xNhceylikkT%2BtGYqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPdioMM44AoSaL35LircA9F8SzckaldCEwB1eI7%2FK4yvh8yF2vv%2FCzVEAVdpHuUzFWbaRld%2BjqmoMzlTESYeoVwm8J97axP0sZ2rSGU9Pu7yj8e44bNDK7acaE%2BgH0WuXHqXzJWieNNO0YgYpWqcvdMA3bXTY2xgunT2bIXPOZ%2BfQmy4zm%2FMRe4T56G6sW3feLXQiLwBx%2Ff4m9TDTWKw0r1JcatAO0erM1qxI0MUq7%2Fx%2BrVfxxpt113X8%2FgnIsHVHlGAT48%2BuZSGjVhwMLeKfaLRBTyYtCHc3LkIQOusG%2FguEuQP4nxVHdXJDrUJ6tfMWZ05o2a5N8YIM%2FTOxHBUvf0zga4XtftmQqBuab1JfTQ5aIybvqQ1pf9lnBvO6LkguilM%2F2lmvQfo5W5btsJt5t%2BRjXK4S9hcW8zQOCWJcv3Xbw29GPqfm%2FI1MXxF32jwLpEeo4TKTriCXTUhmXhTiqanhC1iK6WFlfuBq5mYok5KIGuEfM2IVaJi%2FR3CFNuezfTUQ%2FJgg%2BNhfUrPjPANCYib4NyZgn8Q8Q2Y7MlBXiqR9PxrZLnojECI6Yu7H4ue5x81O5YwVUHYj9H8Xc9%2Fzv54cEJAkOmgBancyfUzft0tXJe%2FSpDQ4IvGYjvM4p3LUP139uSlLt7Wzw5WMIW4%2F9IGOqUB1pIaAqWjTGCEjkYmaiXV5ZSIEZ3uR8KbR1B3ExxJ1exZd7svc4lkjG6ILWuWXCYXwDxB%2F3H6cwEJ%2BmkdKVd2fq7m0RNBXJqqC86cHd%2BSYt35TzFts161kA7WQ21IJSNkc7UmV7Geg86OyQ50uDk3IHzk28BvHyVn0nBMTiCoFwKya%2F5C1yoFonBbvdW40ACBQEjQWjqqwLIQlqmc2Qjt%2BHbmmZSQ&X-Amz-Signature=c422ac8dce924019f83f63b7093344e5234a612669f97dcc527cd305c7c1acf5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+大家好，我是大木。这节课来花一点时间回顾一下前面的知识，并梳理一下重点。本节课开始，首先普及了一个调优四板斧，分别是借助工具提前发现问题，遇到问题的时候借助工具去排查问题，定期的复盘发生范相同的问题以及定好规范，在一定程度上规避掉问题。之后，我们就进入到了工具篇的学习，介绍了一系列的工具，比如 sky working、 spring boot、actuator、 spring boot、admin、Java、 melody 等等。
+
+
+
+之后课上探讨了一些常用的调优技巧，比如石化技术、异步化、索调优等等。其中石化技术介绍了对象池、连接池以及线程池知识非常重要。锁优化介绍了实际项目中可能会用到的锁，这些锁对于c、r、u、 d 程序员用的其实并不多，但是一副面试很有用。再一个阅读一些优秀框架源码的时候，所相关的知识也是一个必备技能。之后进入到了j、y、 m 调优的环节，这块知识非常的琐碎，知识点之间也经常有牵扯。所以客栈把 JVM 调优分成了理论篇、工具篇以及实战篇。
+
+
+在理论篇介绍了 GM 相关的各种知识点，这部分的知识可以每一节都是重点。工具篇是实际工作中比较实用的一些工具。实战篇结合弹幕工作经历中遇到的一些性能问题，手把手的带大家去做调优。通过实战一来可以帮助大家积累调优的经验，更重要的是希望大家在学习的时候能够抓准分析问题的思路，这样未来同学们在做调优的时候才能达到事半功倍的效果。
+
+
+GM 介绍完之后，进入到了数据库的调优环节。在这一章节，比较重要的是一些分析 SQL 的工具，比如explain、 show profile、optimizer、 trees 等等，这些工具是实际调优工作中必备的。此外，课程还着重探讨了所以如何创建、如何调优、如何维护以及特定的SQL，如何去做调优等等。比如赚一句 limit 抗的语句，如何调优等等。
+
+
+第四是操作系统的调优。在这一部分介绍了 Linux 调优常用的一些命令，以及Zabbix、 Permetheus 这两款监控工具，从而帮助大家更好地排查操作系统相关的问题。总的来说，调优这部分的知识学习起来还是有难度的。我个人认为男人在于细节特别多，知识点之间也常常存在依赖。所以大漠花费了一半左右的时间编写了 20 多万字的手记。其实在写手机之前，大漠还是挺纠结的。一，如果文字占比太多，可能会影响到学习的体验。第二， 20 多万字的手记是一个比较庞大的工作量，我还是挺担心吃力不讨好的。但是最后我还是选择了视频加手机的授课模式。主要是出于两方面的考虑。一来，由于调优的知识细节非常多，大部希望自己的课程是相对系统，相对完整的，所以花了很多的心思系统的介绍了各种命令，各种工具，对吧。
+
+
+二来，很多知识是比较容易遗忘的，比如 g m m 相关的知识点，手机的方式有助于帮助大家复习。anyway，希望同学们能够接受这种授课的方式。当然了，如果同学们英语时间比较少，不看也是 OK 的，只要留一个印象，未来遇到问题的时候记得回来查就 OK 了。好，以上是本堂课程的所有内容，希望同学们能够有所收获。最后祝同学们能够在技术成长的过程中还能保持发亮。青山不改，绿水长流，我们后会有期，谢谢大家。
+
+

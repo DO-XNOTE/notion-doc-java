@@ -1,0 +1,91 @@
+---
+title: 1-6 Alibaba组件库一览
+---
+
+# 1-6 Alibaba组件库一览
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7d786b27-d9d5-48b6-845e-f0c8af0f2f02/SCR-20240801-npje.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VIRTXFOA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231305Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICqucsRPyBEeGwuNlc7JoiY1Kc96M1kNytP2%2BLqcY%2BFxAiBTxfTvurpZdkW0LA3%2BfSz%2B6F4%2FQiocGeW2GFvTwMxs9CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMQMPbKPDTUlik4ypOKtwD3qsgLtKKdov6cXkxqnnNgDE9m%2Boo3b45rOgRDQ%2Fhn%2FJLSdfSARgj6vDov6aNkzPxzgUzfQLFKwtaq6gMWeHXa2oiZ4eQyyroGXMHFW1rwF%2BrwlzXD%2FZxIuiWCMYKQ6mUo3XyAi70Y1rLn%2FZhKvntm4%2BmdYW3Aow7q654C7mNrNheEcTdC%2Fr%2F47c7kHONwFCS31gR14lktX2v2Kz1OpNUlg36obhiGMmbYvhM7maaKWsS1NqsJoWqmblMV3Sw%2BumJG5w5NpCgLmcCuI8NEodu%2FhIfE1RpUZwk8sVBatQnk5upOZ97%2Fg6WXF%2FlEofCsqrUCclc6Vz9jaVQQU9v43hgi88bKiuANHPPtStD%2Bu8pX9jS3WCx8iDczHXqIF5iyZEwUSLJQW1tZZBkszVtfEscbmDUoMHS8nGVc%2BWBzZqv7rJl5k5921zDhIVyFv6zLTBM4lN%2FwxThAqM%2F8vu%2B1Il6Zv4EgtpVt0Eb2QBa%2BvI835V0Is2bvS87nJJZW8YDOvBapPxajqXOyyURubdgc9eothxR6ZdB3ySCne0%2B3Gk8EYnnBQswmSN%2FRVKsWXfBSAGPeCQosCXBBJx5gfwdvZ8wULPSqGf5oS56SB9Crb3J88M%2B1101RLkHWLR881Uwnrf%2F0gY6pgGoDyqgo%2FK%2FKg0I%2Bq3efqjgIkinEvxJKG%2BJd2iQIQim7FsfAmD2uxBsZPmuoq%2B9T95GmxkXL%2BGtV6pf5UYaxrvK8R0Cv4SePCSYhlvJw9%2BgtOX5UdRZqpn3II8xD4MzVHt1QJ7Jk0Tih1z%2Fa2srdS3KeDUAYWF8FVPAWpnZOGvVDqnMJ0ux85LA2z6LUyJqfl8l%2BMBRgqPwS9tXyz5MmrQzKWqTHc6G&X-Amz-Signature=f18197dbd525ea5e998ec8e9abbf15798ff306ec78dd062e8cb66849ead89184&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，幕库网的各位同学们大家好，我是姚半仙，那咱们这一节来看一下 spring Claude 的大家庭当中，近几年一颗冉冉升起的新星，那就是阿里巴巴组件库，阿里这可是把自己的看家本领黑科技，那么这里面很多组件都是身经百战，经历了很多轮双十一的捶打，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bdfb36b8-b9f5-471b-b6c4-44d805612c4f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VIRTXFOA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231305Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICqucsRPyBEeGwuNlc7JoiY1Kc96M1kNytP2%2BLqcY%2BFxAiBTxfTvurpZdkW0LA3%2BfSz%2B6F4%2FQiocGeW2GFvTwMxs9CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMQMPbKPDTUlik4ypOKtwD3qsgLtKKdov6cXkxqnnNgDE9m%2Boo3b45rOgRDQ%2Fhn%2FJLSdfSARgj6vDov6aNkzPxzgUzfQLFKwtaq6gMWeHXa2oiZ4eQyyroGXMHFW1rwF%2BrwlzXD%2FZxIuiWCMYKQ6mUo3XyAi70Y1rLn%2FZhKvntm4%2BmdYW3Aow7q654C7mNrNheEcTdC%2Fr%2F47c7kHONwFCS31gR14lktX2v2Kz1OpNUlg36obhiGMmbYvhM7maaKWsS1NqsJoWqmblMV3Sw%2BumJG5w5NpCgLmcCuI8NEodu%2FhIfE1RpUZwk8sVBatQnk5upOZ97%2Fg6WXF%2FlEofCsqrUCclc6Vz9jaVQQU9v43hgi88bKiuANHPPtStD%2Bu8pX9jS3WCx8iDczHXqIF5iyZEwUSLJQW1tZZBkszVtfEscbmDUoMHS8nGVc%2BWBzZqv7rJl5k5921zDhIVyFv6zLTBM4lN%2FwxThAqM%2F8vu%2B1Il6Zv4EgtpVt0Eb2QBa%2BvI835V0Is2bvS87nJJZW8YDOvBapPxajqXOyyURubdgc9eothxR6ZdB3ySCne0%2B3Gk8EYnnBQswmSN%2FRVKsWXfBSAGPeCQosCXBBJx5gfwdvZ8wULPSqGf5oS56SB9Crb3J88M%2B1101RLkHWLR881Uwnrf%2F0gY6pgGoDyqgo%2FK%2FKg0I%2Bq3efqjgIkinEvxJKG%2BJd2iQIQim7FsfAmD2uxBsZPmuoq%2B9T95GmxkXL%2BGtV6pf5UYaxrvK8R0Cv4SePCSYhlvJw9%2BgtOX5UdRZqpn3II8xD4MzVHt1QJ7Jk0Tih1z%2Fa2srdS3KeDUAYWF8FVPAWpnZOGvVDqnMJ0ux85LA2z6LUyJqfl8l%2BMBRgqPwS9tXyz5MmrQzKWqTHc6G&X-Amz-Signature=39860ca383b78418573079e2f35a199009b945dac4bce7f6b8d9bf113adb0885&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+都是经历过了非常严苛的线上生产及应用的考验。那咱接下来就一道去看一下阿里巴巴组件库这里贡献了哪些的宝贝。
+
+
+那这第一个组件也是阿里巴巴组件库当中最出名的一个组件应该是谁？Narcos，这里其实对标的不光是有瑞卡，它还对标了另一个组件就是 spring Claude 的config。为什么呀？它可以一鱼二吃，那有两个不同的用途，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3adb7d5a-5cca-4251-b9fb-006343969442/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VIRTXFOA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231305Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICqucsRPyBEeGwuNlc7JoiY1Kc96M1kNytP2%2BLqcY%2BFxAiBTxfTvurpZdkW0LA3%2BfSz%2B6F4%2FQiocGeW2GFvTwMxs9CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMQMPbKPDTUlik4ypOKtwD3qsgLtKKdov6cXkxqnnNgDE9m%2Boo3b45rOgRDQ%2Fhn%2FJLSdfSARgj6vDov6aNkzPxzgUzfQLFKwtaq6gMWeHXa2oiZ4eQyyroGXMHFW1rwF%2BrwlzXD%2FZxIuiWCMYKQ6mUo3XyAi70Y1rLn%2FZhKvntm4%2BmdYW3Aow7q654C7mNrNheEcTdC%2Fr%2F47c7kHONwFCS31gR14lktX2v2Kz1OpNUlg36obhiGMmbYvhM7maaKWsS1NqsJoWqmblMV3Sw%2BumJG5w5NpCgLmcCuI8NEodu%2FhIfE1RpUZwk8sVBatQnk5upOZ97%2Fg6WXF%2FlEofCsqrUCclc6Vz9jaVQQU9v43hgi88bKiuANHPPtStD%2Bu8pX9jS3WCx8iDczHXqIF5iyZEwUSLJQW1tZZBkszVtfEscbmDUoMHS8nGVc%2BWBzZqv7rJl5k5921zDhIVyFv6zLTBM4lN%2FwxThAqM%2F8vu%2B1Il6Zv4EgtpVt0Eb2QBa%2BvI835V0Is2bvS87nJJZW8YDOvBapPxajqXOyyURubdgc9eothxR6ZdB3ySCne0%2B3Gk8EYnnBQswmSN%2FRVKsWXfBSAGPeCQosCXBBJx5gfwdvZ8wULPSqGf5oS56SB9Crb3J88M%2B1101RLkHWLR881Uwnrf%2F0gY6pgGoDyqgo%2FK%2FKg0I%2Bq3efqjgIkinEvxJKG%2BJd2iQIQim7FsfAmD2uxBsZPmuoq%2B9T95GmxkXL%2BGtV6pf5UYaxrvK8R0Cv4SePCSYhlvJw9%2BgtOX5UdRZqpn3II8xD4MzVHt1QJ7Jk0Tih1z%2Fa2srdS3KeDUAYWF8FVPAWpnZOGvVDqnMJ0ux85LA2z6LUyJqfl8l%2BMBRgqPwS9tXyz5MmrQzKWqTHc6G&X-Amz-Signature=6ec39fe091105c70a29c43f8d2794a52c435b02372ebcc5fa561bfb3d0b98831&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+它既可以作为服务治理的注册中心，那同时它也可以作为配置管理的组件。这两样功能 Gecko 都是一把好手。说到这个配置管理，那其实 necklace 也是一个中心化的配置中心，同 spring cloud 的 config 一样，它也可以去支持动态的属性推送配置等等，并且可以把这些配置项做一个持久化，比如说我可以把它持久化到数据库当中。
+
+
+OK，那么这是第二点作用，服务治理，它可以去同时支持两种不同的服务发现机制，基于 DNS 的服务发现和基于RPC，那 RPC 这里就是指double。那么还有另一个 r p c 框架，在国外应用非常多的 g r p c，那 spring Claude，它自己的亲儿子console，还有咱 Netflix 公司贡献的Ureca，它们是基于 DNS 的方式来做服务发现。那除了基础的配置管理和服务发现功能， necklace 这里还有非常酷炫的附加属性，比方说它这里可以支持一个权重的路由，那么权重路由是什么意思？权重路由简单来说它就是一个动态的DNS，那通过这样的一种动态 DNS 服务，可以去实现中间层的负载均衡，还有非常灵活的路由策略以及流量控制等等。同时它还可以无缝的去集成 spring Claude，还有 K8S 这种云原生的应用。
+
+
+那无缝集成 spring Claude，其实这点自然不用多说，你想融入 spring Claude 大家庭，你肯定要去抱紧大腿那不过 neckles 这里他厉害了，脚踏两只船，那他不仅一只大腿抱上了 spring Claude，另外一边诶他这里另一手牵着集团内部的一个应用double，想把它也一同给怎么样捆绑销售。它在力推把 double 也作为 spring Claude 不可分割的一部分。
+
+
+所以在 neckles 刚刚孕育诞生的时候，我其实对阿里集团的企图心还是有一些看法的，因为 neckles 这里更像是一个带有政治任务的组件。为了强推double，所以我在一期课程当中也跟同学们提到，对于neckles，我们可以静观其变，一方面看一看它后续的功能扩展，还有社区的知识，另一方面去验证一下它的企图性，看它是不是从更好的服务 spring Claude 出发，还是说更好的把自家兄弟给它带出来？那经过很长一段时间的验证，这个企图新算是得以验证了，它确实是捆绑销售，力推double。但是另一方面它也继承了阿里系中间件的一个特点，就是又大又全，包罗万象。那所以从功能性角度来说，自然是无可厚非，是 spring Claude 当中功能最为完善的服务治理的框架组件。那我这里也建议同学们在新应用当中可以去考虑necklace，那我们在本节后面课程里也会把 necklace 作为一个重要的服务治理组件，跟大家来讲怎么来使用。落地它okay，那除了 next 之外，
+
+
+咱这里还有一个鼎鼎大名的组建 sentinel 房流量哨兵，咱都这样称呼他，其实这个名字很让人蒙圈，那我们换一个名字，流控组件。
+
+
+这一下咱就懂了，你知道 Sentinel 是做什么事情的？那总的来说， Sentinel 虽然开源时间并不长，但是相比 Nacos  还有咱阿里巴巴开源的其他组件， sentinel 可谓是阿里系的一员老将了。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c169ad86-1c01-4622-9062-2c993a9e2f3a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VIRTXFOA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231305Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICqucsRPyBEeGwuNlc7JoiY1Kc96M1kNytP2%2BLqcY%2BFxAiBTxfTvurpZdkW0LA3%2BfSz%2B6F4%2FQiocGeW2GFvTwMxs9CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMQMPbKPDTUlik4ypOKtwD3qsgLtKKdov6cXkxqnnNgDE9m%2Boo3b45rOgRDQ%2Fhn%2FJLSdfSARgj6vDov6aNkzPxzgUzfQLFKwtaq6gMWeHXa2oiZ4eQyyroGXMHFW1rwF%2BrwlzXD%2FZxIuiWCMYKQ6mUo3XyAi70Y1rLn%2FZhKvntm4%2BmdYW3Aow7q654C7mNrNheEcTdC%2Fr%2F47c7kHONwFCS31gR14lktX2v2Kz1OpNUlg36obhiGMmbYvhM7maaKWsS1NqsJoWqmblMV3Sw%2BumJG5w5NpCgLmcCuI8NEodu%2FhIfE1RpUZwk8sVBatQnk5upOZ97%2Fg6WXF%2FlEofCsqrUCclc6Vz9jaVQQU9v43hgi88bKiuANHPPtStD%2Bu8pX9jS3WCx8iDczHXqIF5iyZEwUSLJQW1tZZBkszVtfEscbmDUoMHS8nGVc%2BWBzZqv7rJl5k5921zDhIVyFv6zLTBM4lN%2FwxThAqM%2F8vu%2B1Il6Zv4EgtpVt0Eb2QBa%2BvI835V0Is2bvS87nJJZW8YDOvBapPxajqXOyyURubdgc9eothxR6ZdB3ySCne0%2B3Gk8EYnnBQswmSN%2FRVKsWXfBSAGPeCQosCXBBJx5gfwdvZ8wULPSqGf5oS56SB9Crb3J88M%2B1101RLkHWLR881Uwnrf%2F0gY6pgGoDyqgo%2FK%2FKg0I%2Bq3efqjgIkinEvxJKG%2BJd2iQIQim7FsfAmD2uxBsZPmuoq%2B9T95GmxkXL%2BGtV6pf5UYaxrvK8R0Cv4SePCSYhlvJw9%2BgtOX5UdRZqpn3II8xD4MzVHt1QJ7Jk0Tih1z%2Fa2srdS3KeDUAYWF8FVPAWpnZOGvVDqnMJ0ux85LA2z6LUyJqfl8l%2BMBRgqPwS9tXyz5MmrQzKWqTHc6G&X-Amz-Signature=0b5960e50d9b8bfa34a6ef35b089977bcaed027827d36db0006b54a257c27b32&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+过去双 11 大促这种核心的突发流量的场景，它背后靠的是谁？都是靠 Sentinel  这里来承接的。那么它这里最重要的一个特性，流控控制，突发流量，做削峰填谷，那做流量的整容整形手术都是 Sentinel 非常擅长的事情。那你这些只是比较大的点，你要往下面细说了，那这里流量控制还可以控制你的流速，那么对不同的上下游调用关系之间我也可以加限流，并且 hashtrigs 那边擅长的线程隔离在 center 这边也有。
+
+
+同时我还有这些非常酷炫的专门应对大促的一些限流场景，比如说热点限流，我还可以做中心化的集群的限流，并且对一些降级熔断我也有很好的支持，比如说我可以做一个实时熔断，对你的慢调用做降级，做异常熔断。并且这里还有一个非常有特色的一个很炫的功能，叫自适应保护，那根据当前系统的压力水位来做一个自适应的限流调整，这都是 3T NAIL 所具备的核心场景，那说明这款组件还是一个很能打的组件，很有料。那咱这个功夫不光要能打，还要能好看。
+
+
+那么看这一点，我们 Sentinel 这里有一个实时的监控大盘，它是 Sentinel 的一个控制台，可以去做实时监控，然后在控制台当中看到你所有的这个应用的单机数据，以及一个集群，它所有机器下面汇总的一个运行情况，那所以这个监控大盘与 high streaks 的 dashboard 比就真的是先进太多了。
+
+
+为什么叫阿里系非常要一个面子工程？那双 11 的总作战史蜥蜴的光明鼎，它就有一个非常厉害的大盘，那每年双 11 大佬坐在屋里，那就盯着一个大盘监控，所以阿里系的中间件很重视这个大盘的搭建，你光厉害没有用，你要让别人看到你的厉害，让领导看到你厉害，那所以这就是阿里系的一个设计思想，咱的面子工程不能落下。
+
+
+那最后 Sentinel 这里咱设置的各种的动态的规则配置，它都可以做一个持久化，持久化到 Nachos 当中，也可以到 zookeeper 或者到阿波罗，都是可以的。那咱在后面的小节里也会跟同学们去落地具体的应用。那 3 Tinell 之后，
+
+
+这里跟同学们介绍一个黑科技，叫 Seata ，是阿里系的分布式事物的一站式解决方案。那咱在一期课程当中的直播环节，哎，老师这里跟同学们使用 Sita 做了两个方案，一个是 a t，一个是TCC，那都是非常牛逼的特性，那这都是 Sita 分布式事务解决方案的独门秘籍。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1bf2c6f3-4bc7-4431-9ab0-04988252f050/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VIRTXFOA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231305Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICqucsRPyBEeGwuNlc7JoiY1Kc96M1kNytP2%2BLqcY%2BFxAiBTxfTvurpZdkW0LA3%2BfSz%2B6F4%2FQiocGeW2GFvTwMxs9CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMQMPbKPDTUlik4ypOKtwD3qsgLtKKdov6cXkxqnnNgDE9m%2Boo3b45rOgRDQ%2Fhn%2FJLSdfSARgj6vDov6aNkzPxzgUzfQLFKwtaq6gMWeHXa2oiZ4eQyyroGXMHFW1rwF%2BrwlzXD%2FZxIuiWCMYKQ6mUo3XyAi70Y1rLn%2FZhKvntm4%2BmdYW3Aow7q654C7mNrNheEcTdC%2Fr%2F47c7kHONwFCS31gR14lktX2v2Kz1OpNUlg36obhiGMmbYvhM7maaKWsS1NqsJoWqmblMV3Sw%2BumJG5w5NpCgLmcCuI8NEodu%2FhIfE1RpUZwk8sVBatQnk5upOZ97%2Fg6WXF%2FlEofCsqrUCclc6Vz9jaVQQU9v43hgi88bKiuANHPPtStD%2Bu8pX9jS3WCx8iDczHXqIF5iyZEwUSLJQW1tZZBkszVtfEscbmDUoMHS8nGVc%2BWBzZqv7rJl5k5921zDhIVyFv6zLTBM4lN%2FwxThAqM%2F8vu%2B1Il6Zv4EgtpVt0Eb2QBa%2BvI835V0Is2bvS87nJJZW8YDOvBapPxajqXOyyURubdgc9eothxR6ZdB3ySCne0%2B3Gk8EYnnBQswmSN%2FRVKsWXfBSAGPeCQosCXBBJx5gfwdvZ8wULPSqGf5oS56SB9Crb3J88M%2B1101RLkHWLR881Uwnrf%2F0gY6pgGoDyqgo%2FK%2FKg0I%2Bq3efqjgIkinEvxJKG%2BJd2iQIQim7FsfAmD2uxBsZPmuoq%2B9T95GmxkXL%2BGtV6pf5UYaxrvK8R0Cv4SePCSYhlvJw9%2BgtOX5UdRZqpn3II8xD4MzVHt1QJ7Jk0Tih1z%2Fa2srdS3KeDUAYWF8FVPAWpnZOGvVDqnMJ0ux85LA2z6LUyJqfl8l%2BMBRgqPwS9tXyz5MmrQzKWqTHc6G&X-Amz-Signature=497a3ce2393b91bba47cb07060e42b7e641746783e96d94d9da9b491adfda842&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+它这里其实有三个不同的路子，分别是第一个 a t，那也是 Theta 这边默认的主打的一个分布式方案，那对你的代码层是 0 侵入式的，它通过一些 rollback log 来从框架层面，从中间件层面来去自动的做一个回滚操作。那在这个回滚动作当中，你是如何来监控你的全局事务分支事务的？那么我们这个内容将会放在后面的分布式事物的章节当中，给同学们单独来讲。
+
+
+好，那除了 a t 以外， Theta 这里还有一个组件也非常利好，是蚂蚁金服贡献的，它自己的金融级的核心分布式事务解决方案TCC，那么它的力度非常的详细，而且它的性能、并发能力都是非常优秀的，那撑起了整个蚂蚁金服的核心金融链路的分布式事务方案。
+
+
+但是它这边有一个缺点，就是它对你的代码侵入性非常高，从我们开发经验上来说，一般它可以让你的代码的编码量几乎是乘以一个 1. 5 到 2 倍，那所以东西虽好，但是还是要量力而行，根据你团队的能力，对业务的理解能力以及技术能力来决定是否上这个终极解决方案。
+
+
+TCC，OK，那除了这个以外，咱蚂蚁金服这里因为牵扯到很多的外部的系统的接入，那么你整个调用链路就可能变得非常的长，怎么办？这里有一个基于补偿的长链路回滚的方案，那就是 SECA 方案，同样我们会在后面具体的章节当中跟同学们来介绍，那这里老师也安利同学们一句话，大家以后碰到分布式事物的问题，当被问到应该怎么做，怎么解，或者在自己项目当中需要去实际的上一个分布式事务方案的时候，不二之选或者说首屈一指你就选它好了。
+
+
+Sita，这也是经过阿里系千锤百炼的大规模生产机验证过的一个成熟的解决方案。
+
+
+okay，那么在最后这里还有一个比前面应用可能名气都大的一个组件，谁 Rocket MQ？那 Rocket MQ 也是阿帕奇的一个顶级项目了，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3d98ea10-ae60-4b06-b330-dc25ee5daf9f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VIRTXFOA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231305Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCICqucsRPyBEeGwuNlc7JoiY1Kc96M1kNytP2%2BLqcY%2BFxAiBTxfTvurpZdkW0LA3%2BfSz%2B6F4%2FQiocGeW2GFvTwMxs9CqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMQMPbKPDTUlik4ypOKtwD3qsgLtKKdov6cXkxqnnNgDE9m%2Boo3b45rOgRDQ%2Fhn%2FJLSdfSARgj6vDov6aNkzPxzgUzfQLFKwtaq6gMWeHXa2oiZ4eQyyroGXMHFW1rwF%2BrwlzXD%2FZxIuiWCMYKQ6mUo3XyAi70Y1rLn%2FZhKvntm4%2BmdYW3Aow7q654C7mNrNheEcTdC%2Fr%2F47c7kHONwFCS31gR14lktX2v2Kz1OpNUlg36obhiGMmbYvhM7maaKWsS1NqsJoWqmblMV3Sw%2BumJG5w5NpCgLmcCuI8NEodu%2FhIfE1RpUZwk8sVBatQnk5upOZ97%2Fg6WXF%2FlEofCsqrUCclc6Vz9jaVQQU9v43hgi88bKiuANHPPtStD%2Bu8pX9jS3WCx8iDczHXqIF5iyZEwUSLJQW1tZZBkszVtfEscbmDUoMHS8nGVc%2BWBzZqv7rJl5k5921zDhIVyFv6zLTBM4lN%2FwxThAqM%2F8vu%2B1Il6Zv4EgtpVt0Eb2QBa%2BvI835V0Is2bvS87nJJZW8YDOvBapPxajqXOyyURubdgc9eothxR6ZdB3ySCne0%2B3Gk8EYnnBQswmSN%2FRVKsWXfBSAGPeCQosCXBBJx5gfwdvZ8wULPSqGf5oS56SB9Crb3J88M%2B1101RLkHWLR881Uwnrf%2F0gY6pgGoDyqgo%2FK%2FKg0I%2Bq3efqjgIkinEvxJKG%2BJd2iQIQim7FsfAmD2uxBsZPmuoq%2B9T95GmxkXL%2BGtV6pf5UYaxrvK8R0Cv4SePCSYhlvJw9%2BgtOX5UdRZqpn3II8xD4MzVHt1QJ7Jk0Tih1z%2Fa2srdS3KeDUAYWF8FVPAWpnZOGvVDqnMJ0ux85LA2z6LUyJqfl8l%2BMBRgqPwS9tXyz5MmrQzKWqTHc6G&X-Amz-Signature=4688ad30a30cf5aea08e002a36a2cab0fef4b4e4716c61331a4399364b914bf8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+但是被谁被阿里集团是强拉硬塞，硬把它塞到了 spring Claude 的门面之下，其实同学们可以把它怎么样？把它看作 spring Claude 以外的一个消息组件，那它这里厉害在哪？那 Rocky MQ 这里得益于阿里系的这些大促场景的磨练，它的性能、稳定性都是非常厉害的。
+
+
+比如说我这里跟同学们举几个数字，第一个， 1 毫秒和 99. 6% 什么意思？那他是说 Rocky MQ 在非常大量级的系统访问压力之下，仍然可以保持 1099. 6% 的消息，都可以在一秒钟之内，错了，是在一毫秒之内 deliver 出去，那非常恐怖，非常惊人的一个效率和稳定性。并且前面提到得益于阿里的历次双 11 以及电商大促、抢购、秒杀等等各种极端场景的磨练，那它这里是达到了一个万亿消息量级的一个堆积，还有处理能力，并且它这里是一个纯粹面向金融级的一个高可用解决方案。
+
+
+那为什么说它是金融级？很多中间件都喜欢说我是金融级的应用，这里有两个方面，第一个方面去宣传我的可用性，因为金融级的应用对你系统的可用性，这里它的要求和我们平常的应用是完全不一样的，那这里任何一点的小问题都会去把它放大，成为一个非常大的故障。与此同时，金融级这里还有一个需求叫Audit，也就是审计，那 Rocketmq 的特点就是完全可以满足咱的金融级业务的需求。
+
+
+OK，那么到这里咱就跟同学们看完了所有的阿里系的应用组件，那这几个组件有四个字总结就是堪当大任，全部是经历了阿里的双十一的严苛线上场景的磨练，那从稳定性还有功能性的角度来说，都是处于 spring Claude 表现非常抢眼的高绩效分子，那全部都是 3. 75 A 的高潜成员。同学们在新的项目当中也非常鼓励大家去使用这些冉冉升起的新星。正所谓背靠阿里好乘凉，咱在自己的新业务新项目当中，也非常推荐大家迁移到阿里巴巴的中间这样的技术栈上面来。
+
+
+OK，那这一节的内容就跟同学们分享到这里了。在后面的小节里，我们跟同学们去了解了解 spring Claude 的一些版本的更新的策略，以及我们在本节课程当中推荐大家所使用的基础选型。OK，同学们，那这一节的课程就到这里了，我们下一小节再见。
+
+

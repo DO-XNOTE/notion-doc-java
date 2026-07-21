@@ -1,0 +1,60 @@
+---
+title: 3-5 案例分析-Google云安全架构详解
+---
+
+# 3-5 案例分析-Google云安全架构详解
+
+架起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，上一章节我们看了看 Web 应用安全，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1016a286-83ac-4134-952a-056ecf87a657/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46655JJN333%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231042Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIF%2F%2BzyWSlNeH0JS2oqoeD9ljbYnq3iniZCzTn8Y1hqVDAiBBjQw9Rr%2FwG2fvo%2B03POAoJZqoBJwHsfkEVmsgpLBxUiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIM3S8yp0SXJ3DdSu5nKtwDhK%2FXKTA4UmWmEE7AGe49I0gi%2BsdwvfxKA%2Bstvb9Frvzz0CUiUv4%2BxQ095jkSUlf8U9d5dGMbW6O5%2F3GtlrtrBVOicFLZr0z3nwYRp2%2FFAEHjDNgdyzz%2Fmgr5YYhxVeXA67pDNvG2pL6vs9vzfxEau5yHgeC4vswSZXo%2BdflwHE8QoZxF42LrABRA79QP60rQyK%2FEGWOHTsJMHFePicnxmziKB4TuyNLcEDYchgyt%2BwGxb2VwuvVqLd%2FTKl3ca8J6bbtk8SO57geHyhghSNnyeksZ%2FhBOB8vhzh1n2qwd2wZJt82cnZ4bogLJd1VNPzQavmlNLd1wjg0%2Bu%2FRYAj3RdLjXMzXYcwOoAb4DctVqUaVAUhPncvHtpG2mjvk%2FZ4PSiaFG4JsCYgNlHf9iBX4r3tCOf5t7pZtG8d6Q7xUH6w2j2DwBQB1TL%2F6ISaXGUdZySNx5M%2BcF2fw%2BCPCzHKPzIoKME%2BPfUjR6kFr7pjFsxK5Qz%2BTzrlywMkD%2Bcs0P05XFn0f9x48AxhBDqEtgtFn7M4PPC6cXb%2B1xpo5y1%2FaFO4QJdNkzFOyp%2BOojIttjcM5fYnrXZq30v0mbpTaxGMsiUJQVwHWm3I9e3%2BkGbD65zHN5Tj6OTUdkwd5kCF4wlbf%2F0gY6pgFqLFq%2FDlrAfa1yneqfYnVrHbC%2BYJ6fA14BICUpIbUAFxvf%2BaobcUg4kOcfUKB8eifSKPGPSyK6a4ReqbKkXdjYOYT8LzYlXaeaRZfnYbKvhR5KcQpVpm%2Fh88h6UuBbu4TNdXXzDVMQBj5Ocx0AVo2dKAEAoRmQzIG6sMGLKfS2%2FRWDxHO%2FG2zQ4rAWaeMtuetJbbMp84k2SYmVyNbUlAYBFNPkDQQ0&X-Amz-Signature=9e3b7a4c1f5ce971549694ac5f5748acf2045eb6f77a1aa960a4a11cbcea00ee&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这个章节我们来聊一个实例，谷歌的云安全平台。好，要聊到谷歌云安全，其实有两块是很值得推荐的，一块就是用户的登陆安全。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c5af9bbb-d119-437c-864c-2d82c818fa07/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46655JJN333%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231042Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIF%2F%2BzyWSlNeH0JS2oqoeD9ljbYnq3iniZCzTn8Y1hqVDAiBBjQw9Rr%2FwG2fvo%2B03POAoJZqoBJwHsfkEVmsgpLBxUiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIM3S8yp0SXJ3DdSu5nKtwDhK%2FXKTA4UmWmEE7AGe49I0gi%2BsdwvfxKA%2Bstvb9Frvzz0CUiUv4%2BxQ095jkSUlf8U9d5dGMbW6O5%2F3GtlrtrBVOicFLZr0z3nwYRp2%2FFAEHjDNgdyzz%2Fmgr5YYhxVeXA67pDNvG2pL6vs9vzfxEau5yHgeC4vswSZXo%2BdflwHE8QoZxF42LrABRA79QP60rQyK%2FEGWOHTsJMHFePicnxmziKB4TuyNLcEDYchgyt%2BwGxb2VwuvVqLd%2FTKl3ca8J6bbtk8SO57geHyhghSNnyeksZ%2FhBOB8vhzh1n2qwd2wZJt82cnZ4bogLJd1VNPzQavmlNLd1wjg0%2Bu%2FRYAj3RdLjXMzXYcwOoAb4DctVqUaVAUhPncvHtpG2mjvk%2FZ4PSiaFG4JsCYgNlHf9iBX4r3tCOf5t7pZtG8d6Q7xUH6w2j2DwBQB1TL%2F6ISaXGUdZySNx5M%2BcF2fw%2BCPCzHKPzIoKME%2BPfUjR6kFr7pjFsxK5Qz%2BTzrlywMkD%2Bcs0P05XFn0f9x48AxhBDqEtgtFn7M4PPC6cXb%2B1xpo5y1%2FaFO4QJdNkzFOyp%2BOojIttjcM5fYnrXZq30v0mbpTaxGMsiUJQVwHWm3I9e3%2BkGbD65zHN5Tj6OTUdkwd5kCF4wlbf%2F0gY6pgFqLFq%2FDlrAfa1yneqfYnVrHbC%2BYJ6fA14BICUpIbUAFxvf%2BaobcUg4kOcfUKB8eifSKPGPSyK6a4ReqbKkXdjYOYT8LzYlXaeaRZfnYbKvhR5KcQpVpm%2Fh88h6UuBbu4TNdXXzDVMQBj5Ocx0AVo2dKAEAoRmQzIG6sMGLKfS2%2FRWDxHO%2FG2zQ4rAWaeMtuetJbbMp84k2SYmVyNbUlAYBFNPkDQQ0&X-Amz-Signature=d76596da6e02308f9c49aba9c9ccf9988ccc20e00b320362d96420272c51221f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那对于谷歌来说，它提出了这样的概念，叫 beyond cop，或者拿出一支小红笔来跟大家点点花花，分享一下其中的核心概念。好， beyond 的cop，你这个 beyond 指什么意思啊？指超越靠谱，就是办公，也就是说谷歌云它的概念就是不光是你的办公室是安全，那机房是安全的，任何人其实都应该享受安全的环境。怎么享受呢？你可以在一个虚拟的办公网络，就谷歌管理的虚拟办公网络，也可以在互联网，你可以通过虚拟办公网络的话远程呼叫协议Redis，也可以通过公有的互联网的什么 single cell 单点登录，只要你拥有身份，只要你拥有token，你要拥有令牌，你就可以通过我们的什么安全控制引擎，那这个引擎其实就是一个规则引擎，通过这样一套规则，它就可以验证你的身份，你是不是有权利访问谷歌？有句话说得好，不以位置定英雄，对吧？就是不管你是在什么我们的互联网，还是什么公司的内部网或者是数据中心，你所有的身份只有什么来自你的用户的账号又活跃密码，你的 token 令牌，以此来定你到底拥有什么样的权限，你访问什么样的资源。
+
+
+他把所有的用户信息全盘加密，放在后台的数据库里面，也把所有跟用户相关的什么设备信息进行加密存储，那怎么样来验证用户和设备呢？它通过这样一个什么 pipeline 全自动管道和什么用户登录系统相关联来最终确定你所用 new 的这个移动端，比如说笔记本或者是什么你的手机端是不是在频繁的变更设备？是不是属于一个已授权的设备？同时你的令牌、你的身份，你的很多的字符串、密码串，什么敏感的拼 ID 串这些，所有这些信息是不是在我们的后台拥有数据库里面的一份保存是否正常匹配？如果你能正常匹配，你就能享受所有在谷歌的办公室，在什么谷歌的数据中心才能享受到的所有资源和服务。
+
+
+除此以外，它的证书什么是实时更新的啊？每天、每月、每年都在进行证书的更替，而把相关的内容进行全盘加密的保护。那这个保护过程当中用到什么公私药技术？用到了对称密药技术。除此以外还有一个安全干扰中心，其实就是做额外的监督和管控这样一套整体系统，其实核心就是这里整个规则引擎实现了不同用户在不同场所、在不同的终端，比如说移动端，或者是我们的 Web 端，或者是笔记本端，或者是 APP 端，都能够安全可靠的访问语音平台，这就是 beyond cop。
+
+
+谷歌的什么办公远程网络访问的思路？那除了这样的一套安全平台以外，谷歌还有一套自建的谷歌云，我们通常叫做GCP，也就是谷歌云平台 Google cloud platform，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/73d40919-7740-4d57-9e58-df14f032ecec/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46655JJN333%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231042Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIF%2F%2BzyWSlNeH0JS2oqoeD9ljbYnq3iniZCzTn8Y1hqVDAiBBjQw9Rr%2FwG2fvo%2B03POAoJZqoBJwHsfkEVmsgpLBxUiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIM3S8yp0SXJ3DdSu5nKtwDhK%2FXKTA4UmWmEE7AGe49I0gi%2BsdwvfxKA%2Bstvb9Frvzz0CUiUv4%2BxQ095jkSUlf8U9d5dGMbW6O5%2F3GtlrtrBVOicFLZr0z3nwYRp2%2FFAEHjDNgdyzz%2Fmgr5YYhxVeXA67pDNvG2pL6vs9vzfxEau5yHgeC4vswSZXo%2BdflwHE8QoZxF42LrABRA79QP60rQyK%2FEGWOHTsJMHFePicnxmziKB4TuyNLcEDYchgyt%2BwGxb2VwuvVqLd%2FTKl3ca8J6bbtk8SO57geHyhghSNnyeksZ%2FhBOB8vhzh1n2qwd2wZJt82cnZ4bogLJd1VNPzQavmlNLd1wjg0%2Bu%2FRYAj3RdLjXMzXYcwOoAb4DctVqUaVAUhPncvHtpG2mjvk%2FZ4PSiaFG4JsCYgNlHf9iBX4r3tCOf5t7pZtG8d6Q7xUH6w2j2DwBQB1TL%2F6ISaXGUdZySNx5M%2BcF2fw%2BCPCzHKPzIoKME%2BPfUjR6kFr7pjFsxK5Qz%2BTzrlywMkD%2Bcs0P05XFn0f9x48AxhBDqEtgtFn7M4PPC6cXb%2B1xpo5y1%2FaFO4QJdNkzFOyp%2BOojIttjcM5fYnrXZq30v0mbpTaxGMsiUJQVwHWm3I9e3%2BkGbD65zHN5Tj6OTUdkwd5kCF4wlbf%2F0gY6pgFqLFq%2FDlrAfa1yneqfYnVrHbC%2BYJ6fA14BICUpIbUAFxvf%2BaobcUg4kOcfUKB8eifSKPGPSyK6a4ReqbKkXdjYOYT8LzYlXaeaRZfnYbKvhR5KcQpVpm%2Fh88h6UuBbu4TNdXXzDVMQBj5Ocx0AVo2dKAEAoRmQzIG6sMGLKfS2%2FRWDxHO%2FG2zQ4rAWaeMtuetJbbMp84k2SYmVyNbUlAYBFNPkDQQ0&X-Amz-Signature=63262ead5ff455a828b8800776302c5dca8084e0da235b891a3caca5e5114c52&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+简称这套语音平台是从底向上完全支撑语音安全，同时支撑基础架构的高可用和快速扩展的。
+
+
+我们来看一看这套基础架构是怎么样搭建的吧？首先是什么最底层的什么物理架构层？那这层里面有什么场所安全？所谓场所安全就是我们很多的这种退役军人，比如像美国的什么海军陆战队退役军人，是吧？参与到什么谷歌的数据中心的管理，对吧？成为安保，成为核心的这个管理人员，这种场所安全在层层监管之下实现了什么？实现了这种就是物理接入的安全，实现了什么？物理访问控制以及物理的监测。那除此以外，所有的硬件设备几乎都是定制化的。所有芯片里面都有什么安全可控芯片以及什么安全加固芯片，通过这种方式实现了物理机的安全。
+
+
+那在上面的，不管你是做虚拟机，还是什么谷歌的云平台镜像，抑或是其中的容器都是采用标准的，经过谷歌反复验证的这个镜像系统，尤其是对一些支付系统，谷歌还跟什么标准的 PCITSS 协会配合，准备了很多专门用于什么，用于支付相关的特殊的镜像，这些镜像参与过支付扫描，参与过安全审计，所以可以直接拿来使用，搭建一套支付平台。
+
+
+在此硬件基础架构之上，他们实现了一套网络安全。其中有几个关键点我这里要提一下，一个是什么 cloud CDN，这个 CDN 跟普通 CDN 不一样，普通 CDN 可能只是做一些网络的什么加速，这套 CDN 就是我前面提到的，它既做负载均衡，也做第一层的网络安全防御， Oauth 十大人马、十大杀手全部挡在外面。同时它还可以提供更多的网络上的这种配合，比如说可以把你的业务转到一个什么，转到一个队列，使它的这个压力变小，同时可以增加一些人和机器的检测，确定你是人还是机器，让机器的这个入侵变得可能更加复杂。
+
+
+那除此以外，除了 CDN 以外，它还提供了这样一个叫铠甲云铠，这套云凯是可以保护各种各样应用，可以是什么 cloud let 这种应用，也可以是 serverless 的应用等等不同的应用类型它都可以进行保护。你可以是容器，可以是发布的应用节点，也可以是服务器或者是虚拟机，都可以实现应用的强大保护。
+
+
+那么在应用保护之后还有一层标准的网络层，我们叫做VPC，这个也是什么在不管是阿里云、亚马逊云和谷歌云通用的概念虚拟什么虚拟网络环境，那这个网络环境里面有它自有的防火墙，有它自有的虚拟网段，也有它内部的标签和出入口管理系统，通过这样一套系统实现从网络层面的完全安全可控。
+
+
+在网络层之上是什么呢？是数据层？所有数据，不管你是落硬盘的数据，还是落 NAS 文件系统的数据，或者是对象存储，也可以是数据库，也可以是 no SQL，只要是在谷歌云平上台上提供的所有服务全部统一加密。你可以两种选择加密方法，一种是什么自有密钥。那你的自有密钥也不能够随意用来加密钥，必须要跟谷歌的 KMS 这种公私钥保护技术进行配合，使得你的密钥能够采用信封加密，同时能实现密码的轮转。如果你采用公有的谷歌加密基础，它的密码应该是平均是每个月进行轮转的。
+
+
+实时保护你的数据，那除此以外， DLP 就是数据泄露保护强大的硝磁和破坏的这种删除机制，以及令人很扎实的数据迁移。我们很多时候数据迁移是用什么云平台的网络来实现的？那谷歌提供一个什么人工数据迁移？当你传输几 t 数据的时候，也许你不需要人工数据迁移，但是如果你有 100P 的数据，也就是有 10 万个 t 的数据，这个时候也许你什么雇一辆车子，雇一个保安，这样的迁移更方便，而谷歌就提供这样的车子、这样的保安以及全程录像监控来实现一个数据中心到另外一个云平台之间的实时迁移。
+
+
+好，在此基础上还能提供什么？还能提供安全保证。 IM 就是谷歌的用户名密码登录系统，这套登录系统是给可以跟谷歌的什么 document spreadsheet 等等云上的这种提供的 SARS 服务对接，实现统一登录，单点登录。那在 i m 基础上又提供了一个 IP 的访问方式，这个访问方式可以支撑所有内网系统的登录，换句话说，你的上面搭建的服务器你不用开公网地址，你只要对接了 IP 以后，就可以用个人账号实现什么内网的服务器登录，这也是谷歌说的一个很关键的点，一切什么以身份为保障，而不是以位置来保障。
+
+
+当你的位置是布在内网的时候，你仍然可以让互联网的用户采用 IP 来实现内网登陆，那除此以外，大部分的服务都是通过服务账号进行管理的。同时服务账号和个人账号之间还可以用一个桥梁的方式实时记录是哪一个人采用这个服务账号来作恶，从而实现什么，从而实现责任的归因。
+那另外还有很强大的端点认证来提供。前面说得了 service 的网络防护以及什么容器云的远程访问，好在最上层是什么？是一套安全的运营中心，那这也是每一个云平台都拥有的能力。那谷歌停供了这样一套安全中心，叫控制总控中心，这套中心里面会考虑到就是如果有黑客入侵，它的攻击、它的威胁以及一些脆弱性的敏感信息都会实时在里面公布。比如我们有人开了 0.0.0 斜杠零的这种防火墙规则，或者有了服务器，把什么把整个服务器挂在公网上，对外暴露了公网IP，都会在什么安全控制中心里作出提醒。
+
+
+那除此以外，它还有一套单独的运营中心，这套运营中心可以实现 IPM 性能监控、 Login 日志监控、 Tracy 链路监控等等功能，那从而和安全平台对接，实现完整的用户的这种追踪和溯源。那在此基础上，谷歌还开源了一个很知名的产品叫 for setting。大家如果是搞安全领域的人都对这个非常熟悉，这是一套云平台的监控管理的开源的大工具，那这套工具可以帮助大家采用完全定制化的策略，不需要再受到安全控制中心、运营中心的限制，完全自制，完全定制化来实现谷歌云平台的安全体验。好，聊完了谷歌的云平台GCP，也聊完了谷歌的 beyond cop 远程访问登录。所以大家是不是感觉大厂就是大厂，每个世界都考虑这么详细，那我们下面就再讲另外一家大厂阿里云的故事，大家敬请期待。
+

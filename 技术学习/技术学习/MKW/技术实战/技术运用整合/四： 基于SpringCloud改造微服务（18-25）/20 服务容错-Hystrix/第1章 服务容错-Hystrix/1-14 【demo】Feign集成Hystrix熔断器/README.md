@@ -1,0 +1,86 @@
+---
+title: 1-14 【demo】Feign集成Hystrix熔断器 
+---
+
+# 1-14 【demo】Feign集成Hystrix熔断器 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8199d0f8-ca42-46d4-86cc-53a91da48636/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662S5EWFWI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225642Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIENbHFY%2FD0AP7WMtNOSjop7ml9DfUgyPzzasj67dskP2AiEA%2Bct01X01FgN8XMlFbUFymHf96%2FZGZi4SI0WcXWAh9V4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKNQgONh0TgnGOLfCCrcA0ut1or%2Bx15Knmyc6TJjpvof1P2AviXHZ7cX45h%2FF2NmylyfD5SY%2BiQN8RIish0cWw1JImZw8jD9VrcpxBF2P6H5%2Bvg4y5GCqD3UDM%2Fv%2FagYFMauIxoE3M6EMl5%2BA2RB4yekKWdCGDGpueSliGF7A%2Fhh8as95xyk4olIQGvkp3VtmTjxSX%2Bokzsbi8dOhP4f%2BG9AVSv9on06RYQgFmgeMbhhJzfnAq4jn6P%2Fy3CAPvevoPLCVACUNnXlEm7r7e5TbNNqP7OBHbVsM3yycXJROVTywe1lKyMFAIJuhC0fuNAXJ%2B4%2BgeeWJxZqRYkjtO4oWYG9xU9bQowKn8RyKF18ODIqZIsh3YSg0cZwL82S8gGnvcPolJ8yUzsj20VlvNbirf7V1l8TUnBV7zvbwAyyYpLKSEc4K%2BviyMmz0fI9UEDj5hjW%2FGPzeA2Jjv4U4xu4eM3WGYWTXNGqIBXOmRTzQMo7b2U8LE4maUsqr9TtzanuJyoQdBYx2K2XOora%2F5OrMfNz8EnKaryWXQb1GrTkeUltCS6vcV8SJOjBOC3uWqX4uhVJHH6okDq7TsYfAgqk%2BZzMjNhIt6p0B8nBtWh1QwP7fEZFFSKid%2Fgs0Uu2VFKqRMmpDKYSUHOuMmcqMJ23%2F9IGOqUB%2BRc0DJkCKRJptXI60C8Y5k%2Fv8%2FGxL8IylnSkBmpG2hj18Ds5esPL6pBgl58%2FJE1lT6Ku5cfAMsjd6usSRbh02E9riHFz8IKhxD%2BJy3vupzb8TCtur93BRwvDrZKddG%2BlN62DRFScwJGXYUuO%2Bky3RLkSN03HsY6cK3e3jw%2BCXMPmj7LfS5DIOLDiYDD0Bs0Jxrk%2BV2UJ%2BiapSkG%2FjPsZJ3IZoroA&X-Amz-Signature=623f83441c52901fb20bfd1006de29022d118d446cfa53e7f1ba2cd1b29aea9a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/cd43b488-9170-4000-9998-2568c6f7bf32/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662S5EWFWI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225642Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIENbHFY%2FD0AP7WMtNOSjop7ml9DfUgyPzzasj67dskP2AiEA%2Bct01X01FgN8XMlFbUFymHf96%2FZGZi4SI0WcXWAh9V4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKNQgONh0TgnGOLfCCrcA0ut1or%2Bx15Knmyc6TJjpvof1P2AviXHZ7cX45h%2FF2NmylyfD5SY%2BiQN8RIish0cWw1JImZw8jD9VrcpxBF2P6H5%2Bvg4y5GCqD3UDM%2Fv%2FagYFMauIxoE3M6EMl5%2BA2RB4yekKWdCGDGpueSliGF7A%2Fhh8as95xyk4olIQGvkp3VtmTjxSX%2Bokzsbi8dOhP4f%2BG9AVSv9on06RYQgFmgeMbhhJzfnAq4jn6P%2Fy3CAPvevoPLCVACUNnXlEm7r7e5TbNNqP7OBHbVsM3yycXJROVTywe1lKyMFAIJuhC0fuNAXJ%2B4%2BgeeWJxZqRYkjtO4oWYG9xU9bQowKn8RyKF18ODIqZIsh3YSg0cZwL82S8gGnvcPolJ8yUzsj20VlvNbirf7V1l8TUnBV7zvbwAyyYpLKSEc4K%2BviyMmz0fI9UEDj5hjW%2FGPzeA2Jjv4U4xu4eM3WGYWTXNGqIBXOmRTzQMo7b2U8LE4maUsqr9TtzanuJyoQdBYx2K2XOora%2F5OrMfNz8EnKaryWXQb1GrTkeUltCS6vcV8SJOjBOC3uWqX4uhVJHH6okDq7TsYfAgqk%2BZzMjNhIt6p0B8nBtWh1QwP7fEZFFSKid%2Fgs0Uu2VFKqRMmpDKYSUHOuMmcqMJ23%2F9IGOqUB%2BRc0DJkCKRJptXI60C8Y5k%2Fv8%2FGxL8IylnSkBmpG2hj18Ds5esPL6pBgl58%2FJE1lT6Ku5cfAMsjd6usSRbh02E9riHFz8IKhxD%2BJy3vupzb8TCtur93BRwvDrZKddG%2BlN62DRFScwJGXYUuO%2Bky3RLkSN03HsY6cK3e3jw%2BCXMPmj7LfS5DIOLDiYDD0Bs0Jxrk%2BV2UJ%2BiapSkG%2FjPsZJ3IZoroA&X-Amz-Signature=bf3b5f1836ec38e028c9b330eeaebe5af90fc00466de80855573ca409e2d31f3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/02f941a3-d703-4590-8236-776a09d95fef/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662S5EWFWI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225642Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIENbHFY%2FD0AP7WMtNOSjop7ml9DfUgyPzzasj67dskP2AiEA%2Bct01X01FgN8XMlFbUFymHf96%2FZGZi4SI0WcXWAh9V4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKNQgONh0TgnGOLfCCrcA0ut1or%2Bx15Knmyc6TJjpvof1P2AviXHZ7cX45h%2FF2NmylyfD5SY%2BiQN8RIish0cWw1JImZw8jD9VrcpxBF2P6H5%2Bvg4y5GCqD3UDM%2Fv%2FagYFMauIxoE3M6EMl5%2BA2RB4yekKWdCGDGpueSliGF7A%2Fhh8as95xyk4olIQGvkp3VtmTjxSX%2Bokzsbi8dOhP4f%2BG9AVSv9on06RYQgFmgeMbhhJzfnAq4jn6P%2Fy3CAPvevoPLCVACUNnXlEm7r7e5TbNNqP7OBHbVsM3yycXJROVTywe1lKyMFAIJuhC0fuNAXJ%2B4%2BgeeWJxZqRYkjtO4oWYG9xU9bQowKn8RyKF18ODIqZIsh3YSg0cZwL82S8gGnvcPolJ8yUzsj20VlvNbirf7V1l8TUnBV7zvbwAyyYpLKSEc4K%2BviyMmz0fI9UEDj5hjW%2FGPzeA2Jjv4U4xu4eM3WGYWTXNGqIBXOmRTzQMo7b2U8LE4maUsqr9TtzanuJyoQdBYx2K2XOora%2F5OrMfNz8EnKaryWXQb1GrTkeUltCS6vcV8SJOjBOC3uWqX4uhVJHH6okDq7TsYfAgqk%2BZzMjNhIt6p0B8nBtWh1QwP7fEZFFSKid%2Fgs0Uu2VFKqRMmpDKYSUHOuMmcqMJ23%2F9IGOqUB%2BRc0DJkCKRJptXI60C8Y5k%2Fv8%2FGxL8IylnSkBmpG2hj18Ds5esPL6pBgl58%2FJE1lT6Ku5cfAMsjd6usSRbh02E9riHFz8IKhxD%2BJy3vupzb8TCtur93BRwvDrZKddG%2BlN62DRFScwJGXYUuO%2Bky3RLkSN03HsY6cK3e3jw%2BCXMPmj7LfS5DIOLDiYDD0Bs0Jxrk%2BV2UJ%2BiapSkG%2FjPsZJ3IZoroA&X-Amz-Signature=fbbe3a51514009d60a2173341ec0584cdd1d33e61a2b3285a26a1699b9e71fce&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我慕课网的各位同学们，大家好，在这一节里，我们将要去试着配置 high strikes 的熔断器参数。要我说这一节应该是整个 high streaks 中最轻松的章节了。因为为什么？它既不需要看代码，也不需要写代码，只需要去配置一些参数，然后观察它是否起作用就可以了。所以我们的第一个步骤就是到配置文件中，把所有跟熔断器有关的参数以及它的含义展现出来。接着就可以去 postman 中实际的调用方法，然后观察熔断器的作用。咱这里不光要观察熔断器是否打开和关闭，还要观察其中的一个中间状态，那就是 half open 半开状态。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8cfb7034-26a1-44fa-870e-f93fd940fde7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662S5EWFWI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225642Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIENbHFY%2FD0AP7WMtNOSjop7ml9DfUgyPzzasj67dskP2AiEA%2Bct01X01FgN8XMlFbUFymHf96%2FZGZi4SI0WcXWAh9V4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKNQgONh0TgnGOLfCCrcA0ut1or%2Bx15Knmyc6TJjpvof1P2AviXHZ7cX45h%2FF2NmylyfD5SY%2BiQN8RIish0cWw1JImZw8jD9VrcpxBF2P6H5%2Bvg4y5GCqD3UDM%2Fv%2FagYFMauIxoE3M6EMl5%2BA2RB4yekKWdCGDGpueSliGF7A%2Fhh8as95xyk4olIQGvkp3VtmTjxSX%2Bokzsbi8dOhP4f%2BG9AVSv9on06RYQgFmgeMbhhJzfnAq4jn6P%2Fy3CAPvevoPLCVACUNnXlEm7r7e5TbNNqP7OBHbVsM3yycXJROVTywe1lKyMFAIJuhC0fuNAXJ%2B4%2BgeeWJxZqRYkjtO4oWYG9xU9bQowKn8RyKF18ODIqZIsh3YSg0cZwL82S8gGnvcPolJ8yUzsj20VlvNbirf7V1l8TUnBV7zvbwAyyYpLKSEc4K%2BviyMmz0fI9UEDj5hjW%2FGPzeA2Jjv4U4xu4eM3WGYWTXNGqIBXOmRTzQMo7b2U8LE4maUsqr9TtzanuJyoQdBYx2K2XOora%2F5OrMfNz8EnKaryWXQb1GrTkeUltCS6vcV8SJOjBOC3uWqX4uhVJHH6okDq7TsYfAgqk%2BZzMjNhIt6p0B8nBtWh1QwP7fEZFFSKid%2Fgs0Uu2VFKqRMmpDKYSUHOuMmcqMJ23%2F9IGOqUB%2BRc0DJkCKRJptXI60C8Y5k%2Fv8%2FGxL8IylnSkBmpG2hj18Ds5esPL6pBgl58%2FJE1lT6Ku5cfAMsjd6usSRbh02E9riHFz8IKhxD%2BJy3vupzb8TCtur93BRwvDrZKddG%2BlN62DRFScwJGXYUuO%2Bky3RLkSN03HsY6cK3e3jw%2BCXMPmj7LfS5DIOLDiYDD0Bs0Jxrk%2BV2UJ%2BiapSkG%2FjPsZJ3IZoroA&X-Amz-Signature=ba88aceef749262c34214f4cb5b2ac3313766b1a4f65f3a5aaf506437d902632&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+好，那我们接下来就转战因泰利 J 主场开工，每天 coding 1 小时，健康工作 50 年。咱别把豆包不当干粮，写配置文件也是 coding 的。这里我们打开了 high strikes fall back 项目中的 application properties 然后咱们把配置文件总共分成了两个类型。
+
+
+第一个类型是正儿八经的参数，第二个类型是打酱油的路人参数。这什么意思呢？也就是说我们在这次的 demo 环节，这些正儿八经的参数将具体的影响到熔断的判断以及开关何时开启和关闭。那打酱油的路人参数是什么呢？举个例子，比如说熔断器的全局开启，那它默认可能就是处于开启状态。因此你在这把它声明成开启和不声明是一个作用。这里只是想把所有跟熔断器有关的参数都列举出来，让大家也认个脸熟，就当来个全家福了。好，那我们从哪个参数开始呢？就先找个路人，跟老板这里先打二两酱油。第一个参数，咱就先指定熔断开关的全局开启状态。好，它的前置把它直接从上面 copy 下来。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/6f492d3d-bc25-49b1-ad08-ef47ccc6b3b8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662S5EWFWI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225642Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIENbHFY%2FD0AP7WMtNOSjop7ml9DfUgyPzzasj67dskP2AiEA%2Bct01X01FgN8XMlFbUFymHf96%2FZGZi4SI0WcXWAh9V4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKNQgONh0TgnGOLfCCrcA0ut1or%2Bx15Knmyc6TJjpvof1P2AviXHZ7cX45h%2FF2NmylyfD5SY%2BiQN8RIish0cWw1JImZw8jD9VrcpxBF2P6H5%2Bvg4y5GCqD3UDM%2Fv%2FagYFMauIxoE3M6EMl5%2BA2RB4yekKWdCGDGpueSliGF7A%2Fhh8as95xyk4olIQGvkp3VtmTjxSX%2Bokzsbi8dOhP4f%2BG9AVSv9on06RYQgFmgeMbhhJzfnAq4jn6P%2Fy3CAPvevoPLCVACUNnXlEm7r7e5TbNNqP7OBHbVsM3yycXJROVTywe1lKyMFAIJuhC0fuNAXJ%2B4%2BgeeWJxZqRYkjtO4oWYG9xU9bQowKn8RyKF18ODIqZIsh3YSg0cZwL82S8gGnvcPolJ8yUzsj20VlvNbirf7V1l8TUnBV7zvbwAyyYpLKSEc4K%2BviyMmz0fI9UEDj5hjW%2FGPzeA2Jjv4U4xu4eM3WGYWTXNGqIBXOmRTzQMo7b2U8LE4maUsqr9TtzanuJyoQdBYx2K2XOora%2F5OrMfNz8EnKaryWXQb1GrTkeUltCS6vcV8SJOjBOC3uWqX4uhVJHH6okDq7TsYfAgqk%2BZzMjNhIt6p0B8nBtWh1QwP7fEZFFSKid%2Fgs0Uu2VFKqRMmpDKYSUHOuMmcqMJ23%2F9IGOqUB%2BRc0DJkCKRJptXI60C8Y5k%2Fv8%2FGxL8IylnSkBmpG2hj18Ds5esPL6pBgl58%2FJE1lT6Ku5cfAMsjd6usSRbh02E9riHFz8IKhxD%2BJy3vupzb8TCtur93BRwvDrZKddG%2BlN62DRFScwJGXYUuO%2Bky3RLkSN03HsY6cK3e3jw%2BCXMPmj7LfS5DIOLDiYDD0Bs0Jxrk%2BV2UJ%2BiapSkG%2FjPsZJ3IZoroA&X-Amz-Signature=1bf9749e1684dcb28416cecb1114451f49b44dee54317bef519312d97ac4dde5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+High streaks command default.
+后面跟什么？当然是熔断器的鼎鼎大名的 circuit breaker 这个 B 要大写。后面跟 enable 的，我们这里把它指定成 true 其实咱大家不指定它，它依然是生效的。那什么情况下需要强制指定呢？当然就是你要把它指定成 false 的时候。好，这个打酱油的大哥咱大家认识了，再去认识一下二弟和三弟。我们先把前面这段给复制过来，看后面一个参数的名称，大家就知道它们都是什么作用了。看叫 false open 这是什么含义呢？这是强制开启的意思，也就是说你的应用即使没有达到熔断的状态，那它依然会强制的开启熔断器。有些服务它调用着好好的一点也没有出错。那你这里如果把这个 false open 给它打开了，所有的正常调用的服务也会走到熔断逻辑里面的。 OK 所以这个开关咱轻易不要把它给打开。
+
+
+那接下来我们看了第二个二哥以后三弟是谁，把 3D 叫出来，3D的名字跟二哥很像，那它不叫 false open 了，叫 false closed 它的含义看这个字面意思就非常明白了。二哥是要强制开启熔断开关，这个 3D 跟二哥对着干，他是要强制关闭熔断开关。我们这里要把这个值设置成什么，也要设置成 false 对不对？这两个参数都是不用则以一用惊人不撞南墙不回头，轻易可不要去碰。那我这里再跟大家总结一下。第一个参数，这个大哥是指开启或关闭熔断的功能。下边两个参数分别是指强制的开启熔断开关或者关闭熔断开关，这个熔断功能和熔断开关可是不一样的。好，我们看完路人参数，接着来看一些主线任务的 NPC 也就是正儿八经的参数。那这些参数有多正经呢？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/27ff896a-be2f-4c45-9e1c-8d5d5ff39b08/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662S5EWFWI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225642Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIENbHFY%2FD0AP7WMtNOSjop7ml9DfUgyPzzasj67dskP2AiEA%2Bct01X01FgN8XMlFbUFymHf96%2FZGZi4SI0WcXWAh9V4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDKNQgONh0TgnGOLfCCrcA0ut1or%2Bx15Knmyc6TJjpvof1P2AviXHZ7cX45h%2FF2NmylyfD5SY%2BiQN8RIish0cWw1JImZw8jD9VrcpxBF2P6H5%2Bvg4y5GCqD3UDM%2Fv%2FagYFMauIxoE3M6EMl5%2BA2RB4yekKWdCGDGpueSliGF7A%2Fhh8as95xyk4olIQGvkp3VtmTjxSX%2Bokzsbi8dOhP4f%2BG9AVSv9on06RYQgFmgeMbhhJzfnAq4jn6P%2Fy3CAPvevoPLCVACUNnXlEm7r7e5TbNNqP7OBHbVsM3yycXJROVTywe1lKyMFAIJuhC0fuNAXJ%2B4%2BgeeWJxZqRYkjtO4oWYG9xU9bQowKn8RyKF18ODIqZIsh3YSg0cZwL82S8gGnvcPolJ8yUzsj20VlvNbirf7V1l8TUnBV7zvbwAyyYpLKSEc4K%2BviyMmz0fI9UEDj5hjW%2FGPzeA2Jjv4U4xu4eM3WGYWTXNGqIBXOmRTzQMo7b2U8LE4maUsqr9TtzanuJyoQdBYx2K2XOora%2F5OrMfNz8EnKaryWXQb1GrTkeUltCS6vcV8SJOjBOC3uWqX4uhVJHH6okDq7TsYfAgqk%2BZzMjNhIt6p0B8nBtWh1QwP7fEZFFSKid%2Fgs0Uu2VFKqRMmpDKYSUHOuMmcqMJ23%2F9IGOqUB%2BRc0DJkCKRJptXI60C8Y5k%2Fv8%2FGxL8IylnSkBmpG2hj18Ds5esPL6pBgl58%2FJE1lT6Ku5cfAMsjd6usSRbh02E9riHFz8IKhxD%2BJy3vupzb8TCtur93BRwvDrZKddG%2BlN62DRFScwJGXYUuO%2Bky3RLkSN03HsY6cK3e3jw%2BCXMPmj7LfS5DIOLDiYDD0Bs0Jxrk%2BV2UJ%2BiapSkG%2FjPsZJ3IZoroA&X-Amz-Signature=4a564bb529f201298ce7c26f24a3859fe73acbc26f6134e7afda2526b29dadee&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们先来认识。第一个正经人，这一次我们先见人再说它的功能。好，我们把前面的属性前缀 copy 一下打上，先看人长什么样，再来决定认不认识它，它长什么。后面的参数叫 CircuitBreaker 紧接着的属性名叫 request volume stress home 这个相当于是一个阈值的含义，我这里给它起舞好了，起舞弄轻影起舞。那它是什么含义呢？它是熔断的前提条件，也就是说只有达到这个前提条件之后，它才能生效。那这个前提条件具体是指什么？当然是指请求的数量了。
+
+好，总结一下，它是说在一定的时间窗口内，稍后我们将要看怎么来配置一个时间窗口。在这个时间窗口内，我们请求数量达到了 5 个，达到 5 个以后才开始进行熔断的判断。也就是说你的请求数量如果在相应的时间窗口内，假设这个时间窗口是 20 秒钟，在这 20 秒内你的请求数量只有 4 个，那即使这四个请求全失败了，也无法走向熔断逻辑，因为它没有达到这个阈值。所以说大家把这个参数理解为阈值，它需要和其他几个参数共同作用才能生效。那接下来我们就看剩下的几个参数是什么，好把注释补全才开始进行熔断判断。
+
+
+OK 刚才咱提到了一个时间窗口对不对？那接下来这个参数咱先说他干什么的，再看他的人好不好，他干什么呢？就是配置时间窗口。这个时间窗口是一种类似滑动窗口的方式。那接下来他的人长什么样呢？我们把前面的属性给 copy 过来，by  Hystrix command 这里给它 copy 下来，到 default 后面不要动了，后面参数是不一样的，然后点点什么呢？ Matrix 看到 Matrix 的同学们应该知道了它是统计的作用。好统计什么呢？统计一个时间窗口， rolling states 后面跟 time in milliseconds 所以说它的单位是毫秒，默认值是5000，也就是 5 秒钟。咱这里把它调的稍微大一点，因为方便测试个十百千万配置成 2 万毫秒，也就是 20 秒钟。这个含义是指以每 20 秒作为一个统计时间的窗口。那你在 20 秒钟如果请求数量达到了 5 个，那么我将要对你开始进行熔断的判断了。
+
+
+好，接下来咱来配置熔断的一个关键参数，绝对主线句型 NPC 它的名字，我们把它前面给 copy 下来。接着后面跟什么呢？跟 error threshold percentage 大家打这些属性的时候，千万不要把名字打错了，一字之差就可能不起作用。这个参数的值我们把它设置成 50 好大的纸。什么意思呢？它是一个百分比了，50的意思就是50%。
+
+
+综合这三个参数，大家能不能悟出这里面的门道也就是说在 20 秒的时间窗口内，当你的请求数达到我的阈值 5 的时候，我开始对你进行统计和熔断开关的判断。如果你在这个时间窗口内的请求数，它的失败几率，这个失败包括直接抛异常，也包括 timeout 如果这些失败的请求数达到了50%，那么怎么样？熔断开启是不是非常非常简单啊？ OK 我前面还提到了一个熔断开关的状态，也就是说它不仅只有开启和关闭状态，它还有一个半开状态。对不对？那咱接下来认识另外一个正经人半开参数，我这里先把他的注释给打全，超过 50% 的失败请求则进入熔断逻辑开关开启。
+
+
+OK 那接下来一个正经人是跟使熔断半开状态有关的，他的名字一样，咱先把前面的前缀给他 copy 下来，后面跟什么？ sleep window in many seconds mainly seconds OK 你看到 sleep 大家估计就估摸着猜到什么了，它是指在多少毫秒以后，尝试把你的熔断器给它转移到什么转移到一个半开状态。
+
+
+我们这次一边打它的注释一边来介绍它是指当熔断开启以后，然后经过多少秒再进入熔断的半开状态。好，这个半开状态它的时间通常要小于什么呢？小于这个下面配置的时间窗口对不对？也就是说你在 20 秒进入了熔断以后，我可能要配置一个多少15,000，也就是 15 秒。自打你进入熔断开关开启状态以后，隔 15 秒钟我就尝试着把你移到半开状态。当你到了半开状态以后，  Hystrix 会尝试着放一个请求过去去发生真实的服务调用。如果这个请求成功了，那么熔断器是不是就处于关闭了？那如果不成功怎么办？不成功容难器当然还是继续处于开启状态了。
+
+
+所以这四个根正描红正儿八经的属性，是我们这一节内容中需要进行重点测试的四个属性。那除了这四个属性以外，老师还能不能介绍一些其他的属性不急啦，剩下的一些属性，咱等到了后面的特宾章节再来跟大家进行具体的介绍。我可以剧透一下，咱有一个  Hystrix dashboard 大盘，通过 turbine 来收集  Hystrix 熔断信息，并且把它展示到  Hystrix 大盘应用上去。 OK 剧透完毕。那我们接下来把项目启动起来，看一下这个熔断的效果。首先把尤瑞卡启动，紧接着尤瑞卡启动完了之后，要把 thin client application 也给它启动起来。前两个应用都启动起来以后，咱再到 high strikes Fallback application 中把它跑起来走你。
+
+
+那么接下来咱做哪一个测试呢？我们就利用前面已经创建好的接口哪一个接口？ Timeout 接口。因为我们根据 Timeout 接口的设置，既可以让它成功，也可以让它失败，所以它特别适合于测试 high strikes 的熔断条件。那咱在 Timeout 接口的超时配置中设置了多少毫秒？我们来看一下全局的 default 超时是 1000 毫秒。所以如果我们的 Timeout 接口运行时间超过了一秒钟，它就会自动判定为失败走向降级逻辑。
+
+
+好，那我们再回顾一下前面设置的熔断条件，在 20 秒内，当你的请求数量达到了 5 个以后，那开始计算熔断条件。那我们先来测试第一个case ，调用四次发生超时的情况，看它是不是会进入熔断逻辑。怎么来看它是否进入熔断逻辑呢？很简单，我们的 thin client application 是不是有 log 如果我对分 client application 发起了调用，进入了熔断逻辑，那么代表着它不会真实的发起远程调用。所以这里面理应看不到任何 log 好，我们这时候打开 POS 曼先发起四次失败调用，我把页面拉长一点，然后把它的端口号指定为 5 万端口号，调用它哪个服务呢？当然是调用 Timeout 服务，并且给出它的 Timeout 值，也就是我想让它停顿的时间是一好同学们，由于前面咱设置的时间窗口是 20 毫秒，但是它每隔 15 秒就会怎么样？它每隔 15 秒就会进入半开状态。因此要想测试这个case ，我们要快一点的点击发送，尽可能的在 15 秒内完成至少 6 次调用。
+
+
+好，大家紧盯着这个 log 行，看它有多少个调用正式达到了分。 client application 我们这里发起第一次调用准备火箭发射走起。第一次调用 log 出来，第二次调用第三次调用正常，第四次调用正常，第五次调用依然正常，现在达到阀值了 5 个对不对？发起第六次调用。看到吗？第六次调用再也不会出现 log 了，说明处于了熔断状态。对不对？好，刚才我们停了很长时间，现在把 log 清空。
+
+
+前面那个 case 说明了我在五次调用以内是不会触发熔断条件的，即使它全部失败。那当第六次调用以后，他开始去做计数和统计了对不对？他发现你的失败请求概率高于了50%，因此开启了熔断状态。那么我们这里想去再测试一下这个 50% 的条件是否正常生效这里我对远程调用发起一个 Timeout 等于 0 的操作，它不会进入熔断逻辑。好我们 123 发送三次，这个时候我们再发送一次。第四次好把它切换成 134 也调用 4 次，现在是 50% 了再调用。同学们看到吗？往后的再次调用它都不会打印出新的 log 了，因为为什么呢？因为它进入了熔断阀值。
+
+
+我们回顾一下刚才的测试，前四次调用我使用的是 Timeout 等于0，也就是说它并不会触发我们设置的 1 秒超时的条件。那后面的四次调用，我设置的 Timeout 等于1，那么它会触发超时，并且进入 Fallback 逻辑中，所以前四次和后四次调用完，它正好是 1 比 1 的关系，也就是说失败了50%，成功了50%。当我再次发起第五个调用的时候，那么它的失败概率是不是就超过了50%？因此它会怎么样？它会进入到熔断的流程中。
+
+
+这个属性测试完了，我们再来理解一下半开状态是什么含义。我们把 log 清空，首先构造一个一定进入熔断器的状态。首先我们多发起几次调用，让  Hystrix 处于熔断状态。好，我们这里发起调用。好，现在已经进入熔断状态了对不对？好，我们这时候把 Timeout 改成0，不停的点击 send 看什么时候第一行 log 会打印出来，稍等片刻。好，同学们看到这里吗？进入熔断状态的时候是什么时间 46 秒？紧接着咱在什么时候进入了半开状态呢？同学们看到这一个节点吗？这个请求就是进入半开状态第一个发送的试验请求。也就是说如果这个请求成功了，那么后续熔断开关就会处于关闭状态。如果这个请求再次失败了，那熔断开关依然会处于开启。
+
+
+那同学们可能会有疑问了，这个 46 到 00 之间，好像是 14 秒多没有到 15 秒。对不对？这是为什么呢？很简单，因为我们的接口是不是有一个延迟一秒钟的功能呢？这就是为什么我们在 log 中看到时间的半开窗口是在 14 秒打开的，而不是 15 秒打开，因为那剩下的 1 秒钟在 fink land application 中被用来做线程挂起了，解释完毕。
+
+
+OK 那我们所有的熔断参数都已经测试完毕了，我这里不妨跟同学们留了小作业，咱注意到这里都是设置的全局熔断参数对不对？如果我想针对一些服务制定熔断参数，该怎么办呢？有几种方式可以办到呢？同学们不妨参照之前学习的案例，或者也可以在网上找一点资料，把刚才的问题在大家自己的电脑上试验一把。
+
+
+OK 那这一章的内容就快要结束了，我来总结一下，我们本节了解了  Hystrix 熔断器中的几个关键参数，分别是时间统计窗口以及控制熔断器半开状态的时间窗口。还有两个参数是控制熔断器的技术标准的这几个参数都是正儿八经的参数，也就是主线任务。当然我们有一些支线任务他们同样也非常重要。这几个打酱油的路人参数分别是强制开启或者强制关闭  Hystrix 熔断开关的控制器，以及是否开启  Hystrix 熔断功能的控制器。熔断开关和熔断功能可是不同的概念。
+
+
+好，这一节的内容就到这里结束了。在后面的章节中，我们有一些红篇记住了，分为上中下三部曲，跟大家介绍如何进行主链路的规划。再往后还将跟大家介绍  Hystrix 中另一个重要的流程叫做线程隔离。好同学们，那我们这期就到这里了，下期我们再见。
+
+
+
+

@@ -1,0 +1,48 @@
+---
+title: 6-3 定时任务 - 定时任务弊端与优化方案
+---
+
+# 6-3 定时任务 - 定时任务弊端与优化方案
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/33ccb7c7-2da7-48cb-86e8-3ab4899d8f27/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663N4LJ7MK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGsgKYfLbsik%2FeqK%2FJKN4tpHCBLcuEGQmKOPN2%2BzH4SzAiEA%2B1llpFO%2FBDCf2Ylg7DHEi7q72slKpnJMXXv0HrKleHwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAj8TsyCW8Sq0jzycSrcA23PnXrZi2sNC8jVi6DzMvAXtnPe7tfaobXZ31OTjkGntKPSRiUBbEKep6pP2HHsCNVy0k8b2sBpqYYmrdTUGfOlLAP6Jcm%2B2I5RE0GoIqg%2B5UxuRT4GAsAfLMWPU2QEejjrEVJ%2F%2FFjc6E6QM%2B5hnw%2FtXj4PnvxnmlMeY%2BumebRucdgYsHAwDEPMxIAJwjEg%2FrIFVV6lYEMl5tAgMwf1OIMWBo6KREWGcgLSNHio4nZ802gPLzNQV3rpc7IdFxtGg53G69rqQi0BebCC6hfzXJLb9T5Jdnrz0KUBzbbhK7OzjKbHYpazXjy8R9xnfRVKcg4nbApIVm3eaG5RXdVtU00CvnX3w6YT%2BBO62ajb4sgEL98ZhN2mHroRY01B0FPNBtj%2BD%2BWwGvtzX3ou%2F50KzrKZuUCi864c9PELBjEVHNaxmE8awlDU9TwV1JC5vO1I%2FfW0k82gWxfzDgNFClVqMtboU8OLqus3yArQQOhdHdR1xBrq%2FB8cFojnVvOvRiMObVZq8eumL4cGJf2u5JjPww%2BfHtRBRyvC3lnTDAiaziLRsP4vQQHrjxzf4q0KHM8A1G%2ByWfs6QW%2F%2BVSATWAa9d4fW%2FYmn%2FpuHJ%2BTugvSHVEGaLi0o5yV2Re77FWABMJG4%2F9IGOqUBNvXomOVjXWxu8gMCSz5OnFzU4NANL00Ubqbw3hZzTac5t264VcHL4VuP1lKwaQKRNRsP1g9GnWAr3%2BTlGKHwsyxCxJ1n8YGu%2F26q19ajtLvzuUps6sC3Y3ciFoBiFeAtnq9ULBhxMYt8hQRkOu8nGImUk%2FFoeIt5sB7wsRA2Gn8Fm33wEPxo%2Bts5iiX5hbGtb95rtKwXM36siGXFiZx5A6kjSM5W&X-Amz-Signature=b5e96506f9ea59bc4da0d4a9276d690b1532128b51166e85a0a8a610cb3daa9a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+现在我们就通过了定时任务的方式来实现了我们的一个未支付订单超期自动关闭的功能。对于这样的一个功能来讲，其实如果我们使用定时任务来实现，其实会有相应的弊端的。最大的弊端就是对于我们的订单，因为在数据库里面，订单的数据是海量的，
+
+
+它有可能达**到上万、十万甚至是百万。一旦我们的数据量多了，就会有一些相应的问题出现了。在这里我们来分析一下，使用定时任务关闭超期未支付订单会存在的弊端。**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/82e7a6dc-603d-47bb-b563-e5f3298435ed/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663N4LJ7MK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGsgKYfLbsik%2FeqK%2FJKN4tpHCBLcuEGQmKOPN2%2BzH4SzAiEA%2B1llpFO%2FBDCf2Ylg7DHEi7q72slKpnJMXXv0HrKleHwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAj8TsyCW8Sq0jzycSrcA23PnXrZi2sNC8jVi6DzMvAXtnPe7tfaobXZ31OTjkGntKPSRiUBbEKep6pP2HHsCNVy0k8b2sBpqYYmrdTUGfOlLAP6Jcm%2B2I5RE0GoIqg%2B5UxuRT4GAsAfLMWPU2QEejjrEVJ%2F%2FFjc6E6QM%2B5hnw%2FtXj4PnvxnmlMeY%2BumebRucdgYsHAwDEPMxIAJwjEg%2FrIFVV6lYEMl5tAgMwf1OIMWBo6KREWGcgLSNHio4nZ802gPLzNQV3rpc7IdFxtGg53G69rqQi0BebCC6hfzXJLb9T5Jdnrz0KUBzbbhK7OzjKbHYpazXjy8R9xnfRVKcg4nbApIVm3eaG5RXdVtU00CvnX3w6YT%2BBO62ajb4sgEL98ZhN2mHroRY01B0FPNBtj%2BD%2BWwGvtzX3ou%2F50KzrKZuUCi864c9PELBjEVHNaxmE8awlDU9TwV1JC5vO1I%2FfW0k82gWxfzDgNFClVqMtboU8OLqus3yArQQOhdHdR1xBrq%2FB8cFojnVvOvRiMObVZq8eumL4cGJf2u5JjPww%2BfHtRBRyvC3lnTDAiaziLRsP4vQQHrjxzf4q0KHM8A1G%2ByWfs6QW%2F%2BVSATWAa9d4fW%2FYmn%2FpuHJ%2BTugvSHVEGaLi0o5yV2Re77FWABMJG4%2F9IGOqUBNvXomOVjXWxu8gMCSz5OnFzU4NANL00Ubqbw3hZzTac5t264VcHL4VuP1lKwaQKRNRsP1g9GnWAr3%2BTlGKHwsyxCxJ1n8YGu%2F26q19ajtLvzuUps6sC3Y3ciFoBiFeAtnq9ULBhxMYt8hQRkOu8nGImUk%2FFoeIt5sB7wsRA2Gn8Fm33wEPxo%2Bts5iiX5hbGtb95rtKwXM36siGXFiZx5A6kjSM5W&X-Amz-Signature=c3ebf0fe249038569fcd8d27c0fa5e07b74ee368f0bab698336eab455cb54561&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先看**第一个，对于我们的定时任务来讲，由于我们会有一个时间的判断，所以它会有一个时间差**。比方我们现在是以每个小时来计算的。现在我有一个 10 点比方，举个例子， 10: 39 下单，这个时候他会在 11 点去进行一个检查， 11 点检查， 11 点检查的时候是没有问题，所以他还不足一小时。好。随后我们在 12 点又进行了一次检查， 12 点检查，此时它是超过一小时，可以它不仅是超过一小时，甚至是一小时，在多了 39 分钟，超过一小时多于 39 分钟。 39 分钟。
+
+
+其实它的一个时间差，它并不能够做到一个准确的时间点去把关闭，去把订单给关闭掉，所以它会有一个时间差。既然有了时间差，就会导致我们的一个什么，导致程序不严谨。对于时间来说，一般来说你都要做到一个非常非常严格的把控，不能有太多的时间误差。OK，好，这是第一点是有一个会有时间差，好，随后下一个。
+
+
+**第二点我们来看一下，它是不支持集群的**。其实我们在一开始也已经是介绍了什么是直群。直群我们单个节点，它同时部署了多个，可能有两个，也有可能是三个。假设我们现在部署了 10 台集群，应该是要通过 10 个节点来部署了。一个集群总共是有 10 台计算机。这个时候我们的定时任务其实会存在于每一个节点上，所以它会每个小时同时在执行 10 次。这个很显然是没有必要的，我们只需要有一台节点来执行就可以了。所以这就是它的一个问题。
+
+
+写一下单机没毛病。使用集群后就会有多个定时任务了，如何去解决它？其实也有相应的解决方案，只使用一台 g 算机节点，单独用来运行所有的定时任务。也就是把我们项目里面所有的定时任务单独的拆出来，分离到某一个特定的子项目，把这个子项目在某一个计算机节点去进行一个运行，这样子也可以。
+
+
+好。除了这**两个弊端以后，它还会有一个最大的弊端。最大的弊端它是什么？会对数据库全表搜索。**OK，这样子会极其影响数据库性能，因为我们在 service 里面是这么做的。在这里我们是直接通过一个条件查询，只要是Waitpay，只要是 10 状态的一个订单，它会全部的查询出来。现在我们数据库里面也就几十条，你要去做一个查询是没有任何问题的，现在你的数据库可能会有上百万条数据，你再去这样子的执行，你的一个性能会非常非常差的，所以肯定不能够去做。我们是这样子的， select 星号 from orders where order status，是等于 10 语句，你要去查询。如果因为我们没有分页，我们是直接全表去查询的系列，肯定会有影响的。所以介于这三点，我们在真正的一个开发里面，我们是不可能会使用这种方式去关闭我们这种超期的订单的。
+
+
+这种方案。这种方式只能用于什么？写一下**定时任务，仅仅只适用于一些比较小型的小型轻量级项目，或者是一些传统项目都是没有问题的**。当然，如果你是做的一个电商项目，前期的用户量比较少，可能在投第一个季度，你可以在第一个季度使用这种方式去做，但是你要考虑后续的一个量变，如果你的一个量级起来了以后绝对是不可以使用这种定时任务去做的。这一点一定要去注意。
+
+
+在**互联网这种电商平台，我们应该如何去处理？**其实我们在后续的课程里面会涉及到MQ，后续课程会**涉及到消息队列，也就是MQ。 MQ 它分为很多种，它比方它会有 RabbitMQ、appeal、RocketMQ，是 Kafka，其实还有很多。还有是像Redis，其实也有类似于这种生产者和消费者这种消息的机制，但是 Redis 不适用。还有是像 ZeroMQ** 等等，其实会有很多，后面会有相应的老师来讲解。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b84503c8-e5ac-4ace-9c3e-c3ac7136a560/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663N4LJ7MK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224718Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIGsgKYfLbsik%2FeqK%2FJKN4tpHCBLcuEGQmKOPN2%2BzH4SzAiEA%2B1llpFO%2FBDCf2Ylg7DHEi7q72slKpnJMXXv0HrKleHwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAj8TsyCW8Sq0jzycSrcA23PnXrZi2sNC8jVi6DzMvAXtnPe7tfaobXZ31OTjkGntKPSRiUBbEKep6pP2HHsCNVy0k8b2sBpqYYmrdTUGfOlLAP6Jcm%2B2I5RE0GoIqg%2B5UxuRT4GAsAfLMWPU2QEejjrEVJ%2F%2FFjc6E6QM%2B5hnw%2FtXj4PnvxnmlMeY%2BumebRucdgYsHAwDEPMxIAJwjEg%2FrIFVV6lYEMl5tAgMwf1OIMWBo6KREWGcgLSNHio4nZ802gPLzNQV3rpc7IdFxtGg53G69rqQi0BebCC6hfzXJLb9T5Jdnrz0KUBzbbhK7OzjKbHYpazXjy8R9xnfRVKcg4nbApIVm3eaG5RXdVtU00CvnX3w6YT%2BBO62ajb4sgEL98ZhN2mHroRY01B0FPNBtj%2BD%2BWwGvtzX3ou%2F50KzrKZuUCi864c9PELBjEVHNaxmE8awlDU9TwV1JC5vO1I%2FfW0k82gWxfzDgNFClVqMtboU8OLqus3yArQQOhdHdR1xBrq%2FB8cFojnVvOvRiMObVZq8eumL4cGJf2u5JjPww%2BfHtRBRyvC3lnTDAiaziLRsP4vQQHrjxzf4q0KHM8A1G%2ByWfs6QW%2F%2BVSATWAa9d4fW%2FYmn%2FpuHJ%2BTugvSHVEGaLi0o5yV2Re77FWABMJG4%2F9IGOqUBNvXomOVjXWxu8gMCSz5OnFzU4NANL00Ubqbw3hZzTac5t264VcHL4VuP1lKwaQKRNRsP1g9GnWAr3%2BTlGKHwsyxCxJ1n8YGu%2F26q19ajtLvzuUps6sC3Y3ciFoBiFeAtnq9ULBhxMYt8hQRkOu8nGImUk%2FFoeIt5sB7wsRA2Gn8Fm33wEPxo%2Bts5iiX5hbGtb95rtKwXM36siGXFiZx5A6kjSM5W&X-Amz-Signature=f51a6fee69ada4ebb35bb0b03747b177c4645c4d93aed9a0b89bed872b26f622&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Rabbit、MQ、卡夫卡都会有，其中会涉及到一个队列的形式，叫做延时任务。延时任务。使用延时任务或者是延时队列。使用延时队列就可以来处理我们的一个相应的订单了，它是如何去处理？比方现在我们生产了一条订单，这条订单是 10 点 12 分下单的，这个时候它的状态是 10 状态，应该是未付款。
+
+
+10 状态。如果按照我们之前的一个定时任务，他会到 11 点去进行一个检查，要在 12 点他才能够把订单状态去关闭。但是如果我们使用了延迟队列，它会在下一个，也就是 11: 12 检查，他会在这个时间点检查。在这个时间点检查，你只需要检查他当前的状态是不是未付款。如果当前状态还是10，则直接修改，应该说直接关闭状态，关闭订单即可。
+
+
+OK，我们没有像前面这么复杂了，一步一步去查询，还要去搜索。在这里它只需要在 11 点十二分的时候去检查他当前这一条订单，也就是查询数据库里面只需要查询一次，去看一下他的状态是多少。如果还是10，直接把这个状态改为订单关闭就可以了。这个其实就是一个原始队列，它可以定在一个小时以后，或者两个小时，三个小时都可以的。这个就是非常的匹配我们当前的一个业务了。OK，后面会有相应的老师来给大家讲解消息队列。等到讲完了原始队列以后，大家可以通过这种延时队列的方式把我们订单去进行一个关闭，也是没有问题的。OK？
+
+
+
+

@@ -1,0 +1,18 @@
+---
+title: 3-7 本章小结和作业
+---
+
+# 3-7 本章小结和作业
+
+**3-7 本章小结和作业**
+
+尽管网关层没有业务逻辑，但是确是微服务架构中非常重要的一环。有的小功能点我们是通过图文来讲解的（比如限流），没有对应的Demo程序，所以呢这部分就留给同学们练练手，自己实现一把。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b6a31451-8016-4bc7-b26f-c2f29c8d11f3/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WPRNKWIK%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225730Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDHKwjOV%2B6%2BvFJ9w3ivQwORWo8ozON18C0llYB%2B47mG2wIgZNvLBW6WhKD8wR24Uz2BfYKrONBwn5sNh8%2Bjd54MTMwqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFe13nsr152NfNLirircA4yGQggIrkFaITfARssxqBrJr1P4KqDPjX8HKZBGrBRh%2FBf2m7ecNXZW%2Fhk77ouUHEQQIjWG4IMPb0Y0HkWqxKtgRYGhU1hEccUxkh1G8vZxIG9YvBYWlbjfXp5Yw885Q5rAh%2B6Cs56xfEZXLlx2IKeFoE3vM0ZtvyYnEIQvLFBqkIOEgT4H%2BONUd9b%2FXupcO8RvvopK6PiTEmSeNPPJOKVn00SCffUZGkBF7%2F20PtCHRekUTtEh%2BTrAI9X2DPdqiYbaPv7LngwJH%2BbCOjEodKD584SwvcQYs7RunZvq0Vm%2FQgStTZV8u30g3BwEgjQJ8JOd0ZyXz%2BYlL%2FLwTcoBZHm0eL4qW721qvTgWcBqsroO11ETTSHueqqD47CZgfYqtDG76UT0tLg%2FZGTMe2sRQ%2FJ514SFPlzoJibP0rucGviDg%2Bws7pTSJCZjKflrTxh9NoeAvilTAQdPV4IT8SvJNRtCFo9i5QajZsCc2fmJxJnszKxjeZwO%2B4ezXSV1ATZKFm8r%2BC2W0AlubGJwqPHiuPF4EcbJ3wci%2BFHN6js%2Bdncg4%2FW%2FjeJ0kShRfxUIZJh5dkMonsn0d1WzZmUB33rFgJ0SFr2LNIlA8LYa%2BLoqFAiiF8EEF5syXktE%2FMf5MIW7%2F9IGOqUBVng%2FiVuBwQCDzMjn3xnpdd773MyNSnCmAP9tCAJWGeMIAvG16VKJ9PwbSewbgCNqcNTke13SYwRYty%2BXfoVpBJaUJ9GZwncmP%2BR7XJS4xG8g5eWRHvPEVYSBoePlrZraAx9RKJiNXiW27pA5InEc1ixak1PlLl3quJXEuqf7aZuyAtr5vsp8M1JB2ZuaP9cFgutb9CfXXjMHhZymndgU%2FfDvUHiJ&X-Amz-Signature=5c943d17d9b27af9d7e5ff2a4931c87c524563f517d62a94d4b317b41dee9f88&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**作业时刻**
+
+尝试给网关层引入Redis限流机制（利用图文教程里讲到的配置项）
+
+为电商项目中的其他模块引入网关层路由
+

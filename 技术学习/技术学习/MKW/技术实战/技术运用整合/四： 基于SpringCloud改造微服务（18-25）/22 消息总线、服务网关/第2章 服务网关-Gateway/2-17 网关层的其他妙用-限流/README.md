@@ -1,0 +1,129 @@
+---
+title: 2-17 网关层的其他妙用-限流
+---
+
+# 2-17 网关层的其他妙用-限流
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0d897917-26c1-43f1-8bca-acabac460aef/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VD4JNJPJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225743Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCkO0%2FLmb1SaHeIImqBE6hKKqzN0PyJSgxU57OIsRAuDwIhAP0%2FU56t1CuNIhjly1l%2FscG3JNwbTYtDX3mFTtoUci%2BkKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxnYjbdzaQQn0CvaMYq3APBw2zlJ6oB%2Fi1lSJEnnlG8i0Oj46E98Fwy0HNZ59403U6P0H4qIJU%2FzKXLm9doZggnnPEmGBNCK2626o0VC66BYzKUE2XUtjKPtAXWpYYVBQ77wrD8Kz8JH5LklElO6idQcKZb58y0YwNHv1L9jhpmk55Ax2xdaw5XSoo24F1BNOX0NVzgLZaTwM7xdGSG4y3IXKcWehOXbQOJQKLVAYfjvKA0OxHH2N65snkZNPpn1SnhPVWFK1XR0JeI%2FWHMCLPiNObaSM3ss90Zf1UxuINoZtPJcnFZLU8txY%2BgKO2l1lJgsDIA7akV4PzLQIYN60yMBw21wgjr9uyyq6yihBufiiRU7rOx2H8vbjat4tOzOXjOxC%2FdLbfg4JTeYa9OxmwYAuKkUOZQn%2FBvb8s13jfguoFVKt6RAoaGkF%2Fzel%2BIMRsJMqutRziLx7oHS8UlaU81n7g6qJNs%2FiB8vm%2F%2BbEVoupLdo5AvHNGIfcSNkhDQU9IdBZ7yd6dMuWPI9ZbhoWbhSnjgqWNqPGOf3NJ8gH3fXTxRFepPV6VAbhazAYe2YsF3AlRpA7lFc5mdkKZvlV6UtkLGJHuAcWyPO7IXIerUu3WrVt5ITAA5n5lIgoqQr66F%2FMo42wL8X%2F0WNTC1uv%2FSBjqkAf1JsYPW82hs4WTvFBIsDFEpy00sgx7yayhbxqgHjK5xV5vhLEnX%2FGMmJkDAdJl1YBk5l6pIjXI90KICeue%2Brsd1qY2Ez8Oz2t4ZppW7SeMwNafBbuuJ%2BTaXGBQJXbq98FTDK79nUrGPL7Q4YBAjNf5sPpEGwqfMRUdbRTRL7qeEeDvptEMWIdSWJ7zEk8kQvEbgA3hY6VY%2F5dHm42PxAkxykq1E&X-Amz-Signature=15ee9feaf15782cd8799d91cc94142f0907c6ef76cfdc20591ccdcf51cc5537e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4211b19b-894d-49fa-9f47-3fee7f96c549/SCR-20240721-ivxr.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VD4JNJPJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225743Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCkO0%2FLmb1SaHeIImqBE6hKKqzN0PyJSgxU57OIsRAuDwIhAP0%2FU56t1CuNIhjly1l%2FscG3JNwbTYtDX3mFTtoUci%2BkKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxnYjbdzaQQn0CvaMYq3APBw2zlJ6oB%2Fi1lSJEnnlG8i0Oj46E98Fwy0HNZ59403U6P0H4qIJU%2FzKXLm9doZggnnPEmGBNCK2626o0VC66BYzKUE2XUtjKPtAXWpYYVBQ77wrD8Kz8JH5LklElO6idQcKZb58y0YwNHv1L9jhpmk55Ax2xdaw5XSoo24F1BNOX0NVzgLZaTwM7xdGSG4y3IXKcWehOXbQOJQKLVAYfjvKA0OxHH2N65snkZNPpn1SnhPVWFK1XR0JeI%2FWHMCLPiNObaSM3ss90Zf1UxuINoZtPJcnFZLU8txY%2BgKO2l1lJgsDIA7akV4PzLQIYN60yMBw21wgjr9uyyq6yihBufiiRU7rOx2H8vbjat4tOzOXjOxC%2FdLbfg4JTeYa9OxmwYAuKkUOZQn%2FBvb8s13jfguoFVKt6RAoaGkF%2Fzel%2BIMRsJMqutRziLx7oHS8UlaU81n7g6qJNs%2FiB8vm%2F%2BbEVoupLdo5AvHNGIfcSNkhDQU9IdBZ7yd6dMuWPI9ZbhoWbhSnjgqWNqPGOf3NJ8gH3fXTxRFepPV6VAbhazAYe2YsF3AlRpA7lFc5mdkKZvlV6UtkLGJHuAcWyPO7IXIerUu3WrVt5ITAA5n5lIgoqQr66F%2FMo42wL8X%2F0WNTC1uv%2FSBjqkAf1JsYPW82hs4WTvFBIsDFEpy00sgx7yayhbxqgHjK5xV5vhLEnX%2FGMmJkDAdJl1YBk5l6pIjXI90KICeue%2Brsd1qY2Ez8Oz2t4ZppW7SeMwNafBbuuJ%2BTaXGBQJXbq98FTDK79nUrGPL7Q4YBAjNf5sPpEGwqfMRUdbRTRL7qeEeDvptEMWIdSWJ7zEk8kQvEbgA3hY6VY%2F5dHm42PxAkxykq1E&X-Amz-Signature=bc71bcfa7f97b6645621c7b44b6240ca4b51e45385a95bf90eaa64f67f99a7b1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**2-17 网关层的其他妙用 - 限流**
+
+前面一节我们学习了如何在网关层对服务调用异常做统一封装，这一节，我们来了解一下Gateway的另一个用法-限流。
+
+前面的小节我们都是采用的基于Java代码的路由规则，这次我们换个路子，用基于yml的配置方式配置路由规则。这两种方式只是配置形式不同，但效果是一样的，而且Gateway中可以同时使用这两种方式做配置，在yml和Java中的配置规则都会生效。
+
+**为什么要限流**
+
+话不多说，让我们看图说话，不限流？难道等着老司机翻车吗？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5fa4ecfa-7ff8-4d6c-9468-735cfb973d72/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VD4JNJPJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225743Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCkO0%2FLmb1SaHeIImqBE6hKKqzN0PyJSgxU57OIsRAuDwIhAP0%2FU56t1CuNIhjly1l%2FscG3JNwbTYtDX3mFTtoUci%2BkKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxnYjbdzaQQn0CvaMYq3APBw2zlJ6oB%2Fi1lSJEnnlG8i0Oj46E98Fwy0HNZ59403U6P0H4qIJU%2FzKXLm9doZggnnPEmGBNCK2626o0VC66BYzKUE2XUtjKPtAXWpYYVBQ77wrD8Kz8JH5LklElO6idQcKZb58y0YwNHv1L9jhpmk55Ax2xdaw5XSoo24F1BNOX0NVzgLZaTwM7xdGSG4y3IXKcWehOXbQOJQKLVAYfjvKA0OxHH2N65snkZNPpn1SnhPVWFK1XR0JeI%2FWHMCLPiNObaSM3ss90Zf1UxuINoZtPJcnFZLU8txY%2BgKO2l1lJgsDIA7akV4PzLQIYN60yMBw21wgjr9uyyq6yihBufiiRU7rOx2H8vbjat4tOzOXjOxC%2FdLbfg4JTeYa9OxmwYAuKkUOZQn%2FBvb8s13jfguoFVKt6RAoaGkF%2Fzel%2BIMRsJMqutRziLx7oHS8UlaU81n7g6qJNs%2FiB8vm%2F%2BbEVoupLdo5AvHNGIfcSNkhDQU9IdBZ7yd6dMuWPI9ZbhoWbhSnjgqWNqPGOf3NJ8gH3fXTxRFepPV6VAbhazAYe2YsF3AlRpA7lFc5mdkKZvlV6UtkLGJHuAcWyPO7IXIerUu3WrVt5ITAA5n5lIgoqQr66F%2FMo42wL8X%2F0WNTC1uv%2FSBjqkAf1JsYPW82hs4WTvFBIsDFEpy00sgx7yayhbxqgHjK5xV5vhLEnX%2FGMmJkDAdJl1YBk5l6pIjXI90KICeue%2Brsd1qY2Ez8Oz2t4ZppW7SeMwNafBbuuJ%2BTaXGBQJXbq98FTDK79nUrGPL7Q4YBAjNf5sPpEGwqfMRUdbRTRL7qeEeDvptEMWIdSWJ7zEk8kQvEbgA3hY6VY%2F5dHm42PxAkxykq1E&X-Amz-Signature=ef20473d8561efb4dfdbec9f95089251d9e7b54717bfed1756e41ac6b6771479&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面分布式里我们讲了限流，后面还有一章专门介绍Sentinel限流，能用的开源技术和选择都很多，所用的限流算法也大同小异。所以这一节我们就抛掉繁文缛节，单刀直入，直接看Gateway组件中限流应该怎么做。
+
+网关限流三步走
+
+这里采用令牌桶计数的方式做限流，已经忘了令牌桶是什么的同学，麻烦把分布式限流章节里的demo重新手敲一遍，顺带回顾一下之前的章节。
+
+问：把客户请求放到令牌桶，总共分几步？三步
+
+**准备工作**
+
+我们的Best Practice是基于Redis来实现限流，因此要保证本地启动了Redis服务。同时将下列配置加入到Gateway的配置文件中：
+
+```java
+spring:
+
+	application:
+
+		name: gateway-service
+
+	redis:
+
+		host: localhost
+
+			port: 6379
+
+			database: 0
+```
+
+这里是配置Redis连接信息的，假如你不配置的话，Gateway也会尝试用默认配置项来连接Redis。但如果你在Redis配置信息中提供了错误的IP或者Port的话，调用方法时依然会成功，不过限流功能就失效了，因为底层的Netty服务无法连接到Redis，也就无法提供限流支持。但Gateway为了保证服务可用性，限流功能的异常并不会阻碍正常的方法调用。
+
+**Key Resolver**
+
+Gateway的限流组件要求定义一个Key Resolver用来对每次路由请求生成一个Key，这个Key就是一个限流分组的标识，每个Key相当于一个令牌桶。假如我们限定了一个服务每秒只能被调用3次，这个限制会对不同的Key单独计数，我们把调用方机器的Host Name作为限流Key，那么来自同一台机器的调用将落到同一个Key下面，也就是说在这个场景下，每台机器都独立计算单位时间调用量。
+
+创建Key Resolver的方式很简单：
+
+```java
+@Bean
+
+public KeyResolver remoteAddrKeyResolver() {
+
+return exchange -> Mono.just(
+
+exchange.getRequest().getRemoteAddress().getHostName());
+
+}
+```
+
+上面的例子创建了基于Host Name的令牌生成器，我们可以根据自己的业务来选择合适的Key，比如说可以在接口层面做限流（使用接口的Path作为Key），还可以从Request中提取业务字段作为Key（比如用户ID等）。
+
+**配置过滤器**
+
+```java
+spring:
+
+cloud:
+
+gateway:
+
+routes:
+
+- id: feignapi
+
+uri: lb://FEIGN-SERVICE-PROVIDER
+
+predicates:
+
+- Path=/feign-api/**
+
+filters:
+
+- StripPrefix=1
+- name: RequestRateLimiter
+
+args:
+
+key-resolver: '#{@remoteAddrKeyResolver}'
+
+redis-rate-limiter.replenishRate: 10
+
+redis-rate-limiter.burstCapacity: 20
+```
+
+在上面的限流配置中，我们主要关注最后3行中的属性：
+
+key-resolver：这里注入的就是在上一步中我们定义的Key Resolver，它使用SpEL表达式从Spring上下文中获取指定Bean
+
+replenishRate：令牌桶每秒的平均填充速度
+
+burstCapacity：令牌桶总量
+
+有关令牌桶的细节可以参考分布式限流章节的内容。
+
+**小细节**
+
+假如我们不想依赖Redis的话，还有其他选择方案吗？必须有，但是要靠大家自己动动手。如果大家想借助其他存储介质实现限流，可以参考RedisRateLimiter这个类的实现，通过继承AbstractRateLimiter来创建一个自定义的计数器。
+
+**小结**
+
+这一节我们学习了网关层的限流，接下来我们该对商城应用动刀子了，给它加上一个网关层做路由。
+
+学习Tips：快速学习能力和业务理解能力是很重要的技能，尤其在做技术选型的时候。拿限流来说，我们有五花八门各种组件可供选择，但是一个人不可能把所有技术全部学会，如何在最短的时间里找到最合适的技术选型，不仅要求你具备短时间快速搭建POC验证方案的能力，还要对业务有一定的理解，这样才能选出和业务最搭的技术方案。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9df55b49-73d6-4587-b940-935089eeb798/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VD4JNJPJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225743Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCkO0%2FLmb1SaHeIImqBE6hKKqzN0PyJSgxU57OIsRAuDwIhAP0%2FU56t1CuNIhjly1l%2FscG3JNwbTYtDX3mFTtoUci%2BkKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxnYjbdzaQQn0CvaMYq3APBw2zlJ6oB%2Fi1lSJEnnlG8i0Oj46E98Fwy0HNZ59403U6P0H4qIJU%2FzKXLm9doZggnnPEmGBNCK2626o0VC66BYzKUE2XUtjKPtAXWpYYVBQ77wrD8Kz8JH5LklElO6idQcKZb58y0YwNHv1L9jhpmk55Ax2xdaw5XSoo24F1BNOX0NVzgLZaTwM7xdGSG4y3IXKcWehOXbQOJQKLVAYfjvKA0OxHH2N65snkZNPpn1SnhPVWFK1XR0JeI%2FWHMCLPiNObaSM3ss90Zf1UxuINoZtPJcnFZLU8txY%2BgKO2l1lJgsDIA7akV4PzLQIYN60yMBw21wgjr9uyyq6yihBufiiRU7rOx2H8vbjat4tOzOXjOxC%2FdLbfg4JTeYa9OxmwYAuKkUOZQn%2FBvb8s13jfguoFVKt6RAoaGkF%2Fzel%2BIMRsJMqutRziLx7oHS8UlaU81n7g6qJNs%2FiB8vm%2F%2BbEVoupLdo5AvHNGIfcSNkhDQU9IdBZ7yd6dMuWPI9ZbhoWbhSnjgqWNqPGOf3NJ8gH3fXTxRFepPV6VAbhazAYe2YsF3AlRpA7lFc5mdkKZvlV6UtkLGJHuAcWyPO7IXIerUu3WrVt5ITAA5n5lIgoqQr66F%2FMo42wL8X%2F0WNTC1uv%2FSBjqkAf1JsYPW82hs4WTvFBIsDFEpy00sgx7yayhbxqgHjK5xV5vhLEnX%2FGMmJkDAdJl1YBk5l6pIjXI90KICeue%2Brsd1qY2Ez8Oz2t4ZppW7SeMwNafBbuuJ%2BTaXGBQJXbq98FTDK79nUrGPL7Q4YBAjNf5sPpEGwqfMRUdbRTRL7qeEeDvptEMWIdSWJ7zEk8kQvEbgA3hY6VY%2F5dHm42PxAkxykq1E&X-Amz-Signature=4222104277df0db53257e1de3f67cdeb219b03878e58d233ae52d30fde052e96&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+

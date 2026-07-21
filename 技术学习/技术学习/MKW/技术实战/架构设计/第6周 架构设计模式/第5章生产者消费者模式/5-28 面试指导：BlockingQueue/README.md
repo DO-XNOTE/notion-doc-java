@@ -1,0 +1,31 @@
+---
+title: 5-28 面试指导：BlockingQueue
+---
+
+# 5-28 面试指导：BlockingQueue
+
+一段时间，我们是学校 advertiser consumer 这种架构模式的各种理论知识体系，包括它的优点也缺点，后面我们也结合了一些实际的案例，我们经典的这个应用的短期实现方式来了解理论如何跟我们的实际中案例结合在一起的，当理论和实际互相印证。
+
+
+所以说我相信经过这些实践和理论的这个培养，大家对生产者消费者模式中模式本身已经有了一定的了解。同时我也经常提到一句话，就是我们这里讲的就是抛砖引玉掩饰自己，回去以后多多的找些更详细的资料和结合自己身边的案例深的思考。包括前面讲过的什么 MQR Kafka 这种经典的这个架构设计，它怎么去做到的，你都还是要花些时间去找一些更详细的这个官方资料，包括动手来体验一下，对你自身了解这个架构模式和实际应用哪些场景有很好的帮助。废话不多说，我们下面来的这个大家可能都比较喜欢的环节就是模拟面试。按照我的风格来，一般就是我们的面试题都是由浅入深的，所以说我们先来看一个相对比较简单的这样一些题目，比如说在讲法里，什么是 broken kill？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ef8f1fb1-43bd-43e7-8c4c-3cc673c04372/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466WYO7SCLZ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230631Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIG9CN%2BEA%2F1oxK4zwG2ZgkJhA5SLuaYr2JA7JMaMhfjFRAiAkSQTuJO%2BJiA5Fdgywt8wJ2WS07KXnQ%2Fy3Kwm2cDYEwiqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIM30k4GhC7BKWirOWvKtwDJOy0g53qKc79sWN5hqcr98tGaSO3HXAEgG588twmAQDQqv0lEfBkwTGCcjuReRGiz00Scvg3mcooF%2FeMCabHfjsoSQqQLOx0njWt8P2YrACDBGrr3XeHeHbW3J1wZPjRvNwa6s2pVmnA%2FktGJhNXVHEsMfW5rYL1eOc%2BZqcW7z2JQaMgyqGZGPYyTF9376UuYE85NcNnRoAQWS4qHUHdiLZrl0%2BeUpCYChEVW6aG90s0Sp3YwBCaSn44PVkpb0%2FORYftYipTENYsf7dDwaiEyMqzBDlhyNthhpqKqnKZ3Lv1CUbOZboC3tAMjwBux0pVG%2BOHK%2Bw4nTkYS4Q%2BFGp8%2BwxSS248mBBtYPGd%2FoFO5ab2AUYQn8FVMIlI9NTJqee%2FRWR5Wh4lfHdwLTlrRMg7IgT8VHgwFDZw53n5SFppg60aym1PTdljF7VVVE2eAaiDIq0cgauwTKfjLYowJq9aU2YTSHolxqYd%2Bg48mYALLAr2R%2FvzcaDY7%2BJymqnlblKJNGD4qjlIxh5opBTUMcd2WxmsfZquxl69V4WBCp6qKAGmVT%2FC1pDAqd4L86dD5M9ZSqDO6%2Bzc6UxasfVCAB2H6XtxcR5vzPu4my%2FTavclaxeNy9x1kLEv0bxFppQw7rr%2F0gY6pgH6dOJHaN90LpV9Rlra0IYzJLbfAW41geCktdeS3JIR44sZCmXdIaj86H1kG4%2F82ubx5CpJCRMfHqXHDFus%2Fh4vir%2Bo9TrORACqoDC6DDhMgyiNLU8Q5DXh57t8IrL3g0qoY%2FHDujKhApCNxP%2FXSkPL0LAx9xHUoZpQS6ZXKFiY%2FxHYWyYCQqfASKMK1LWp6QiPXryUTAZwYJPT%2Bb0zSA98Ogrh%2Bi%2Bp&X-Amz-Signature=4cd6462e42a8bf41bf6670eecb18b86d21fadcc6ec6ddacf449c431789c3742d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+如何利用 broken kill 来实现这个 producer consumer 的模式？其实说实话，这个题真的是非常基础的一个题目，但是如果说实话，你没有接触过这个东西，你要打好它也不太容易。当然这个题确实真的是不难，你有很多种打法，可以甚至说是经典的打法，就是背书，基本上你只要把 BQ 相关的知识解析，了解到你给他讲的出来的，基本这个就没有什么问题了。
+
+
+因为它不存在一个怎么讲就说发散性思维的东西，这个东西就纯粹的这种最基础层面的一些答案，这个就完全跟你之前，比如说实话，如果我们这是一个真实的面试的话，就完全跟你之前你有没有去看过这方面的知识，或者有没有背过相关的答案没有关系。所以这种相对来说就是看本身对这个 Java 整个结构体系，以及我们刚好跟多线程相关的一些东西你有多熟，反正是这样子的。在这里我也还是简单的说一下。首先来讲的话来讲一下这个 broken q，它本身它实现了几个不同的接口的，准确来说它继承了这个 connection q 这两个对不对？所以它有 connection 的特征， q 的一些特征这个我觉得你还是要说出来的这样子来，因为整个 block q 这个 Gecko 它的一些特征其实不光是它自己定义的，有些是来自于q，有些是来自于connection，所以这些东西你还是要知道的，把它讲出来对于你证明你了解这个 bug q，给面试官一个很好的这样一个加分项。
+
+
+然后简单来讲一讲，可能就是讲一讲这个 broken q 的具体的用法，说白了就是它定义的这个接口里面有些特征，对于整体你来了解有这个 broken cute interface 是有很好的帮助的。今天的来讲可能就是一些主塞还是不主塞，哪些方法是主塞的，哪些方法是不主塞的，这些东西你可能要讲一讲，不用全部的什么 APA 的备选，这个好像也没有那个必要，重点就讲一讲，说可能哪些是会阻塞的，哪些是不会阻塞的。这个我觉得你说出来就差不多了，因为以前不可能要去说每个面试者，他能够把所有的类的接口方法全部都说出来，这个也不太现实，也没有什么必要，毕竟咱们这个只是看你熟不熟悉，也不像你背这个 SDK 这个每个参考的意义。然后我觉得重点讲一讲 broken cue 的时候，有些操作你是不能放这个 null 的，放 null 的就会把控制成异常，这一点确实还是整个说出来比较好点，因为这个就是说相对说是比较重的一个点。
+
+
+个人看法是再讲一讲rokick，毕竟它是一个接口，对吧？它自己是继承了这个 connection 和这个q，它自身的实现有几个？你简单的说一两个好了，比如说 i read you， a broken， QR linked，broken，cure，它们各自的这个特征是怎么样子的？我觉得你把这些点都说到基本上就差不多了，它实现这个 prevent consumer 说法一是一个线程在做这个生产，往里面撞另外一个线再从外拿，说白了就也就读，对吧？它有一个 broken 的这样一个特征，说白了就是它跟别人的这个区别就是在它是一个 broken 的这样一个，你把这个特征打出来，然后它哪些注意事项打一打。
+
+
+我觉得这种题差不多到位了，你一定说，除非是有些面试官，当然可能会深入的问你，比如说你说某种方法它是怎么样的，比如他问你在 push 的时候什么时候会阻塞，他阻塞的原理或者直线那里面是怎么实现的。这个就看你有没有去看过源代码，有没有去理解过这种呢？其实相当于还是主要就是跟你对这个类本身都熟悉没有关系。
+
+
+其实你说这个题难吗？我觉得是真的是非常不难的诶，一般是这种问题说实话在架构式的面试是属于非常前期的这样一些纯粹的探路的，这样一些阶段的时候来问一问的就纯粹跟 Java 相关的知识里面，或者问一下因为价格式的考量的这个东西，更并不在于说你对 Java 的一些具体的 SDK 的熟悉尺度有多高，但是因为我们毕竟这张讲的是这个生产者消费者的模式，而 broken q 是一个非常典型的这 Java 得到的一个一种实现方式。所以说我也把它放到我们这个耳面试题目的归在里面。
+大家，反正如果你对这个 broken q 已经非常熟了，那 Java 里面的 broken q 这套东西已经很熟了，就不用花太多神去再去了解一遍。如果你不太熟，刚好跟我们讲这个 predict consumer 这个 iPad 它又是契合的，所以说你可以换成人类去了解一下，甚至写几个来测试一下，这都挺好，因为这个也是可以作为你工具箱里面的一个工具，所以说这种问题大家不用担心，你只要花点时间去了解一下就可以了。
+

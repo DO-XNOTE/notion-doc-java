@@ -1,0 +1,38 @@
+---
+title: 1-5 Dubbo注册中心
+---
+
+# 1-5 Dubbo注册中心
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a8b15a72-639c-4aa4-b28e-926305577af7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QDJJ5XU2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFsSY743MZjy7uG%2FMZ%2BMS1S33Hmmj4gqfGJeirYfEcOnAiBU%2BRB5wEug13K2uRNO3iAoIy%2BjDBz%2FKOf2PTsEcw8mnyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMsiICNIH%2FWEPMIRIQKtwDqLy1z23hnhq1YaZHx4Eq%2Bz4Tia7PvvRFKL0lIb0Oxzqm0nEz%2By%2Fl6l0MPMAmfI%2FuUOdouhp8PGbMvZQLtkLL2Z6otMNk2%2FKQvGMyHYFYpfo3rNNGSbtZ5phg45nY%2FOMtxXoH%2FUVSpK7TmDUwS3BDlYe0AIUhW%2BmPPdH0fOLTnueaGZfG6xqY%2B4WL0nPFF5XnV%2FMqWZnOoStsMjK8EtO5fJLcj%2F6hdzvCp3GL5QA%2BjHoOBFpDTi44dxf%2FcNZDnTjk%2BArHADgV%2F38p3MAZDn9MnjGBsli%2Bk5BwC0SlVQJ%2B2XUPZlOgPImAyLSxPj8TjFvc4KqGcoaBpv%2Fa8NTM8zHyXfZfBH0dSish32qnYCsBr0aQPjOZ4DTguUZQizPpBYAjgJUCxDvPN9dRtsADNEsxEiIcEQStKcNnvOuaTo%2Ff8vLzVM0uwxYw2r5HxfzOjw0tHRYwckNfUh%2ByDSctYiCJJIr7b2d14KBcy5tsxs4Y7cMhOWqBcCcVo2944HP0ykcXVETmWGIoxT4%2Bbpnc1bt0xjDMySyMo3FdWQdW1VgFigx69cZFTsnppkqhYnVQR%2FJRV6YsD%2BOOQOCkaihjHBDnaIDZc7hQDb%2BQGNzA48vf4Pnr4MBAD8By473sjzUw6bf%2F0gY6pgGMPniNSGI%2B6mbjjq3JI066W0g%2B3Ge3hWn5cNFe6EOkpLIqZx5K%2FA6yph8LJeJD15vUrf5bPUZfWA1%2Fp%2B8O%2B6D52dy5o3%2FBhanh7V3zFCZI95Syyw%2FxuzPUPJy4wAEQ0Nwltsgv285EQ5U1P8%2BuQaBjICg%2B2vQo5%2FT0%2Be7NgZ%2FBaH14sxYUh0vKKXZtCF29BSCgXItyhoMl21mXPCKXlVBdU%2FarTp%2B4&X-Amz-Signature=e820bb37c15236d4dd53d7de2191793356d2ac804f1cfbd0395725df5191b6c4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b192f2e1-bfe6-4b1d-8e10-73d69091a9f8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QDJJ5XU2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFsSY743MZjy7uG%2FMZ%2BMS1S33Hmmj4gqfGJeirYfEcOnAiBU%2BRB5wEug13K2uRNO3iAoIy%2BjDBz%2FKOf2PTsEcw8mnyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMsiICNIH%2FWEPMIRIQKtwDqLy1z23hnhq1YaZHx4Eq%2Bz4Tia7PvvRFKL0lIb0Oxzqm0nEz%2By%2Fl6l0MPMAmfI%2FuUOdouhp8PGbMvZQLtkLL2Z6otMNk2%2FKQvGMyHYFYpfo3rNNGSbtZ5phg45nY%2FOMtxXoH%2FUVSpK7TmDUwS3BDlYe0AIUhW%2BmPPdH0fOLTnueaGZfG6xqY%2B4WL0nPFF5XnV%2FMqWZnOoStsMjK8EtO5fJLcj%2F6hdzvCp3GL5QA%2BjHoOBFpDTi44dxf%2FcNZDnTjk%2BArHADgV%2F38p3MAZDn9MnjGBsli%2Bk5BwC0SlVQJ%2B2XUPZlOgPImAyLSxPj8TjFvc4KqGcoaBpv%2Fa8NTM8zHyXfZfBH0dSish32qnYCsBr0aQPjOZ4DTguUZQizPpBYAjgJUCxDvPN9dRtsADNEsxEiIcEQStKcNnvOuaTo%2Ff8vLzVM0uwxYw2r5HxfzOjw0tHRYwckNfUh%2ByDSctYiCJJIr7b2d14KBcy5tsxs4Y7cMhOWqBcCcVo2944HP0ykcXVETmWGIoxT4%2Bbpnc1bt0xjDMySyMo3FdWQdW1VgFigx69cZFTsnppkqhYnVQR%2FJRV6YsD%2BOOQOCkaihjHBDnaIDZc7hQDb%2BQGNzA48vf4Pnr4MBAD8By473sjzUw6bf%2F0gY6pgGMPniNSGI%2B6mbjjq3JI066W0g%2B3Ge3hWn5cNFe6EOkpLIqZx5K%2FA6yph8LJeJD15vUrf5bPUZfWA1%2Fp%2B8O%2B6D52dy5o3%2FBhanh7V3zFCZI95Syyw%2FxuzPUPJy4wAEQ0Nwltsgv285EQ5U1P8%2BuQaBjICg%2B2vQo5%2FT0%2Be7NgZ%2FBaH14sxYUh0vKKXZtCF29BSCgXItyhoMl21mXPCKXlVBdU%2FarTp%2B4&X-Amz-Signature=888c3f43b01605235a9183b55d437dbcd9ec730213eca711a29e3bc01f691a33&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello 慕课网的各位同学们，大家好，这一节咱来聊一聊 double 的注册中心我们讲 double 是一个非常非常灵活的组件，这个灵活性首先就体现在注册中心上面。下面我们就来细数一下 double 都有哪些可供选择的注册中心选项。这几个选项既有老面孔也有新面孔，我们一起看一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/fc7f5aa1-c98b-4660-83d1-1733c1a7d339/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QDJJ5XU2%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFsSY743MZjy7uG%2FMZ%2BMS1S33Hmmj4gqfGJeirYfEcOnAiBU%2BRB5wEug13K2uRNO3iAoIy%2BjDBz%2FKOf2PTsEcw8mnyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMsiICNIH%2FWEPMIRIQKtwDqLy1z23hnhq1YaZHx4Eq%2Bz4Tia7PvvRFKL0lIb0Oxzqm0nEz%2By%2Fl6l0MPMAmfI%2FuUOdouhp8PGbMvZQLtkLL2Z6otMNk2%2FKQvGMyHYFYpfo3rNNGSbtZ5phg45nY%2FOMtxXoH%2FUVSpK7TmDUwS3BDlYe0AIUhW%2BmPPdH0fOLTnueaGZfG6xqY%2B4WL0nPFF5XnV%2FMqWZnOoStsMjK8EtO5fJLcj%2F6hdzvCp3GL5QA%2BjHoOBFpDTi44dxf%2FcNZDnTjk%2BArHADgV%2F38p3MAZDn9MnjGBsli%2Bk5BwC0SlVQJ%2B2XUPZlOgPImAyLSxPj8TjFvc4KqGcoaBpv%2Fa8NTM8zHyXfZfBH0dSish32qnYCsBr0aQPjOZ4DTguUZQizPpBYAjgJUCxDvPN9dRtsADNEsxEiIcEQStKcNnvOuaTo%2Ff8vLzVM0uwxYw2r5HxfzOjw0tHRYwckNfUh%2ByDSctYiCJJIr7b2d14KBcy5tsxs4Y7cMhOWqBcCcVo2944HP0ykcXVETmWGIoxT4%2Bbpnc1bt0xjDMySyMo3FdWQdW1VgFigx69cZFTsnppkqhYnVQR%2FJRV6YsD%2BOOQOCkaihjHBDnaIDZc7hQDb%2BQGNzA48vf4Pnr4MBAD8By473sjzUw6bf%2F0gY6pgGMPniNSGI%2B6mbjjq3JI066W0g%2B3Ge3hWn5cNFe6EOkpLIqZx5K%2FA6yph8LJeJD15vUrf5bPUZfWA1%2Fp%2B8O%2B6D52dy5o3%2FBhanh7V3zFCZI95Syyw%2FxuzPUPJy4wAEQ0Nwltsgv285EQ5U1P8%2BuQaBjICg%2B2vQo5%2FT0%2Be7NgZ%2FBaH14sxYUh0vKKXZtCF29BSCgXItyhoMl21mXPCKXlVBdU%2FarTp%2B4&X-Amz-Signature=dd05d746b4be0297fd39a34fd66609f86ae5ea37f52f6b9d5a6ce73ec0e9a531&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+第一个选项叫 multi cast 如果我们选择了 multi cast 这种注册中心方案的话，也就并不需要启动任何的中心节点，只要像广播消息地址一样，就可以让各个服务之间自动的发现。不过这种方案并不适合在生产环境上使用，大家可以在本地测试 double 服务的时候，使用它减少第三方的依赖，配置起来也非常的简单。
+
+
+OK 咱看第二个组件 zookeeper 这个相信大家都非常熟悉了。一提到 double 可能大家第一个想到的就是底层采用组 keeper 咱在前面分布式的章节中已经对 zookeeper 进行了深入的学习。在下一章 PPT 中，我将跟大家讲解 double 在 zookeeper 当中是以什么样的数据结构保存的，并且它的服务提供者、服务消费者以及这些端口是如何进行关联的。
+
+
+OK 咱再往后看，下一个是拿 cos 这个名字是不是听起来特别的耳熟没错，他就是 spring cloud 里咱在服务治理章节里提到的那个后起之秀，它是 double 生态系统中重要的注册中心实现。官方也专门提供了一个组件，是叫 double 杠 registry 杠 neques 它是 double 和 nequos 融合起来的注册中心版的实现。耐克斯在继承 double 这个方向上做了很足的努力。 OK 咱们接下来往后看。
+
+
+第四个方案是 Redis 咱知道 Redis 中有 key map 的存储结构对吧？那 key map 中的这个主 key 是服务名和服务类型。那对应的 map 这个 map 中的 key 可以是 URL 的地址，那它的 value 就是过期时间，这个过期时间是用在什么场景下呢？它是用来判断这个节点中的脏数据。那脏数据有专门的监控中心来负责删除掉。
+
+
+刚才大家听到了一个监控中心的名词，对吗？它其实是独立于注册中心以外的另一个组件，在后面的图文教程里再跟大家详细解释。 OK 那我们看最后一个方案，它叫 simple 这个方案它人如其名确实得非常非常 simplesimple 到什么程度呢？它本身这个注册中心本身就是一个非常普普通通的 double 服务，我们不用依赖任何第三方的组件，它的通讯方式就是 double 咱看了这五个可选的注册中心方案，大家能猜出哪个是 double 最亲密的战友，是目前业界应用最广泛的注册中心选项吗？答案就是 zookeeper 接下来咱就去了解一下 double 在 zookeeper 中是以怎么样的一个数据结构来注册服务，存储自己的服务节点的。在组 keeper 当中， double 会先创建一个根节点，然后自此就扎根在了基层，开始了自己生根发芽的历程。那当咱的应用有新的服务上线注册到了 double 以后，这里会在根节点以下派生一层服务名称的节点。比如今天咱上线了一个 service 1，那么 double 下面就派生出了一个 service 1 的节点，明天上线了 service 2，同样的也会多出一个新的服务节点来。那咱知道 service 下面也有不同的分工，有的是提供服务，有的是调用服务。那这里就牵扯到服务节点下的类型，每个服务名下面都会为自己的服务提供者创建一个节点。那么与此同时的所有调用我这个服务的消费者也会占有那么一席之地。
+
+
+在我们的集群当中，有非常多的服务提供者和消费者，那她们是如何挂载的呢？这里就要引出最后一层urlurl ，实际上是每台机器的物理地址比如 service A 的服务提供方挂载了一台机器，他的 IP 地址是幺零点零点幺点三，然后端口是8080，这个地址是咱在集群当中茫茫多机器中的一台。那集群当中所有提供 service A 的服务提供者机器都会把自己的 IP 地址注册到 double 中，同时也会把地址的节点挂载到 provider 下面。那接下来我们看 consumer 这里是如何挂载节点的，它的方式和 provider 如出一辙。作为一个服务调用方，我把自己注册到了 consumer 节点。下面我的 IP 地址是幺零点三四点二。然后当我需要发起调用的时候怎么办呢？我会去 provider 下面找到所有可用的服务提供方地址，再通过负载均衡技术找到我的那个 mr right 然后发起调用。
+
+
+以上就是 double 在 zoom 当中的存储结构了，由一个根节点逐渐的发展成一个枝繁叶茂的树状系统。那到这里本节的内容就讲完了。在下面一个小节里，我会带大家动手去搭建一个基于组 keeper 的 double 注册中心，并且咱再创建一个服务的生产者，也就是 providerok 同学们。那我们下一小节课程再见。
+
+
+
+
+

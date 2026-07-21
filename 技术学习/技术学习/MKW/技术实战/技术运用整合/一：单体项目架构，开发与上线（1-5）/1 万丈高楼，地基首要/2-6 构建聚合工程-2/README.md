@@ -1,0 +1,64 @@
+---
+title: 2-6 构建聚合工程-2
+---
+
+# 2-6 构建聚合工程-2
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/999d21c2-1bfc-4ba7-81fb-3d7fde7540e4/SCR-20240816-ckqq.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYS6C6JO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224603Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFqYJGBUqzINKehwaqpzmO9c2JmX47861D4xfaRpfFWPAiEA5NgeiSUTSRNspFMRMQ4oRTOuynlmqfZuv1FwDPzxs4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPe0BOIuRAw2pxlAdyrcA%2BQ1bMyIIB4ZnPzveY6U6s4Akb9JFmMVuN9o314wTXmh5AUs9fuvKBaxbZSJmDyvUa%2B%2F6McoD50wigOQgFJVE3aH6Iq5KlDZp6H6V5UDcYozj%2BxGcCHeLnrKF4dnPGL2nkwpxafLulcv43O1JTv0c2%2F81ZF0nwxa71eim%2FlhWTiaXcNyZMUdFegnooPMUiu3a3cLrJdiNCl0kfZzh8vri1fuyciOq%2BjMltbASgwFihvKE8Xb0pW12%2F7dEqYAJcWbp7kV32CyDFv7Ipv4WeLVBSEZuRbUNQmyCk63ygyMvTJnQtT2rggr9D824RSvEjoDQhZB9NiHF9Ie95MdMobYqGMB8EIPIVhg9k0EMUhSXx6PWBXN%2F1Sa382ZD4nRDK66i%2FcAW9Bc6aAsNr%2F82Vpqw3ttrdEu%2BR43tD%2FQjCd24iKZn7mH3FRtdOZ5CNMCMVkWw%2FtA7YeMJlpzJ8wALz1nRLeh2e4ZR06Kp9uQcvG5UMwvZcXsTiZDl7O0DhI%2FP4j71%2BnhWkwKsNhmpQC7PoCiWoyQxjLpoU6xXJJ%2BBG%2FrodhYgqlRYlq8jmj3fhm0MeCNkrWWfn3iLgkm9bAMU%2FTTPxAiQmEZ5%2FZHTmU1dl%2BWf5IUq8cHcPXzn2g6GvZGMPK6%2F9IGOqUB5QTAWkgzEHcN7NGytP0Wr6mdsla1qO3fUFmsgFkkN7NlLi2erzjcOTgmeBjoY6nMDqvPXC2EVrJBWlF5OYOiglZLchuUtsTZP3RaFSVRBbTDukZMvigtLvl2rZnOcGdvMHrOtLHEor%2BXhe8p4kfqLwDbwmnl%2BVfVGBlY%2FGgAmjcZOymYwDPe32ec3hJtvQW8QedB4hhV66%2BBQTA0KQ4xM%2BtXbFtn&X-Amz-Signature=dcd67a58b954781fb2bdad1bc97095d5bb9f824d4b51b66eb57bcd35ca6d232f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/70e27099-ada1-464c-9f3c-4ed390604f3a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYS6C6JO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224603Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFqYJGBUqzINKehwaqpzmO9c2JmX47861D4xfaRpfFWPAiEA5NgeiSUTSRNspFMRMQ4oRTOuynlmqfZuv1FwDPzxs4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPe0BOIuRAw2pxlAdyrcA%2BQ1bMyIIB4ZnPzveY6U6s4Akb9JFmMVuN9o314wTXmh5AUs9fuvKBaxbZSJmDyvUa%2B%2F6McoD50wigOQgFJVE3aH6Iq5KlDZp6H6V5UDcYozj%2BxGcCHeLnrKF4dnPGL2nkwpxafLulcv43O1JTv0c2%2F81ZF0nwxa71eim%2FlhWTiaXcNyZMUdFegnooPMUiu3a3cLrJdiNCl0kfZzh8vri1fuyciOq%2BjMltbASgwFihvKE8Xb0pW12%2F7dEqYAJcWbp7kV32CyDFv7Ipv4WeLVBSEZuRbUNQmyCk63ygyMvTJnQtT2rggr9D824RSvEjoDQhZB9NiHF9Ie95MdMobYqGMB8EIPIVhg9k0EMUhSXx6PWBXN%2F1Sa382ZD4nRDK66i%2FcAW9Bc6aAsNr%2F82Vpqw3ttrdEu%2BR43tD%2FQjCd24iKZn7mH3FRtdOZ5CNMCMVkWw%2FtA7YeMJlpzJ8wALz1nRLeh2e4ZR06Kp9uQcvG5UMwvZcXsTiZDl7O0DhI%2FP4j71%2BnhWkwKsNhmpQC7PoCiWoyQxjLpoU6xXJJ%2BBG%2FrodhYgqlRYlq8jmj3fhm0MeCNkrWWfn3iLgkm9bAMU%2FTTPxAiQmEZ5%2FZHTmU1dl%2BWf5IUq8cHcPXzn2g6GvZGMPK6%2F9IGOqUB5QTAWkgzEHcN7NGytP0Wr6mdsla1qO3fUFmsgFkkN7NlLi2erzjcOTgmeBjoY6nMDqvPXC2EVrJBWlF5OYOiglZLchuUtsTZP3RaFSVRBbTDukZMvigtLvl2rZnOcGdvMHrOtLHEor%2BXhe8p4kfqLwDbwmnl%2BVfVGBlY%2FGgAmjcZOymYwDPe32ec3hJtvQW8QedB4hhV66%2BBQTA0KQ4xM%2BtXbFtn&X-Amz-Signature=f219eac339a19a123a9db478b37dccb8b60a990afe454928f08bf47efb8aaf65&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+接下来我们把剩余的一些子模块都一个一个的构建到我们的整个聚合工程里面来。下一个我们会构建一个POJO，这个 POJO 是包含了一些相应的实体类，或者是从我们的数据库里面逆向生成的。和表 1 对应的那些实体其实都是可以放到 polo 里面的，我们也一起构建一下。其实和我们在构建 Com 的时候其实也是一样的，我们也是需要去选中当前的项目，选中以后你有一个Mojo，随后再弹出来的框里面，我们再去做一些选择。
+
+
+在这边直接点击next，取一个名字 foodie-dev-pojo。我们当前这个模块的名称可以看到，在这里它的 parent 也是我们的顶级工程，点击next，点一下，直接把 model 的项目名称，模块名称改掉，把横杠给加进去，再点击finish。
+
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b0548038-7bdd-4ef6-b077-a5b4e97ed8a7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYS6C6JO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224603Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFqYJGBUqzINKehwaqpzmO9c2JmX47861D4xfaRpfFWPAiEA5NgeiSUTSRNspFMRMQ4oRTOuynlmqfZuv1FwDPzxs4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPe0BOIuRAw2pxlAdyrcA%2BQ1bMyIIB4ZnPzveY6U6s4Akb9JFmMVuN9o314wTXmh5AUs9fuvKBaxbZSJmDyvUa%2B%2F6McoD50wigOQgFJVE3aH6Iq5KlDZp6H6V5UDcYozj%2BxGcCHeLnrKF4dnPGL2nkwpxafLulcv43O1JTv0c2%2F81ZF0nwxa71eim%2FlhWTiaXcNyZMUdFegnooPMUiu3a3cLrJdiNCl0kfZzh8vri1fuyciOq%2BjMltbASgwFihvKE8Xb0pW12%2F7dEqYAJcWbp7kV32CyDFv7Ipv4WeLVBSEZuRbUNQmyCk63ygyMvTJnQtT2rggr9D824RSvEjoDQhZB9NiHF9Ie95MdMobYqGMB8EIPIVhg9k0EMUhSXx6PWBXN%2F1Sa382ZD4nRDK66i%2FcAW9Bc6aAsNr%2F82Vpqw3ttrdEu%2BR43tD%2FQjCd24iKZn7mH3FRtdOZ5CNMCMVkWw%2FtA7YeMJlpzJ8wALz1nRLeh2e4ZR06Kp9uQcvG5UMwvZcXsTiZDl7O0DhI%2FP4j71%2BnhWkwKsNhmpQC7PoCiWoyQxjLpoU6xXJJ%2BBG%2FrodhYgqlRYlq8jmj3fhm0MeCNkrWWfn3iLgkm9bAMU%2FTTPxAiQmEZ5%2FZHTmU1dl%2BWf5IUq8cHcPXzn2g6GvZGMPK6%2F9IGOqUB5QTAWkgzEHcN7NGytP0Wr6mdsla1qO3fUFmsgFkkN7NlLi2erzjcOTgmeBjoY6nMDqvPXC2EVrJBWlF5OYOiglZLchuUtsTZP3RaFSVRBbTDukZMvigtLvl2rZnOcGdvMHrOtLHEor%2BXhe8p4kfqLwDbwmnl%2BVfVGBlY%2FGgAmjcZOymYwDPe32ec3hJtvQW8QedB4hhV66%2BBQTA0KQ4xM%2BtXbFtn&X-Amz-Signature=df33091d9bf1ba64143b66fdd84e6d64be32ee0cd4c487c008b407e30ebe6866&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这个时候我们可以看到在我们当前这样的一个树形结构里面，又多了一个Polo。我们把顶级工程的 Pom 文件我们再一次的打开，我们来看一下，我们可以发现在这个里面我们又多了一个模块，这个模块就是我们刚刚所创建的Polo。随后我们再来到我们 d b 杠 polo 它所在的一个 POM 里面， polo 和 common 这两个 POM 文件，其实可以看得出来里面的内容在一开始刚刚创建的时候，全部都是一模一样的。OK，一模一样。其实他们可以在目前来讲，它们两个的作用都是一样的，因为它里面并没有代码，它们两个都是独立的一个组件。
+
+
+现在我们可以做一件事情，我们可以让他们去进行相互的依赖，因为我们在上节也说了，我们的一个子模块，子模块之间如果我们要相互使用自由，必须要去构建一个依赖的关系。这个依赖的关系如何去构建？其实就是一个dependence。我们来看一下，我们可以让咱们 portal 去依赖咱们的common，因为 common 是我们一开始所创建的，所以我们在这里面我们可以来写一个dependencies，在这个里面我们再去写一个的dependency。首先第一个 group ID 就是我们所在的一个包名，在这里面我们定义的是 COM 点m，可随后他想要依赖哪一个子模块。在这里面我们来看一下。
+
+
+这里面会有一个福迪杠 d b 杠common，也就是当前我们选中的这一项，我们只要选择就可以了。双击一下就可以看到，它会自动把你当前的版本号默认的给下载进来，然后 Ctrl s，这个时候其实他们两个就有了一层关系了。也如果现在我们 common 里面有一些相应的代码，相应的一些通用类，在我们当前 pojo 里面是可以直接去引用到的。他们是可以一直一层一层的去相互的依赖，去使用它里面所包含的一些功能的。 OK 好，这是一个pojo。
+
+
+随后下一个我们所需要去创建的应该是数据层，也就是 d o，在这里我们使用的是 Mybatis， Mybatis 往往都称之为是Mapper，所以我们来构建一个 Mapper 子模块，还是一样快速的构建一下。选中我们的项目，右键你有一个Mojo，在直接点击下一步写上福迪杠， d b 杠一个map，再点击next，在快速的写一下这是我们的模块名称，点击分裂势。随后我们就创建成功。
+
+
+再来看一下我们的顶级工程里面的模块，可以看到吧，现在我们的 map 这一层其实也加进来了，也就是只要你去创建相应的一个子模块，在我们的顶级工程里面，它都会加起来，因为它们之间都是父子的继承关系。必须要去注意的是，我们一定要存在有这样的一个models，因为在之前的某些实战课程里面，老师我也遇到过一些学生在创建的过程中可能步骤不对，会导致这个魔 90 不存在。你再去运行项目的时候肯定是起不来的，这一点一定要注意。一定要在你创建完工程的时候，回到我们顶级工程里面，再去检查一下你的模块有没有加进来。OK，保存一下。
+
+
+我们再来到我们map，它所在的一个 POP 文件，在这里面其实它是需要去依赖我们的 POS 的。为什么？因为在我们去编写一些映射类的时候，其中也包含了一些相应的 SQL 代码这些内容。其实它的前置条件是需要去使用一些相应的 entity， entity 又是和我们的数据库的表一一对应的，所以 map 又必须要依赖 pojo。我们在这边需要把相应的依赖关系给加进来，把 dependence 直接拷贝一下。拷贝到这里，我们把 d v 在这边改成 pojo 就可以了。需要注意，我们现在的 POJO 其实依赖了后面， map 又依赖了POJO。所以对于我们的 map 这一层来讲，它也是可以去使用 common 里面相应的一些方法的。OK，在这里我们写一下。 Mapper 依赖了polo， Mapo 又依赖了common。 map 通过 pojo 是可以使用 common 中相应的，方法的。OK，这一点注意一下。
+
+
+好。下一个是我们的service，因为 map 数据层构建完以后，我们的 service 是直接去调用 map 的，所以我们就在这里要去创建一个service。选中项目快速构建，点击next，在这里写一下 foodie-dev-service，点击下一步next。把我们的模块名称改掉，快速构建。下方的这两个，两个都是路径，直接保持它的默认就可以了。点 finish 好。这个时候可以看到我们子模块子工程就已经是固定好了。检查一下。在我们顶级工程里面，咱们的 modules 里面就包含了这样的一个service，这个 module 一定要去检查一下。
+
+
+随后再来到我们的service。在这个地方我相信大家应该是可以理解到，之前我们的 map 是依赖了破98，现在咱们的 service 应该是去依赖 map 这一层，所以我们把这一层拷贝一下，在这边我们直接去做一个修改，把它改为 map 就可以了。在我们也要去修改一下它的注释。我们的 service service 依赖了MAPA，这个时候我们的 service 是直接可以去使用 pojo，也是 common 里面的一个方法的。 mapper 改掉 service 可以使用泡酒，与 common 中相应的方法。OK，这一点注意一下好。
+
+
+现在我们可以几乎所有的组件依赖的一些子模块都构建好了，只差最后一个。其实就是我们的控制层，或者是我们的一个接口层，用于去接收用户的请求的。用户请求的这一层我们会把它统一的称之为是接口层，所以我们在命名上我们往往会定义为是一个API，在这边我们也可以去写一下。右键你有一个 Module，直接next。下一步写一下铺底杠 d v 杠 a p i。注意一下， a p i 其实就是对外提供相应的一些 restful 形式的接口，让外部的不管是前端就是 html、 H5，还是让 iOS 安卓小程序都是可以提供一些接口的，供他们去进行调用和访问的。
+
+
+点击 next 随后在这边我们拷贝一下，把拷贝，贴过来，点击finish。随后在我们的目录里面， API 就已经是构建出来了。我们再来看一下目前其实我们所有的一些模块，所有的模 9 全部都是在这边列出来了。按照它的顺序是它会帮我们加进去 common portal、map、 service 和 API 全部都有。对于我们 AP 来讲，其实就是我们的一个控制层。控制层用户请求进来以后，它是需要去执行相应的业务的，也就是要调用我们的service，所以它的依赖关系在这里。我们把 service 里面的这一层依赖复制进来，做一个修改。在我们的 API 里面，我们是直接依赖它的service，所以我们的依赖关系在这边。我们又可以额外的去加一下。这个时候是 API 依赖service， service 依赖map， map 依赖 product 也依赖了corner。 OK 对于我们的 a p i 来讲，是可以使用 polo 与 common 的service。我们也加一下。我们在这里说一下，虽然我们的 a p i 其实依赖了service， service 中包含了map，但其实按照规范来讲，我们 API 是不可以直接去调用数据层的，因为它中间必须要经过 service。OK，这一点大家是需要去注意的。假设我们来在这边说一下。假设在这个时候，现在我们在外层可能又额外的多了一个方法，比方叫做 common。
+
+
+来一个 common mail，这个可能专门是用于去处理一些邮件相关的通用的组件。在这个时候，其实它可以再有一个分支。我们可以通过 API 再去依赖一个 common mail。把给依赖进来也是没有问题的。它可以依赖多个，并不是它只能去依赖某一层的一个子模块，它是可以去依赖多个子模块的这一点在这里注意一下就可以了。
+
+
+到这里其实我们的一个聚合工程聚合项目，我们就已经是构建好了，但是构建好了以后大家可以去思考一下。我们接下来其实应该要做一层安装，把安装的步骤给做好。为什么要去安装？我们在之前的 PPT 里面，其实我们已经是讲了一个生产汽车，在生产汽车的时候，我们会有很多的零部件，这些零部件我们是外包给其他的厂商去做的。当我们把这些分散的零部件全部都拿到自己的工厂以后，是不是应该要去做一个安装，安装好了以后，我们的汽车才能够真正的上路。
+
+
+其实在我们的聚合工程里面，其实没人解释，其实也是同样的一个道理，在这边我们来看一下。在 Maven 里面我们来看一下，这个地方可以看到会有一个 root。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8b174f41-1cfa-40f4-aa33-dd46c7cc7d68/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RYS6C6JO%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224603Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFqYJGBUqzINKehwaqpzmO9c2JmX47861D4xfaRpfFWPAiEA5NgeiSUTSRNspFMRMQ4oRTOuynlmqfZuv1FwDPzxs4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPe0BOIuRAw2pxlAdyrcA%2BQ1bMyIIB4ZnPzveY6U6s4Akb9JFmMVuN9o314wTXmh5AUs9fuvKBaxbZSJmDyvUa%2B%2F6McoD50wigOQgFJVE3aH6Iq5KlDZp6H6V5UDcYozj%2BxGcCHeLnrKF4dnPGL2nkwpxafLulcv43O1JTv0c2%2F81ZF0nwxa71eim%2FlhWTiaXcNyZMUdFegnooPMUiu3a3cLrJdiNCl0kfZzh8vri1fuyciOq%2BjMltbASgwFihvKE8Xb0pW12%2F7dEqYAJcWbp7kV32CyDFv7Ipv4WeLVBSEZuRbUNQmyCk63ygyMvTJnQtT2rggr9D824RSvEjoDQhZB9NiHF9Ie95MdMobYqGMB8EIPIVhg9k0EMUhSXx6PWBXN%2F1Sa382ZD4nRDK66i%2FcAW9Bc6aAsNr%2F82Vpqw3ttrdEu%2BR43tD%2FQjCd24iKZn7mH3FRtdOZ5CNMCMVkWw%2FtA7YeMJlpzJ8wALz1nRLeh2e4ZR06Kp9uQcvG5UMwvZcXsTiZDl7O0DhI%2FP4j71%2BnhWkwKsNhmpQC7PoCiWoyQxjLpoU6xXJJ%2BBG%2FrodhYgqlRYlq8jmj3fhm0MeCNkrWWfn3iLgkm9bAMU%2FTTPxAiQmEZ5%2FZHTmU1dl%2BWf5IUq8cHcPXzn2g6GvZGMPK6%2F9IGOqUB5QTAWkgzEHcN7NGytP0Wr6mdsla1qO3fUFmsgFkkN7NlLi2erzjcOTgmeBjoY6nMDqvPXC2EVrJBWlF5OYOiglZLchuUtsTZP3RaFSVRBbTDukZMvigtLvl2rZnOcGdvMHrOtLHEor%2BXhe8p4kfqLwDbwmnl%2BVfVGBlY%2FGgAmjcZOymYwDPe32ec3hJtvQW8QedB4hhV66%2BBQTA0KQ4xM%2BtXbFtn&X-Amz-Signature=dd3b6efb3de964530684728cca0d79aef3a3967028f56b7d009d8add6c4b2a11&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+根我们的聚合工程来看一下，它其中有一个 install ，就是在它的一个生命周期里面所包含的,  Maven它本身就包含了很多的命令。在这里它会有一个 install 就是安装。虽然我们现在有很多的子模块，但是它并不可以去做一个真正的使用，**这是为什么？因为我们要做安装，一定要安装完毕了以后，相互的依赖关系才是真正的建立的。在这里一定要去注意。我们要在这里双击一下 install 来看一下，双击以后会发现在它的下方控制台里面，它会做很多的安装，它会有很多的日志，其实它这些日志就是一层一层在进行安装，安装完毕以后，它会有一个 build success，就代表我们安装执行的命令是成功了**。
+
+
+**成功了以后，我们的这些子模块之间的一些依赖关系是真正存在的，我们就可以去调用一些相应的方法了。这样子就代表我们的聚合项目是真正的创建成功了**。OK。
+
+

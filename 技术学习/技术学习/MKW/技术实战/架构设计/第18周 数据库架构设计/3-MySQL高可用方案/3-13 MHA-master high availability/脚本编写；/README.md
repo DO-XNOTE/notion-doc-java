@@ -1,0 +1,11 @@
+---
+title: 脚本编写； 
+---
+
+# 脚本编写； 
+
+[https://github.com/yoshinorim/mha4mysql-manager/tree/master/samples/scripts](https://github.com/yoshinorim/mha4mysql-manager/tree/master/samples/scripts)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2c4e0bca-1740-479e-8434-4d9bbded12ee/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q6DNNCCI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231216Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCnfP5yNy6htxxDFpECzTyypgPlyILfusL49%2FYHgmgaNgIgAgTR7G6Exs8jZh26zX4%2FfWioERuv8Gk7n%2FnMDQBQZs4qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAejldwOmgjgkCoE3yrcA5qbMSBi5HTCiaUttP5VZQUoCQkbKc4D%2BUMV2gbnEVouoteOYMJ4UlkLr%2FI6BLUGWpK3m%2Ba0B830s6tO5GYzuVaWBJWOXdKCIk5vyVDGbWeZTuT0fTjmA79yxwWovDT%2F1Tj7P%2FabA3pMJl3geON7ehUG23iTu%2B0ON0sSTFq%2BsO%2BkBotEGUsOz7lOHuAGFNqyYXuTl4UsiKBPuTvEE5BdU1ATtm1VaR4o60RminxfLiQyfLrUd0GWHyMc1BQYxAbOa7qBGgeuW2%2FsTzYA0UlEcyNuUIOyD9qkZWjnk5Jnyz8guaaots8OLPmhp78n6sntsG%2BLAOrlZTRre1ASZhmeaDyy29%2BjvAldRcNFEPeXNau2%2Fl4IdUC1LzHVMogxbWimSFd1P9RGiYDnPd9zec4DRRDCO3nCxYMa6x6twC9ke%2FKthynxrdAoiy%2FXKfiGh95T5D1VjMyeNPfQ2bd5bF4dbYWdV0ArRI%2F2kZuF23hiQLxmQR1Vefo5oTj8LVkxsoLu61r36hN19JPYotVtlUjOFdlLH1ULIvDIFvYZLY3cCWhffuLm3xOcuySSldlHHTPXL4PwnwLAh64vVfcQnC8wP%2FczVeRjYATcV%2BmVVu3Crg9kF73Z3F7wBGmAGGWzMLS6%2F9IGOqUBf1c%2FSojQP6lrxFXLEoVAyxkkE7bytaYlEHokSXU7%2Bf%2B3oqkXZL3ual%2Fef30FdUPKjVWLzdFXwlob8ukIamZhNYnuHmknOsvuksMcyrygeKSfoc1kPCQnPymmd2nqFQXHkmly%2BbjzH7E9P44d6a6LKzkh3sS82KtfcdmJQ4MthsvhXkeaVTdoaApOKc3QWXU4IN1tKKyg2Wvz7Yr%2FTA7KLFwr73%2FS&X-Amz-Signature=87751f83b82c71947f2fcf8d8c1d9c45dac2cbfa631f5d02f41bd0d2b6920bf2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

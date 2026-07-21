@@ -1,0 +1,88 @@
+---
+title: 2-3 主流的配置中心
+---
+
+# 2-3 主流的配置中心
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ceddb902-6f01-4a94-bbd6-a9125aeae6fe/SCR-20240802-hemm.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TYPM7QPX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231430Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIG9x451uXWYszIp9zeXlJfZbHityZBuRnh0In%2FQFokR%2BAiA8iPohHtt20SO8SH0sVim%2FXo%2BB5ge1LMY0LOXEM4lSuSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKgzK%2FEU%2FYLpsodaSKtwDLhb%2FKXz7cXnOYQq1SGdYJuq172B1Rt5PB4P1tSBOPHx%2BpJWYago9JT0ierclZMgqFjUzeY5axP5kGHMY%2FrV8PGu%2FuNpTroL3R0hgjBE4KFCbDCKuCrkxuS2Y5jlit49Xf5uRweNEP6DQLNWLryV%2BBAy9Ewrr%2Bko1iW0PUDRE6af2nF4dDav%2BxGdVje2dnVclRPKbE50vGuBdqNOJjYP55SwX75gINUzZUdpPV20KHVZBd3RHPKLZDh1MhFA8veuVVReFJ56jwDrFEpHgIjDRiZHGEjD%2BuEkRrpw43E4kaAXa3rlGqnaNsIQy3WfxLMw9k1FZReleuFzLd3jY4Fuyg3eU%2FHZE8MjIdoZIrMaOo1mOu244mL0mNXyG95P%2B7DVqVyIesO1lz2MMOpaX4CFIu9UU57z1DN39qF9MeLNsKeNSVc0n9psUZ2GvK9cPchBd9iZ9Pd1y%2FSauKI2km%2Bdu6WxcM3kBz9iNcC4X5X%2BhfjUH1kJv0O4YfxdaRpvd9vgAW7o2zmUrPz5O491X%2FyeGkAR4QVy38EVz0TrUG0VQamMM7LSOQrJuZLKC%2BA6llBZoD%2F06qHhi4DRxB2Hx5PJG3SEWJSfP3R7XYhA10Xan1tKEGbouBlV3dA1WZgQw2rf%2F0gY6pgHj%2F64hi53ndqvfuB%2FNQOyxkguwCDBepSQ8%2B03AhDKWInAdl5yS9QL92aV1YKzgFSe%2FrOAIP3u0tYqkRo5u7pPRh5jECnuBU2BsHGjL6eBDEnR31ivsbzR7UDanQ7T0yPjD5j34y58o5SXWi%2F3z%2F70ZvHZYVmQaqPZWGQwucN%2BDOMXlUi4YvzGREwIUgRWYxXM3ROr8fuaR4pRtcmUPVtSGc7l26%2BRa&X-Amz-Signature=e3b117ce37157f8e40350287ad080921ccae3c5c1e0daed56aa8d1f81061ad88&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，幕后的各位同学们，大家好，我是姚半仙，那我们这一章节首先跟同学们来去了解一下
+
+### [咱主流的配置中心都有哪些。那咱在学习我们的两个主角，一个是config，还有一个是 next 之外，我们也可以了解了解这个江湖上面其他的一些竞争对手。](/93fc4423124c41d0a07c85c586950bc5)
+
+
+那这里主要跟同学们去了解四个配置中心，那前两个自然不用说，咱的大哥二哥，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c2363c58-f5df-4043-96ef-3d7dd2332749/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TYPM7QPX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231430Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIG9x451uXWYszIp9zeXlJfZbHityZBuRnh0In%2FQFokR%2BAiA8iPohHtt20SO8SH0sVim%2FXo%2BB5ge1LMY0LOXEM4lSuSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKgzK%2FEU%2FYLpsodaSKtwDLhb%2FKXz7cXnOYQq1SGdYJuq172B1Rt5PB4P1tSBOPHx%2BpJWYago9JT0ierclZMgqFjUzeY5axP5kGHMY%2FrV8PGu%2FuNpTroL3R0hgjBE4KFCbDCKuCrkxuS2Y5jlit49Xf5uRweNEP6DQLNWLryV%2BBAy9Ewrr%2Bko1iW0PUDRE6af2nF4dDav%2BxGdVje2dnVclRPKbE50vGuBdqNOJjYP55SwX75gINUzZUdpPV20KHVZBd3RHPKLZDh1MhFA8veuVVReFJ56jwDrFEpHgIjDRiZHGEjD%2BuEkRrpw43E4kaAXa3rlGqnaNsIQy3WfxLMw9k1FZReleuFzLd3jY4Fuyg3eU%2FHZE8MjIdoZIrMaOo1mOu244mL0mNXyG95P%2B7DVqVyIesO1lz2MMOpaX4CFIu9UU57z1DN39qF9MeLNsKeNSVc0n9psUZ2GvK9cPchBd9iZ9Pd1y%2FSauKI2km%2Bdu6WxcM3kBz9iNcC4X5X%2BhfjUH1kJv0O4YfxdaRpvd9vgAW7o2zmUrPz5O491X%2FyeGkAR4QVy38EVz0TrUG0VQamMM7LSOQrJuZLKC%2BA6llBZoD%2F06qHhi4DRxB2Hx5PJG3SEWJSfP3R7XYhA10Xan1tKEGbouBlV3dA1WZgQw2rf%2F0gY6pgHj%2F64hi53ndqvfuB%2FNQOyxkguwCDBepSQ8%2B03AhDKWInAdl5yS9QL92aV1YKzgFSe%2FrOAIP3u0tYqkRo5u7pPRh5jECnuBU2BsHGjL6eBDEnR31ivsbzR7UDanQ7T0yPjD5j34y58o5SXWi%2F3z%2F70ZvHZYVmQaqPZWGQwucN%2BDOMXlUi4YvzGREwIUgRWYxXM3ROr8fuaR4pRtcmUPVtSGc7l26%2BRa&X-Amz-Signature=542187afaf750b35b3d4768a1e66d60e28d4e98eb1186bf0afa148bb3a9cee82&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那后面两个分别是以携程为代表的阿波罗，这个配置中心也是非常的应用广泛的，很多的时候我们也会在生产环境当中使用阿波罗来搭配 Sentinelle 做这个配置规则的存储。那还有一个是我们在前几年大放异彩的discounf，不过可惜的是这个组件它的更新已经完全停止了，并且它的 ISSU 列表现在也没人去看，没人去维护了，所以说我们从这个角度来讲，尽量还是把目光聚焦在我们前三个使用广泛并且持续更新的项目当中来。
+
+
+那这三个项目
+
+### [第一个 spring cloud config，这里出自名门正派 spring cloud  官方自己发布孕育的一个配置中心组件](/30884f5ba2844f4e8f3cf78c37b69227)
+
+，那后面的 Nacus 和阿波罗分别出自业界的大厂，也结合了他们在当前超高并发三高应用上面积累的一些丰富的经验。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/2e638191-0240-4493-aeee-21a88dab8845/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TYPM7QPX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231430Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIG9x451uXWYszIp9zeXlJfZbHityZBuRnh0In%2FQFokR%2BAiA8iPohHtt20SO8SH0sVim%2FXo%2BB5ge1LMY0LOXEM4lSuSqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMKgzK%2FEU%2FYLpsodaSKtwDLhb%2FKXz7cXnOYQq1SGdYJuq172B1Rt5PB4P1tSBOPHx%2BpJWYago9JT0ierclZMgqFjUzeY5axP5kGHMY%2FrV8PGu%2FuNpTroL3R0hgjBE4KFCbDCKuCrkxuS2Y5jlit49Xf5uRweNEP6DQLNWLryV%2BBAy9Ewrr%2Bko1iW0PUDRE6af2nF4dDav%2BxGdVje2dnVclRPKbE50vGuBdqNOJjYP55SwX75gINUzZUdpPV20KHVZBd3RHPKLZDh1MhFA8veuVVReFJ56jwDrFEpHgIjDRiZHGEjD%2BuEkRrpw43E4kaAXa3rlGqnaNsIQy3WfxLMw9k1FZReleuFzLd3jY4Fuyg3eU%2FHZE8MjIdoZIrMaOo1mOu244mL0mNXyG95P%2B7DVqVyIesO1lz2MMOpaX4CFIu9UU57z1DN39qF9MeLNsKeNSVc0n9psUZ2GvK9cPchBd9iZ9Pd1y%2FSauKI2km%2Bdu6WxcM3kBz9iNcC4X5X%2BhfjUH1kJv0O4YfxdaRpvd9vgAW7o2zmUrPz5O491X%2FyeGkAR4QVy38EVz0TrUG0VQamMM7LSOQrJuZLKC%2BA6llBZoD%2F06qHhi4DRxB2Hx5PJG3SEWJSfP3R7XYhA10Xan1tKEGbouBlV3dA1WZgQw2rf%2F0gY6pgHj%2F64hi53ndqvfuB%2FNQOyxkguwCDBepSQ8%2B03AhDKWInAdl5yS9QL92aV1YKzgFSe%2FrOAIP3u0tYqkRo5u7pPRh5jECnuBU2BsHGjL6eBDEnR31ivsbzR7UDanQ7T0yPjD5j34y58o5SXWi%2F3z%2F70ZvHZYVmQaqPZWGQwucN%2BDOMXlUi4YvzGREwIUgRWYxXM3ROr8fuaR4pRtcmUPVtSGc7l26%2BRa&X-Amz-Signature=52c4b135f683ddbed8a53310785a6ccc3f2e0e11f440d2c58f45ee1fc2092792&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+所以说从性能测试的角度上来说，其实 Nacus 和阿波罗的性能单机测试结果是要优于 config 组件的，那这个在一定程度上来源于它的底层的具体存储层的不同，那实际上我们在搭配使用的时候，往往是这样的一个配物组合，就是说 config 组件往往是跟 GitHub 一起来搭配使用，我们来用 GitHub 作为真正存储你配置的地方，那么 nicos 这里是使用的 nicos 加上MySQL。
+
+
+与此同时阿波罗也是类似采取这样一种中间件加上数据库做存储的这种方式，那么对于后两个中间点来说，它们的性能瓶颈就会落在最薄弱的这个 MySQL 这一环，那实际上高吞吐量也是可以做一定的保证。那不过 spring Claude 的 config 这里，相应的你每次请求调用来它总不至于去到 kid 上面拉一个文件，对不对？因为这样的话网络开销也是非常非常高的。而 Git Hub 它本身既不像缓存，也不像数据库，这样它可以去承载一个比较高的负载，那如果我们搭建了 GitHub 服务器，被这样访问恐怕是要挂掉的。所以说咱的 spring Claude config 一定程度上它跟 git Hub 集成的时候，它会保存拉一份你的 git 到本地文件当中，拷贝一个文件的副本。
+
+
+OK，那么我们看完了它的底层存储，咱先从几个非常关键的功能性角度来去把这三个揉在一起比较一下。这是第一个配置中心，这里我们把目光放长远到这种超高并发的大规模集群的应用上面来说一个很重要的功能，就是我需要有一个灰度发布的功能。那你每次做的配置变更，我不希望你说一次全部推到所有集群上来，我希望点对点的推送到某些特定的服务上面。
+
+
+首先来去验证一下你的这个配置是否正确，这个功能非常非常的重要，我们在阿里系的应用当中，每次做配置变更的时候也必须经过这样的一个灰度流程，那在这里实际上这三个组件都有对应的支持。比方说 spring Claude config，那你在做推送，比如说跟 bus refresh 节点来做搭配使用的时候，通过它暴露出的 activator 节点，我们可以在后面加入一个查询参数，叫做destination，通过这个 destination 的表达使我可以指定某些机器响应这个配置变更。
+
+
+OK，那对于南库斯来说，实际上并没有非常详细精力度的灰度方案，那当然了，我们也可以通过一些像 group 做这种曲线救国的灰度发布，那与此同时我也可以在你做配置的时候，在配置项里面加入一些手脚，让业务方具体的应用程序根据这个不同的配置来自己决定它的灰度。
+
+
+比方说我的配置项里面，如果它这里加上了一个参数什么123，那么对应的就是什么呀？就是说我可以指定你当前机器当中的机器名，带有 123 的机器去应用当前这个灰度，那实际上可以应用这些配置项，以及像我刚才提到的group，以及你添加配置的时候所选择的生效应用，来做这样的一个曲线救国的灰度发布。
+
+
+那 nicos 在这一点上其实做的并不太好，相对于耐克斯来说，我们在阿里系当中使用更多的一个中间件，实际上它叫做switch，通过这个名字就可以看到它是开关的意思，对吧？ switch 开关在阿里新应用当中，作为一个非常轻量级的配置工具，那它实际上对这个灰度发布支持的是相当好的，你可以通过一整套的 UI 页面就可以完成你的灰度配置，就像咱的阿波罗一样，控制台全套灰度给你控制好。那从灰度这一点来说，我比较站台的是阿波罗这个控制台去控制应用的还是比较爽的。
+
+
+OK，那还有一点版本控制，那咱说配置项算不算代码？当然算，对吧？你的配置项如果配置错误，那么你可能对你的业务造成的伤害危害比你的代码 bug 还要大，所以说在线上环境当中，我们也要对自己的配置项做一个精细力度的版本控制，这里面就包含两个点，第一个是什么呀？回滚对吧？第二个就是查看你所有的历史记录的版本，那这后两个应用我们在自己对应的控制台里都可以实现这样的功能，你可以很容易的去查看历史的发布的版本都有哪些，每个版本发布了什么样的内容，然后做一个很简单的回滚动作，就可以把你的最新的当前的配置项回滚到一个老的 version 当中，对吧？那咱的 neckles 这里咱说过，你底层的这个配置项我们比较推荐存储在 GID 上，当然了它也支持像数据库文件之类的保存方式，不过这个潜规则就是让大家使用 config 加 git Hub 的组合，那么这样一来，你的版本控制的这个重任就落在了 Git 这里，所以它就依赖于我们的 Git Hub 做好自己的版本控制。
+
+
+如果发生了错误怎么办？我们这里就直接到 GitHub 当中去查找所有配置项的 commit 记录，然后再决定具体要回滚到哪一个方案上面去。那自然而然这种方式实际上是不如后面两种方式方便的。OK，那这是版本控制上面的一些比较，那么我们再下来看环境隔离，环境隔离这个在大厂当中非常重要，你在自己的开发环境，再往后有你的集成测试环境，再往后有预发环境，最后是生产环境，但是每一个环境之间我希望它的配置项不到处乱串门。我当前环境配置项就在当前生效，不要跑到其他机器上面。所以说这样一来也给我们的配置中心提出了一个要求，就是说我要有能力把这不同的环境配置项通过某些标记把它隔离出来。
+
+
+那像我们的 spring Claude config 这里，如果同学们学到后面，会有学到这样的两个关键字， profile 和label，那正是通过profile， label 还以及 application 这三要素的结合。我们可以从 GitHub 上面的文件名或者是文件夹儿，再或者是你 GitHub 上面的分支，通过这些点来去控制不同的环境。比方说我的 dev 环境，那我对应的 profile 就是dev，那你的所有 GitHub 文件，它的后缀呢？就是杠dev，点 properties 或者点yaml，那再有我可以使用label，对吧？我把所有的 dev 的对应的properties，我全部提交到一个叫 Dev 的 branch 里，这都是可以的。那像 necklace 这里，我们在创建这个配置的时候，就可以去选定它对应的namespace，那 NAMESPACE 也被常用来做环境隔离的一个天然的方案。
+
+
+那阿波罗同理，你在去创建配置的时候，都需要做一个指定环境，那么这三者比较来说，我个人还是比较喜欢后两者这种简单粗暴，比较直观的方式。好，那我们接下来往下看。作为一个配置中心，你与静态的这些 xmail 文件，这些 problems 文件之间最大的不同是什么？你可以有这种动态的实时推送的这种本领，否则要你做什么，对吧？我自己去改一下配置，重启一下应用也能生效。
+
+
+那么动态配送这里作为一个非常重要的一个点，在这三个中间件里面都有很好的体现，那奈何斯和阿波罗这里就天然支持这种长连接的去监听式的实时推送功能，你在这端改好配置，另一端应用就及时响应，那 config 这里也支持这样的实时推送，不过咱说采用的是一种曲线救国的方式，怎么个救法？那 config 组件这里我们为了实现这种批量的推送到非常广大的集群服务器当中，那么我们中间这里搭建了一个叫做 bus 的一个公共的小组件，这个 bus 其实就是咱 spring Claude 的一个组件，它可以跟我们的 config 做很好的集成，那通过 bus 去发送一条消息到 MQ 当中，然后我的每一个应用服务器通过监听这个 MQ 就可以知道你当前发生了一个动态推送的事件，那么我们这里本地就会去请求到最新的配置文件，所以说它是借助 bus 来完成了这样一个曲线救国的这样一个动态推送。
+
+
+OK，那我们最后再从安全的角度上面给大家去评比一个比较重要的功能点，就是权限管理，那权限管理这一块是大公司里面非常看重的一块，因为它涉及到什么应用安全，再强调都不为过，所以说同学们可以看到很多大公司的中间件里，这里都会非常强调这一块，因为一旦去泄露了这些配置项，其中包含了一些敏感信息，那这个损失是不可估量的。
+
+
+那对于咱的 spring Claude 来说，它的配置管理权限管理比较依赖于GitHub，那 GitHub 这里同学们知道可以配置一些管理员的权限，配置一些提交权限等等。但是这里有一个天然的弊端，同学们，如果我使用一个repo，那这个 repo 里面添加了很多应用的不同的配置，那我想在这个 repo 里面我想做到这样一点，就是说不同的应用我只配置相应的owner，才能去访问对应的文件夹，有没有可能办到非常非常的难，在 GitHub 里面想做成这样精细力度的控制这个非常的难。
+
+
+所以说我们在这个维度上面建议大家，如果需要对权限做非常细粒度的控制，你可以把每个应用分别放到不同的 GitHub 的上的 repo 里面去。比如当前的这个 RIP one 是 restroom 的配置中心，对应的是存放点，那么你有一个 RIP two，那就是咱的这个 employee service 对应的存放点。那通过这种方式可以结合 Git 实现比较精细粒度的权限管理。那如果把所有的配置项，不同应用的配置项放到同一个repo，通过文件夹或者文件名来区分，那么这个权限管理就做的不会太到位。
+
+
+OK，那这是咱的 spring Claude 的现状，那我们的 Narcos 这里它实现的是一种相对来说比较粗粒度的权限管理。那如果同学们登录 next 的主页，会发现有一个权限模块，在这个模块里你可以去创建你的角色，创建你权限，并且去控制你权限对应哪些 name space 的动作。也就是说你在 NAMESPACE 这个级别，你可以去定义当前的用户是可读还是可写，这样的读写权限，那从老师的角度来说，这种控制也只能说是了胜于无。
+
+
+那比较偏向比较倾向的一种配置是依照项目维度，就像我们的阿波罗，这里可以从项目级别上面来去对应的做权限控制。实际上阿里很多的应用它在内部的权限控制还是处理得非常妥当的，你可以给自己的应用创建对应的一个项目，那在这个你创建的项目里，这个项目 owner 就是山大王，你可以去控制哪些员工，可以去访问，那所有的配置项，这些访问权限点全部都跟着项目走，这个我认为是比较精细粒度的一种控制方式。
+
+
+OK，那这一节下来，大家对这三种的配置中心组件，从它的灰度、版本控制、环境隔离、实时推送，还有权限管理方面都有了一个比较基本的认识。那咱在接下来的小节里，先从 next 这里入手，然后再去学习我们的 config 组件，把这个 spring Claude 家里面的两个组件都给他落地一遍。
+
+
+那如果让大家做技术选型，大家这里要去注意一下你自己的注册中心是什么啊？虽然我们现在讲的是配置中心，但是你要关注一下自己注册中心，如果已经选定了 next 作为服务注册，那对应的配置中心建议大家也去选择。netbooks，不要选择 spring Claude config，因为我们当使用 config 作为配置中心的时候，你如果注册到 neckles OK，没问题，可以注册上。但是你的服务要想从 next 来去发现 config 组件，然后再拉取配置这一条路恐怕就不太能行得通了。
+
+
+nicos，这里对咱 spring Claude 原生组件这个 config 组件支持的并不太友好，因为这俩儿是竞争关系，所以大家如果注册中心使用的next，对应的配置中心也尽量使用它。但是大家如果这里注册中心使用的是 spring Claude 的原生的这样的console，或者使用的是 Netflix 公司的 u 瑞卡，那么这里一定就选择咱的咖啡的组件作为配置中心就可以了，这个就是在配置中心上选择战队的一个潜规则。OK，这一节的内容就跟同学们讲到这里了，咱在下一节当中会进入 next 的小节，那同学们，我们下一小节再见。
+
+

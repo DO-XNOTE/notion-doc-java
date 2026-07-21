@@ -1,0 +1,50 @@
+---
+title: 5-19 设计生产者消费系统：消费确认和策略
+---
+
+# 5-19 设计生产者消费系统：消费确认和策略
+
+这里讲这个生产者的时候也有讲过，除了发送本身之外，还有就是传输的过程当中一个问题，如何将生产出来的东西去跟内存对象传输到容器里面去，再有容器传输到我们的这个消费者这里去，这里就有一个序列化的问题，就是将内存里面的这个对象变成一个可以在网上进行传输的这样一个间谍。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8db0ce50-4b0d-430c-aadd-31485ed4c004/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VDAZUY2O%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230624Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCs%2FpzdDb6c9KR1SWJkZfH%2B1xrA9id%2BWMZ3C2dGEhn5fwIhALv4DO2AzgBI%2BLmzvxtIo4ui3%2FSuYJfd%2FxtjxcBb9RmMKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igyrg09swpjeW9IcGtcq3AP6wkJkB6dz0iEZBfeTpHj2%2BjqzWcxCHjMHBxS6JBbK%2FpqSUbcL5d0ytPfDeehDI5R8d2PFOFYiJuK91BYuBlvRxILcJXkxZWrhjopmDCTqCDJHmhX8idth2Q%2Bp4L7D9MY1qlY9nxPYVs0azSPbj%2FUhB6wVgvsG%2BP10bR%2FfAu02hrL0WB1Xdl8JihgfzwjZktFyUSP4RbGxsCw4LrJSYfAoY%2FaDnQlm68MW7seKSclLUl19drCHUFNtC0eO7EbXH4eoUZdJkcTP0ECIhcJkmfwbm%2FJTIrL0wqEGlrUbe5xGES1QFvcd2CXHBueHpfvBvnRGLVbkB%2BLNr2jmGbqTXnBymWn4y5Xs9AaT%2BjLhcAGZ4o8zpfXGOnj3O9SfK%2BqdVv9tT7w1CTInH0ibFCYgwmt0nhGgymc%2FA5rmmQnv7gof0NwYnDIypwh3zcwYTNI9Pj%2BhcnPmF3nLsvGbTdCx1c4D9wzb6nvIqs%2FQeLHcbiK0fHOv7w7s%2BOgC5EEXKftUD54Bbf%2FVZHMH5hVeOGw%2FNdIOurKzwC%2BbHGwA%2B1edouormT2f3PE8cJ5O3yn2tpUq0ZRWP6azeNjQANyNMIoe%2BjM3b7BKneNeGrsPtCB4cMXtX9B0fegBBdCBtysQCTDNt%2F%2FSBjqkAYQF2ZaHvzdkvydv0cM8yRUSjYYdZopm7uV1GvMQ2xJV9PYZtz2Pf8Nsx%2Bx81PZbUPL3rFcdPMYk%2BslDl5gquWt5icB7QvOfRikYygxddT6SZ0QUXoAN7r5PO1DJqhXUADNWsEVWc9RZ3UndOW9ihOsxYbTQ7Q5ZupgjtkDZv%2BmgcFx5GKRBG20xzmmt7ZJlu1N4ALvnOPskAzR8NDqvKC4%2F41cj&X-Amz-Signature=0d695c84895a816749168b5ab78f79f57af4f00d81153f18a2bd2911e25a302a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这样一个问题，当时我们讲的配套的，那从消费者角度来讲，那肯定就是一个反序列化的过程，就是把我们的数据流还原成数据单元，就最初的数据单元在这个地方又被还原出来了，后边镜头去处理，你要怎么处理这点？因为前面讲这序化的时候我们已经讲过了，所以这个反序列案我们也是不重视，讲的反正也是差不多的，反正就是你配套，你在序列化的时候你是使用了什么协议，那就反出来就是厂商的协议，把它还原出就可以了。这个东西只要你了解到生产者啊是怎么来序列化的，来自然而这个反序列化就不知道了，就很简单的，这个就不多说了。那对于生产者生产的时候我们有讲过也是一样的，你要确保自己，是吧？发生成功。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/247cb8fe-7abe-436a-b3e0-0907864366f9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VDAZUY2O%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230624Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCs%2FpzdDb6c9KR1SWJkZfH%2B1xrA9id%2BWMZ3C2dGEhn5fwIhALv4DO2AzgBI%2BLmzvxtIo4ui3%2FSuYJfd%2FxtjxcBb9RmMKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igyrg09swpjeW9IcGtcq3AP6wkJkB6dz0iEZBfeTpHj2%2BjqzWcxCHjMHBxS6JBbK%2FpqSUbcL5d0ytPfDeehDI5R8d2PFOFYiJuK91BYuBlvRxILcJXkxZWrhjopmDCTqCDJHmhX8idth2Q%2Bp4L7D9MY1qlY9nxPYVs0azSPbj%2FUhB6wVgvsG%2BP10bR%2FfAu02hrL0WB1Xdl8JihgfzwjZktFyUSP4RbGxsCw4LrJSYfAoY%2FaDnQlm68MW7seKSclLUl19drCHUFNtC0eO7EbXH4eoUZdJkcTP0ECIhcJkmfwbm%2FJTIrL0wqEGlrUbe5xGES1QFvcd2CXHBueHpfvBvnRGLVbkB%2BLNr2jmGbqTXnBymWn4y5Xs9AaT%2BjLhcAGZ4o8zpfXGOnj3O9SfK%2BqdVv9tT7w1CTInH0ibFCYgwmt0nhGgymc%2FA5rmmQnv7gof0NwYnDIypwh3zcwYTNI9Pj%2BhcnPmF3nLsvGbTdCx1c4D9wzb6nvIqs%2FQeLHcbiK0fHOv7w7s%2BOgC5EEXKftUD54Bbf%2FVZHMH5hVeOGw%2FNdIOurKzwC%2BbHGwA%2B1edouormT2f3PE8cJ5O3yn2tpUq0ZRWP6azeNjQANyNMIoe%2BjM3b7BKneNeGrsPtCB4cMXtX9B0fegBBdCBtysQCTDNt%2F%2FSBjqkAYQF2ZaHvzdkvydv0cM8yRUSjYYdZopm7uV1GvMQ2xJV9PYZtz2Pf8Nsx%2Bx81PZbUPL3rFcdPMYk%2BslDl5gquWt5icB7QvOfRikYygxddT6SZ0QUXoAN7r5PO1DJqhXUADNWsEVWc9RZ3UndOW9ihOsxYbTQ7Q5ZupgjtkDZv%2BmgcFx5GKRBG20xzmmt7ZJlu1N4ALvnOPskAzR8NDqvKC4%2F41cj&X-Amz-Signature=d5a7d31eb1c83e383233099d8e413bd88eea1049e831f492c63f8891e9746cc0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面我们讲过，是不是有好几种？有三种模式，第一，始然终起，第二，望城秋水，第三，云中水即锦书来有三种完全不同的态度。那对消费来讲其实也是一样的，它有一个消费的确定的问题。什么意思？就是，嗯，你得告诉这个consumer，其实这玩意儿确实我消费掉了，你不用再告诉我了，你不要再发给我了，或者我也不能再读了，你就再告诉 consumer 它已经消费在这条了。哎，下次不管是他主动来拉，还是我主动给他推，我都不要再把他发一条相同的消息给这个消费者，这点很重要的。
+
+
+如果说你没有这个信息的话，你这个问题就会变得很奇怪。举个例子，现在其实比如在交易队列里面，这个条件消息 consumer a 的话，它其实读到了 50 条了已经，那你怎么知道它读到 50 条？那确实有个消费确认这个卡里面告诉你说我已经吐槽了 50 条了，下次你从 51 条发给我这个东西就很好理解了。所以说这个地方一般能做这种消费的确认就相当于告诉他 or 我读到哪里了。
+
+
+一般有两种做法，一种所谓的就是 commit log，这个就是跟你这个记录的这个习惯一样，就是你记录一下它读到哪里了，反正你然后你在容器端来都要进行一个记录，某一个 consumer 读某一种 topic 的时候，它读到哪去了？记录它的位置信息。
+
+
+index 记录一下，读一次，记录一下读一下，就形成一个log，基本就 commit 说我读到哪里，把这个就记下来，就 Server 端就在我们的容器里面把它记下来说知道或者下次不管它什么时候来，我都知道它原来已经读到 50 条了，现在 51 条给它。
+另外一种是 a C k 的模式，就是我读一次我就马上告诉，哎呀，我读到了，OK，确认一下，然后你就把这个指针往前移一下，到时候你就直接把这个指针在哪里你就读到哪里，就这么简单。然后读一次，我在这个读了指针一下，下次就从指针的位置开始读就可以了。
+
+
+这是两种不同的，像微信的这个形式，或者你在中间验层，或者说你在你的基层，你怎么来应对这种消费训练的一个东西，它的作用最大的就是在于说保证消费过的消息不会再被消费。当然具体到某一些实现层面来讲，后面比如像我们讲 Kafka 什么之类的，或者 MQ 的话，你会发现其实在这个方面他们做法不同，但是都有优秀的地方，做得好一点的地方可能不同，你就跟俊楫真实的场景中哪一种对你这个场景更有利？你自己选一种就可以了。
+
+
+这一点很重要的，因为一旦没有这种消费确认的话，你可能需要通消息也是不断的重复。因为如果举个例子，你是一种在 push 模式，它就会不停地给你push，因为什么？因为它指针没有移，对不对？它还是停在 50 那个位置，那如果是用拉的手段，就是我不知道你 50 拉过了没有，那我再给你发 50 倍。
+
+
+诶，所以这个东西大家都要注意一点，消费确认这点很重要，就跟我们的那个前来生产的时候，确定生产发送成功了以后，还是没有成功以后没有很大区别的。那另外就是从消费来讲，它是有一些策略来讲的，对不对？那比如说举个例子好了，你可以给这个你的客户也各种各的选择。
+
+
+所谓的第一个是批量单体，什么意思？你用不用写？我一次拉 100 条，或者我推 100 条给我？还是说你只能一个一个的推给我？那这就是所谓的批量和单体？这个其实没有特别好讲，我个人感觉就是自己根据你的这个实际需求，你可以做一个调整，因为这个应该没有现在那么死，对吧？跟你的这个实现层面的这个门槛， a t、 a C、 k 这种东西难度不是一个自己的一个，所以你只要告诉他，比如说我这一批拿五个还是拿一个，我觉得这个相对来说比较简单，但是你一定要给他这个选项，女生就是觉得我这个速度很快，我一毫秒处理 10 条，那你每这一拉给我 100 万条我都可以处理得过来。
+
+
+另外一种就是同步还是异步？作为你在 consumer 讲坛就跟前面一样的，我读到之后我一定要处理完了，我再读下一次，还是我读到以后我只管读的时候读到的内容，我就教给一个专门的这个处理逻辑的这样一个线程或者系统或者程序来完成。那我自身再去读下品，就是两种处理方法，同步还是异步？你作为 consumer 的话，你读了下去之后自己处理完，然后再去读下一批，对吧？这叫同步。对，你读完之后，你另起一个线程，把它交给另外一个线程来处理，或者说你把这个交给另外一个系统来处理，这叫异步，就是看你取决于你自己愿意哪种。但是我个人觉得作为 consumer 这种东西，可能你就把读消息或拉取消息或者收消息，在这种职责和你真正处理业务逻辑再稍微拆分一下，虽然都是在convermer，你可以把它当成一个component，而不是单纯放在一个程序，你把它再分解一下，让彼此的职责再趋的细一点，这样子那改变的时候灵活性更高一些。
+
+
+如果说读的地方有问题，你就改读的地方处理逻辑有问题，你只改处理逻辑的，这样子比较好一点。所以说我个人觉得可能如果是我选择大半年后宁可选择这个异步的，就是把读取和处理分离开，这样子是很好的一个设计选择，我个人看法，那最后就是说我们经常谈到一个问题，是幂等的问题，那么谈幂等就是在于说对于 consumer 来讲的话。
+
+
+而这次消息如果说是一再给你发它，因为可能是很多地方的原因，比如 a C、 k 一直有问题，或者 counter 那边出了什么问题， container 那边他没记住你在哪，这只一直重复给你，这个时候你也不要做这种防虫，而且所谓的 dupe 因为这个东西挺难防的，流量高的时候，特别是这个高并发的时候你要做低调非常困难。
+
+
+那所以说另外一个办法不做低调，就是你自身在 consume 的处理逻辑里面要把它变成一个幂等，所谓的幂等就是我相同的东西不停的给你做一个信息，你不会出现不同的这样一个反应，这就是所谓的幂等，它是效果总是相同的，那这个像这里是比较好理解的。所以说对于设计一个消费者这些点都要注意，特别是前面的那 2 点可能是比较重要，后面这几点消费确认这个会决定你会不会收到重复消息。 coach 你会受到多少DOCUS。然后其他就是比较简单一点的，就是你到底是走批量还是不走批量，爱同步、异步还是是否支持幂等，这种都会是影响你整个，那可能是看什么整体系统的影响因素，对于抗日脉端来讲当然也是更解密一些，这个你就看看哪些东西是你所要注意的，你把它加到这个刊登的元素里面就可以。
+

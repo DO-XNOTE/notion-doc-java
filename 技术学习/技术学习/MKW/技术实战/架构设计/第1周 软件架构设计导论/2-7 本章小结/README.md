@@ -1,0 +1,19 @@
+---
+title: 2-7 本章小结
+---
+
+# 2-7 本章小结
+
+2-7本章小结
+本章小结
+相信经过这章的讨论，大家每个人都已经很熟悉软件架构的定义、目的和发展了
+下面让我们回顾一下整个章节的总体内容吧
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7f7fc7bb-452f-4ef2-9a46-94ae4a847f0b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466R5TLTIDA%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230301Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIFtuhKhlXYFVNJKwbeEnz45CwewLQILpLvOxi0AqfUg%2FAiEAioUBffnvm2De6P7PwRKFz2%2Bf7O9kRIylt4RIQB%2BvkOUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDN79rr2T1TN5ByjYdCrcA8XSntfn0W68Xud0XmUZ7v02HDTEGvvg%2Bgg9elm2GZkVwmKVPShIl9hCapu3qmsrjttDEucaW4fssHYW%2BP8YNnnrbw4ZF2JnaXZL67TtdCJXwtHSbIk0T0mqXeNyrTGnN874qKLwtZhC8%2BeHXJ30oWt6PxLZv0Z3mIfsEc%2BsS9Xm9s2YfmOWPlOe8P0YSrqipv4O3EXthcZCIT3%2BtS88K5MfjMIy9BJpPE78Yo1rfvJ6Wtwj%2BZ6e8KoJ0YPPeofCynCpR9JWpiJT17S1%2FwyrLAN%2BKKXnMOLlY0SYioJcNg8YpgYNZySKCzAjnLnM3LK0JJJMJQ2OEB08urZfeusDVewiX5Miv2HEis1m124HYdE5nmhdBbbbYzNV5R9YWYolSMFUHDeq8Z%2BeUjWgE402cui0F2eNCt8JXu2vQ4z8icse0dCQpXdCe8RfvwBx56XaSonkZP97fPUUOIbSMTWallSnWVn5wkkn8GtcDjdReCvK8BVcqIAittRzqj2u6QnBDP4%2F24uqLMHsARPYZprcqvfiw396vzeueqWoN0UxCX5bp4IbEeEVijv4HJnT6cl8lrRnotbPM6PFSl1%2BwC0mxSZ5%2FDvAwDCrM%2BBFU87F3qSJiLM3qTPiQuAaCHFqMJ%2B4%2F9IGOqUBUByltJsdNYMiHduYM7SAHpPwvF8sAGFnD4FymarMUA5lsiGIhSJsOjQ0Z1WFIIL0kMK0bph0z7aNjVeityxRV%2BOGGEzY4rHiZiNJg1lYzvCzHWDFbDp65SMc60wYDUI62EVo4nHKC4lN7TKI0r0MdNptyll%2BEa0i8BGhqvDC7z4W3%2BoAdqjp2Jq2uaBYR%2BtdG2A1NUiGriA91ZOGlrU48LVdOPvQ&X-Amz-Signature=97748c586f08b593d6da0c16abe8043a6be903a4b6cbeae99ea2e0c2e4279631&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+练习
+第一节没有太多的练习，让我们从一个轻松愉快的起点开始架构师之旅吧
+请按照慕课网的课程提示加入QQ讨论群，来聊一下你心目中的软件架构、架构设计和你平时的工作
+重点吧。
+
+

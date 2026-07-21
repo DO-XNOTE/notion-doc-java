@@ -1,0 +1,17 @@
+---
+title: 4-1 本章概述（0212）
+---
+
+# 4-1 本章概述（0212）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/46f7b9b5-2744-42c5-b18d-5a998cc1802a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XVOVVTJV%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T232024Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDvqDWQHXiSBXUkYkcn96s62GCDKkc%2BHxH%2FP69mTCpNZAIhAJUMZweEPe3skVehSSO88stshdWZ7oXj2eNDDwYUzutnKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzUHreIOU1ER6a2we8q3APbA3rWJ9sD%2Fm479BWRBpGTDliKnU25Occ4O7lTxLjLYEGq9DxzDLREK1Qw2T9T3%2B0NVJn%2BRXH8pc0NODAFE9QvozUrwtQyfn76skWPmULI7kLZEgxVuDyFZEEP%2F7oIg7k33vz0tCAUJAeB3O35oLaWpFTpNFR9fjn3mTpHxs9EVoaPG9xRzIzabRdjvOoR2p8Z5WwJ7Vxx6k6DGRduEDUUhYmXry8a8iSNBtWg%2FPKt%2BMt19wUyxaD5zPNx0uk6NQHl5z%2B3dZ6gGJFWgXWGX5zvsA3Keh21PsZMIrzAQRtsxwOW3uytSl8A7962DYbHTDgKjsJcBIiw8XAGtgEYpbALF2pAm0MXpXpZgHNsFeSo%2Bc%2BZTdSG%2F829ggVIve7DHsHgTylxNow1CvQwaRq5jugeCt3%2B8KR6fct4ZQrbNwJjhByTAigiZ3DzureVt1%2B%2F6DNZwjfGiS08iZJ3c6GiWCYylKosd6mTFxV%2FzTiID6sOU%2Bt6d%2FpM8IO3BN1QeN%2Fj7%2FrX9Aq%2BrqhVjCmZmtr8MdbwVnTqSa2Q95K0ZnNGbaKs0RssiQAUzQWBYVK5tSNgUYzPYfEgRLGfunWNBDLiYL9rrQOs83Lc0K6JFmom23pv5HRMK65okIOmVBPpnTCsuf%2FSBjqkATN%2BCxQR1wzuZadpBgIOzhlPT%2Fs6c6Z5gzbwOjBr4rrRVQ6hoHwkJwcCU0xCXRqrpA1F96midkZgFptVzL%2BMtB7pXJJlxu85w0f%2BRvNs%2Bu6bkzwFs4yM3VgwAu4cAs7CLO2CTLR9z%2Fn3y5OYScfP7jQwjMt3C891iH6KZbR9fwzfA%2B4QxFFunlDqP6yYFtUyzhXQ2EFXVYniIBone988Q6JU9lUX&X-Amz-Signature=b197f525bb4b223c971521d4abdb94d6aaa105b001fbf9a06437a07572ba9614&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+同学们大家好，这一章节我们来介绍 SPU 二次改造。前面我们也介绍到学习一个开源框架的段位，最基本的是这个框架我会使用。第二个层次是根据框架相关的问题，我们可以通过分析源代码来解决。第三个段位就是我们可以基于源代码进行一些二次开发的改造。这一章节我们来学习介绍 spring 容器的二次开发改造的内容。 spring 它给我们提供了很多对系统容器扩展的入口，这些可扩展的设计对我们后期自定义开发非常友好。我们学习 spring 的源码知识，比较关心的也是如何学以致用。在业务系统开发过程中，如何通过我们的源码知识来解决业务上的问题，通常我们设计的系统如果能够支持进行无侵入的二次扩展改造，那么这一点特别能体现我们系统设计与实现的一些功底。我们也是基于对 spring 可扩展性设计原理来对 spring 的系统进行自定义扩展。 spring 的核心也就是 IO c 容器，我们的扩展也是重点来围绕 IOC 容器进行。首先我们会通过 being post process 和 being factory post press 来跟大家一起体会一下如何做到我们不修改业务代码，就对系统的功能进行扩展。
+
+
+其次，自定义 factory bin。在业务开发过程中，我们经常会用到工厂模式来创建一个bin， spring 也大量用到了这种方式。有时候我们初始化某个对象，它会涉及到大量的代码逻辑，那么我们避免了这些逻辑的重复。怎么做？那么就比较适合使用 factory bin 的方式来解决这个问题。
+
+
+现在注解在 spin 中是越来越重要，我们通过自定义注解的 my competent 这种方式对我们系统模块的分类认知提供另一个扩展方式。我们已经知道 spring 它已有的这些分类，像 ad reporstery 和 ad service 艾特control，在这个基础上扩展一个新的分成，来去定义一下我们业务所特有的这些模块，也是一个比较好的一种方案。
+
+

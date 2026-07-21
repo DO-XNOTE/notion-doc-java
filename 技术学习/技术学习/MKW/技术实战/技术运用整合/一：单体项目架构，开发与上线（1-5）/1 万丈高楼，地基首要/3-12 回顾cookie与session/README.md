@@ -1,0 +1,67 @@
+---
+title: 3-12 回顾cookie与session
+---
+
+# 3-12 回顾cookie与session
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c3b25c48-3c00-4d09-b9b3-907e3ebd99ef/SCR-20240816-tvis.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X5Z6NANF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224631Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAOB%2BDJM809cJzJx6W2XBmWnJBj1a2c3u5LZLdDeTFKkAiAHnPF%2FJgpumSwio643jZgHkmQJA8wHOfpxKIiTsxx5myqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMbosq7Y7mrefrdE%2FKtwDXcDh4u%2Fty9X8Q9EVOMGJm%2F4iyPdFiQzcyFG5P23JL1O9YTj9QF4CZyA0suFM38csKgUUxjp2wpOAxXsqe7PJQAdyCgxsMCQrrdw9xe0LKIhBOJkAqOfX6O38dClrAwX7PUR3g%2BxL28uPd16zp4lKJjvUW%2BRggSlINTl8%2ByvHpn797cAcjyMgIgyyu06Xb1qlmEKFoaNhGO%2Fu7C6De6G52ZRxgIxxIIhh684HE3uZ%2FCE8DNlAz507t%2FnHLhB6DkdinKZryGieHsn6mNNEZaSYAzrVlTvi%2Fi3y5bKHpdnuqqSifR4IRf6SojjxlBRx6uWOgjQpH718Oiq7Y3c1BfVsVvdLZOh7s7uGiM%2FA%2By1N0%2FfcJ7dncCEz4niUzF7azLRossDBPMkoDyZaJQ9JNvMcw1SsKs6kiSctDo6e2034hhShg%2FTyn4jSAJUq%2Ba3mUQdhNvudGvGj%2Bt0lL4LLqnR%2F2r1a%2FqnBAE3rfMDOPl6fJg5NwRTYDYK9n6UwVic8GhqpiTMzAhoJ%2BmLSuqegG0QS%2BE1gISbxgVSxyzHz8e4K%2FfPp12RELYkdw2PaafzVNKVjVobgL8wUf%2BfY6Cwv%2BGn8vAFVj4jG8NBiVCYXVcm%2BxrcYlth74bptxhL5TzAw%2Fbn%2F0gY6pgHJ1%2BC5btVGpRAld5B986y7KIsWamntZlzoPejfX3TusarwtgC72SGqla6l9TLm5%2FyB2P%2BnByfeGwp97fq3bTZzv%2B7q6d%2BIaoR5T6IudqyzXBaNKmc6pjVMYwuaKXnduTViMtB2yqhJD91s6MppJZyPdetIPRSJ7imrMxHE1%2B42vMvTL7UjMt%2F3v8yCH0QqRpf1L7MstRtfwr8fuLJblYprt1GSoVUj&X-Amz-Signature=71aba17be24ca5cb638641eca150e9c6b30e96cf2d2090ba8f6432b61495b190&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在用户注册或者登录成功以后，其实在我们的首页上应该要显示一些用户的最基本的信息，比方用户的昵称，用户的头像。现在其实在我们的页面里面看得出来什么都没有。看一下咱们在线的，这是我们在线的一个网页，可以看到在这里有一个欢迎某，另外在侧边有一个默认的头像也都会有。所以我们应该要实现一下这样的一个功能。
+
+
+这个功能其实在我们很早以前使用 g s p 进行我们的开发的时候，在单体应用里面，由于 g s p 它本质上就是一个 survey 的，所以我们在后端进行 session 的设置以后，前端 g s p 上就可以拿到相关的用户信息。但是在这里其实我们使用的是前后端分离的模式，在 html 页面里面，我们是获取不到 session 的信息的。这个时候我们又该如何来做？首先我们可以先来复习一下在 j two e 里面所涉及到的两个概念，一个是cookie，一个是session。
+
+
+首先我们先来看一下什么是cookie。 cookie 它其实是一种以键值对的形式存储信息，并且保存到浏览器的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/716ee81e-6414-422e-b483-32fe86200203/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X5Z6NANF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224631Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAOB%2BDJM809cJzJx6W2XBmWnJBj1a2c3u5LZLdDeTFKkAiAHnPF%2FJgpumSwio643jZgHkmQJA8wHOfpxKIiTsxx5myqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMbosq7Y7mrefrdE%2FKtwDXcDh4u%2Fty9X8Q9EVOMGJm%2F4iyPdFiQzcyFG5P23JL1O9YTj9QF4CZyA0suFM38csKgUUxjp2wpOAxXsqe7PJQAdyCgxsMCQrrdw9xe0LKIhBOJkAqOfX6O38dClrAwX7PUR3g%2BxL28uPd16zp4lKJjvUW%2BRggSlINTl8%2ByvHpn797cAcjyMgIgyyu06Xb1qlmEKFoaNhGO%2Fu7C6De6G52ZRxgIxxIIhh684HE3uZ%2FCE8DNlAz507t%2FnHLhB6DkdinKZryGieHsn6mNNEZaSYAzrVlTvi%2Fi3y5bKHpdnuqqSifR4IRf6SojjxlBRx6uWOgjQpH718Oiq7Y3c1BfVsVvdLZOh7s7uGiM%2FA%2By1N0%2FfcJ7dncCEz4niUzF7azLRossDBPMkoDyZaJQ9JNvMcw1SsKs6kiSctDo6e2034hhShg%2FTyn4jSAJUq%2Ba3mUQdhNvudGvGj%2Bt0lL4LLqnR%2F2r1a%2FqnBAE3rfMDOPl6fJg5NwRTYDYK9n6UwVic8GhqpiTMzAhoJ%2BmLSuqegG0QS%2BE1gISbxgVSxyzHz8e4K%2FfPp12RELYkdw2PaafzVNKVjVobgL8wUf%2BfY6Cwv%2BGn8vAFVj4jG8NBiVCYXVcm%2BxrcYlth74bptxhL5TzAw%2Fbn%2F0gY6pgHJ1%2BC5btVGpRAld5B986y7KIsWamntZlzoPejfX3TusarwtgC72SGqla6l9TLm5%2FyB2P%2BnByfeGwp97fq3bTZzv%2B7q6d%2BIaoR5T6IudqyzXBaNKmc6pjVMYwuaKXnduTViMtB2yqhJD91s6MppJZyPdetIPRSJ7imrMxHE1%2B42vMvTL7UjMt%2F3v8yCH0QqRpf1L7MstRtfwr8fuLJblYprt1GSoVUj&X-Amz-Signature=98a0ce1530d57b8ff309d55595bec4a16988b1bd91e65d949b83018f6da9332f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+其实这种的 cookie 我们又可以称之为是存储在浏览器上的一个缓存。这种信息它的一个大小是有一个限定的。 cookie 它所保存的内容它的大小是不可以超过 4 k b，这个是需要去注意的。 cookie 是不能够去跨域的cookie，它只能够在当前的一个域名，或者在当前域名的负极域名，是可以取到相应的一个值的。
+
+
+OK，这个是什么意思？我们可以来看一下。可以打开京东，在京东里面我们可以按一下F12，在 F12 里面，在它的一个这一侧有一个 application 找到cookies，在 cookies 下方会有很多的一些网站，其中我们就可以来看一下。这是我们当前所打开的京东的首页。 3W 点 j d . com 其实是一个二级域名。 3W 它是二级的，它并不是一个一级的，一级域名其实就是 JD . com，我们可以往旁边侧边我们来看一下。在这里会有一个斗面玉把，像前面这些这些全部都是一级域名，或者是顶级的负级域名，只要是在点 JD . com 域下方，所有的一些 cookie 信息都可以被它的二级域名所共享。
+
+
+二级域名又是什么？比方cut，应该是三级域名了，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/83f5c522-2390-4cfc-9dff-60e1a7985825/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X5Z6NANF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224631Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAOB%2BDJM809cJzJx6W2XBmWnJBj1a2c3u5LZLdDeTFKkAiAHnPF%2FJgpumSwio643jZgHkmQJA8wHOfpxKIiTsxx5myqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMbosq7Y7mrefrdE%2FKtwDXcDh4u%2Fty9X8Q9EVOMGJm%2F4iyPdFiQzcyFG5P23JL1O9YTj9QF4CZyA0suFM38csKgUUxjp2wpOAxXsqe7PJQAdyCgxsMCQrrdw9xe0LKIhBOJkAqOfX6O38dClrAwX7PUR3g%2BxL28uPd16zp4lKJjvUW%2BRggSlINTl8%2ByvHpn797cAcjyMgIgyyu06Xb1qlmEKFoaNhGO%2Fu7C6De6G52ZRxgIxxIIhh684HE3uZ%2FCE8DNlAz507t%2FnHLhB6DkdinKZryGieHsn6mNNEZaSYAzrVlTvi%2Fi3y5bKHpdnuqqSifR4IRf6SojjxlBRx6uWOgjQpH718Oiq7Y3c1BfVsVvdLZOh7s7uGiM%2FA%2By1N0%2FfcJ7dncCEz4niUzF7azLRossDBPMkoDyZaJQ9JNvMcw1SsKs6kiSctDo6e2034hhShg%2FTyn4jSAJUq%2Ba3mUQdhNvudGvGj%2Bt0lL4LLqnR%2F2r1a%2FqnBAE3rfMDOPl6fJg5NwRTYDYK9n6UwVic8GhqpiTMzAhoJ%2BmLSuqegG0QS%2BE1gISbxgVSxyzHz8e4K%2FfPp12RELYkdw2PaafzVNKVjVobgL8wUf%2BfY6Cwv%2BGn8vAFVj4jG8NBiVCYXVcm%2BxrcYlth74bptxhL5TzAw%2Fbn%2F0gY6pgHJ1%2BC5btVGpRAld5B986y7KIsWamntZlzoPejfX3TusarwtgC72SGqla6l9TLm5%2FyB2P%2BnByfeGwp97fq3bTZzv%2B7q6d%2BIaoR5T6IudqyzXBaNKmc6pjVMYwuaKXnduTViMtB2yqhJD91s6MppJZyPdetIPRSJ7imrMxHE1%2B42vMvTL7UjMt%2F3v8yCH0QqRpf1L7MstRtfwr8fuLJblYprt1GSoVUj&X-Amz-Signature=4a6c2e13abdb9691f0b9a8665ff6068142b10694cae47a39cc03e6cbd1d04559&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+它有一个点cut，点京东 .com，这个是三级域名。另外二级域名像 3W 点京东 .com，这个其实是一个二级域名。当然还有可能有其他的像，其实也是一个二级域名，它前方是有一个前缀的，a、b、 c 点京东 .com，x、y、 z 点京东 . com 都是它的一个二居民。在这种情况下，它相应的 cook 信息是可以去进行一个共享的。
+
+
+OK，回过头下一个cookie，它也是可以去设置一个有效期。我们也是一样。可以参考一下京东，在京东的部分，它有一个express，这个其实就是一个过去时间，它每一个 cookie 信息其实都会有相应的过期时间。对，OK，像这里有道，这个其实应该是当前的一些内容。另外还有是比方后续的，也有到 9 月份，还有是到明年的等等，最久的可以到 2047 年，应该是二三十年以后了。这些都是 cookie 信息所设置的一个过期时间。另外其实还有一个pass，我们继续cookie，它还是可以去设置一个 past pass，其实就是一个路由。在这里其实一般来说，我们只要使用cookie，我们所设置的 pass 都是一个斜杠，这个斜杠就是代表当前我们域名后方，它可能会有一些UI，具体的一个路径地址，斜杠就代表所有的路径都可以享受当前的某一个 cookie 的具体的值。
+
+
+OK，如果在后方你要加上一个斜杠user，就代表是只有斜杠 user 下才能够访问到相应的 cookie 的值，这个就是pass。一般来说我们设置为斜杠就可以了，这就是我们的一个 cookie 的信息。
+
+
+随后我们再来看一下session。 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/beffa254-5a6a-482d-a594-e2b3834f4167/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X5Z6NANF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224631Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAOB%2BDJM809cJzJx6W2XBmWnJBj1a2c3u5LZLdDeTFKkAiAHnPF%2FJgpumSwio643jZgHkmQJA8wHOfpxKIiTsxx5myqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMbosq7Y7mrefrdE%2FKtwDXcDh4u%2Fty9X8Q9EVOMGJm%2F4iyPdFiQzcyFG5P23JL1O9YTj9QF4CZyA0suFM38csKgUUxjp2wpOAxXsqe7PJQAdyCgxsMCQrrdw9xe0LKIhBOJkAqOfX6O38dClrAwX7PUR3g%2BxL28uPd16zp4lKJjvUW%2BRggSlINTl8%2ByvHpn797cAcjyMgIgyyu06Xb1qlmEKFoaNhGO%2Fu7C6De6G52ZRxgIxxIIhh684HE3uZ%2FCE8DNlAz507t%2FnHLhB6DkdinKZryGieHsn6mNNEZaSYAzrVlTvi%2Fi3y5bKHpdnuqqSifR4IRf6SojjxlBRx6uWOgjQpH718Oiq7Y3c1BfVsVvdLZOh7s7uGiM%2FA%2By1N0%2FfcJ7dncCEz4niUzF7azLRossDBPMkoDyZaJQ9JNvMcw1SsKs6kiSctDo6e2034hhShg%2FTyn4jSAJUq%2Ba3mUQdhNvudGvGj%2Bt0lL4LLqnR%2F2r1a%2FqnBAE3rfMDOPl6fJg5NwRTYDYK9n6UwVic8GhqpiTMzAhoJ%2BmLSuqegG0QS%2BE1gISbxgVSxyzHz8e4K%2FfPp12RELYkdw2PaafzVNKVjVobgL8wUf%2BfY6Cwv%2BGn8vAFVj4jG8NBiVCYXVcm%2BxrcYlth74bptxhL5TzAw%2Fbn%2F0gY6pgHJ1%2BC5btVGpRAld5B986y7KIsWamntZlzoPejfX3TusarwtgC72SGqla6l9TLm5%2FyB2P%2BnByfeGwp97fq3bTZzv%2B7q6d%2BIaoR5T6IudqyzXBaNKmc6pjVMYwuaKXnduTViMtB2yqhJD91s6MppJZyPdetIPRSJ7imrMxHE1%2B42vMvTL7UjMt%2F3v8yCH0QqRpf1L7MstRtfwr8fuLJblYprt1GSoVUj&X-Amz-Signature=4d590bb1a3e6fc3716ff6e3a3d958e5b7dd59a6b807cbd6cb764de34dd3d1ba6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+session 其实它相当于是服务器端的一个缓存，这个缓存它是可以保存到内存里面去的，但是它是一个非持久化的一种形式。也就是当我们的服务器假设宕机了或者重启了，所有用户的会话请求其实全部都会丢失的。OK，这一点是需要去注意的，如果没有出现问题，其实所有的会话都是保存在内存里面，当一个服务器它的压力非常巨大，或者用户量非常非常庞大的时候，请求也会跟着增多。这个时候它的内存可能会吃紧，对于我们的资源来讲就会有点不太够用。所以在这种情况下，这种 session 在我们后续是用不着了。
+
+
+在我们课程里面也不会以这种 session 为主的，因为这种 session 它是属于是有状态的session，使用 web service 去进行调用，每一个请求它都是独立的，所以我们会使用分布式session，也就是无状态的。后面我们会整合到 Redis 里面去。
+
+
+OK。每一个 session 它其实都会通过一个 session ID 来区分不同的请求。 session ID。其实当第一次请求以后，在服务器端只要是创建了一个session，就会在我们的 cookie 里面保存一个j、c、h、i、d。这个其实是在 server 的里面去设置的，这个其实我们是可以去看一下的。另外还有是一个过期时间，每一个 session 你都可以去为它设置一个过去时间，比方半小时， 8 个小时都可以。随后 session 和 cookie 其实也是一样的，它是以一个键值队的形式去存在的。
+
+
+OK，好，我们可以打开咱们的开发工具，及时可以来回顾一下。在这里面我预先已经是整了一个 hello control 了。在这里面我们要去使用 request 来构建一个session，应该说是通过 request 去 get 一个session，这个 session 我们可以去进行设置的，比方通过 session 点 set attribute，这里面是一个键值。对比方，我们可以设置为一个uzinfo，写一个字符串，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0cd1ecda-e7a0-4ead-9ade-72b0c281f05a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466X5Z6NANF%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224631Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAOB%2BDJM809cJzJx6W2XBmWnJBj1a2c3u5LZLdDeTFKkAiAHnPF%2FJgpumSwio643jZgHkmQJA8wHOfpxKIiTsxx5myqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMMbosq7Y7mrefrdE%2FKtwDXcDh4u%2Fty9X8Q9EVOMGJm%2F4iyPdFiQzcyFG5P23JL1O9YTj9QF4CZyA0suFM38csKgUUxjp2wpOAxXsqe7PJQAdyCgxsMCQrrdw9xe0LKIhBOJkAqOfX6O38dClrAwX7PUR3g%2BxL28uPd16zp4lKJjvUW%2BRggSlINTl8%2ByvHpn797cAcjyMgIgyyu06Xb1qlmEKFoaNhGO%2Fu7C6De6G52ZRxgIxxIIhh684HE3uZ%2FCE8DNlAz507t%2FnHLhB6DkdinKZryGieHsn6mNNEZaSYAzrVlTvi%2Fi3y5bKHpdnuqqSifR4IRf6SojjxlBRx6uWOgjQpH718Oiq7Y3c1BfVsVvdLZOh7s7uGiM%2FA%2By1N0%2FfcJ7dncCEz4niUzF7azLRossDBPMkoDyZaJQ9JNvMcw1SsKs6kiSctDo6e2034hhShg%2FTyn4jSAJUq%2Ba3mUQdhNvudGvGj%2Bt0lL4LLqnR%2F2r1a%2FqnBAE3rfMDOPl6fJg5NwRTYDYK9n6UwVic8GhqpiTMzAhoJ%2BmLSuqegG0QS%2BE1gISbxgVSxyzHz8e4K%2FfPp12RELYkdw2PaafzVNKVjVobgL8wUf%2BfY6Cwv%2BGn8vAFVj4jG8NBiVCYXVcm%2BxrcYlth74bptxhL5TzAw%2Fbn%2F0gY6pgHJ1%2BC5btVGpRAld5B986y7KIsWamntZlzoPejfX3TusarwtgC72SGqla6l9TLm5%2FyB2P%2BnByfeGwp97fq3bTZzv%2B7q6d%2BIaoR5T6IudqyzXBaNKmc6pjVMYwuaKXnduTViMtB2yqhJD91s6MppJZyPdetIPRSJ7imrMxHE1%2B42vMvTL7UjMt%2F3v8yCH0QqRpf1L7MstRtfwr8fuLJblYprt1GSoVUj&X-Amz-Signature=3b251d1989196a390e3be169304b59442620ffa8bd3eb449eb9bf7c30055f02d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+当然我们也可以写一个对象放进去，也可以。另外可以设置一下它的一个过去时间，看一下过去时间也是可以去设置的。如果你设置为是一个zero， zero 就是0，就代表我们是 never time out，是永不过时的。通过 get attribute 获得它的键，它的值就可以拿到。另外也可以手动的去移除当前相应的一个session，也是没有问题的。这种情况虽然我们在后端进行设置了，但是其实整个像用户对象，我们在前端 HTML 代码里面，其实我们是获取不了的，我们只能够获得一个相应的 j c 型ID。
+
+
+OK， j c id 我们可以来演示一下，比方我们在这边把 remove 我们注释，我们可以来运行一下来 set 一下session。随后我们可以到咱们的页面里面去看一下cookie， cookie 只要你设置一个session，对应的它就会有一个 session ID 的。我们在直接来请求一下，改为 8088 斜杠 get session set session。
+
+
+好，现在是OK，我们可以把 F12 打开看一下，在 cookies 里面，这个时候会有一个 j c 讯ID，这个其实就是和我们后端的 c 讯相关的。每一个用户请求不同的会话，不同的 c 讯，它都会有对应的一个 c 讯ID，只要是我们再一次请求后端，它其实会携带这样的一个 sessionId 的。我们可以到 network 刷新一下来看一下。在这个下方，你会看到它会有一个cookie。
+
+
+看到这个 cookie 其实就是我们当前在浏览器里面的一个咨询ID，它会携带的会请求这是一个请求头 request head。请求了以后，其实咱们的后端服务端是会获得到 j c、 i d，随后它就可以根据不同的 j c c、 i d 来判断当前是哪一个用户的会话了。所以在我们的服务端就可以获得到相应的一个 user info 了。OK，这些我们相当于是回顾了一下cookie，以及是 session 的一个概念。OK。
+
+
+

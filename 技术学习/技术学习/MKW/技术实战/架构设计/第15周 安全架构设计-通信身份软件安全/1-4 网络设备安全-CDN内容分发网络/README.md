@@ -1,0 +1,51 @@
+---
+title: 1-4 网络设备安全-CDN内容分发网络
+---
+
+# 1-4 网络设备安全-CDN内容分发网络
+
+加起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬。好，上一节我们聊了聊二郎神的三大招，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8dd3976f-ba09-4d83-8dfb-d7fca84c561d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666ORJXVML%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231028Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDbCc75C1pRxZLvdrmixqWR3okFaaFETl8nkt1hW1SGHAiEA1WbnjMRJ9KJ3lCrIzqXBn%2BJXrKhjftacA4NJOWjFMuUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEfGPCFOr2HIEUVBESrcA%2F8g1FDb0k9SaBNXu4CZQy%2FGzC82cxe5ODbDJG%2BX3K1UApHzoPb72JoxELvmNupobhFxkm7%2BtXVY6eimTEtOLHE%2BKy3%2FKPs18DK6cCZPYeAmKsDuB44FNdMiJbyNQYrApEUw6k34%2F84amL5zHzo61Km9tfMucpUUoY1HDj49ievmxj5d8ZgPgejm1IUJ7LH59%2BgqKc2C7kAYGJPn9A7%2BeLLgKISERDbUoy7%2BkMZejlLpiboSwy7Dh2mGfPqiszcbUaGQR0c9cJ90O2JjrZ5zg9O34okr6qdAvPFtzecd9rY2W7CGVG8cv7msQfCxijQ3yhcFxUH%2FDER3NuhPkcPZ45TKlg0CuFpXO1NSjN3Yg0zWe%2FZfA%2FMlEN3grreoXf8bi8Mz3vf08yJIpD7ysoBkZf%2B1hBmBkLbln6ncbIL9duqrYet9Afn8aWQkbToQZ2pN%2FNNLrbKI0OlQ8Qtzf2mItDCYuv5CKKQbfYC3uIECXAwuNY8M4pxVQhwja0BtMsM2HQeSQUYyJfUPBfvzONhNPsH9yDJaPKOc%2BGXGjMzpf%2F%2BRGrXcGfGZaqlYbqoNGuvxCr3hOfODDhI0PRNcc1tPfiLjxt37GbiNztC1JMVOZxYBUJgk3wbZek5wbtNQMKy3%2F9IGOqUBEJ51wljZ2xOCz0%2F6E1A%2FRd0quq7y1yTUOTm3u0cGU%2BkAtdjJPjWdpCsIa8Fi%2FrfssQHcEheXMggIs5mMta97qzAzycbhgLXVxq6koURls3G6IVO1UHtLWBbLNTENPkPibaPiIP5Qr7Rks9sJsns%2BVEWAtj72GlbSQMxajBqmhwq%2BcnuL0xRxlDd3%2B%2FOwRj%2BM5EgWHpURVrbsiy9AiJIv3azzs4pr&X-Amz-Signature=f6de259eb2902b6861dda2d9e56b0bb1da1216de29f476b77134b7e811440ee2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+分别是包过率状态检测以及应用网关这样的三种不同的形式来进行防火墙的防御。那这一节我们来聊一聊另外一个大神了，互联网的土地公。这位大神就是我们的 CDN 内容分发网络，那情人节我们在最后其实留了个小问题，大家猜出来没有啊？谁是土地公？就是我们的CDN。
+
+
+那为什么 CDN 是土地公？它又有什么样的应用呢？我们这里还是以慕刻网为例，假设我们的慕刻网的源站就是下面那个，嗯，小的这个云的源站，那这个源站它其实架在一个地方，我非常是不知道我们假设是架在成都好不好？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5d00204e-0220-4bde-8862-1b29d54c363b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666ORJXVML%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231028Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDbCc75C1pRxZLvdrmixqWR3okFaaFETl8nkt1hW1SGHAiEA1WbnjMRJ9KJ3lCrIzqXBn%2BJXrKhjftacA4NJOWjFMuUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEfGPCFOr2HIEUVBESrcA%2F8g1FDb0k9SaBNXu4CZQy%2FGzC82cxe5ODbDJG%2BX3K1UApHzoPb72JoxELvmNupobhFxkm7%2BtXVY6eimTEtOLHE%2BKy3%2FKPs18DK6cCZPYeAmKsDuB44FNdMiJbyNQYrApEUw6k34%2F84amL5zHzo61Km9tfMucpUUoY1HDj49ievmxj5d8ZgPgejm1IUJ7LH59%2BgqKc2C7kAYGJPn9A7%2BeLLgKISERDbUoy7%2BkMZejlLpiboSwy7Dh2mGfPqiszcbUaGQR0c9cJ90O2JjrZ5zg9O34okr6qdAvPFtzecd9rY2W7CGVG8cv7msQfCxijQ3yhcFxUH%2FDER3NuhPkcPZ45TKlg0CuFpXO1NSjN3Yg0zWe%2FZfA%2FMlEN3grreoXf8bi8Mz3vf08yJIpD7ysoBkZf%2B1hBmBkLbln6ncbIL9duqrYet9Afn8aWQkbToQZ2pN%2FNNLrbKI0OlQ8Qtzf2mItDCYuv5CKKQbfYC3uIECXAwuNY8M4pxVQhwja0BtMsM2HQeSQUYyJfUPBfvzONhNPsH9yDJaPKOc%2BGXGjMzpf%2F%2BRGrXcGfGZaqlYbqoNGuvxCr3hOfODDhI0PRNcc1tPfiLjxt37GbiNztC1JMVOZxYBUJgk3wbZek5wbtNQMKy3%2F9IGOqUBEJ51wljZ2xOCz0%2F6E1A%2FRd0quq7y1yTUOTm3u0cGU%2BkAtdjJPjWdpCsIa8Fi%2FrfssQHcEheXMggIs5mMta97qzAzycbhgLXVxq6koURls3G6IVO1UHtLWBbLNTENPkPibaPiIP5Qr7Rks9sJsns%2BVEWAtj72GlbSQMxajBqmhwq%2BcnuL0xRxlDd3%2B%2FOwRj%2BM5EgWHpURVrbsiy9AiJIv3azzs4pr&X-Amz-Signature=7dfb066aad87ee523b39e5c0d8b45afebcaca39f47cf035acdb3150e7a4ef85f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+也就是说我们的所有的交易业务，我们的核心内容都在成都的数据中心，那同时慕克网又用了什么阿里云来提供什么更好的用户体验？那怎么样来用阿里云呢？可以有这样几个考虑吗？我们把所有的视频放在阿里云的对象存储上，因为对象存储分布式能力特别强，性能特别高，同时可用性可以达到 5 个 97 个九十个9、 11 个 9 都可以。那通过这样的方式能够什么？很快的，同时也是能够很稳定的对用户提供我们的点播视频，同提供一些图文。MD，那光这样其实是远远不够的。
+
+
+那左边这个大大的云其实做的就是阿里云的CDN，通常对象存储跟 CDN 之间会设一个规则直通怎么样？直通法就是当我们用户要访问数据的时候，我们会利用 CDN 实现内容缓存，这也是我比较强调的，尽量不要用数据中心里面像 Redis 这种来实现缓存，也不要用什么 Nginx 来实现缓存，应该把大部分的内容缓存在用户的浏览器或者是 CDN 上，因为这样才离用户更近。
+
+
+当用户比如右下角的杭州用户来访问慕克的时候，他首先访问在哪里啊？首先访问了 DNS 服务器，他要了解一下 i 慕克. com 到底在哪里。这 DNC 服务器会去判断一下，如果你是杭州的电信用户，那他就会什么以就近原则在 10 公里以内找到一个电信机房，也就是杭州的电信机房，通常这个机房就是什么阿里云 CDN 的节点所在，由这个机房直接对你提供视频展现，或者提供照片展现。如果你是慕课网里面架构师十项全能的第一个用户，你第一次打开这个视频，那这个时候你就会把数据采用负载均衡的方式导流到后台的对象存储。如果你是这段时间内慕科交易的第一个用户，那他也会把你的相关的交易信息，或者是查询的一些图片信息导流到后台，慕课的源站也许是成都，那这个时候就会有一定的距离了，通常我们数据传输按照这样光的速度来计算，也就是一秒钟是 3 乘以 10 的 8 次方。
+
+
+这算术好麻烦，飞老师说我们可以精简一下，通常还有这样一个说法叫百公里一毫秒，也就是说如果我们杭州到成都之间假设是 500 公里，那你叫花式飞什么？ 5 毫秒的时间来等待数据到达，那通常 CDN 是每 10 公里都有一个 CDN 节点，比如像阿里、百度、腾讯这些大型的互联网厂商在一线城市基本上都能做到 10 公里速达，也就是 0.1 毫秒你就能拿到你的什么视频，拿到你的照片，是不是体验很好啊？只有当你是第一位用户，当你什么内存不可达、缓存不可达的时候，才会触发对象存储或者是应用的源站分流这种方式把数据流转向源站主，转向它的什么线下的数据中心，或者是转向阿里云的其他的云平台的服务。
+
+
+好，这样的特点是不是确实跟土地公很相像啊？土地公有什么特点？每个城市都有城隍庙，城隍庙庙里都供着土地公，所以你要求神，求爷爷告奶奶的时候，找谁最合适啊？去城隍庙找土地公是最灵验的。那一样的道理，我们所有的数据内容尽量什么能够在当地的 CDN 节点上找到一份副本，这样的话我们可以提供给用户更好的体验。嗯，他听了这个课说，嗯， CDN 我懂了，但跟安全没关系，对不对？好，我们下一个胶片来看一看土地宫它独有的防御之道，这个防御制造就是恰恰跟安全紧密相关，它要防僵尸木手。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9689dc13-aa6a-4dc1-8fbf-85806624dedd/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666ORJXVML%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231028Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIDbCc75C1pRxZLvdrmixqWR3okFaaFETl8nkt1hW1SGHAiEA1WbnjMRJ9KJ3lCrIzqXBn%2BJXrKhjftacA4NJOWjFMuUqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEfGPCFOr2HIEUVBESrcA%2F8g1FDb0k9SaBNXu4CZQy%2FGzC82cxe5ODbDJG%2BX3K1UApHzoPb72JoxELvmNupobhFxkm7%2BtXVY6eimTEtOLHE%2BKy3%2FKPs18DK6cCZPYeAmKsDuB44FNdMiJbyNQYrApEUw6k34%2F84amL5zHzo61Km9tfMucpUUoY1HDj49ievmxj5d8ZgPgejm1IUJ7LH59%2BgqKc2C7kAYGJPn9A7%2BeLLgKISERDbUoy7%2BkMZejlLpiboSwy7Dh2mGfPqiszcbUaGQR0c9cJ90O2JjrZ5zg9O34okr6qdAvPFtzecd9rY2W7CGVG8cv7msQfCxijQ3yhcFxUH%2FDER3NuhPkcPZ45TKlg0CuFpXO1NSjN3Yg0zWe%2FZfA%2FMlEN3grreoXf8bi8Mz3vf08yJIpD7ysoBkZf%2B1hBmBkLbln6ncbIL9duqrYet9Afn8aWQkbToQZ2pN%2FNNLrbKI0OlQ8Qtzf2mItDCYuv5CKKQbfYC3uIECXAwuNY8M4pxVQhwja0BtMsM2HQeSQUYyJfUPBfvzONhNPsH9yDJaPKOc%2BGXGjMzpf%2F%2BRGrXcGfGZaqlYbqoNGuvxCr3hOfODDhI0PRNcc1tPfiLjxt37GbiNztC1JMVOZxYBUJgk3wbZek5wbtNQMKy3%2F9IGOqUBEJ51wljZ2xOCz0%2F6E1A%2FRd0quq7y1yTUOTm3u0cGU%2BkAtdjJPjWdpCsIa8Fi%2FrfssQHcEheXMggIs5mMta97qzAzycbhgLXVxq6koURls3G6IVO1UHtLWBbLNTENPkPibaPiIP5Qr7Rks9sJsns%2BVEWAtj72GlbSQMxajBqmhwq%2BcnuL0xRxlDd3%2B%2FOwRj%2BM5EgWHpURVrbsiy9AiJIv3azzs4pr&X-Amz-Signature=b8ece958e88f6ef4254841e445779f749da1df7a6df2342a13c313d9f2033ac2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那什么是僵尸木手呢？僵尸木手统称为黑客，而具体来看，其实黑客有好几种套路。有一种套路就是操纵很多台机器，我们叫它僵尸，或者叫它肉肌来后进行分布式的攻击。那假设我们这次僵尸墓时候召唤来什么植物大战僵尸里面一个僵尸他冲冲冲来攻击了，那我们怎么样来防御呢？大家说那前面不是学过了吗？二郎神派什么用处？不就可以很稳的防住你的僵尸吗？嗯，确实如此，但是如果它是一个很厉害的僵尸木手呢。
+
+
+好，我们来看一看全球当今是如何的情况呢。每时每分每秒都有数千万的并发的攻击，由僵尸木手们发放出来，发给不同的网站尝试公摊，不同的网站尝试获取不同的信息。假设慕克网不信，惹了一个很大的僵尸木手，他可能从亚洲、欧洲每周多个渠道找大量的肉鸡，大量的僵尸进行群体性攻击。
+
+
+这个时候慕克网如果聘请一位很强大的二郎神来守天庭，其实是守不住的，那谁来防御比较好？那都当然是我们的土地公了。每一个城市、每一个小庙里都有我们土地公，把他们派出来一一解决就近的僵尸，是不是很简单那一样的道理，我们如果是有 100 台的僵尸，尝试对慕克网进行攻击。
+木克网其实完全可以通过一个多节点的防火墙来进行防御，但通常黑客都是以数万节点为单位进行群体攻击的，那这个时候自身机房是很难防御的，那应该如何来抵挡呢？当然是采用 CDN 了，全球三大 CDN 厂商阿卡买、colorfront、cant、 fly 基本上都是在全球部署了数十万节点的，你让数十万节点来防御数万黑客攻击，是不是驾轻就熟啊？另外我们来看一看流量，通常黑恶攻击是有一定的流量带宽的压力的，那如果是 1G 比 PS 这样的 1G 的这种带宽的压力情况下，防火墙是完全扛得住的。但是如果到了1TB，也就是 1, 000 个 g 的时候，你一两台防火墙哪里扛得住，对不对？那这个时候我们就应该采用 CDN 了， CDI 能扛多大的带宽呢？能扛一PB，也就是 100 万的 GB 每秒钟的压力，这才是 CDN 的强大之处。哇，土地公老爷爷好厉害啊。嗯，确实如此。
+
+
+我们回顾一下，在西游记里面，土地公有哪三大特色啊？第一大特色就是分布式，所谓分布式就是哪里都有土地公，你要过这个五指山，你有土地公，你要过这个火焰山，你也有土地公，你要对付银角、金角，土地公也能冒出来，随时都能给您给你提供一些建议，这就是土地公的强大之处，分布式哪里都有它。
+
+
+另外一点，什么掐面源头，每次孙大圣有点火冒三丈的时候，就会冒出个土地公吼一声大圣息怒，然后软言软语，对吧？跟孙悟空好好交流，让他放下上天庭大玉皇大帝惹事的决心，那这个远远比你什么守在玉皇大帝门前的南天门要厉害得多。那同样的道理，我们的土地公其实还有一个绝招的，他虽然不会刀枪剑戟，但是他那个棍子也很厉害。这个棍子到底怎么样玩？他的绝招是什么呢？我们归成这样一个名称，叫 WAF Web application firewall 网络应用层防火墙，它可以防御 owasp 十大攻击。它跟普通的我们前面介绍的二郎神防火墙是完全不同的概念，那这个内容我们会留在后续章节，我们的网络攻防的防来详细来聊。
+
+
+正是由于土地公有分布式的特点，离什么用户离我们的黑客更近，能掐灭源头，同时它也有自身的特殊的棍法， 5F 棍法。所以来看，基本上整个西游记里面出厂率谁高？杨戬高还是土地公高啊？当然是土地公出厂率更高，片酬更高了。一样的道理。当你搭建一个互联网公司的时候，也许你的前期大部分是靠二郎神防火墙，但是到了中后期，基本上主要的防御力量全部都在 CDN 土地工之上。嗯，大家是不是很期待我们怎么样才能把 CDN 用好用酷呢？我们后续的云这个章节也是由付雅老师来讲，我会跟大家详细的实战一下，像CDN、像网络防御这样一些实际内容。那同时我们会在后面本章后续的小章节里，瓦夫防御里也跟大家聊一聊瓦夫如何来防御 owasp 十大攻击的前几大攻击的好，大家敬请期待后续的我们的网络攻和网络房的章节。
+

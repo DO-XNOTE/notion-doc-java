@@ -1,0 +1,100 @@
+---
+title: 1-4+Dubbo核心功能讲解
+---
+
+# 1-4+Dubbo核心功能讲解
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/47411305-1bad-4bd6-a37b-78c4cdc69033/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SXLP4G6I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCaVCpvL40UuNLwA6jwEvTzDQ0BWdY8ZrZNm%2FPC7ws0wQIhAI6rpht17z32g%2Fu31NHwwIu6vVjI4YuLno%2BEZSahRDk%2FKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzOFC%2BzvjlSZF99rlQq3AM8LiKcQQ0v%2B7BPl9FL2RBrbwoyJQ6QZzTaSzHl7qOn3ZR%2F6KCgTpq5SvvpitqpSVP%2FpYkYFiEc2JeGYkJV6MeAh%2BQKbIH9I9QFt1I8D7i0h475YUrOqJgnJHITsLatb1BKUaUEikVR%2Bc%2B7smdyxbxxk0PFioPm0quJIqLwN%2FiN0GUtwkjvYSJsM3wGP%2FkuL3ZZBu5tWpDzGbapkHx0DGt%2BQjz3xsFlDR%2BeEgEfQdP1wfHtXr04ud8QatkvWlcdOe5y9Gy7TZr5EMAx8GCcYqHGtJOQoRRhzqiof9R66UB%2F%2BNMJrB2FHQKJ56x%2FhlmrhMmiqw8Tf7T0WNzANbSNJBT9PAN42Z42DAFQBEhBZKlEoKW0IXhi5w2Otgi5VhUnC0DShCjBnpwUDU943%2F0Ng42D4JeLBOUzDtGIgOSbO1U0DVTyY5UgsAKgoRGrbT14jdszLW6O7MKcaIh3bl8DcOYujhVd6oeHtGj444KpofNVvvGaO9Ur2AcuQ8M52tHBZG%2F%2FhPfSS1%2FcZUmNqulQZ8aJ9hTjAWqhJuzJpPQZ9T2fHeboa0mdPHRbbCScO0Kr0W9dxnhKFUXpN26fPjH4s6JOHuH6u6SjNWCj%2FiWMfx5R3VJjPhQbUnRsoMkKwjCFuf%2FSBjqkAXlOlDycKQxZ%2FgOZvszBu1BHXrmbHvlYi57uQacBUkVHwKh%2FeY2gQqZrn8Z%2B2RFK47Rw2sQVllQWa7RFP%2BHGMlo0EUF2ueWwxFxP1vaQm232z8lSZEg1cI5T0s%2BHXX9WzfGxAxHiZ7cPI%2FKX%2FaR3rVgl%2FL9U9nenpWZI5UAAt9Dls4E9EyvDaxPzYXI01NtA%2B4%2FnCUhc0pTRVT%2FsYybtHL5U21gb&X-Amz-Signature=e46e0153eae3c5a6fce3e45da420738c28194655315e0991fbfdab70609743fb&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7848d9fd-0279-4a11-922d-46dc53f786e2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SXLP4G6I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCaVCpvL40UuNLwA6jwEvTzDQ0BWdY8ZrZNm%2FPC7ws0wQIhAI6rpht17z32g%2Fu31NHwwIu6vVjI4YuLno%2BEZSahRDk%2FKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzOFC%2BzvjlSZF99rlQq3AM8LiKcQQ0v%2B7BPl9FL2RBrbwoyJQ6QZzTaSzHl7qOn3ZR%2F6KCgTpq5SvvpitqpSVP%2FpYkYFiEc2JeGYkJV6MeAh%2BQKbIH9I9QFt1I8D7i0h475YUrOqJgnJHITsLatb1BKUaUEikVR%2Bc%2B7smdyxbxxk0PFioPm0quJIqLwN%2FiN0GUtwkjvYSJsM3wGP%2FkuL3ZZBu5tWpDzGbapkHx0DGt%2BQjz3xsFlDR%2BeEgEfQdP1wfHtXr04ud8QatkvWlcdOe5y9Gy7TZr5EMAx8GCcYqHGtJOQoRRhzqiof9R66UB%2F%2BNMJrB2FHQKJ56x%2FhlmrhMmiqw8Tf7T0WNzANbSNJBT9PAN42Z42DAFQBEhBZKlEoKW0IXhi5w2Otgi5VhUnC0DShCjBnpwUDU943%2F0Ng42D4JeLBOUzDtGIgOSbO1U0DVTyY5UgsAKgoRGrbT14jdszLW6O7MKcaIh3bl8DcOYujhVd6oeHtGj444KpofNVvvGaO9Ur2AcuQ8M52tHBZG%2F%2FhPfSS1%2FcZUmNqulQZ8aJ9hTjAWqhJuzJpPQZ9T2fHeboa0mdPHRbbCScO0Kr0W9dxnhKFUXpN26fPjH4s6JOHuH6u6SjNWCj%2FiWMfx5R3VJjPhQbUnRsoMkKwjCFuf%2FSBjqkAXlOlDycKQxZ%2FgOZvszBu1BHXrmbHvlYi57uQacBUkVHwKh%2FeY2gQqZrn8Z%2B2RFK47Rw2sQVllQWa7RFP%2BHGMlo0EUF2ueWwxFxP1vaQm232z8lSZEg1cI5T0s%2BHXX9WzfGxAxHiZ7cPI%2FKX%2FaR3rVgl%2FL9U9nenpWZI5UAAt9Dls4E9EyvDaxPzYXI01NtA%2B4%2FnCUhc0pTRVT%2FsYybtHL5U21gb&X-Amz-Signature=f6c50a1979f026e54d6849845d01f2a88d906bea1e5781827214820658442c06&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面我们了解了Dubbo的特性和顶层架构，这一节让我们大致了解下Dubbo的两个核心模块。
+
+Dubbo是一个精耕服务治理领域的框架，秉承了阿里一贯的大而全风格，和Eureka相比复杂度有不小的提高，这一节我们选了Registry和Remoting两个核心模块，从功能层面做个简单的了解（后面的章节会深入介绍底层原理）
+
+**Registry模块**
+
+Registry是Dubbo中负责服务注册的模块，也就是我们熟悉的注册中心，目前Dubbo支持五种不同的注册中心，其中登场率最高的就是Zookeeper了。
+
+Zookeeper是Apache Hadoop的子项目，它底层是一个树形的目录结构，同时支持基于发布订阅模型的变更推送，这个特性特别适合应用在注册中心服务上。Zookeeper在各个大厂都有广泛应用，其稳定性和性能已经在业界得到了充分证明。大家如果想进一步了解Zookeeper可以逛逛官方开源文档：[http://zookeeper.apache.org](http://zookeeper.apache.org/)
+
+关于Registry的细节部分将在稍后一小节深入讲解，在这之前我们先了解下Dubbo在服务注册功能上的主要特点：
+
+**注册中心的运作方式**
+
+注册中心只承担服务治理相关的功能（注册、发现、心跳和下线等），它不承担消息的转发（这一点和Eureka一样），因此不用承担访问压力。和Eureka相比，Dubbo在服务治理领域走的完全是不同的风格路线，我们从各个功能上先来做一个了解
+
+**Dubbo的长连接**
+
+Eureka的注册中心在服务治理领域采用的是一种“佛系”的连接策略，比如服务发现和心跳检测，都是等待服务节点自己上报状态。而Dubbo相比较之下就是“事必躬亲”的管理策略，Dubbo的注册中心，服务提供者和服务消费者三者之间均为长连接，注册中心严密监测节点的状态变化。Dubbo的注册中心基于长连接感知服务提供者的状态，假如服务提供者宕机，注册中心将立即推送事件通知消费者。但是注册中心自身宕机并不会影响已经上线运行的服务提供者和消费者。
+
+**服务剔除**
+
+当服务提供者出现异常情况的时候（比如电源又被挖掘机铲断了），注册中心利用长连接可以侦听到服务的不可用状态，进而在服务列表中删除服务提供者。我们以Zookeeper注册中心为例，Dubbo的服务剔除原理实际上是利用Zookeeper的临时节点和会话保持的功能。ZK中的数据是和一个会话绑定的，一旦会话异常ZK就会清除这个会话创建的临时节点和所有订阅该会话的Watcher。
+
+我们结合Dubbo的长连接和服务剔除机制，讲一讲ZK中的会话（Session）是怎么一回事儿。在ZK中当一个长连接建立起来后，会生成一个Session ID，这是一个全局唯一的标识符。在会话期间内ZK通过心跳感应连接状态，如果在会话过期时间内没有心跳发送过来，或者因为网络原因导致会话断掉，那么这个时候客户端就会重新选择新的ZK节点进行连接。因此，当会话过期时，Dubbo的服务提供者和消费者能自动恢复注册数据，重新订阅请求。
+
+Eureka则不同，Eureka后台有一个服务自保的机制，也就是说短期的网络波动导致大比例节点无法连接到注册中心的时候，Eureka会开启自保模式，在这个模式下服务剔除功能将被禁用。
+
+**心跳检测**
+
+Dubbo同样也有心跳检测，它的目的是检测服务提供者和服务消费者之间的连接是否还处于可用状态。如果在默认60s没有消息进来的时候，会尝试发送一个心跳Request，如果连着180秒既没有消息也没心跳，那么则会关闭Channel，对于Consumer来说则需要重新连接一个新的Provider。
+
+**监控中心**
+
+服务提供者向注册中心注册其提供的服务，并汇报调用时间到监控中心。服务消费者向注册中心获取服务提供者地址列表，并根据负载算法直接调用提供者，同时汇报调用时间到监控中心。
+
+监控中心是一个可选组件，可以根据自身项目需要决定是否接入。监控中心和各个节点之间并不是长连接，同时监控中心的宕机并不会影响任何服务调用，只不过可能会丢失一部分的监控数据而已。
+
+**Remoting模块**
+
+Remoting模块主要负责远程调用，核心部分是Dubbo的协议栈实现，处于整个调用链路中相对底层的部分。我们在后面安排了单独一个小节来介绍Dubbo协议的细节，在这里我们简单的看下Remoting框架的接口结构。
+
+**顶层接口层**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/105ea4b2-18f5-423c-965b-5db8b48c6c3d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SXLP4G6I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCaVCpvL40UuNLwA6jwEvTzDQ0BWdY8ZrZNm%2FPC7ws0wQIhAI6rpht17z32g%2Fu31NHwwIu6vVjI4YuLno%2BEZSahRDk%2FKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzOFC%2BzvjlSZF99rlQq3AM8LiKcQQ0v%2B7BPl9FL2RBrbwoyJQ6QZzTaSzHl7qOn3ZR%2F6KCgTpq5SvvpitqpSVP%2FpYkYFiEc2JeGYkJV6MeAh%2BQKbIH9I9QFt1I8D7i0h475YUrOqJgnJHITsLatb1BKUaUEikVR%2Bc%2B7smdyxbxxk0PFioPm0quJIqLwN%2FiN0GUtwkjvYSJsM3wGP%2FkuL3ZZBu5tWpDzGbapkHx0DGt%2BQjz3xsFlDR%2BeEgEfQdP1wfHtXr04ud8QatkvWlcdOe5y9Gy7TZr5EMAx8GCcYqHGtJOQoRRhzqiof9R66UB%2F%2BNMJrB2FHQKJ56x%2FhlmrhMmiqw8Tf7T0WNzANbSNJBT9PAN42Z42DAFQBEhBZKlEoKW0IXhi5w2Otgi5VhUnC0DShCjBnpwUDU943%2F0Ng42D4JeLBOUzDtGIgOSbO1U0DVTyY5UgsAKgoRGrbT14jdszLW6O7MKcaIh3bl8DcOYujhVd6oeHtGj444KpofNVvvGaO9Ur2AcuQ8M52tHBZG%2F%2FhPfSS1%2FcZUmNqulQZ8aJ9hTjAWqhJuzJpPQZ9T2fHeboa0mdPHRbbCScO0Kr0W9dxnhKFUXpN26fPjH4s6JOHuH6u6SjNWCj%2FiWMfx5R3VJjPhQbUnRsoMkKwjCFuf%2FSBjqkAXlOlDycKQxZ%2FgOZvszBu1BHXrmbHvlYi57uQacBUkVHwKh%2FeY2gQqZrn8Z%2B2RFK47Rw2sQVllQWa7RFP%2BHGMlo0EUF2ueWwxFxP1vaQm232z8lSZEg1cI5T0s%2BHXX9WzfGxAxHiZ7cPI%2FKX%2FaR3rVgl%2FL9U9nenpWZI5UAAt9Dls4E9EyvDaxPzYXI01NtA%2B4%2FnCUhc0pTRVT%2FsYybtHL5U21gb&X-Amz-Signature=53fd6b125cd54edf59249593735b424c1fce55fc44d092a624882bd6dcb54a5b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Endpoint 它是一个顶层的抽象接口，定义了获取网络端点地址、发送消息、获取通信Channel、关闭连接等一些列方法。
+
+Channel - 它继承自Endpoint，但是扩展了操作Attribute的方法，比如常用的getAttribute，setAttribute等
+
+ChannelHandler ChannelHandler定义了一系列接口用来处理五种不同的网络事件，分别对应connected、disconnected、sent、received和caught
+
+Resetable 接口中只定义了一个方法reset，用来重置连接属性
+
+**AbstractPeer和AbstractChannel**
+
+AbstractPeer实现了上面提到的两个顶层接口，它是一种代理模式的组合结构，通过构造器接收一个ChannelHandler对象，然后把方法实现的具体逻辑委托给ChannelHandler对象来实现，随手拿一个接收消息的代码来举例：
+
+```java
+@Override
+public void received(Channel ch, Object msg) throws RemotingException {
+
+			if (closed) {
+			
+					return;
+			
+			}
+			
+			handler.received(ch, msg);
+
+}
+```
+
+AbstractChannel 添加了send方法（发送消息到远程服务）的缺省验证逻辑，作为NettyChannel等具体底层实现类的统一父类
+
+**Client & Server**
+
+**Client 作为服务调用的发起方（消费者）的顶层接口**，继承了Endpoint和Channel接口的同时，还定义了reconnect方法，用来重新连接到Server。Dubbo中的底层服务调用实现类（比如NettyClient和MinaClient）都继承自Client，但是Client只是个发起服务调用的壳，底层的调用逻辑都被封装在Channel对象里（AbstractChannel的子类，比如NettyChannel）
+
+**Server 作为服务提供方的顶层接口**，继承自Endpoint和Resetable的同时，又定义了一系列服务端的接口方法，比如获取Channel列表或某个指定Channel
+
+**小结**
+
+这一小节我们简单了解了Registry和Remoting两个模块，下一小节我们先从注册中心开始，细数Dubbo的几个关键模块。
+
+学习Tips：我们读书分为精读和泛读，学习也是一样，把精力花在重点知识的学习上。在整个微服务的大纲中，我们始终是围绕Spring Cloud作为主线，希望通过对SC核心组件的学习，能够将其应用到我们工作中的项目里，夯实微服务架构体系的实战应用，提升我们的架构能力。而Dubbo更多的是作为一种对照，让大家体会Dubbo和Eureka两种不同的服务治理理念，因此在Dubbo章节不会过于深入探讨某些底层技术。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/703e6ca7-c35c-4829-b24d-e158d229c692/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466SXLP4G6I%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225854Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCaVCpvL40UuNLwA6jwEvTzDQ0BWdY8ZrZNm%2FPC7ws0wQIhAI6rpht17z32g%2Fu31NHwwIu6vVjI4YuLno%2BEZSahRDk%2FKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzOFC%2BzvjlSZF99rlQq3AM8LiKcQQ0v%2B7BPl9FL2RBrbwoyJQ6QZzTaSzHl7qOn3ZR%2F6KCgTpq5SvvpitqpSVP%2FpYkYFiEc2JeGYkJV6MeAh%2BQKbIH9I9QFt1I8D7i0h475YUrOqJgnJHITsLatb1BKUaUEikVR%2Bc%2B7smdyxbxxk0PFioPm0quJIqLwN%2FiN0GUtwkjvYSJsM3wGP%2FkuL3ZZBu5tWpDzGbapkHx0DGt%2BQjz3xsFlDR%2BeEgEfQdP1wfHtXr04ud8QatkvWlcdOe5y9Gy7TZr5EMAx8GCcYqHGtJOQoRRhzqiof9R66UB%2F%2BNMJrB2FHQKJ56x%2FhlmrhMmiqw8Tf7T0WNzANbSNJBT9PAN42Z42DAFQBEhBZKlEoKW0IXhi5w2Otgi5VhUnC0DShCjBnpwUDU943%2F0Ng42D4JeLBOUzDtGIgOSbO1U0DVTyY5UgsAKgoRGrbT14jdszLW6O7MKcaIh3bl8DcOYujhVd6oeHtGj444KpofNVvvGaO9Ur2AcuQ8M52tHBZG%2F%2FhPfSS1%2FcZUmNqulQZ8aJ9hTjAWqhJuzJpPQZ9T2fHeboa0mdPHRbbCScO0Kr0W9dxnhKFUXpN26fPjH4s6JOHuH6u6SjNWCj%2FiWMfx5R3VJjPhQbUnRsoMkKwjCFuf%2FSBjqkAXlOlDycKQxZ%2FgOZvszBu1BHXrmbHvlYi57uQacBUkVHwKh%2FeY2gQqZrn8Z%2B2RFK47Rw2sQVllQWa7RFP%2BHGMlo0EUF2ueWwxFxP1vaQm232z8lSZEg1cI5T0s%2BHXX9WzfGxAxHiZ7cPI%2FKX%2FaR3rVgl%2FL9U9nenpWZI5UAAt9Dls4E9EyvDaxPzYXI01NtA%2B4%2FnCUhc0pTRVT%2FsYybtHL5U21gb&X-Amz-Signature=a99d66d3c9b0ae59440057cbb67d8be15744bc034f18b14f9a1f7f0b9bcbbf40&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

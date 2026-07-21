@@ -1,0 +1,46 @@
+---
+title: 2-2 基础补充-RabbitMQ 的核心概念
+---
+
+# 2-2 基础补充-RabbitMQ 的核心概念
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f273131c-65b2-49ae-ba68-f4bcb1d3573c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RXJLVYIX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225239Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCak3%2BGvk6sMfdyHgJovedYTpFCsrgVmPZ4xaO0LbiRJwIhANk72s4zyyLDTRKAVaV0Jo80Cmg50lhGaPWvRUesAkbLKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igwf47Teok%2F5QRVDbF4q3AN%2B7XOQiccxJzNFezkZ5mcW3G9bWdGL0oq8XA0SF5TtQcRgxY%2FhAja3J8hx%2B56r7Hv3GxVvoKaXKvgF1jRy%2FUA26zuRBRsSEWn%2Bv8lV9g%2FurS0Y5QChD0YiMB5GY2cc8H2GS63prd3LNdwtYzwm93z8qoaDv5KlP2q%2FboIDkj36%2BVnumwH7N%2BcgqkeQObKyqUrb98OwhOI9bz6l%2FZpiwAc7D26lFbmZtQuBhIHb8fu18yL8GtSwAwespo4JbJz2If2VNEV%2Fn%2BeEpYVCQym1v4tQaTiNFEXd8kMXye1gwxV%2BMV5MXOjQSIrdjGXh2zy6BWSjSuSV2ovyh7HIoWMRctaYMGNvDKB7L0%2BnL4sRKZaiaaw46s4X5w4fTG9xhz2e%2B2MuZxLZNMJD88SAzTHlayCGPApsgg3bGQ%2FStthK6GjxpQeIdn%2BeQ50vOpUiqsP4Fxkd%2BfkT55RVuwabHSGhIubhvsPwXHXeNZZhZdfRKOIzR9kclBNF4B%2F8rw%2FXkC8txabDMvOx5DRKSDpjN8o23kAFbTezyF%2Bp4K2GAhb2Zi4rors%2FhnpGLi7eRHKKxQtTthyEFODxj%2BNw3w9LXGN80hEM4mvKOGgg0oiYyyLJOPT2s9PTYbq%2FdmcDMr1lijCDt%2F%2FSBjqkAaBrkrfqXYWEulXkUonoV8ATDDy87%2F3MMtLpVjY%2Fq2mSLbjIDQ14kDfOH9JG8q7F%2FuyW6qMIVpweJ5vmI%2FjvJoTUBb6FvqnT66RJauZ8hsWvvVjoUZCm4%2FVeR3XjpzPXu2Am9%2F6DxYXIi6M6BeWesFJz1w%2FU90I5GkJuPfG5ZbK0CnAODGrkeGaTAa9ZY7WkB9QufZWNChbruvZOt%2FNbvEeQJqUb&X-Amz-Signature=76f7d3af45275b88b90cd7c9ca5a4157c636f49dcd4de4d7ead68222d0bb2c36&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+```javascript
+2—2【基础额外补充—图文】RabbitMQ核心概念
+课前说明
+考虑到一些同学对RabbitMQ核心概念已经遗忘的差不多了，也收到一些没有接触过RabbitMQ的同学的反馈，所以额外为大家准备了快入回顾或入门RabitMQ的【部分内容也会补充视频讲解】希望能够帮助到这部分同学。另外阿神老师之前有录过一门免费的入门课程，有需要的同学也可以先去学习一下：
+《RabbitMQ消息中间件极速入门与实战》RabbitMQ
+RabbitMQ是一个开源的消息代理和队列服务器，用来通过普通协议在完全不同的应用之间共享数据，RabbitMQ是使用Erlang语言来编写的，并且RabbitMQ是基议的。各个互联网大厂都在使用RabbitMQ作为消息中间件，为什么呢，下面我们来一起看看，“她”都有哪些优点！
+·采用Erlang语言作为底层实现：Erlang有着和原生Socket一样的延迟
+·开源、性能优秀，稳定性保障
+·提供可靠性消息投递模式（confirm）、返回模式（return）
+·与SpringAMQP完美的整合、API丰富
+·集群模式丰富，表达式配置，HA模式，镜像队列模型
+·保证数据不丢失的前提做到高可靠性、可用性
+高级消息队列协议-AMQP协议(Advanced Message Queuing Protocol)
+AMQP定义：是具有现代特征的二进制协议。是一个提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设图表达了AMQP协议的一些核心部件：消息的生产者publisher、消息的消费者consumer、MQBroker(Server)、以及内部的Virtual Host、Exchange、Messag 系。
+Server virtual host
+Exchange Publisher
+
+> application
++---+---+ Message
+Queue Consumer
+application
++-------+ AMQP专有名词解释
+接下来我们一起看看AMQP的一些专有名词，在这里给予小伙伴们解释，以便我们理清楚概念后面去深入学习。
+·Server：又称Broker，接受客户端的连接，实现AMQP实体服务
+·Connection:连接，应用程序与Broker的网络连接
+·Channel：网络信道，几乎所有的操作都在Channel中进行，Channel是进行消息读写的通道。客户端可建立多个Channel，每个Chanr会话任务。
+·Message：消息，服务器和应用程序之间传送的数据，由Properties和Body组成。Properties可以对消息进行修饰，比如消息的优先级级特性；Body则就是消息体内容。
+·Virtual host:虚拟地址，用于进行逻辑隔离，最上层的消息路由。一个Virtual Host里面可以有若干个Exchange和Queue,同一个Virtu 不能有相同名称的Exchange或Queue。
+·Exchange：交换机，接收消息，根据路由键转发消息到绑定的队列。
+·Binding:Exchange和Queue之间的虚拟连接，binding中可以包含routing key。
+·Routing key：一个路由规则，虚拟机可用它来确定如何路由一个特定消息。
+>
+```
+
+[file](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0affa198-a822-48dd-baa4-7550c43cd37a/2-2_%E5%9B%BE%E6%96%87%E8%8A%82.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RXJLVYIX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225239Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCak3%2BGvk6sMfdyHgJovedYTpFCsrgVmPZ4xaO0LbiRJwIhANk72s4zyyLDTRKAVaV0Jo80Cmg50lhGaPWvRUesAkbLKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igwf47Teok%2F5QRVDbF4q3AN%2B7XOQiccxJzNFezkZ5mcW3G9bWdGL0oq8XA0SF5TtQcRgxY%2FhAja3J8hx%2B56r7Hv3GxVvoKaXKvgF1jRy%2FUA26zuRBRsSEWn%2Bv8lV9g%2FurS0Y5QChD0YiMB5GY2cc8H2GS63prd3LNdwtYzwm93z8qoaDv5KlP2q%2FboIDkj36%2BVnumwH7N%2BcgqkeQObKyqUrb98OwhOI9bz6l%2FZpiwAc7D26lFbmZtQuBhIHb8fu18yL8GtSwAwespo4JbJz2If2VNEV%2Fn%2BeEpYVCQym1v4tQaTiNFEXd8kMXye1gwxV%2BMV5MXOjQSIrdjGXh2zy6BWSjSuSV2ovyh7HIoWMRctaYMGNvDKB7L0%2BnL4sRKZaiaaw46s4X5w4fTG9xhz2e%2B2MuZxLZNMJD88SAzTHlayCGPApsgg3bGQ%2FStthK6GjxpQeIdn%2BeQ50vOpUiqsP4Fxkd%2BfkT55RVuwabHSGhIubhvsPwXHXeNZZhZdfRKOIzR9kclBNF4B%2F8rw%2FXkC8txabDMvOx5DRKSDpjN8o23kAFbTezyF%2Bp4K2GAhb2Zi4rors%2FhnpGLi7eRHKKxQtTthyEFODxj%2BNw3w9LXGN80hEM4mvKOGgg0oiYyyLJOPT2s9PTYbq%2FdmcDMr1lijCDt%2F%2FSBjqkAaBrkrfqXYWEulXkUonoV8ATDDy87%2F3MMtLpVjY%2Fq2mSLbjIDQ14kDfOH9JG8q7F%2FuyW6qMIVpweJ5vmI%2FjvJoTUBb6FvqnT66RJauZ8hsWvvVjoUZCm4%2FVeR3XjpzPXu2Am9%2F6DxYXIi6M6BeWesFJz1w%2FU90I5GkJuPfG5ZbK0CnAODGrkeGaTAa9ZY7WkB9QufZWNChbruvZOt%2FNbvEeQJqUb&X-Amz-Signature=ec9785da8cccfcbbf2daf5dfc3f658ca9107d7e095765601a2a56ff063cfc3c8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/823797b9-0b11-4e7e-a8d0-5ccad6d74c32/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RXJLVYIX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225239Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQCak3%2BGvk6sMfdyHgJovedYTpFCsrgVmPZ4xaO0LbiRJwIhANk72s4zyyLDTRKAVaV0Jo80Cmg50lhGaPWvRUesAkbLKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1Igwf47Teok%2F5QRVDbF4q3AN%2B7XOQiccxJzNFezkZ5mcW3G9bWdGL0oq8XA0SF5TtQcRgxY%2FhAja3J8hx%2B56r7Hv3GxVvoKaXKvgF1jRy%2FUA26zuRBRsSEWn%2Bv8lV9g%2FurS0Y5QChD0YiMB5GY2cc8H2GS63prd3LNdwtYzwm93z8qoaDv5KlP2q%2FboIDkj36%2BVnumwH7N%2BcgqkeQObKyqUrb98OwhOI9bz6l%2FZpiwAc7D26lFbmZtQuBhIHb8fu18yL8GtSwAwespo4JbJz2If2VNEV%2Fn%2BeEpYVCQym1v4tQaTiNFEXd8kMXye1gwxV%2BMV5MXOjQSIrdjGXh2zy6BWSjSuSV2ovyh7HIoWMRctaYMGNvDKB7L0%2BnL4sRKZaiaaw46s4X5w4fTG9xhz2e%2B2MuZxLZNMJD88SAzTHlayCGPApsgg3bGQ%2FStthK6GjxpQeIdn%2BeQ50vOpUiqsP4Fxkd%2BfkT55RVuwabHSGhIubhvsPwXHXeNZZhZdfRKOIzR9kclBNF4B%2F8rw%2FXkC8txabDMvOx5DRKSDpjN8o23kAFbTezyF%2Bp4K2GAhb2Zi4rors%2FhnpGLi7eRHKKxQtTthyEFODxj%2BNw3w9LXGN80hEM4mvKOGgg0oiYyyLJOPT2s9PTYbq%2FdmcDMr1lijCDt%2F%2FSBjqkAaBrkrfqXYWEulXkUonoV8ATDDy87%2F3MMtLpVjY%2Fq2mSLbjIDQ14kDfOH9JG8q7F%2FuyW6qMIVpweJ5vmI%2FjvJoTUBb6FvqnT66RJauZ8hsWvvVjoUZCm4%2FVeR3XjpzPXu2Am9%2F6DxYXIi6M6BeWesFJz1w%2FU90I5GkJuPfG5ZbK0CnAODGrkeGaTAa9ZY7WkB9QufZWNChbruvZOt%2FNbvEeQJqUb&X-Amz-Signature=e09a030caddd0e551d3e66064985390ba316b9ce142f410c9d7b91204d49a52b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+

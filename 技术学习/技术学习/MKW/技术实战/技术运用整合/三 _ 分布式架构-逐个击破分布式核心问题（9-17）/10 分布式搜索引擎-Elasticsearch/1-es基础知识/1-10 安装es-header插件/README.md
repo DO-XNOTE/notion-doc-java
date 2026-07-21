@@ -1,0 +1,34 @@
+---
+title: 1-10 安装es-header插件
+---
+
+# 1-10 安装es-header插件
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/44392e32-ae72-42d1-a625-488d8fafc967/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Y2YUH4II%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225128Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDT8BXbZmsbmxJENHy3MDjnhi1mPKLAdDzCByt0i%2FvMYQIgQJwsToDqOXB%2BWXKHbJDmKSKszbTxyBKdlg2K4jcdIgEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDE3GIscHSkXjt3P%2FhSrcAxvLUnPV0Zw4Dg7xZU4PWdP2T%2BopcMIQIlCaNvUWYFlWo3woJM4yT4gxa4IJwg9gnhecWZG8x%2FKrIzlteB9ekW0i4vug5mli9RNvAfOBer7a%2B4uymrNpY6CWIQfrqute8dtUqZ77r8hO6U3Ar2WtaMbr9VuuXkJ7kf2gl2b2p8ttDQoAy3TmqOxJumIWW3A%2FlFQH8Na4ZYtyV92pMmAH%2F%2Fjm8C5GWM15kQ8DvAzUE3GF2J3CO1U3a0%2BB%2B%2B%2FJvpNgezi5Bjv7N0nBDLqmhVmAwN5FR5WfzfgVsZLt0ypNaVIQYlP0mDXx7rlutom2iZmcBzFHWp8FkLCatngfCKfJnsNBEhr8lWmWVRpLF4Oja7UDOwytdn2gAREghbDHXVDZVRi%2Bsz6blq5KMWI4B0e0LIA9ePboMQUqir7OrhJFBju6C3PW8KYmg%2B2q%2BpS7Reg7mypW8%2B6X%2BKCp61F2lnykuga0UOV5tnCNHXaepKyJd7o%2BKwAoyeF6vn7mIcgyWLWcSkpFYEv4FrMubgpaVWEr0olJYWQcwfspYboPwxy5AvdFwnGLFjfqfz2Xgq%2FlKcGXQREipin9rKo%2BeFtsg79ERcQQp4A5CbQM0joOOkf7sVZsumqXsFDJ4kMVAuzpMO%2B3%2F9IGOqUBk0uiJaX3JkeuhpSNknrK%2BW%2B%2BEVMxRKaarkCLOWqn4al3h6kvkX0ElEOBau4PDOg4wdveoYlfJoxjB9%2BE5Ss6brG4%2FsTjcjq9Elat1T5kGShDHhEa0t2RlB0e%2BxX00EHd084esfxepbKcBvHbmap2m3MRig1y%2FJOviGhlGq9JIlXGz1cpRRvDvX6Jw8CPmek3%2FRNonENNn1W%2BzUqL7ZBj4FCs98HE&X-Amz-Signature=25fb4370cfb8698148c40a0a9ea3a0a9bd8bc8f7726990404409dbc20b0a303f&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/4bcd524e-ee8f-454d-8992-2f253b7f0649/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Y2YUH4II%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225128Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDT8BXbZmsbmxJENHy3MDjnhi1mPKLAdDzCByt0i%2FvMYQIgQJwsToDqOXB%2BWXKHbJDmKSKszbTxyBKdlg2K4jcdIgEqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDE3GIscHSkXjt3P%2FhSrcAxvLUnPV0Zw4Dg7xZU4PWdP2T%2BopcMIQIlCaNvUWYFlWo3woJM4yT4gxa4IJwg9gnhecWZG8x%2FKrIzlteB9ekW0i4vug5mli9RNvAfOBer7a%2B4uymrNpY6CWIQfrqute8dtUqZ77r8hO6U3Ar2WtaMbr9VuuXkJ7kf2gl2b2p8ttDQoAy3TmqOxJumIWW3A%2FlFQH8Na4ZYtyV92pMmAH%2F%2Fjm8C5GWM15kQ8DvAzUE3GF2J3CO1U3a0%2BB%2B%2B%2FJvpNgezi5Bjv7N0nBDLqmhVmAwN5FR5WfzfgVsZLt0ypNaVIQYlP0mDXx7rlutom2iZmcBzFHWp8FkLCatngfCKfJnsNBEhr8lWmWVRpLF4Oja7UDOwytdn2gAREghbDHXVDZVRi%2Bsz6blq5KMWI4B0e0LIA9ePboMQUqir7OrhJFBju6C3PW8KYmg%2B2q%2BpS7Reg7mypW8%2B6X%2BKCp61F2lnykuga0UOV5tnCNHXaepKyJd7o%2BKwAoyeF6vn7mIcgyWLWcSkpFYEv4FrMubgpaVWEr0olJYWQcwfspYboPwxy5AvdFwnGLFjfqfz2Xgq%2FlKcGXQREipin9rKo%2BeFtsg79ERcQQp4A5CbQM0joOOkf7sVZsumqXsFDJ4kMVAuzpMO%2B3%2F9IGOqUBk0uiJaX3JkeuhpSNknrK%2BW%2B%2BEVMxRKaarkCLOWqn4al3h6kvkX0ElEOBau4PDOg4wdveoYlfJoxjB9%2BE5Ss6brG4%2FsTjcjq9Elat1T5kGShDHhEa0t2RlB0e%2BxX00EHd084esfxepbKcBvHbmap2m3MRig1y%2FJOviGhlGq9JIlXGz1cpRRvDvX6Jw8CPmek3%2FRNonENNn1W%2BzUqL7ZBj4FCs98HE&X-Amz-Signature=c2af94d5ee13c47b5e384d6e6ef14e74928f307d64c1f833a3c89f99a3a3c2e5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+目前我们就已经是通过这个谷歌商店的一种方式去运行，去安装的一个 head 插件。那么这个的一个必须必要的一个前提，你就需要做到一个科学上网。如果说你做不到的话，那也没有关系，你可以使用它的一个源码的方式去运行，可能就是稍微会有那么一点点的麻烦，但是也没有关系，我们是可以去做的。那么怎么去做你要去做一个下载来看一下。
+
+
+我目前是已经是下载好了，就是一个压缩包，然后进行一个解压，然后就是这个文件夹的一个内容，然后你是可以去运行的。那么怎么去运行呢？在这里它有一个 npm install 如果说没有接触过前端的同学可能会对这个东西有点不熟悉，因为这个的话你是需要基于 node JS 因为它本身这堆源码的话它其实就是前端的一个源码，你是需要去使用的。所以说你要去使用的话，你就必须要去安装 node 那么如何去安装呢？我们在这里看一下百度去搜一下 node JS 然后在这里面直接去做一个相应的下载，不管你是使用的是 mico S 还是 Windows 都是可以去安装的，安装的话是非常简单的，你下载好之后直接下一步，下一步去安装。我相信有一部分同学的电脑上肯定是安装过 Nodejs 的。然后如果说你安装好了以后，打开你的一个 command 命令，然后可以去敲一下。
+
+
+node 杠 B 这是我目前安装的，来看一下我的版本，可能是稍微有一些的老之前就说我是安装过，那么目前它当前最新的版本是12，但是这个是完全不影响我们的使用的，也是可以去用。然后它还会有一个 npmnpm 杠 D 目前是 6.4 这个版本 npm 是一个什么东西，npm的话它其实就类似于我们在在我们后端的一个 Maven 它是一个包管理工具，你是可以去使用的。当我们去把这个 node vs 去安装好了以后，其实这个 npm 也是跟着会一起去安装的。所以你只要下载好这个软件，下一步去安装就可以了。
+然后安装好了以后，那我们现在就可以这样子，我们直接把这个给打开来看一下。当前我们打开了以后，这个其实就是我们解压后 head 它所有的一些源码文件，然后你进入到这个目录右键，然后我们可以去打开一下。那么目前的话其实我就是进入到当前的一个目录里面了，进入了以后那么很简单，你只需要根据它的步骤去做它的步骤的话，在这里有一个 npm install 这个其实就类似于美粉 install 你是可以去安装的 mpm install 然后你直接回车下一步帮他去做一个对应的安装就可以了。
+
+
+好，OK那么因为我之前已经是安装过了，所以安装的过程现在是比较的快。如果说你是第一次去进行安装去执行的话，那么可能会等个一两分钟可能会有一些慢，但是没有关系，等待一下就可以了。那么随后安装好了之后你就可以去运行了。那么如何去运行？这里有一个 npm run start 这个就是代表去启动一个服务，然后直接这样子 npmnpm run start 回车，然后这个时候就已经是启动了。在这里它会有一个提示说你是需要去连接这样的一个地址，那么它是运行在我们本地的 local host 冒号9100，它是一个 web server 我们是可以去使用。那么直接我可以。
+
+
+点击一下以后你会发现目前我们就已经是跳转到了一个新的页面，这个新的页面其实和我们之前的这个是一模一样的。OK ，是一模一样的，只不过现在它是连接不了，连接不上。这是为什么呢？来看一下这个。首先你要连接正确，你这个地址必须要正确了。幺九二点幺六八点幺点幺八三。
+
+
+好，点击连接，我多次点击，没有任何的一个展示，也就是连不上。这是为什么呢？然后我们可以按一下 f12 来看一下。很明显，看到这个我们就应该知道出现了一个跨域的问题，因为我们部署的时候我们在 ES 的服务器上其实它是一个这个 IP 183，然后他要从我们当前 local 号才去访问，那么很明显它就会存在这样的一个跨域的问题。那如何去解决跨域的问题也是可以去做的。我们打开命令行。然后我们这样子我们目前是这个 ES 读者，然后我们回过去，我们进入到 config 我们修改一下 last search yml 杨某这个文件。那么在这里面我们就可以去为他开启跨域的访问。我们往下面去，我们把这个移到下面移到这里这是 network 和网络相关的。然后我们在这个地方我们去新增加一些相应的内容，http.plus.enable的冒号来一个 true 这个就是代表开启true ，那么它默认的话其实就是false 。对吧。好，随后再来一个把这个拷贝一下，也就是 http.cos 点我们再来一个 allow 然后杠就是一个减号，也就是横杠 origin 然后冒号空格再来一个新那么这个就是代表跨域，可以任何的一个地址都可以向我发起请求。
+
+
+好，随后我们保存一下，保存一下之后。那么这个时候我们应该要去使用我们的这个前端去访问连接你会发现没有任何的效果。我们这样子这 APS 我们应该要去做一个重新的尺度对吧，我们的 q9486 回车，把这个给杀掉，杀掉之后然后进入到我们的鼻影目录。随后我们再来点斜杠，以拉 C search 重新的再去做一个运行。重新去运行以后，随后的话我们再可以来做一个对应的测试就可以了。那么刚刚我是没有写上一个杠D ，没有写杠 D 的话就是在前端去启动的。那么这个也没有关系，等待它的一个启动，这是他的一个目前的插件，目前插件的话其实还没有连上，然后在这里通过 9200 直接去访问的话目前是有。然后我们再来看一下，去连接一下。好。OK ，那么这个是谷歌插件，是连接可以成功的。那么随后我们回到这里，这是我们自己在本地部署的一个服务，点击连接。OK ，很明显现在我们是成功了。在我们刚刚的一个配置里面，我们是把它的一个跨域的配置去进行了设置，而且是在它的一个核心配置文件押宝文件里面去配的。那么现在我们就可以通过这种方式去进行一个连接了。
+
+
+现在这样子，不管我们是使用谷歌浏览器的一个插件，还是说我们是去使用这种独立的服务去部署的话，这两种方式都已经是 OK 了，这里面的信息其实都是一模一样的。OK ，那么目前我们的这个 head 插件周云是成功的安装了吧。
+

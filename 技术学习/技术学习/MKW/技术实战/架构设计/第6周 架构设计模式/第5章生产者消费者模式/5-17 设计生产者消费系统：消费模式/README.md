@@ -1,0 +1,42 @@
+---
+title: 5-17 设计生产者消费系统：消费模式
+---
+
+# 5-17 设计生产者消费系统：消费模式
+
+关于这个生产者的在设计方面要注意的方方面面有些重点，特别是你如何去确定这个发送消息的成功性，还有短期的话这些问题都比较重要，在你设计之初你都要考虑好，对吧？那讲完生产者之后，另外一个大头就是我们的消费者，那消费者这一端首当其冲的在我个人看来就是你要决定的消费方式。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7cef68dd-967a-4208-b527-816cab3e07f4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46647IFXCDI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230623Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDMgpLj2yKd3i46n%2FBtCENFPM1AmRYXAn7OpT1BXeOzawIgL7vqp9%2BJwDUYiX5Z631YG4ZM05HH%2BTi%2FZHf5Y8eYrCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDATRSdk0Zkows9OrUyrcAws5a%2FuHSRy66%2BOkkth22VLZHImNelsA9UlisPOD%2FNiH1%2BC88ma7cWQ40q31IPEdopi5tzGOUrJzYgKbrnJwOiC%2B5brmr4Q4aeLFpx8oHKuwxFXuL07PIzHY9t7S3%2FUwFuLQyffrd1FeDxiwn3N8YCkpPcg%2BAY8%2BBL1umTbDW5L%2F6BhWglyg3vmH6IdAAo1iFFg8eV335De7j0Cl49RbJR%2BGhsjCl50D3tBzQpUpesiFEADN%2BW6Pgg1X8vdmAP4o8GFICTPSkAnlZepM56iMgCwR%2B8Thq9YtwoPLESMH3o0HNEfNZVzSiyi7Gvgxnv3jy18o21Hic7N%2BNn36FBkDJYtvm9ZEVkt4aaPPjbcK70a2H%2BOdLKcQBW2eOkoKjURq9pFR5TPE2%2Fdn%2BNIe1yQTA%2FMJRHe6xt9j9Rh1Q2cxaCZEiH1DPcQiVlKpVmz%2Fs%2BBGM3Sk6zfCb0sOlHkgqU8Lg6uZI%2BHjIrNlGkuq4NlwDKmTHEPU1OByssS0E5NSZjDhDTDxt2N2wJSTlR3sY0ISNmpBWselY9Oau4yqwblZ0k5hgf%2BogdlFg%2BbO6Nu5Pk%2BbzN69t4Tv0u8G6v%2BRFhosPeZMeypFHkJ4D8OWsb%2B0kzVgUYrjlHDXNpayZJxPMIq6%2F9IGOqUBgDs1vXs0VNuEqhxjNOTrcfRzM5rceTv7ahyhyeN65jzkFh5k88L%2B1%2BLwIZ3PB%2Fo%2BHl4w0%2FE32HSZTMkWdpockjZEizaDdZFd%2F%2Bzha8WApKtYYR%2FCDj83hL%2FaS6Qahet6MoczayJvGuxDebKiGdtOQ94Y5iQx7C0NfXgU04CvzjMn3EPyfajEnT1sB90BqCCLRzU2u8B9hfqwc7FGrzf24iqECRSO&X-Amz-Signature=cbc29e6f39bb932303cb50bd95614cc75447f5c2f0b1d088481224bdaefb5a7b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+什么叫消费方式？消费方式就是说这个消费者是如何拿到这个数据单元的？那在通常意义来讲的话，目前我只见过两种，一种是推，一种是让，那他们各自优缺点是什么呢？我们就一一来分析一下。以共理，在以后实现系统或者设计系统的时候，做出一个明确的选择，反正都有好处。对，都有。哎，缺点你自己根据你的设计场景看你自己在意是什么，经常讲这句话就扬长避短，对吧？来看一下这个问题，推，推是一个什么意思？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1c9efc97-4cd0-40f1-8bf9-9aa956dbea12/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46647IFXCDI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230623Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDMgpLj2yKd3i46n%2FBtCENFPM1AmRYXAn7OpT1BXeOzawIgL7vqp9%2BJwDUYiX5Z631YG4ZM05HH%2BTi%2FZHf5Y8eYrCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDATRSdk0Zkows9OrUyrcAws5a%2FuHSRy66%2BOkkth22VLZHImNelsA9UlisPOD%2FNiH1%2BC88ma7cWQ40q31IPEdopi5tzGOUrJzYgKbrnJwOiC%2B5brmr4Q4aeLFpx8oHKuwxFXuL07PIzHY9t7S3%2FUwFuLQyffrd1FeDxiwn3N8YCkpPcg%2BAY8%2BBL1umTbDW5L%2F6BhWglyg3vmH6IdAAo1iFFg8eV335De7j0Cl49RbJR%2BGhsjCl50D3tBzQpUpesiFEADN%2BW6Pgg1X8vdmAP4o8GFICTPSkAnlZepM56iMgCwR%2B8Thq9YtwoPLESMH3o0HNEfNZVzSiyi7Gvgxnv3jy18o21Hic7N%2BNn36FBkDJYtvm9ZEVkt4aaPPjbcK70a2H%2BOdLKcQBW2eOkoKjURq9pFR5TPE2%2Fdn%2BNIe1yQTA%2FMJRHe6xt9j9Rh1Q2cxaCZEiH1DPcQiVlKpVmz%2Fs%2BBGM3Sk6zfCb0sOlHkgqU8Lg6uZI%2BHjIrNlGkuq4NlwDKmTHEPU1OByssS0E5NSZjDhDTDxt2N2wJSTlR3sY0ISNmpBWselY9Oau4yqwblZ0k5hgf%2BogdlFg%2BbO6Nu5Pk%2BbzN69t4Tv0u8G6v%2BRFhosPeZMeypFHkJ4D8OWsb%2B0kzVgUYrjlHDXNpayZJxPMIq6%2F9IGOqUBgDs1vXs0VNuEqhxjNOTrcfRzM5rceTv7ahyhyeN65jzkFh5k88L%2B1%2BLwIZ3PB%2Fo%2BHl4w0%2FE32HSZTMkWdpockjZEizaDdZFd%2F%2Bzha8WApKtYYR%2FCDj83hL%2FaS6Qahet6MoczayJvGuxDebKiGdtOQ94Y5iQx7C0NfXgU04CvzjMn3EPyfajEnT1sB90BqCCLRzU2u8B9hfqwc7FGrzf24iqECRSO&X-Amz-Signature=dae1cb8ec7257542d3b3020ec5f62ef6a276c39a3383be4010baedad242edaa1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+推就是这里有一个容器，那有一个消费者有consumer，对吧？这个点我们就假定这个生产者的消息它已经数据单元已经发送到我们的容器里去了。
+
+
+我们现在解决的是如何从容器弄到这个 consumer 那一端去，这是第二个阶段，那这个阶段我们现在选甲乙推动模式来讲解推什么？推就是主动的由 container 来发起这个行为，就是说 consumer 他根本就不打招呼了，他只管最初在系统设计上连接成功。
+
+
+我们三者，对吧？现在当任何一个数据单元或者任何一个消息由生产者发送到容器里面去了以后，那使用器它就要发起负责将这个数据单元推送给这个抗日的，就说白了就是我在这个中间建成这种技术，一点细节一点来讲，就是我在中间层收到任何一个消息，或者收到任何一个数据，我马上就把这个东西推送给最终的用户，就是我们的 consumer 对不对？这一点的好处就是什么意思？就是说消费者他可以尽快的获得这个数据变化，这是一种怎么说？是一种非常非常好的一个想法，就是当任何外界做出改变的这个 container 的时候，就是所在数据单，然后消息到达的时候马上就可以通知到我们的看热门假定，当然我们是个可能是能够拿到这个消息的，后面推送成功以后，这个不太有可能讨论，因为那个是一个很简单的网络问题，我简单看看。那你这个 consumer 要读的这个消息，现在我用 content 直接向你发，但你说这个多好？你这个 consumer 找一个工作，只要最初联系上我们配对成功以后很美，只要有消息就可以发，而且速度非常保证。
+
+
+为什么？他一拿到消息码预告知道了自己有消息或者有数据进来，我就只能推送给你，这个多好，对不对？但是这个地方也有一个问题是，就是前面讲过的就是这个容器，它是不关心这个看 room 到这些干嘛的，就他只要一有他就给你发。那大家有没有想过一个问题，就是前面讲的那个问题，进水管跟出水管园这个进水管太多了，那出水管的你如果一点不管控的，反正这个池子里面，对吧？只要有水一来，他马上就开始往外放，对不对？就是跟我们这个特别接近，就说我这一有水马就晚晚发，这是一种直接的push，他直接把这个拿到数据单就往外push，直接 push out 这个地方就说明什么？你有没有想过消费者这一端的这个处理能力，就是说你觉得你的下游肯定没办法处理十吨洪水，那时候你就开闸放水，结果他根本就处理不了，这么多，崩的你就撑爆了，对吧？垮蹄了，这个肯定就是不合适的。
+
+
+所以说说推的模式，有一个答案解决是如果你推得太厉害了，太多太快了，可能会导致 consumer 这端的崩溃，因为这个决定是由你来决定的，而这 controller 它是无法控制认识你的。它自己说，哎，我已经吃饱了，但是不好意思，我还要问你，给你喂饭而已，这把你撑死为止。那这个时候难听点，这个设计上你就要考虑一下怎么来规避这种问题，反正你知道这个问题，也知道它好处，那就看你怎么来规避这个坏处。就是前面讲的推的太多，导致这个可能撑不住的问题。好处就是数据获得这个时机非常及时，那个数据表马上就知道这一点，非常好，对吧？那我们来看另外一种，就是 pull 拉的这种模式，下拉的模式下面 you container in consumer，对吧？
+
+
+这个它就是由 consumer 主动发起的一个行为的，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/e428ede8-b049-4a73-a9b2-019ed1cebbe8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46647IFXCDI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230623Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDMgpLj2yKd3i46n%2FBtCENFPM1AmRYXAn7OpT1BXeOzawIgL7vqp9%2BJwDUYiX5Z631YG4ZM05HH%2BTi%2FZHf5Y8eYrCIqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDATRSdk0Zkows9OrUyrcAws5a%2FuHSRy66%2BOkkth22VLZHImNelsA9UlisPOD%2FNiH1%2BC88ma7cWQ40q31IPEdopi5tzGOUrJzYgKbrnJwOiC%2B5brmr4Q4aeLFpx8oHKuwxFXuL07PIzHY9t7S3%2FUwFuLQyffrd1FeDxiwn3N8YCkpPcg%2BAY8%2BBL1umTbDW5L%2F6BhWglyg3vmH6IdAAo1iFFg8eV335De7j0Cl49RbJR%2BGhsjCl50D3tBzQpUpesiFEADN%2BW6Pgg1X8vdmAP4o8GFICTPSkAnlZepM56iMgCwR%2B8Thq9YtwoPLESMH3o0HNEfNZVzSiyi7Gvgxnv3jy18o21Hic7N%2BNn36FBkDJYtvm9ZEVkt4aaPPjbcK70a2H%2BOdLKcQBW2eOkoKjURq9pFR5TPE2%2Fdn%2BNIe1yQTA%2FMJRHe6xt9j9Rh1Q2cxaCZEiH1DPcQiVlKpVmz%2Fs%2BBGM3Sk6zfCb0sOlHkgqU8Lg6uZI%2BHjIrNlGkuq4NlwDKmTHEPU1OByssS0E5NSZjDhDTDxt2N2wJSTlR3sY0ISNmpBWselY9Oau4yqwblZ0k5hgf%2BogdlFg%2BbO6Nu5Pk%2BbzN69t4Tv0u8G6v%2BRFhosPeZMeypFHkJ4D8OWsb%2B0kzVgUYrjlHDXNpayZJxPMIq6%2F9IGOqUBgDs1vXs0VNuEqhxjNOTrcfRzM5rceTv7ahyhyeN65jzkFh5k88L%2B1%2BLwIZ3PB%2Fo%2BHl4w0%2FE32HSZTMkWdpockjZEizaDdZFd%2F%2Bzha8WApKtYYR%2FCDj83hL%2FaS6Qahet6MoczayJvGuxDebKiGdtOQ94Y5iQx7C0NfXgU04CvzjMn3EPyfajEnT1sB90BqCCLRzU2u8B9hfqwc7FGrzf24iqECRSO&X-Amz-Signature=7331357fcaa9d9dc01d0e8ddea1ef79ab03ae44e5dfabdd1eab702dea4cef2ac&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+然后一般来讲在这个 consumer 端都会是一个 long Tony，就是它一直在不停地对发生 when content，有没有数据，有没有消息，有没有东西给我这种类式就不停地去问，就是这种模式。这种就是你看它是一个 long pulling，就是邮件，你就可以认为是一个 batch job 一样这种感觉。它是一个 best 的形式，比如隔个 10 秒，隔个 20 秒，隔个 30 秒去问一次这个contain，那有可能比如说举个例子，你 10 秒问一次，对吧？第一个 10 秒啥也没有，到 11 秒的时候这个数据就出现了。
+
+
+等你下次去拿这个数据，其实是在 20 秒的时候才拿到这个数据的，所以这个数据跟我们这种推的模式下面，它就是有一个滞后性，就是你拿到的消息其实来延迟，对吧？这个就跟这个推动模式是有所区别的，但是它的好处就是风俭由忍。说实话就是什么意思？就是说你要取这个数据的时候，你就自己要去取，爱什么时候取什么时候取，对不对？我处理完了我再取也可以的，对吧？我固定一个时间取都可以，这个地方就是不说坏处，这样有两个问题大家要值得去深思一下，就一就是怎么保持一个 long poly，就是你就会一直去拉这个东西，对吧？嗯，你要维护这个机制的，你没有这个功能的，那说白了你要么就拉一次啊，启动了一下，拉一下好了，后面就没了，对不对？那肯定你要有一种机制能够保证你这个 long pooling 能够成功。
+
+
+第二就是你对这个数据的要求的实质性实施性不能那么高。比如说我这个对时间非常敏感的，那你可能是用这种拉取的模式的话，就不太适合你，你可能就是对学推这种模式，那如果说你说这个早个 10 分钟、 5 分钟的和晚个 10 分钟的，对我这个东西应该没特别大的影响，那这个就无所谓了，你用哪种都可以，根据你的情况，对吧？但是我的意思是说，如果你对这个实施性要求很敏感、很糟糕的话，那你肯定是不能使用哪种模式，因为它维护这个 long pulling，这变成是一个间接性的思路，所以他可能会有很大的延迟，因为他可能一个小时拿一次，那怎么办？那也是有可能的，对不对？所以说这个东西就看你的取舍和在系统当时实际的定位，就是你到底要求的是一个什么样的要求？你要在推特拉之前做一个比对，然后看哪种更符合你的实际的业务场景，然后你从中选择一点，这两者没有说觉得谁好谁坏，只有根据你的系统来进行不同的搭配，或者你想要的效果就是这样一个意思。
+
+

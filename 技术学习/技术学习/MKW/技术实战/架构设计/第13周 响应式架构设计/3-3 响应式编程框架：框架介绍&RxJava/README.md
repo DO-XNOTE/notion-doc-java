@@ -1,0 +1,47 @@
+---
+title: 3-3 响应式编程框架：框架介绍&RxJava
+---
+
+# 3-3 响应式编程框架：框架介绍&RxJava
+
+了解过模式、了解过规范，现在跟我们实现更紧密的，那就是各种各样的支持它的框架，就第三方库。那在翔式编程当中，就 Java 或者 JVM 领域里面有哪几种比较常见的框架？或者说这种库在目前市面上主流的有三种，它们就是Reactor，它是由 spring framework 提供的，同时它也是和 react stream 规范的这样一个响应式变成框架。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/026fadf1-914a-4eb6-8ec7-424146458d48/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665VMQU5YG%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230953Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFo2CAwpZKxOU2F6UE8IJ9aAteCvKoq9H9Q8fxKhpkHYAiBVaRL0SuTDOhPDiaW%2Bbw2RVZYqvntSpBuI0XA5FnDcASqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMAPvMZqd95nTTUVHfKtwDsZ9iVFbR33kJhd5aW%2Bb63pn%2FteO0wrJ%2Fl4BgCieH8%2BSwqLKL0QnbKlxQwaH2wG7XZyGA2OYTpFtI0c5M2y3j%2Bi3OqQDleol9HS6QXPRq3s%2BzqjUYLmD724AApamt4GnG3VOiOi1QxEwLPdJodBzYksH74PkYrKo3%2FL0Ow5dj3euzVDn7NrLmpUamEpFFKkVe%2Flz7Av44Z9%2Bfgxna7u%2F1c3VrZH5HQ0Qd8X1q6etQ4lYsUTvq5pEi%2BkRRLeUop6yVIpi2fj7pnwQIwY2JJ%2B9cvvHvlW6Hd%2BaDLf88DsjOxi70pIG6ULVdTvB9nq9MeVBnHl5LNjCme5JdeUrC7ucCac5UuaZnqYxrH%2FIhKGx7foGEZHKwTJX%2BQs5jV2%2BgDiDTlUUTxHXbeUlAy%2BPWIMnlRIIEDFPDBDbVbxDNlgk9q%2FwoA4uKXHHI6qUgv3AP820aStWTWnQxbv5efdha4ModNg1N7s1VStnh2U%2BLiSTyuntWqmUIA1QP5X0CJELbBpvf3cjbfouwAEnsH9q35Afl6RTGiqAnV25reT4pp%2BlO1InbZal%2FYyTptZHn62mpkQgpmGnNnyCUAMMoconwY0MnCQk2LjTc%2FzzklewFQEiiToIEKsfqlVxhMPdo4JUwjbr%2F0gY6pgGNt4F5iQIzkqRYBDrs6yLuuPvVKEko5faKx2nLPU6naqiHX3yrIJvZga7vtxo59BC%2Bc9jBMMAoGKQ%2Bhlmay0KyL%2Bm2Sg300o94HXb%2FNO9a1HzlmPiEI%2B4363Os9MiNcMPIjCWEhwEiTL7SIBQjjGJXxio%2BOgUeAFyxXBBBSJz%2BEKH0UoYiYbRekC6oAovhWuuG2cPNJq3oSPDuLByZm33B0TXFYWya&X-Amz-Signature=dd7d6830e9ad753181acd56d17b9ff586c9ee727cdf2ff3f0e7827590b1a0284&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+简单来说你就是可以利用 Reactor 和 spring 这个生态里面进一步的响应式子编程，那 RX Java 它是 reactive extension 的 Java 实现，它也是兼容 react streams 的，但是这个后面我会讲到它并不是直接嗯，兼容的，因为它还是稍微有一点点不同。
+
+
+后面我们会去详细的章节来讲这个问题，还有一个就是比较著名的阿卡，阿卡最重要的一点是它是实现了 x 模型，这种通过异步交互的消息驱动的方式来实现了这个响应式编程，它也是可以兼容 reactive stream 规范的。所以说这三个框架或者这三种写法都是支持 react stream 的，但是各有各的长处和优点。设计理念其实坦率来说也不尽相同。但是他们都受了一个共同的目标，响应式编程在 GM 事件里面提供各种各样的一个支持，那下面我们就一一来讲解一下这三种不同的框架啊。
+
+
+第一个我们来看一下 RX Java，简单的说就是 a active x 的 GM 事件 a active x 因为我们没有专门讲，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/384d7faf-f3b9-40be-8e29-ea54c330d548/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665VMQU5YG%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230953Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFo2CAwpZKxOU2F6UE8IJ9aAteCvKoq9H9Q8fxKhpkHYAiBVaRL0SuTDOhPDiaW%2Bbw2RVZYqvntSpBuI0XA5FnDcASqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMAPvMZqd95nTTUVHfKtwDsZ9iVFbR33kJhd5aW%2Bb63pn%2FteO0wrJ%2Fl4BgCieH8%2BSwqLKL0QnbKlxQwaH2wG7XZyGA2OYTpFtI0c5M2y3j%2Bi3OqQDleol9HS6QXPRq3s%2BzqjUYLmD724AApamt4GnG3VOiOi1QxEwLPdJodBzYksH74PkYrKo3%2FL0Ow5dj3euzVDn7NrLmpUamEpFFKkVe%2Flz7Av44Z9%2Bfgxna7u%2F1c3VrZH5HQ0Qd8X1q6etQ4lYsUTvq5pEi%2BkRRLeUop6yVIpi2fj7pnwQIwY2JJ%2B9cvvHvlW6Hd%2BaDLf88DsjOxi70pIG6ULVdTvB9nq9MeVBnHl5LNjCme5JdeUrC7ucCac5UuaZnqYxrH%2FIhKGx7foGEZHKwTJX%2BQs5jV2%2BgDiDTlUUTxHXbeUlAy%2BPWIMnlRIIEDFPDBDbVbxDNlgk9q%2FwoA4uKXHHI6qUgv3AP820aStWTWnQxbv5efdha4ModNg1N7s1VStnh2U%2BLiSTyuntWqmUIA1QP5X0CJELbBpvf3cjbfouwAEnsH9q35Afl6RTGiqAnV25reT4pp%2BlO1InbZal%2FYyTptZHn62mpkQgpmGnNnyCUAMMoconwY0MnCQk2LjTc%2FzzklewFQEiiToIEKsfqlVxhMPdo4JUwjbr%2F0gY6pgGNt4F5iQIzkqRYBDrs6yLuuPvVKEko5faKx2nLPU6naqiHX3yrIJvZga7vtxo59BC%2Bc9jBMMAoGKQ%2Bhlmay0KyL%2Bm2Sg300o94HXb%2FNO9a1HzlmPiEI%2B4363Os9MiNcMPIjCWEhwEiTL7SIBQjjGJXxio%2BOgUeAFyxXBBBSJz%2BEKH0UoYiYbRekC6oAovhWuuG2cPNJq3oSPDuLByZm33B0TXFYWya&X-Amz-Signature=fb0aa32b74ed9e8817f1f059b2e3da58e4f79432f9218fed494b80056cf62a8e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+简单来说，我们理解它就是这样子的RX。它是微软 Dowality 的最初的一个详细的一个扩展，它借助可观察区域提供了一种简单的方法来创建异步的基于事件驱动的程序。然后在 2012 年的时候， let Flagas 就是网飞，他为了自己的这个业务的需求增长，不断地改造自己的系统。所以说他发现这个响应式编程可能有助于创建根，易于扩展，响应速度更快这样一些业务系统，他就将多 net 的 RX 迁移到了 JVM 上面，然后在 13 年的 2 月份正式发布了 RX Java 的第一代。如果 RX 就是微软出了多热的时间到 RX Java 的话来讲，基本它是完全保留了 RX 多 s 版本的一些特征，同时实现了 Java 上面的这样一个迁移过程，这就是 RX Java 的一个来龙去脉。
+
+
+简单来说就是这样子， RX Java 就是 negative x 项目的一种语言事件，因此 RX Java 就是 negative x 项目的一个语言分支实现。这是其中的一种语言实现 reactive x，它主要是要完成一个什么呢？就是通过使用可观察的序列来编写异步和基于时间的响应式系统。这就是它整个 RX Java 的一个初衷，或者它一个目标吧。坦率来说这个就是基于一种观察者模式，这是它最大的一个不同，它是基于观察者模式的。
+
+
+观察者模式跟 reactive stream 好像不是完全一致，这是有相当的差异，因为 Rxjava 它并不能直接支持 reactive streams，我们还额外需要它的一个 Adapter 一样，它叫 negative string。直接使用 x Java 是没有这个问题的，但是如果说你为了遵循 negative string 规范的这种写法的话，那你还需要额外的一个依赖，那就是 Axjava 的 react streams 这个桥接，或者你把叫Adapter，它通过这种方式可以让你符合 restream 的规范的一个操作方式。
+
+
+这里是顺便提一下，大家注意这一点， x 加y，很多人是不按照 x stream 的用法用是没有任何问题的，但如果说你在某些情况下，原有的系统，比如说你是基于 react streams 的这样一个规范实现的，现在你想把实现替换成 Rxjava 的话，其实是没有任何问题的。你只要引入这个 Adapter 叫做 Rxjava reactive streams，那这个项目就可以切换。所以 RX Java 它是一种响应式编程的框架，但是它主要的工作原理是怎么样的呢？我们来一起看一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/faec1957-a22c-4f2a-b378-fb0a77fd6568/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4665VMQU5YG%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230953Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIFo2CAwpZKxOU2F6UE8IJ9aAteCvKoq9H9Q8fxKhpkHYAiBVaRL0SuTDOhPDiaW%2Bbw2RVZYqvntSpBuI0XA5FnDcASqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMAPvMZqd95nTTUVHfKtwDsZ9iVFbR33kJhd5aW%2Bb63pn%2FteO0wrJ%2Fl4BgCieH8%2BSwqLKL0QnbKlxQwaH2wG7XZyGA2OYTpFtI0c5M2y3j%2Bi3OqQDleol9HS6QXPRq3s%2BzqjUYLmD724AApamt4GnG3VOiOi1QxEwLPdJodBzYksH74PkYrKo3%2FL0Ow5dj3euzVDn7NrLmpUamEpFFKkVe%2Flz7Av44Z9%2Bfgxna7u%2F1c3VrZH5HQ0Qd8X1q6etQ4lYsUTvq5pEi%2BkRRLeUop6yVIpi2fj7pnwQIwY2JJ%2B9cvvHvlW6Hd%2BaDLf88DsjOxi70pIG6ULVdTvB9nq9MeVBnHl5LNjCme5JdeUrC7ucCac5UuaZnqYxrH%2FIhKGx7foGEZHKwTJX%2BQs5jV2%2BgDiDTlUUTxHXbeUlAy%2BPWIMnlRIIEDFPDBDbVbxDNlgk9q%2FwoA4uKXHHI6qUgv3AP820aStWTWnQxbv5efdha4ModNg1N7s1VStnh2U%2BLiSTyuntWqmUIA1QP5X0CJELbBpvf3cjbfouwAEnsH9q35Afl6RTGiqAnV25reT4pp%2BlO1InbZal%2FYyTptZHn62mpkQgpmGnNnyCUAMMoconwY0MnCQk2LjTc%2FzzklewFQEiiToIEKsfqlVxhMPdo4JUwjbr%2F0gY6pgGNt4F5iQIzkqRYBDrs6yLuuPvVKEko5faKx2nLPU6naqiHX3yrIJvZga7vtxo59BC%2Bc9jBMMAoGKQ%2Bhlmay0KyL%2Bm2Sg300o94HXb%2FNO9a1HzlmPiEI%2B4363Os9MiNcMPIjCWEhwEiTL7SIBQjjGJXxio%2BOgUeAFyxXBBBSJz%2BEKH0UoYiYbRekC6oAovhWuuG2cPNJq3oSPDuLByZm33B0TXFYWya&X-Amz-Signature=fee84da212fbd8fc866db83951148bf66a3d0e0d727ca4da0e07a131063239d8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+这个里面它主要是存在两种东西。我已经说过了，它最大的一个特点就是基于 Observo pattern 经典的这个GOF。第三 pattern 里面的观察者模式，有一个观察者他会一直观察系统的变化，这个系统任何变化它都会采取相应的行动。你看这个其实跟我们的响应式编程的初衷还是比较接近的，有任何事情变化马上作出响应，所以说 RX Java 使用这种观察者模式，一种思想来设计整个框架，也是非常贴切于我们的响应式编程的范式的。它这个里面主要就是有几种最主要的对象存在。
+
+
+在我个人看的首先就是observable，还有一个是 observe 这两个东西，大家从它的字面就可以看得出来， observable 可能就是充当源头，在一切可以被观察，就是所有可以产生事件的就是一个被观察的对象。那对于 observer 这个也很简单，就是这个观察者本身他要去观察这个系统，就是被观察对象在变化，当他任何变化出现的时候，他要采取一系列的措施来去做出了响应。
+
+
+同时从 observable 里面它会弹射出各种各样的事件，就是前面讲过它是按照时间序列来排序的，这个可能在有些项目上或者有些情况下，这个时间序列很重要，在有些时候可能没有那么重要。但是不任何，它是按照时间序列对外弹射出事件，然后 observe 针对这些弹射出来的事件做出自己相应的操作，也是相应的响应，如此以来形成了一个响应式编程的实现的框架，这就是它组合的一个核心思想。
+
+
+RX Java 的时候，我们来看observable，它就是一个被订阅者，就是被观察的那个对象，是系统中事件，你如果把这个消息可能在这个地方不是特别贴切，因为观察者模式里面讲究的都是事件而不是消息，它是一个事件的来源，接受这个订阅者就是我们所谓的 observer 的订阅，然后通过发射器来发射数据给订阅者。
+
+
+observer 就是我们的订阅者注册过程，它就会传给被订阅者，就是observable，然后开始监听过程中就会把这些数据发送给定义者进行处理。 RX 的进化过程中，除了observable，后面也出现过consumer，当然这是在 RX Java 2.0 的时候做出来的，它其实也是 observer 的一种变体而已。
+

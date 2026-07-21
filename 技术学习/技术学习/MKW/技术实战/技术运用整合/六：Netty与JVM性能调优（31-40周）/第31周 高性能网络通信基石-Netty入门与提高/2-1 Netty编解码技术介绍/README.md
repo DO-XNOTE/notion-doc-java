@@ -1,0 +1,22 @@
+---
+title: 2-1 Netty编解码技术介绍
+---
+
+# 2-1 Netty编解码技术介绍
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/24f45bbd-5c7d-4466-9221-29da8b87a1c4/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46676JVBK4Y%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230008Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIHhGH9hz6wHo6peeZaiuJPiiOaZzlHZePDm9RhP1zcQUAiEAq1dq%2FEjaB2AIuTMUlIF1I3kxHfbA%2B%2F4GzTu1AmhwerAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMUiros%2BJ%2FJwsKHU9CrcA88JDJSN0qrycvODfOGJPctrE7fkwRuJ%2BEzknWkhEr%2Ff4de0U9yKoxeRsz9dys22U3lA9c0cTfa71F2I5DMTtiB%2BeyRfG%2BopJFRWxNeW5GNpbUXqmxOfzaOIIyajYjZYddV8HSD%2Byt2tx2pw%2FGeNte1ZlKYCpN5ndPsi9sJTYwXAoi1t%2B8D%2BSm74PMxhBe%2FFgMcU22DATIi9mch%2BOlPozhLMv5cgyTruZBPFG5voGHxPEt5wZTRFTinco9pAKkgKkHx5yeSHbI9kInpKVysqp1tqsie48uu0mpcwr40O7m31VV3JKDNHSmQxxUU%2FY1eSi0kOxthYQ55XFWHhl6DyYYTd10QmvcNrH0iRN38jj1Cmqm2CK8vPbcJ9WVQYB5fiMW%2BLg9GOvXwza5JSk20jlDPjvnVAOHR0OQSiCNwK12ks36D8JxQVxKLpqnWoiYU%2B%2FOdTKsNMMYAg%2Fn840Foklp56%2Fv80acdm6uxjF9HeH%2F%2B%2Bk4%2FTxTGAjS6XRqbisIOpo0od8u5NRFUS2ICeN%2Bp6jASXbiUyaRWCl%2BfTbXi%2FbRzMWQwyu%2BWZuaqAKfKNFBB4H0DhSt2vbN0l7po%2BpqbXLInKE%2BIYL%2FzV9HSkdHqBMgElmKh0cv1DhhAPa%2BpXMMW4%2F9IGOqUBkE%2FwzL9yYThHRHJ%2BTSEiJ6Fs1rDoijb5nfM%2BMoUtRc1StVJ91QgOMHFyp4y0Z9GhqMJu2DRmoKZG5JYbERNt3EsrrkIC8%2BNgADMUP%2BP%2F4nfsUlctQZAUQmeQaQI%2B6FnMzFE8ZWBwwae5WY7Xzrw88vRmcV74lUO%2B75qLbzlG75rSBZ3M9Qt8DOw20%2BoM7e73LfGrRaXmwOdf8nFrdChDBV5GfRHp&X-Amz-Signature=a31cfbde5cd4a85c1240742e823fb27e83839443b5f10b93c37f72c9241c83a2&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+hello，小伙伴，这节课我们来说一说 Nike 的编解码技术。所谓的 Nike 的编解码技术说白了是什么？其实编解码说白了就是 Nike 的一个序列化技术，或者 Java 的一个序列化技术。序列化的目的是为了干什么？其实序列化的目的主要就两个，要做两件事情。第一个它要序列化，肯定是要把我们的文件让比如我们的数据传输到网络上，所以第一件事情就是对进行网络传输。
+
+
+第二件事情是要做对象的持久化。比如我们 Java 原生的 Java 点 IO 点 serializable 接口，就是一个原生的序列化接口，只要标记了 serializable 接口，就证明这个类它是可以进行序列化，可以进行持久化传输的。 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/61ebab48-6339-4559-921c-f70a5f9b9a0b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB46676JVBK4Y%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230008Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIHhGH9hz6wHo6peeZaiuJPiiOaZzlHZePDm9RhP1zcQUAiEAq1dq%2FEjaB2AIuTMUlIF1I3kxHfbA%2B%2F4GzTu1AmhwerAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDMUiros%2BJ%2FJwsKHU9CrcA88JDJSN0qrycvODfOGJPctrE7fkwRuJ%2BEzknWkhEr%2Ff4de0U9yKoxeRsz9dys22U3lA9c0cTfa71F2I5DMTtiB%2BeyRfG%2BopJFRWxNeW5GNpbUXqmxOfzaOIIyajYjZYddV8HSD%2Byt2tx2pw%2FGeNte1ZlKYCpN5ndPsi9sJTYwXAoi1t%2B8D%2BSm74PMxhBe%2FFgMcU22DATIi9mch%2BOlPozhLMv5cgyTruZBPFG5voGHxPEt5wZTRFTinco9pAKkgKkHx5yeSHbI9kInpKVysqp1tqsie48uu0mpcwr40O7m31VV3JKDNHSmQxxUU%2FY1eSi0kOxthYQ55XFWHhl6DyYYTd10QmvcNrH0iRN38jj1Cmqm2CK8vPbcJ9WVQYB5fiMW%2BLg9GOvXwza5JSk20jlDPjvnVAOHR0OQSiCNwK12ks36D8JxQVxKLpqnWoiYU%2B%2FOdTKsNMMYAg%2Fn840Foklp56%2Fv80acdm6uxjF9HeH%2F%2B%2Bk4%2FTxTGAjS6XRqbisIOpo0od8u5NRFUS2ICeN%2Bp6jASXbiUyaRWCl%2BfTbXi%2FbRzMWQwyu%2BWZuaqAKfKNFBB4H0DhSt2vbN0l7po%2BpqbXLInKE%2BIYL%2FzV9HSkdHqBMgElmKh0cv1DhhAPa%2BpXMMW4%2F9IGOqUBkE%2FwzL9yYThHRHJ%2BTSEiJ6Fs1rDoijb5nfM%2BMoUtRc1StVJ91QgOMHFyp4y0Z9GhqMJu2DRmoKZG5JYbERNt3EsrrkIC8%2BNgADMUP%2BP%2F4nfsUlctQZAUQmeQaQI%2B6FnMzFE8ZWBwwae5WY7Xzrw88vRmcV74lUO%2B75qLbzlG75rSBZ3M9Qt8DOw20%2BoM7e73LfGrRaXmwOdf8nFrdChDBV5GfRHp&X-Amz-Signature=cce747e246d363dda37ee597d0ff2ef7c2f23bdc5185076a82f81222064e5282&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+OK 我们是可以把我们自己的 Java 对象去到我们的网络中，或者写到一些指定的磁盘上，这都可以的。虽然我们可以去使用 Java 点 IO 点 serializable 接口进行对象的序列化，再由 native 去把数据传输。但是我们的 Java 的序列化方式硬伤太多了。比如 Java 它序列化没办法去跨语言。还有 Java 序列化后它的码流，它压缩之后码流太大了，并且序列化它的性能也是非常非常低的。所以基于这三个点，我们才去学习 Nat 的一个主流的辩解码技术。当然 Nitty 也是依赖他自己的，依赖一些第三方包哈他自己的，比如Jebost，玛莎铃哈就是他自己的。包括我们茶几 Maxpack 框架也是一样的，主流的序列化框架。刚才我说了Jebost，玛莎莉，还有 message pack，我们可能用的比较多的是什么？ Google 的 put buffer，以及我们基于 put buffer 的一个 k r y o 的框架。
+K r v o。
+
+
+大家如果熟悉double，你应该了解 double 中它的序列化，就有一种 k r v o 的方式。最后我们还可以我们的自定义协议站。我们从上节课去讲对应的这种 TCP 拆包年包也好，还是讲我们这节课的编解码技术也好，都提到了自定义协议站。所以后面老师会给出非常详细的图文教程，小伙伴们去把自定义协议站好好的去学习一下。 OK 这就是对应 Nike 的一个编解码，我们下节课开始就进入实际的编解码代码的学习了。我们首先学的肯定是 g boss 的玛莎莉。感谢小伙伴们收看这节课，先到这。
+
+

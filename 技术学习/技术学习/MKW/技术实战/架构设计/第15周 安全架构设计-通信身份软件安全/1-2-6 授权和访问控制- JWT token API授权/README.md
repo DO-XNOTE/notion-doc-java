@@ -1,0 +1,29 @@
+---
+title: 1-2-6 授权和访问控制- JWT token API授权
+---
+
+# 1-2-6 授权和访问控制- JWT token API授权
+
+架起需求到落地的桥梁，构建 it 新蓝图。我是张飞扬，上一章节我们详细的聊聊 oauth to 2.0 的四种模式，以及如何来进行 access token 的续约。那这个章节我们也是一个小插曲，简单描述一下JOT，我相信大家在什么前面的数据安全章节已经很了解JOT，而且平时应该是用了很多的一个功能。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0922edbc-54d5-4cf3-8071-ab72c541fe80/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QWLCRZRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231027Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUjYIMhAyOVy5Hb5kYVyurnm1eYEb6vcn2bWzYwpH69AiEA7KUmmlX4B4wzNWcUQS2FNsVEdXdzRohzvlbArke23ccqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDP1uUSoJWfvuLKPeyrcA2YY6Md9oST2zulVVdvP6DRYdLK678kpf%2FSl91jPbKcZiT0B4rO660aHN%2B5MHYBUuj%2BN58TS31kwBmwCe1rCKZdkh4TI7RprzL2fOX2F9%2By8aI8wBIyJYXV%2FNRLkq5wwM2o%2BDVR1XrnZS5dppHUsIpBMgCM6H9%2BaGJdguRo6twzuKTUCPL89Gax94svmzdsuysiaCR%2FDI%2FFvfL9soRCA63uOGn3eW8IS4bxcgji843h0W3RwKyyerJFFq3Nhyr6047LPZ0M%2FEbZAYjVrsvhPRK2a2Xh%2Fb7IEXKieG4WLoMkm3wZ%2BJix2I7W%2BKZn1D4YgoSeDEAOjZKqynxj5PHR79iQ7ytRUOiGC7pc%2FNgUjH2Wnr%2BERgGmHEqNgIRBKfLwwY4tC4SwIU9zVGfc1npdUYQ5uG0AVc49l5lv%2FMciVRkrhe1%2FBdy%2BdJd2%2BeIhJJtEbAI9Kzr1FGZj414mntmlSzOvdBB%2BRojWOD%2BEy0GNVAEKPvdBKQSnUB%2FcJL960YxYlTPEktQkw6x0mDaL%2BJ6HikV%2FlUWs07KPvdftGmIG7n7UzcMz3r6hJTGuMU4XFKpqJQ2pBGoFHjE1%2F9Qyd9vlx%2BPiQwgJyB%2B9T6Usov2nBvBuayhI5BHXrg5u%2FbtKUMO%2B3%2F9IGOqUBl1Gz2h9K2QUIBgUPdwC5EjMpnSuhICKQxXx6wcOAzD3OdD3yXWhrxZXCirCq1R95fpdZfcNoFuG%2BmTYXjbR4J19B20Ndb5b%2BUuPmpUVCFf6x74iPWBhLEjU61fmPTHkrSxdEycUwgpdgeSNp8MoUI%2Ftf%2Fcm%2BQ3QW4XZ5Bq7kYBHkAhOmuvIDEBvtf23uqWD6AQJy0FePVLugZ%2BuYcFgUP1Q3D7Hg&X-Amz-Signature=734b990fdbe0a3cc49710061739d20d0db28b8c82255235c2bdceab1a5efbbdc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那我们这里呢，只是用一张图来给大家总结，要回顾一下，特别是有些什么新的小伙伴没有用过教材的大家看一下教材是怎么样使用的，通常当一个用户登录一个系统的时候，对吧？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/eb818f5d-ba5f-4aa3-8582-0601938135e5/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466QWLCRZRE%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231027Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIAUjYIMhAyOVy5Hb5kYVyurnm1eYEb6vcn2bWzYwpH69AiEA7KUmmlX4B4wzNWcUQS2FNsVEdXdzRohzvlbArke23ccqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDDP1uUSoJWfvuLKPeyrcA2YY6Md9oST2zulVVdvP6DRYdLK678kpf%2FSl91jPbKcZiT0B4rO660aHN%2B5MHYBUuj%2BN58TS31kwBmwCe1rCKZdkh4TI7RprzL2fOX2F9%2By8aI8wBIyJYXV%2FNRLkq5wwM2o%2BDVR1XrnZS5dppHUsIpBMgCM6H9%2BaGJdguRo6twzuKTUCPL89Gax94svmzdsuysiaCR%2FDI%2FFvfL9soRCA63uOGn3eW8IS4bxcgji843h0W3RwKyyerJFFq3Nhyr6047LPZ0M%2FEbZAYjVrsvhPRK2a2Xh%2Fb7IEXKieG4WLoMkm3wZ%2BJix2I7W%2BKZn1D4YgoSeDEAOjZKqynxj5PHR79iQ7ytRUOiGC7pc%2FNgUjH2Wnr%2BERgGmHEqNgIRBKfLwwY4tC4SwIU9zVGfc1npdUYQ5uG0AVc49l5lv%2FMciVRkrhe1%2FBdy%2BdJd2%2BeIhJJtEbAI9Kzr1FGZj414mntmlSzOvdBB%2BRojWOD%2BEy0GNVAEKPvdBKQSnUB%2FcJL960YxYlTPEktQkw6x0mDaL%2BJ6HikV%2FlUWs07KPvdftGmIG7n7UzcMz3r6hJTGuMU4XFKpqJQ2pBGoFHjE1%2F9Qyd9vlx%2BPiQwgJyB%2B9T6Usov2nBvBuayhI5BHXrg5u%2FbtKUMO%2B3%2F9IGOqUBl1Gz2h9K2QUIBgUPdwC5EjMpnSuhICKQxXx6wcOAzD3OdD3yXWhrxZXCirCq1R95fpdZfcNoFuG%2BmTYXjbR4J19B20Ndb5b%2BUuPmpUVCFf6x74iPWBhLEjU61fmPTHkrSxdEycUwgpdgeSNp8MoUI%2Ftf%2Fcm%2BQ3QW4XZ5Bq7kYBHkAhOmuvIDEBvtf23uqWD6AQJy0FePVLugZ%2BuYcFgUP1Q3D7Hg&X-Amz-Signature=2be8de57a092ed905105355a595a49ec8dbf70452f028ac42d7e4ac8ab4a21be&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+左边就是那个系统，这个系统它会有一个什么认证中心，或者叫什么第三方那个用户中心，如果你选第三方的用户中心，全球有哪几家大的？奥克塔、奥斯雷，对吧？前面都提过，是几家比较大的用户认证中心，假设你选了奥斯林，这张就是他们官网提供的图，那你就会发一个用户请求，对吧？用户的名、密码等等信息，你会通过 HTTPS 加密，然后传给奥斯林，那奥斯林会验证一下。
+
+
+嗯，这个用户是我的授权用户，以及他有什么样的权限啊？它会什么生成一个JOT？这个生成过程其实就是类似于我们之前那个什么小实验里面的生成 JOT 的过程，对吧？组装好头和身体，然后再进行一个简单的签名，然后打包好，是吧？以这种形式，背着 64 编码的形式放在什么？放在这个内容里，那怎么样返回呢？当然还是要用 HTTPS 进行返回好，当返回给用户客户端以后，这个客户端其实就是个应用程序了，应用程序怎么样会拿到这个token？那之后所有的 API 调用它会把这个 token 放在 HTTP 的 head 里面的 authorization 这个建支队里面，它会叫什么bear？什么？什么？这个 token 它其实对应的 key 就是authorization，那放在这个 HTTP 的 header 时候，它就可以把这个什么，把这个内容通过标准的https、 http 等方式发送给后台的 API 服务器的。
+
+
+那这个 token 的校验该由谁来负责？不是 API 网关，也不是反向代理engines，而是由每一个应用自身来校验。怎么校验呢？非常简单，你不用去连接俄罗斯林，也不用去连接任何第三方的认证服务器，通常所有认证服务器都会把公钥码发布在官网上。所以你只要有这个认证服务器的公钥，或者说是为你们企业而生成的那套公钥，如果它的公钥长期不变，你就甚至可以硬编码 hard code 在你的什么配置文件里都可以。那这个时候你只要有这样一串公钥，所以你就可以很方便的什么去解开它的什么，这个叫托克，就类似于我之前那个数据安全里面的这个，解开了以后你可以看一下。
+嗯，它的这个里面的这个 payload 是不是符合我的要求？比如它的签发的这个主体，它的这个受众，以及它的这个 scope 是不是符合要求？不符合就是什么权限不符直接拒绝，如果符合就没有问题，那在解的过程当中自然也会去验一验这个签名对不对？看一看中间有没有第三方攻击黑客修改了里面的内容，是不是伪造了一些什么 talk 的内容，对吧？这些都会通过我们标准的什么教材的库来实现，所以应用只要有教材的库就能很方便的，什么加我们的 token 也可以很方便的解我们的token。
+
+
+如果我们的公钥是实时在更新的，那也很简单，只需要什么，你在 key 的那个地方把它的 URL 填进去就可以了。你的代码里面有个地方把你的 URL 填在配置文件里，这段 URL 就是什么？就是对端，比如说奥斯林它长期对外提供的这个公钥的这个URL，虽然它的公钥一直在变，但它会提供一个统一的 URL 来公布它。
+
+
+你只要把这个 URL 作为什么公钥获取的手段，告知我们的什么，我们的应用服务器、 API 的服务器，这些所有的服务都可以拿这个实时更新的功效来验证当前的签名是有效的吗？对不对？所以整个过程非常之简单。那通常我们 API 服务器会在什么？会在过滤器里面全自动的？或者是在什么安全上下往里全自动的识别 JOT 判断权限，然后直接进行应用的处理，那这种方式能够让应用的代码开发更加透明，我不需要太关注教特的权限问题，我通过一个过滤器的处理方法，可以什么全自动的把这一层给隔离掉？好，聊完了 drop 这样一个小插曲，下节让我们实实在在来看一看 Oauth 2.0 如何让客户端跟服务器端来进行完整的第三方授权的实战，大家敬请期待。
+

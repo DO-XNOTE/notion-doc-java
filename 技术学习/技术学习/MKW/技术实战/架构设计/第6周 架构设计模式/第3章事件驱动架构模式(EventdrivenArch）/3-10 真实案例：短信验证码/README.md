@@ -1,0 +1,28 @@
+---
+title: 3-10 真实案例：短信验证码
+---
+
+# 3-10 真实案例：短信验证码
+
+理论知识和一些简单的案例，包括什么优缺点什么之类，我们在前面的这个章节里面已经大致的了解了，下面就来到我们的另外一个环节，就是我们的这个真实案例分析，分享一下过往的一些真实的case，当然是经过一些脱敏和抽象的，但是绝对是真实的案例。
+
+
+首先我们就先上一道开胃菜，短信验证码这种功能说实话都是有点老掉牙的，但是大家不知道平时在使用这个功能或刺激这种系统，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0642b838-7df3-4ba1-98e3-19075c5fda5e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4664XRQKU4M%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230555Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCB1fa5%2BxIH%2F6Z0WcOLRVqNVrAW1keitBA1r4LNAfupyQIgFo736q9Xxzq%2B0iXBCzXWyYiikAUMBL51u7wD5IZQBikqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGsegsovfAPKm0MEJCrcA0qa3reFBFCHbDBF8WnEDyC8syGeEndp4SrrMk%2ByUiZRtvufU4v6OujiB%2BIwPdYs7dO7tsRcE6kPMNAgosq8%2FPPdwCWOPxnvXta6wuhxuLkHHgXXTY3TJthZ9B1AUSvDewZzM65JBQctKNuUDngEC4o5BbItMvz6YOtTKMycUOtY2nVrDad30TiOKA4Wq%2Fa2sKb0SsP5CVeXP0bK%2FsGF%2BEKrQ2mhrKM3%2FzxxAQfEudg7YNr6iYf2eLWreSz%2Bco%2F50KqDOnF5aGkvL5u3TlXtULIROHw51tluiHHKurrAFOneSNV4nyeIpkIm6sfpDDeEKJM7d3Glo4rjPFrH4JyIiukc7rc2PcnJv7tM2CoWFp18xyZLMcODXlp9jsqsvFYu%2FHwQ8rP2PDUM2HmXy%2BYBxm1mdlC34hI8xORgX370PJrVtzmVEPlRH2LMXOYVokJsWvAU4jeUuebV%2FfDl%2BZnxD%2FbjGY3TbYjiPdeN%2FcAPS4pIbi2GsdXbW%2F3I2r%2FFRFzVAbGkEKBmLnv9JYPifm3IuvqrcGj56H%2FmKJNDxA6%2Fn1HIllfdKLB%2FuIDOvAGSh9zSEV0rHzfN0ujjtaAS7rHj4e3qMlvyDMa1Kt4EgxcRToqgZ80oJG76AiPj7XViMKG4%2F9IGOqUBA7FSus%2B%2BtFEKDqND0VHvXf1YAvP%2BtyoKQRwLNao%2B1rs9ZdKraw85xYXcIaJwOvzweUSpmfNJ0Aza1nMWa1oLY33ig7PnX1mItLkAJ6Ef2xOPLde%2BdYBDVFtnlJ6B7iyRTlF047k8rP2RNuQvIfP8S3dybFuw8T3lrS0QRYxis3bhWluJ%2Bxc2fz1pGTshNXqgI0CHMocIMHyzApY5dZ7SBJoBeu%2FB&X-Amz-Signature=7ff5fc45d77270ad061e07c2d1bb31a3b05a750bdbb9b642f49d5989fda626d9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+有没有去想过它为什么会出现？还有这种模式有吗？是套用的什么模式，你有没想过？那你看呢？我们今天这个主题事件驱动架构以后，是不是有点豁然开朗的感觉？用户发送一条短信，嘣是触动了一个什么东西？唉，你现在脑子里面有没有灵光一闪？有没有？前面我讲到堰塞湖开塞的这个感觉对不对？用户发送一条短信是不是就是一个事件？这个事件后端触发了一系列的复杂的逻辑对不对？跟我前面说的东西是不是很接近？堰塞湖开了没？脑子里面有没有灵光一闪？同学们，有没有？唉，没有的话你就好好想想自己是不是还没听懂，还是说你没有真正的去思考这个问题？好，我们来先上一下这个开胃小菜，来看一下短信验证码，大家都用过，很简单，我们作为一个用户，首先来讲可能使用到网站的某些功能，不管是银行的转账还是有些时候登录的 TFA 验证，都可能会有发一条短信，大家想想它这个流程怎么样的？我们先把它高度的概括化一下，首先你可能使用忙这个功能，让你发一个验证码，对吧？OK，然后你拿起你的手机开始发送验证码，这个验证码一看，首先验证码有多种发送方式，我们选择其中一种方案。
+
+
+首先是你自己编辑短信发送一个验证码到一个基站，这个基站它会跟网站集成的一个网关，也就是我们说短信网关集成这个短信网关，其实后面就会调用我们的一些服务，比如说我们的验证服务，不管它是哪种服务，反正就是一个验证服务统称一下好了，对吧？验证服务根据你的业务场景，它可能有不同的流程来进行一个业务处理，最后完成你这一个业务，这个过程当中你是不直接跟流程进行打交道的。
+
+
+比如说你可能想用某一个功能，不管你是转账还是说修改密码还是什么东西，或者登录，OK，它有一系列的复杂逻辑，原始的如果说不采用这种实行驱动价格模式，它就是直冲冲的一杆子总到点 1. 7 干这个，对吧？但是我们使用的这种异步的方式有多重好处？第一就是相对来让这个流程安全性提高了，因为我们类似于这种转型验证码的方式就是一种推飞的手段，这个大家要理解。
+
+
+第二，把这个事情变成一个一步，好处就在于说你是分两步来进行的，这个系统的扩容性相对来说比较快一点，为什么这么说？比如短期验证要做一件事情，把分成两个，接着各自独立的进行一个应付，前面很快的响应，就你提交一下，我进去把这个页面一下就哗干掉，这个功能就结束了，用户就返回了他的界面去做下一件事情去了，对吧？然后再发短信、发验证码，什么乱七八糟的，再触发我们的下一个流程，对不对？所以说这个从性能上面它也是个很好的一个提升。
+
+
+那同时再来看大家还是 HR 灵光一闪，有没有这个才能采用了什么样的模式？告诉我？再去想一想，是不是很简单的？因为它有流程，一般来讲这种都不是简简单单的一个逻辑处理，这显然就是只要有流程，大家记住只要有流程就是 media 词，因为你有流程的话，你有个总的接入口，完了之后它会根据它所需要的知识或者这个业务流程去进行一个步骤的编排。
+然后对每一个步骤上面它有自己的这个process，自身来 convert 原始的事件就是这条短消息，对吧？那个验证码什么之类的来把它调动不同的步骤，完成最终的这样一个业务逻辑条件处理。所以说这是一个开胃菜，不是很复杂。对，现在，特别现在，其实曾经这个功能做起来很多人都不知道怎么做，但是现在这个已经非常大众化了，甚至很多 SARS 公司直接提供大众短信，这个 i 什么之类的不是什么稀奇的事情。但是我还在拿这个咖啡小菜帮助同学们回忆一下，来总结一下沉浸学过的知识。希望大家有一种茅台蹲开的感觉，有一种堰塞户打开的这种感觉。如果你没有，那好好反思一下，为什么没有？对不对？是哪一点没讲到位？还是说你自己没有体会到这个问题的核心点在哪里？
+

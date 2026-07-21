@@ -1,0 +1,31 @@
+---
+title: 1-1 收货地址 - 需求分析与表设计
+---
+
+# 1-1 收货地址 - 需求分析与表设计
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/3bbec162-d5e2-431d-b6ff-b916a05e72a7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466RM7CXNRC%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T224657Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIGNerl1mq4KuPmruM8FLGS0NF7hf9oSl7p9fwOGD0O%2BjAiB2865Sxi2pavIOygIULwvAEPJTnYLe4k%2BfxTbMcOS%2FIyqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMmKhYeBA78qMHVMjrKtwDI9CishmM%2B0VTxj4mRCN9ZjY4nP2M0t3VfebigAwcWRX4rUqC5HAHRntnA8Cb9RpHjFFSWe8n2aTRR%2B7O18qEnYmarUC3y5AZZqsZx7wIPLTBTYIqCz5VhIPHsc42XgjLaOrb7H035UP81MOJmriq9haMC%2BudnfxvCTALspJnnVeajvqGXUYESSQGPk9W0Ji0w9luPmU8%2Bk8VOMDmyASQu5DSp6vUXCgW1YNOY3SsaxzeYfqJvxOX76Zoa8JDVzmmu%2FXegbPCyI4LrezUS1%2BOqxz2hqltv85vOJhTkFYrNnVPYQ2prdG17UNqROBFS2ENhB%2B4XsXzkWBsW0TpV2I7D4V4jOZcqIPxLgmsrg4faq6%2FR%2B341yUcdhmXjB1Y9GW7UB%2F4b4Seac3yeo58%2Ba6par0ezovj5VTzn0nVvT2oeKuUdBSwc1r%2F3qbtSlLnOcVmAp2hRXQRJKHC6iXG%2BcYZjVuoneZqHEJ%2FWGx9biAO9MpHr%2Fq%2B8JlKvJ2Wbmi%2BfpmRrMNIU5PNmnZYIWmAoWDY7b%2BIUVJ58S2yMore7Qr19C3D3YUXQyhbK%2FHysWx%2FT3mFRQbLWg3%2Bfbahx3sV64TyTLNH7%2FcTCop%2F59MaKzhXXbwZg%2FGSJOK3wbxm8%2Fowurj%2F0gY6pgFW4OtGGYNvaqY6jnNHPZWMbgQT9%2BH9L5dqFj%2BWA3%2BI%2F20qjcAxLRiZCUZEnulrVfhCfqGCrCERqrS7ur2uv7lxOVzRe69XG8PlC6G%2Bd6S0am78M67gvj5U7s5g8sMCJ1bi66leXbWdDsRliqvLIQwjF72w%2FlgCkIVTBPWT%2BUlQXKMob8opJy%2FDLmjQJZmUEB0wK52UG8lsuO1O%2BMYyXKMhyhWbFVJQ&X-Amz-Signature=8c6bc5aec241c423b55527ff9ff3491aea43b71c4d552f0ba8774efad4d9e5ce&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在上一节课程里面，我们已经是让用户把购物车中的商品数据进行了一个提交，提交之后就可以到达当前的结算页面。结算页面其实主要是让用户去确认一下订单的信息，去选择收货地址以及是支付方式，随后就可以正式的进入到订单的流程了。在把订单提交之前，其实还有一个小模块，我们是需要去进行开发的，也就是在有一个收货地址，因为你不去填写收货地址，就无法把商品发送给相应的用户。所以在这里面我们首先一个是需要去进行收货地址的，一个新增的。我们可以来看一下在生产环境上的内容。可以看到目前如果在进入到确认订单页面的时候，首先应该要把当前用户下的所有的收货地址先要展示出来，展示出来以后肯定会有一个默认选中的地址，如果这些地址对于用户来讲他们都不想要，可以去新增加一个地址。比方我们可以随便写一个，写个收货人手机号，以及是所在地，点击保存新的地址，就会在这里进行一个新增，新增以后可以看到。在这里如果用户想要去编辑以前的一个地址，相应的也可以去进行修改，比方我们把收货人改为 Lucy 几个。
+
+
+2、点击保存相应的名字，会进行变更。当然也可以把用户里面的一个某一个地址进行删除，也是可以去删的，删除以后也行。另外，每一个地址都可以让用户去设置一个默认的地址，可以点击可以看到，点击之后地址就可以变为默认的。在下一次用户进入到当前页面来的时候，相应的一个选择可以看到，它相当于是一个信封的样式，他会选择你的默认地址，我们在这里可以刷新一下。可以看到刷新以后其实就类似于用户初次进入到订单结算页面，相应的默认选中的一个地址就是这个默认地址了。
+
+
+OK，所以相应的内容我们是需要去进行一个开发的，它也会涉及到一些接口。好，接下来我们可以来看一下和地址相关的一个数据库，数据库表设计。我们打开一下 PD 面可以来看到，第一个是地址的一个组件都是会有的，随后需要有一个外勤关联，这个是地址和用户是一个多对一的关系，所以一个用户下它可能会有很多的地址，所以需要有一个外键。另外收货人的手机号，省市区这些都必须要有。还有是详细地址。
+
+
+另外还有是一个扩展字段，因为扩展字段在某一些电商平台里面，可以在详细地址下面会有一个额外的扩展字段，或者是一个详细。第 12 可能会有这种情况，所以在这里我们数据库表其实在这里可以预留一下，称之为是一个叫做 extend 这样的一个扩展字段。另外一个是否默认地址也是default，它所对应的数值是 0 和1，这个也就是我们之前刚刚在页面里面所进行的一个演示。此外还有是两个时间，一个是创建时间，一个是更新时间，这两个字段其实在每一张表它都会有。
+
+
+OK，在这里我们再来说一下关于省市区。省市区其实在页面里面我们其实也可以看到也对应的省份，城市和地区。这些内容其实我们都是在 GS 里面去进行维护的。打开 j s code 带大家可以来看一下。在这里面 j s 它会有一个 c t s。点 j s 打开一下。在这里面其实可以看得到它其实是一个 Jason 的数组，它包含了很多的内容，首当其冲就是一个北京，随后其次的一些省市区在下面都会有这些内容，其实都可以放到前端的 g s 里面去进行维护。
+
+
+当然如果不放在 g s 里面去维护，也可以放到后端的数据库里面去维护，这两者其实各有优势和劣势。如果放在数据库里面去进行维护，维护起来会比较方便。但是如果要让前端去请求我们，数据库肯定是会需要额外的去发送一些请求。我们使用前端JS，其实我们就不需要再有一些额外的请求发送到后端去，从后端里面去取。另外把一些相应的省市区这些内容放到前端的 JS 文件里面，其实它的一个好处，我们所有的内容其实都是在前端去进行一个调用，以及是维护。
+
+
+其次，省市区它的一些维护的频率并不会很高，一般来说维护可能是半年，半年以上会维护一次。像我们我所在的一个城市，以前是发生了一个区的变动，淘宝和京东是在差不多六个月以后才把相应的一些信息去进行了一个维护，所以它的时效性也并不是需要特别的匹配的，你可以延后去进行维护，去进行更新也是没有问题的。
+
+
+OK，所以我们在这里跟大家可以去说一下。一般来说放到前端去也就可以了，当然放到后端其实也是没有问题的。好在这里我们可以先打开咱们的后端。在后端里面我们可以先去把 Ctrl 了，先去创建一下。我们创建一个 Ctrl 的取名为address，点击OK，我们可以把这里面一些基本的我们所谈到的一些需求，可以先去写一下。首先一个 10 来个处它的API，我们可以先写好。第一个是value，这是地址相关。随后是一个tags，包含了一个，就写一个地址相关的 a p i 接口。好，其他下方我们可以先全部都删掉。在这里我们可以写一个需求我们所讲到的相关的内容。这是用户在确认订单页面，可以针对收货地址做如下操作。也就是我们把要去完善的功能可以在这里先列一下。第一个是查询用户的所有收获地址列表，第二个新增收货地址，第三个删除收货地址。最后一个。第四个就是要修改收获地址。最后一个可以让用户去切换默认的设置默认地址。OK，总共这五项。好，这一节我们针对收货地址做的一些讲解，下一节我们就会一个一个去实现这几个功能。OK。
+

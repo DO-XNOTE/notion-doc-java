@@ -1,0 +1,53 @@
+---
+title: 1-21 Turbine聚合Hystrix信息
+---
+
+# 1-21 Turbine聚合Hystrix信息
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/62fbb7ec-1014-41d9-9ecf-088dd8935ca6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667JDDW5IS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225649Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDFSBZ3UVL18GhdBzf1OnXEz9%2FAXAJCqbcWpuIGeAh7CgIgMr0gR2JGFgiS8SDvuDFQ9WYfSHAIeCyOlkFHrw6ee4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCjcAg9vsbozZ4HF%2BCrcA4gmWnPAqBO8i0RnXGNDeWc0Cmpsts%2F4FPvmA2NaL2xzKUFtJ6DqTF%2B6RxKpnk9AWCx5IsjgHjz64zGHNeQkXq3EWoVe0thPiSPjyLYTVsGsb%2B%2BcYjw%2By8BXzjqw0XATqERPYCtUYOzc0obKwXKaw93UoiUTn1ziYnx4Nif1gEDzgClMTqJYZoA6thMAuWC7%2FKnHlsb1YiOGi0L%2FClonT%2FD7rJv27baSW9vgFNej2ftBzvDqUwU6SD1jtWPClxfBP1fu2K97ns1sMmz%2FKPoQKSs6eKcWv1Z15N0Df3AIz%2FR%2F5OPauEXJTzXzmRDd1G%2B2s35Z%2FDcrBhu8CCV19FXxkmJDGMEtd29AF5zxGm5wR1K5VMCJr%2F8kPeaT%2Bct%2BCDAZw%2BnxAujury79LGCuSAtiCD1x6Xv3rhBfD7HTPBYiftlVNSw9yNCSf4OD7miYik%2FLNuSAeaAJhTFARJUPEaxCi3X2jOjGhoSPeyddOYryiZgoiaCQwASDp1LuSl%2F2yxR%2FTn%2B1rl%2BEW%2Bl6QT2TEDcOT9kG6kkj4pLmJZq6KfBEU44l4UoOkTgchMzn2cXPT1hWduCq%2Bah6GvrdYCl0ivpJnFL13%2FL4iY4Sh5YdIHSPYYR3FpuOh1xumF%2FJlVH1MNq3%2F9IGOqUBnopaxBs%2BrskA1HobSK8HJaR%2BI82hgrPLs1XhW%2FU8cpWTIOKigHoj60pUwlJb8TwaSSRxXGciWaRpMZIBSKAjhGmMfHoXrvSaS38M30%2FniNkeA92LHue4eNBclWW9XL8PKJdKnzr07Gq7Co3qs3aDo6sRv96MiJPLARG9cG%2FxWos7PKWraAECHt5xuHlyEflpXBafUcTXqGGaTOGZJ2%2FzcX8Fe3BG&X-Amz-Signature=6e79d0fef9e21002eddf86aa9abbbbb0e3b3adac70d123196b5f775fa47fb724&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0ac0ae65-6be9-4850-a3e6-ece43b9bfd83/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667JDDW5IS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225649Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDFSBZ3UVL18GhdBzf1OnXEz9%2FAXAJCqbcWpuIGeAh7CgIgMr0gR2JGFgiS8SDvuDFQ9WYfSHAIeCyOlkFHrw6ee4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCjcAg9vsbozZ4HF%2BCrcA4gmWnPAqBO8i0RnXGNDeWc0Cmpsts%2F4FPvmA2NaL2xzKUFtJ6DqTF%2B6RxKpnk9AWCx5IsjgHjz64zGHNeQkXq3EWoVe0thPiSPjyLYTVsGsb%2B%2BcYjw%2By8BXzjqw0XATqERPYCtUYOzc0obKwXKaw93UoiUTn1ziYnx4Nif1gEDzgClMTqJYZoA6thMAuWC7%2FKnHlsb1YiOGi0L%2FClonT%2FD7rJv27baSW9vgFNej2ftBzvDqUwU6SD1jtWPClxfBP1fu2K97ns1sMmz%2FKPoQKSs6eKcWv1Z15N0Df3AIz%2FR%2F5OPauEXJTzXzmRDd1G%2B2s35Z%2FDcrBhu8CCV19FXxkmJDGMEtd29AF5zxGm5wR1K5VMCJr%2F8kPeaT%2Bct%2BCDAZw%2BnxAujury79LGCuSAtiCD1x6Xv3rhBfD7HTPBYiftlVNSw9yNCSf4OD7miYik%2FLNuSAeaAJhTFARJUPEaxCi3X2jOjGhoSPeyddOYryiZgoiaCQwASDp1LuSl%2F2yxR%2FTn%2B1rl%2BEW%2Bl6QT2TEDcOT9kG6kkj4pLmJZq6KfBEU44l4UoOkTgchMzn2cXPT1hWduCq%2Bah6GvrdYCl0ivpJnFL13%2FL4iY4Sh5YdIHSPYYR3FpuOh1xumF%2FJlVH1MNq3%2F9IGOqUBnopaxBs%2BrskA1HobSK8HJaR%2BI82hgrPLs1XhW%2FU8cpWTIOKigHoj60pUwlJb8TwaSSRxXGciWaRpMZIBSKAjhGmMfHoXrvSaS38M30%2FniNkeA92LHue4eNBclWW9XL8PKJdKnzr07Gq7Co3qs3aDo6sRv96MiJPLARG9cG%2FxWos7PKWraAECHt5xuHlyEflpXBafUcTXqGGaTOGZJ2%2FzcX8Fe3BG&X-Amz-Signature=d664d8d5996881a08f8977ff5fe8045f03d6b2e5ebb29aad87c3a28732e4a5e1&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+1-21   ** Turbine  聚合  Hystrix  信息**
+前面我们学习了线程隔离和信号量的理论知识，同学们有没有身体力行，试着去做一个小项目落地呢？这一小节，我们将介绍一个  Hystrix  的好搭档，Turbine  聚合服务。同学们知道每年双  11  的销量统计是从哪里来的吗？那就听老师给大家讲讲六大门派围攻光明顶的故事。
+
+
+每年的双 11 是阿里全公司上下的一场大会战，最高作战指挥部就是一间叫“光明顶”的大会议室。里面坐着各门派的掌门和长老们（偶尔也有厉害的小杂兵），他们两眼直勾勾的盯着一块大屏幕，屏幕上是当天双 11 的实时成交额，各路剁手的亲们就像围攻光明顶的六大派，不断推高这个数字。那我们光明顶上的屏幕是实时从数万个服务节点拉取信息吗？我们来看看屏幕背后的服务
+
+
+做了哪两件事：
+聚合信息：双 11 各路服务节点数量庞大，我们需要有一个机制来汇总每个节点的成交额信息，把成交信息聚合到一个点，并且这个聚合操作又不能影响到主链路。
+大盘展示：有了聚合信息，接下来就要构建一个大盘，只从聚合后的单点位置拉取数据然后展示出来。可见这个监控大盘并不负责聚集成交数据，而是依靠某种后台的机制将信息聚集在一点，大盘只要展示就好了。我们如果想监控 Hystrix 的实时状态，知晓服务熔断、异常的数量变化，也可以通过这种先聚合信息后大盘展示的方法来做。今天我们可以一同去  Hystrix  的光明顶  Turbine  走一走看一看。
+**聚沙成塔 - Turbine 收集器**
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f2d19c99-033d-459c-bb61-216edcc2bdb2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667JDDW5IS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225649Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDFSBZ3UVL18GhdBzf1OnXEz9%2FAXAJCqbcWpuIGeAh7CgIgMr0gR2JGFgiS8SDvuDFQ9WYfSHAIeCyOlkFHrw6ee4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCjcAg9vsbozZ4HF%2BCrcA4gmWnPAqBO8i0RnXGNDeWc0Cmpsts%2F4FPvmA2NaL2xzKUFtJ6DqTF%2B6RxKpnk9AWCx5IsjgHjz64zGHNeQkXq3EWoVe0thPiSPjyLYTVsGsb%2B%2BcYjw%2By8BXzjqw0XATqERPYCtUYOzc0obKwXKaw93UoiUTn1ziYnx4Nif1gEDzgClMTqJYZoA6thMAuWC7%2FKnHlsb1YiOGi0L%2FClonT%2FD7rJv27baSW9vgFNej2ftBzvDqUwU6SD1jtWPClxfBP1fu2K97ns1sMmz%2FKPoQKSs6eKcWv1Z15N0Df3AIz%2FR%2F5OPauEXJTzXzmRDd1G%2B2s35Z%2FDcrBhu8CCV19FXxkmJDGMEtd29AF5zxGm5wR1K5VMCJr%2F8kPeaT%2Bct%2BCDAZw%2BnxAujury79LGCuSAtiCD1x6Xv3rhBfD7HTPBYiftlVNSw9yNCSf4OD7miYik%2FLNuSAeaAJhTFARJUPEaxCi3X2jOjGhoSPeyddOYryiZgoiaCQwASDp1LuSl%2F2yxR%2FTn%2B1rl%2BEW%2Bl6QT2TEDcOT9kG6kkj4pLmJZq6KfBEU44l4UoOkTgchMzn2cXPT1hWduCq%2Bah6GvrdYCl0ivpJnFL13%2FL4iY4Sh5YdIHSPYYR3FpuOh1xumF%2FJlVH1MNq3%2F9IGOqUBnopaxBs%2BrskA1HobSK8HJaR%2BI82hgrPLs1XhW%2FU8cpWTIOKigHoj60pUwlJb8TwaSSRxXGciWaRpMZIBSKAjhGmMfHoXrvSaS38M30%2FniNkeA92LHue4eNBclWW9XL8PKJdKnzr07Gq7Co3qs3aDo6sRv96MiJPLARG9cG%2FxWos7PKWraAECHt5xuHlyEflpXBafUcTXqGGaTOGZJ2%2FzcX8Fe3BG&X-Amz-Signature=5558a1eb3c3fd11db14c41c0d23e0c514b12955e07a5c868b5fa99d8525c59c8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+Turbine  其实也是一个服务节点，它正是借助  Eureka  的服务发现来完成信息聚合的。配置监控服务和集群：在  Turbine  里我们需要配置目标服务，也就是需要Turbine 实时监控的服务名称。如果应用的部署结构比较复杂，比如说分了几个大集群，这时一个 Turbine 节点可能就无法监管这么多的服务节点了。我们可以启用多个 Turbine 聚合服务，每个服务指定一个集群，用来聚合这个集群下所有服务节点的 Hystrix 状态。在默认单 cluster 的部署结构下，Turbine 默认监管 default cluster（课程也是采用默认配置）。服务发现：连接  Eureka  注册中心，利用服务发现机制拉取服务节点列表，从中找到上一步中配置的指定服务都有哪些服务节点。
+
+
+聚合信息：这一步聚合操作是 Turbine 的核心功能，它并不是让各个服务节点把自己的信息上报给 Turbine，因为对服务节点来说它们并不知道自己是否在
+Turbine 的监控名单上。这一步其实是由 Turbine 主动发起的，从服务节点的指定"/actuator"路径下的 Hystrix 监控接口获取信息。如果客户端集成了 Hystrix，可以在“/actuator”服务中找到 Hystrix 的 healthcheck  url，
+Turbine  正是从这个  url  获取  Hystrix  当前状态。
+
+
+**监控大盘**
+
+有料就要 show 出来，后台服务再牛，不叫人看到也没用。Hystrix 提供了一个监控大盘的服务叫 Dashboard，可以简单地通过@EnableHystrixDashboard 注解直接开启，它会采用图形化的方式将每个服务的运行状态显示出来，
+
+它提供了两个维度的监控：
+
+单一节点监控：通过直接访问服务节点的“/actuator”接口，获取当前节点的Hystrix 监控信息。
+
+Turbine聚集信息监控：通过访问  Turbine  服务的“/actuator”接口，获取经过聚合后的  Hystrix 监控信息。通过大盘监控，我们就可以实时掌握服务的健康度状态，知晓哪些服务正处于熔断状态，以
+便及时排查问题。
+小结
+这一节我们学习了如何使用  Turbine  聚集  Hystrix  监控信息，并展示在大盘上。下一节我就带大家手把手去创建一个  Turbine  服务，然后开启监控大盘。
+
+
+学习 Tips：在工作里，会做和会 show 都是很重要的技能。很多研发人员沉浸在埋头做事情中，忽略了拓展自己的影响力。正所谓千里马常有而伯乐不常有，一个比较现实的情况就是，老板不在乎你“做”的过程，你也不能期望别人主动发现你的才能，我们要花点心思让自己的努力可以被其他人知道。这不是说溜须拍马，而是一个“销售”自己，推广自己的机会，越往上这个能力越重要。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a04250ea-c124-4314-80a7-8e37784cbfe1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4667JDDW5IS%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225649Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDFSBZ3UVL18GhdBzf1OnXEz9%2FAXAJCqbcWpuIGeAh7CgIgMr0gR2JGFgiS8SDvuDFQ9WYfSHAIeCyOlkFHrw6ee4YqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDCjcAg9vsbozZ4HF%2BCrcA4gmWnPAqBO8i0RnXGNDeWc0Cmpsts%2F4FPvmA2NaL2xzKUFtJ6DqTF%2B6RxKpnk9AWCx5IsjgHjz64zGHNeQkXq3EWoVe0thPiSPjyLYTVsGsb%2B%2BcYjw%2By8BXzjqw0XATqERPYCtUYOzc0obKwXKaw93UoiUTn1ziYnx4Nif1gEDzgClMTqJYZoA6thMAuWC7%2FKnHlsb1YiOGi0L%2FClonT%2FD7rJv27baSW9vgFNej2ftBzvDqUwU6SD1jtWPClxfBP1fu2K97ns1sMmz%2FKPoQKSs6eKcWv1Z15N0Df3AIz%2FR%2F5OPauEXJTzXzmRDd1G%2B2s35Z%2FDcrBhu8CCV19FXxkmJDGMEtd29AF5zxGm5wR1K5VMCJr%2F8kPeaT%2Bct%2BCDAZw%2BnxAujury79LGCuSAtiCD1x6Xv3rhBfD7HTPBYiftlVNSw9yNCSf4OD7miYik%2FLNuSAeaAJhTFARJUPEaxCi3X2jOjGhoSPeyddOYryiZgoiaCQwASDp1LuSl%2F2yxR%2FTn%2B1rl%2BEW%2Bl6QT2TEDcOT9kG6kkj4pLmJZq6KfBEU44l4UoOkTgchMzn2cXPT1hWduCq%2Bah6GvrdYCl0ivpJnFL13%2FL4iY4Sh5YdIHSPYYR3FpuOh1xumF%2FJlVH1MNq3%2F9IGOqUBnopaxBs%2BrskA1HobSK8HJaR%2BI82hgrPLs1XhW%2FU8cpWTIOKigHoj60pUwlJb8TwaSSRxXGciWaRpMZIBSKAjhGmMfHoXrvSaS38M30%2FniNkeA92LHue4eNBclWW9XL8PKJdKnzr07Gq7Co3qs3aDo6sRv96MiJPLARG9cG%2FxWos7PKWraAECHt5xuHlyEflpXBafUcTXqGGaTOGZJ2%2FzcX8Fe3BG&X-Amz-Signature=8067b0d54d0d803d30807c9ef5190f6e7f15da6bfbd4a607a66af1e929272df8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+
+

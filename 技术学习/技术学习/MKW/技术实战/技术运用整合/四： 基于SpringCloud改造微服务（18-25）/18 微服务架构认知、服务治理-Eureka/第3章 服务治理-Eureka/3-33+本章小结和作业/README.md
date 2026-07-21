@@ -1,0 +1,22 @@
+---
+title: 3-33+本章小结和作业
+---
+
+# 3-33+本章小结和作业
+
+
+**3-33 本章小结和作业**
+
+Spring Cloud第一章正课部分Eureka学完了，同学们有什么感受呢？曾经听起来神乎其神的服务治理原来是如此简单有木有？那最后我来带大家回顾一下本章的内容，加深下记忆，顺带给大家布置点课后作业练练手。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/9cab4837-6228-4bf5-ae72-4fe46a484ced/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466XQYI5ODX%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225559Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDQWvrJoNypZoQgtbKuQMjNQcbexpnWbBJ8HPyi1SAk%2BQIhAIlB2qs9MAoytwXe4gYydpr5Ays9rKrSp6xgfcC7jC8fKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgzsTGITvhdYiW4eaB8q3ANi2z1Mxrl4kHE7yv1UdihB3WPjyCHgqAuq5hRTcdlWXeLFZT5yt8mUuUVJwtPTFLhevuf4UAAGxXLXVkklp89fAEYcAhEXfttar%2BSPALx7rsKJIG7SVE0ToAMSVO4y1hF240G5bDIYH0%2FziECbPKdrcHXcvSjAa9YqKMN%2F53bYmlJC00ZktTk%2FZYFww24Pq3GAyw36Qk%2Fe9HFKiFvO483fPoCwZqf%2BY7XHPWdqqt0ex45cFP0ul3PFKH7Y8aamBVy2lukPmzqiXzfhpOjAz8KTHDsSMovM0tooPF3iy29xFIOZLTqtI7bPKT7e7j0yNtkFW3%2BB%2BGrqUlL62M3AWQwg7g5nkQGfAP98k%2FisFpu2MMOKntcZGX8XOrZybZc02iAmZvk%2FSj3aGLZ4eqBT7iwgW%2FWg7QL4Jw90bMsed9SHbuQSS87M8tFO4LD9JlMlgjLDkx8tq4PkVmWr49LWB%2BYPTkGr4ywRl4j%2BAqTRdTrvGibzZh4McXzgou9igOnfvsR9Ju1wADS%2FP%2FcCi%2Fz%2BJ766gqR7ja%2FzNAK%2FTmowdTyoqqYqrwyTOppfPhNvgs7PkN24g3q%2FHZDpPKqlQsJ7V%2Bo122ulaWGPmUxCsz8%2BCnuTu06OcNaGL5gnLmPyyjDwuv%2FSBjqkAZnK4kNtrDtpiEbuXGG70Ng6t1jJA%2FbC8%2F%2FSEO51X18tPCLtIObvaOQGmGGI52SynG4qGqNzPW0MEYiylskWcTQMEoFPBvhtpOS8W9QjjsDFDIqp%2FDQb6kFilWnkSHVDROsMYyE1lgeV2LTKPEEeEbrINEpZxT7Ct8rFZs%2FTRlQWGOD%2BlQJiRGR3Irdt0MzBmg1D7YFOGnuuITbLNmRBsdwbQsup&X-Amz-Signature=3c6fb5ecd7f530cbb4c28ba483d616095d9c3bf11ca809968713d97d83af24bc&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+**作业时刻**
+
+动手改造其它模块
+
+将电商项目代码中的单注册中心改为高可用架构
+
+后面章节我们将使用Feign代理HTTP方法调用，所以本节所用到的LoadBalancerClient的调用方式只是临时方案。
+
+

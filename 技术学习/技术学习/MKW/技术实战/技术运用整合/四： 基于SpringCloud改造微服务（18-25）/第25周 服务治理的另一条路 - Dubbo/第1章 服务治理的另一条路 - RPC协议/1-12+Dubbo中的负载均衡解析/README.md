@@ -1,0 +1,89 @@
+---
+title: 1-12+Dubbo中的负载均衡解析
+---
+
+# 1-12+Dubbo中的负载均衡解析
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/28adb44d-8363-46cf-8ce1-aa422d5d4363/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662KWZCOGP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225900Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC6cUhihx1BxH7D20qQrUyb6Zn3esWvRmWbMVp1%2BF2QZQIhALSPgv0yOm24BV5yK%2BCqGL72xVBbPFw3mxBPGrYxNFkAKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUeBFHGQ550QIluTcq3AMKGYwlzXZxxdSoGwgR35Fc6IFeJFJjW2CcGIZI40wTJeR20stWZahN%2B2jS47ese0bOrEw5WkHwY%2FO5BXZ9jQpTx3q1jadTT89K19EjNZF8cxJCPFXHgw%2FrkD1YBX4blJJQkgeRDzeru56tbZdfv6ONd%2B1vsPCAPeUyCz8gtXVenjM%2F6pWn8cQJKbkrLEJHDHOp%2BHNL9Ai9J%2FbmiLLMBaX%2F3qzO1c9mW9fZ2gfNwTdL2m3lrREFKS5nBbOxFlkGPoQgVvWEqyKvii8pYWte%2BT58DEZMKhfZSMg0RNtT2sSPvPcY7ruaZPq0UKAjcNbM0BAYvTpUKEubtgIV6x5a8GIKXAhH5RV5lYbnThxyngM9F3tmILHZ1ziFB1nGRJwrh7HaRn4iW62SUqgq0MB43F3iztNHaYejQTbqy0X68amj1m8X0JyxsxKxr4eVkwK4UHNLnSeFBHW3mMn3L9sgjcAECUawE7%2Fu9WT83VdBTVORblOlNDI%2Fx8j8V6hKnQKaM9shRugBR0Hkguo9LcubMLQ1pVoPDfKLTeo3OEnNLUAL7gIobgn0wwDXGcyMGKW5mRZeUJl2n85EvnPmsZwCuVGW%2F57ZiU7SjvIDeEOB8fmfRCg9H1iina2sHABw9TDut%2F%2FSBjqkAcsB8xlcBJPEWoBr7I1aYBs1zObXPRKahVDTrZ3%2FneHqUIortQLaDkZbs7Gvc9CwD7TXLueWV46k4%2BCd%2BvYmgTiiNt0fZSiceUlmopSq%2Br9i5aFBtQhqNKwatErOl%2FGhpQAvWbQ4254TMLjN%2BAqSfVU9dDgNkE0QmAxrqzPsHlssWDHXNC4HxuzMUKiyflBBb2FEYNHJk3XaREwPYLF4duj%2F1qoh&X-Amz-Signature=e69cf9debb637e7b709d55eaece87d95f57ccfa5eeb1b9f20e8a7ed722bb8d91&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/985772d7-1db1-4a98-b84c-c1ed958897d2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662KWZCOGP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225900Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC6cUhihx1BxH7D20qQrUyb6Zn3esWvRmWbMVp1%2BF2QZQIhALSPgv0yOm24BV5yK%2BCqGL72xVBbPFw3mxBPGrYxNFkAKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUeBFHGQ550QIluTcq3AMKGYwlzXZxxdSoGwgR35Fc6IFeJFJjW2CcGIZI40wTJeR20stWZahN%2B2jS47ese0bOrEw5WkHwY%2FO5BXZ9jQpTx3q1jadTT89K19EjNZF8cxJCPFXHgw%2FrkD1YBX4blJJQkgeRDzeru56tbZdfv6ONd%2B1vsPCAPeUyCz8gtXVenjM%2F6pWn8cQJKbkrLEJHDHOp%2BHNL9Ai9J%2FbmiLLMBaX%2F3qzO1c9mW9fZ2gfNwTdL2m3lrREFKS5nBbOxFlkGPoQgVvWEqyKvii8pYWte%2BT58DEZMKhfZSMg0RNtT2sSPvPcY7ruaZPq0UKAjcNbM0BAYvTpUKEubtgIV6x5a8GIKXAhH5RV5lYbnThxyngM9F3tmILHZ1ziFB1nGRJwrh7HaRn4iW62SUqgq0MB43F3iztNHaYejQTbqy0X68amj1m8X0JyxsxKxr4eVkwK4UHNLnSeFBHW3mMn3L9sgjcAECUawE7%2Fu9WT83VdBTVORblOlNDI%2Fx8j8V6hKnQKaM9shRugBR0Hkguo9LcubMLQ1pVoPDfKLTeo3OEnNLUAL7gIobgn0wwDXGcyMGKW5mRZeUJl2n85EvnPmsZwCuVGW%2F57ZiU7SjvIDeEOB8fmfRCg9H1iina2sHABw9TDut%2F%2FSBjqkAcsB8xlcBJPEWoBr7I1aYBs1zObXPRKahVDTrZ3%2FneHqUIortQLaDkZbs7Gvc9CwD7TXLueWV46k4%2BCd%2BvYmgTiiNt0fZSiceUlmopSq%2Br9i5aFBtQhqNKwatErOl%2FGhpQAvWbQ4254TMLjN%2BAqSfVU9dDgNkE0QmAxrqzPsHlssWDHXNC4HxuzMUKiyflBBb2FEYNHJk3XaREwPYLF4duj%2F1qoh&X-Amz-Signature=11ae15d9849a967be92919f3df8b3af048010f3d7a59e60f2835c5aa40d66cbd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+前面我们了解了Dubbo的容错方案，这一节让我们看看Dubbo是如何做负载均衡的。
+
+我们前面学过Spring Cloud中的负载均衡组件Ribbon，尽管Dubbo使用的是自己的负载均衡方案（阿里的风格就是绝不用别人的，只自己造轮子），但其实理念上都是大同小异。负载均衡无非就是将访问请求用某种方式尽量“平均”的分发到服务节点上，避免部分服务器因负载过高而挂掉。我们接下来就进入正题，看看Dubbo如何处理负载均衡。
+
+**Dubbo负载均衡四件套**
+
+相比Ribbon负载均衡策略里的十八般兵器，Dubbo就显得低调的多了，它只提供了负载均衡四件套，让我们先来简单了解一下：
+
+同学们回想下，还记得Ribbon的负载均衡策略吗？俗话说“学而时习之不亦乐乎”，看完这一章后大家翻到前面Ribbon章节回顾一下，看看这两个组件在负载均衡方面都有哪些不同之处。
+
+接下来，我们去了解下这四件套都有什么特殊功效。
+
+**RandomLoadBalance - 权重算法**
+
+RandomLoadBalance是Dubbo的缺省实现，所谓权重算法，实际上是加权随机算法的意思，它的算法思想相当简单。我们来看一幅图：
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f2fed7b9-fed8-4a8e-b8e6-4341cb9a2491/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662KWZCOGP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225900Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC6cUhihx1BxH7D20qQrUyb6Zn3esWvRmWbMVp1%2BF2QZQIhALSPgv0yOm24BV5yK%2BCqGL72xVBbPFw3mxBPGrYxNFkAKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUeBFHGQ550QIluTcq3AMKGYwlzXZxxdSoGwgR35Fc6IFeJFJjW2CcGIZI40wTJeR20stWZahN%2B2jS47ese0bOrEw5WkHwY%2FO5BXZ9jQpTx3q1jadTT89K19EjNZF8cxJCPFXHgw%2FrkD1YBX4blJJQkgeRDzeru56tbZdfv6ONd%2B1vsPCAPeUyCz8gtXVenjM%2F6pWn8cQJKbkrLEJHDHOp%2BHNL9Ai9J%2FbmiLLMBaX%2F3qzO1c9mW9fZ2gfNwTdL2m3lrREFKS5nBbOxFlkGPoQgVvWEqyKvii8pYWte%2BT58DEZMKhfZSMg0RNtT2sSPvPcY7ruaZPq0UKAjcNbM0BAYvTpUKEubtgIV6x5a8GIKXAhH5RV5lYbnThxyngM9F3tmILHZ1ziFB1nGRJwrh7HaRn4iW62SUqgq0MB43F3iztNHaYejQTbqy0X68amj1m8X0JyxsxKxr4eVkwK4UHNLnSeFBHW3mMn3L9sgjcAECUawE7%2Fu9WT83VdBTVORblOlNDI%2Fx8j8V6hKnQKaM9shRugBR0Hkguo9LcubMLQ1pVoPDfKLTeo3OEnNLUAL7gIobgn0wwDXGcyMGKW5mRZeUJl2n85EvnPmsZwCuVGW%2F57ZiU7SjvIDeEOB8fmfRCg9H1iina2sHABw9TDut%2F%2FSBjqkAcsB8xlcBJPEWoBr7I1aYBs1zObXPRKahVDTrZ3%2FneHqUIortQLaDkZbs7Gvc9CwD7TXLueWV46k4%2BCd%2BvYmgTiiNt0fZSiceUlmopSq%2Br9i5aFBtQhqNKwatErOl%2FGhpQAvWbQ4254TMLjN%2BAqSfVU9dDgNkE0QmAxrqzPsHlssWDHXNC4HxuzMUKiyflBBb2FEYNHJk3XaREwPYLF4duj%2F1qoh&X-Amz-Signature=6d8c7b60d4620b612cd5f27f5abccd5c6e20278e1f9a99fd09f7c65170b8e80c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+假设我们有一组服务器分别是A，B，C，他们对应的权重为A=5，B=3，C=2，权重总和为10。现在把这些权重值平铺在一维坐标值上，[0, 5) 区间属于服务器 A，[5, 8) 区间属于服务器 B，[8, 10) 区间属于服务器 C。
+
+接下来通过随机数生成器生成一个范围在 [0, 10) 之间的随机数，然后计算这个随机数会落到哪个区间上。比如数字3会落到服务器 A 对应的区间上，此时返回服务器 A 即可。权重越大的机器，在坐标轴上对应的区间范围就越大，因此随机数生成器生成的数字就会有更大的概率落到此区间内。
+
+只要随机数生成器产生的随机数分布性很好，在经过多次选择后，每个服务器被选中的次数比例接近其权重比例。比如，经过一万次选择后，服务器 A 被选中的次数大约为5000次，服务器 B 被选中的次数约为3000次，服务器 C 被选中的次数约为2000次。
+
+**LeastActiveLoadBalance - 最少活跃数**
+
+这个算法的思想就是“能者多劳”，它认为当前活跃调用数越小，表明该服务提供者效率越高，单位时间内可处理更多的请求，因此应优先将请求分配给该服务提供者。
+
+该算法给每个服务提供者设置一个“active”属性，初始值为0，每收到一个请求，活跃数加1，完成请求后则将活跃数减1。在服务运行一段时间后，性能好的服务提供者处理请求的速度更快，因此活跃数下降的也越快，此时这样的服务提供者能够优先获取到新的服务请求、这就是最小活跃数负载均衡算法的基本思想。
+
+当然这种算法也有不公平的地方，比如某台机器是扩容后新上线的机器，因此active的值是0，而这时Dubbo会认为这台机器的性能快如闪电，但其实这台机器的性能有可能慢如老狗。
+
+除了最小活跃数以外，LeastActiveLoadBalance 在实现上还引入了权重值。所以准确的来说，LeastActiveLoadBalance 是基于加权最小活跃数算法实现的。
+
+举个例子说明一下，在一个服务提供者集群中，有两个性能优异的服务提供者。某一时刻它们的活跃数相同，此时 Dubbo 会根据它们的权重去分配请求，权重越大，获取到新请求的概率就越大。如果两个服务提供者权重相同，此时随机选择一个即可。关于 LeastActiveLoadBalance 的背景知识就先介绍到这里
+
+**ConsistentHashLoadBalance - Hash算法**
+
+一致性Hash算法由麻省理工学院的Karger及其合作者于1997年提出的，算法提出之初是用于大规模缓存系统的负载均衡。在Dubbo中它的工作流程是这样的
+
+首先根据服务地址为服务节点生成一个Hash，并将这个Hash 投射到 [0, 232 - 1] 的圆环上
+
+当有请求到来时，根据请求参数等维度的信息作为一个Key，生成一个 hash 值。然后查找第一个大于或等于该Hash值的服务节点，并将这个请求转发到该节点。
+
+如果当前节点挂了，则查找另一个大于其Hash值的缓存节点即可。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c7641d06-ba39-4269-8eac-6db3389df72a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662KWZCOGP%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225900Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC6cUhihx1BxH7D20qQrUyb6Zn3esWvRmWbMVp1%2BF2QZQIhALSPgv0yOm24BV5yK%2BCqGL72xVBbPFw3mxBPGrYxNFkAKogECMb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjM3NDIzMTgzODA1IgxUeBFHGQ550QIluTcq3AMKGYwlzXZxxdSoGwgR35Fc6IFeJFJjW2CcGIZI40wTJeR20stWZahN%2B2jS47ese0bOrEw5WkHwY%2FO5BXZ9jQpTx3q1jadTT89K19EjNZF8cxJCPFXHgw%2FrkD1YBX4blJJQkgeRDzeru56tbZdfv6ONd%2B1vsPCAPeUyCz8gtXVenjM%2F6pWn8cQJKbkrLEJHDHOp%2BHNL9Ai9J%2FbmiLLMBaX%2F3qzO1c9mW9fZ2gfNwTdL2m3lrREFKS5nBbOxFlkGPoQgVvWEqyKvii8pYWte%2BT58DEZMKhfZSMg0RNtT2sSPvPcY7ruaZPq0UKAjcNbM0BAYvTpUKEubtgIV6x5a8GIKXAhH5RV5lYbnThxyngM9F3tmILHZ1ziFB1nGRJwrh7HaRn4iW62SUqgq0MB43F3iztNHaYejQTbqy0X68amj1m8X0JyxsxKxr4eVkwK4UHNLnSeFBHW3mMn3L9sgjcAECUawE7%2Fu9WT83VdBTVORblOlNDI%2Fx8j8V6hKnQKaM9shRugBR0Hkguo9LcubMLQ1pVoPDfKLTeo3OEnNLUAL7gIobgn0wwDXGcyMGKW5mRZeUJl2n85EvnPmsZwCuVGW%2F57ZiU7SjvIDeEOB8fmfRCg9H1iina2sHABw9TDut%2F%2FSBjqkAcsB8xlcBJPEWoBr7I1aYBs1zObXPRKahVDTrZ3%2FneHqUIortQLaDkZbs7Gvc9CwD7TXLueWV46k4%2BCd%2BvYmgTiiNt0fZSiceUlmopSq%2Br9i5aFBtQhqNKwatErOl%2FGhpQAvWbQ4254TMLjN%2BAqSfVU9dDgNkE0QmAxrqzPsHlssWDHXNC4HxuzMUKiyflBBb2FEYNHJk3XaREwPYLF4duj%2F1qoh&X-Amz-Signature=b60ed73dc9b82624f001e4994870a35394fc6656ff2771d08e11e5132a5eee0d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+如上图所示，4台机器均匀分布在圆环中，所有请求会访问第一个大于或等于自身Hash的节点。Server 3这台机器处于不可用的状态，因此所有请求继续向后寻址直到找到Server 4。
+
+**RoundRobinLoadBalance - 加权轮询**
+
+终于看到一个熟悉的面孔了，它和Ribbon的RoudRobinRule差不多。我们先来理解下什么是加权轮询。
+
+所谓轮询是指将请求轮流分配给每台服务器。比如说我们有3台机器A、B、C，当请求到来的时候我们从A开始依次派发，第一个请求给A，第二个给B，依次类推，到最后一个节点C派发完之后再回到A重新开始。
+
+从上面的例子中可以看出，每台机器接到请求的概率是相等的，但是在实际应用中我们并不能保证每台机器的效率都一样，因此可能会出现某台Server性能特别慢导致无法消化请求的情况。因此我们需要对轮询过程进行加权，以调控每台服务器的负载。
+
+经过加权后，每台服务器能够得到的请求数比例，接近或等于他们的权重比。比如服务器 A、B、C 权重比为 5:2:1。那么在8次请求中，服务器 A 将收到其中的5次请求，服务器 B 会收到其中的2次请求，服务器 C 则收到其中的1次请求。
+
+这背后的加权逻辑还是蛮复杂的，有兴趣的同学可以打开RoundRobinLoadBalance的源码研究一下。
+
+**配置负载均衡策略**
+
+Dubbo可以在类级别（@Service）和方法级别（@Resource）指定负载均衡策略，以方法级别为例，下面的代码配置了使用RoundRobin的负载均衡规则：
+
+@Reference(loadbalance = "roundrobin")
+
+private IDubboService dubboService;
+
+**小结**
+
+这一小节我们了解了Dubbo中的负载均衡实现，下一节我们来看一下如何在Dubbo中实现降级。
+
+注：本节内容参考了Apache Dubbo官方网站
+
+
+
+

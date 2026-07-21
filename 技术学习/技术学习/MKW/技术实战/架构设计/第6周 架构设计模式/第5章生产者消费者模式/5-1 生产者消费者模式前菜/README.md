@@ -1,0 +1,12 @@
+---
+title: 5-1 生产者消费者模式前菜
+---
+
+# 5-1 生产者消费者模式前菜
+
+生产者、消费者，博士，这个问题通俗的来讲就是在一个体系里面，有些系统或者人，他在制造一些东西，而另外一些系统或者什么呢？这些消费前面那些生产出来的东西，这是一种相对较笼统的说法，其实它是可以被运用到整个社会或者一个软件体系里面，这都是可以的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/70d7f3d4-b635-4138-8a65-9e5ff3095c95/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VFYJYHOD%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230610Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIER%2F48ZbBkVm1FgGEUcqCF7jThxIMThTEBjyUvYATmyVAiEA6jdFISQNerJo%2BL0Vk4SOE29i1WqC87b%2Bz0ieXpv5WJcqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDEDmGtVtG62QIQVXNCrcAy4YcZeD8GkdoXZJWjm0LC%2Bu9fLqAEyg60ec%2FmDCyKBOJQOaQW8e5byR2vI9m%2BaAzqHiACUd1DBvinLb9RxEeV%2BOXhbg3EyhM%2BxKm3o4qw7EgAtVZlJBSZjTkKpgW9zqHc4BrfUSoQ2AxjXPywj%2FjwLBIPFw11TUFLEQ%2FQkO0MhHICCj5EmGpRT1m9eQPXtduVsM4DoBhbAi42xpNbjCarx4ompAun%2FVqihmhhBJ2McHDYj3kzkRCaoH7pk7VX0cWNmfj%2FQ0mNA6yTPkp0tClPhjtBjlcto0iLl4W%2F2TDfzTzWmq9w2HKW5l%2B5XX2L6xUJxRGb167e%2BTYDYwSZwzz1KATXU3eRRKa9WrjG%2BpbfVZHtyGgH4M5wDrdKUlM7dLgePpe3z8QLDIopkOma3s3PtrA%2B6zrUmCmogrBRbQDLY3S5jEe7fYzZzCGk8Y2VlgSSjlDOB8otWU%2BidaQwahfrr4KW0WNLaE%2FzibvmpXD1qfOBPx%2F2CMrKVIOxgDKP4t7GoT8LwS5mj7er4Huwb%2BQVm5yarNL4bybBxY86%2FtM45KApoPjBMRsTDIO8BKf1HPkGX0BmAU1uD1Fe1qXyw6H78kGZomcmL7xV7ZoUMec%2FkibEnu9QOckZ05FhjxMIu6%2F9IGOqUBjcYwJNCoDJ%2Bd1d%2FHBWmcm5E8xtmgfr%2Bjmb%2B%2BZR7KmZkDKzFKHPuRyQ1OWbLFZj6WbjXsY3tbzz8cIxm2I6hz9Zu6%2BcjwUGpjd0eolhbsSmUdbFiL1wA%2FDwZ9SSvDvBOHzMukMMGA5oc07oWg6UY4maK7fpc%2FZsneAiSsuD%2B21IPjc8rHrzKoIL1F%2FpzSmTl1DCsT7Kx%2FMYC6y28Ebg%2BT71Md%2BG2L&X-Amz-Signature=cae792bc35ec2b657c48770fb6022df3579b32f5655af4a60e4b0fce9c6bff13&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们中国经典的儒学作品自书五经里面，这大学里面就有一句话，身材有大道，深之者纵实之者寡，为之者吉，用之者疏者才恒主矣。这句话它就反映了我们中国古代人对社会财富的一种生产和消耗的礼界。这段话什么意思？就是说如果古国家没有游手好闲的人，大家都从事生产，那么生产的人就很多了，如果在朝廷里面没有什么闲职闲置的人，吃白饭这些少没有的学生，那就是食之者寡，吃凤的人不做事的人少了，这就是生之者重，食之者寡。如果生产，它就按照农耕的时间来进行收获，耕种就是动作很快，就是维持着急，然后你花的时候叫慢慢的花，酿入为出。你要节俭哎，收多少用多少，这样收活多少粮食就吃多少，就看你的量，对吧？消费的量，这就是用之者舒，所以用的时候就是一定要舒缓，就是要慢慢的用，就这个意思，那就是说生产要及时，要快捷，但是消费要减慢。这个意思。如果能做到，就前面讲的一些都很努力的工作，生产出很多东西，也没有吃闲饭的人。然后你所有的一切运作都按照一个既定的规律来运作，同时你花的又很少，那么整个社会的财富就会增加，所以这是中国古代人对这个生产者、消费者模式的一种很淳朴的一种思考。
+

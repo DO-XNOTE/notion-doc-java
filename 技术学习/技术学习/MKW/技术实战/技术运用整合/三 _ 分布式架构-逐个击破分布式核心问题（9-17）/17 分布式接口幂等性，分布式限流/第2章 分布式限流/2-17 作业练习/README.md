@@ -1,0 +1,19 @@
+---
+title: 2-17 作业练习
+---
+
+# 2-17 作业练习
+
+**2-17 作业练习**
+
+将限流脚本应用在Nginx网关层，从IP层面和单机层面配置限流规则
+
+在电商项目中选中几个服务，引入Guava做单机限流
+
+尝试把Lua脚本导入Redis，并能在外部调用，从头到尾体验一把Redis+Lua的集成流程
+
+(拔高)尝试用JMeter等工具对接口进行压测，测试下同样的限流标准下，上述哪一种限流方式最高效。比如限制100 QPS的流量，单机先压2000 QPS，然后逐步提高打高测试流量，看被拦截住的这些请求所花费的响应时间（越短越好）
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f0dbb6b0-4686-4358-a23b-a2bfefd54a47/2020-09-17_172218.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466YS4IVGHI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225508Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJGMEQCIAj%2FSN1KLH00AKQnmO0udDKXozEv3qgekh4eFeKvrdgSAiAH1fmGzMJppSaJYyVkGHfjJu7bRmK%2BEKENAn3S6E0vcCqIBAjG%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYzNzQyMzE4MzgwNSIMz5i7iogFtCdn6aftKtwDNzbyQYwkdG0DGCVY6ZwPK3W56ai3CbH48quqesJy4PcqoClVA9kRswtx63cnJBWI83Nq5NyBO5Jz5zXkNhc8uIAH%2F6UodnLba2tghqpumxGCbonyLvRYT0kz5sDLlpR02gJuo7sly3t84AFUmCq0yG8czQ9Czy23RUhX2YeRUHz6Z%2FvvylBsoUMhqlb7jN2Wybd9jJ9QKpSsRCq1TuQWCEmFbpH377FAirmFVNFVnaXjgNLw2FKgc8WP3oyQho6vzEFs4JnPvqXRWntfbd9UN8NC3FEppjAUXSRUdNzXfRo8ULCOj0Azn24Dvxv%2BVkAilZWh3j4AqdSgJSJZ%2F5TVZIviz9KM9i7rzw5UplTBEy%2B4i6HFM0%2FWVmAYJ8D6sZWHiIHDxYzrVeNfM79sWjle0P6Lm6PdLGW4qy0Jw2L15ZcMkfkcnnvO3xBsO167ixZo2yg0ZRKO5uJLPeXA7aUo5zba8zDxMUAGpsuAJZ0S8YxR07cxEZOKwOC5rQsgSm61ro54V9A6i8S7dkPZjTtst4drI8TVVY%2Bn2YbSz%2BP8%2BZL0Jl3sDlGrIc6x%2Fy98B1NSSuDFKUOaz1GNXC9%2Fo4cYtj5kwK6yxAyDKBEt8t%2Fl0ldM425gtp%2BKrdsYTfkwtbj%2F0gY6pgE7lTl6zfpo29XbMBZQvWMZ5MWHB0GaB%2Bf5t%2BudFVbX77%2By3PucyuanswkEVNGZzML9NFiXwufPgi49Z5F35y0zmMzrJ2NKm3o5OrLgBGHRQMpOLtHDFMHl0aX%2BOd0rklZHlTY64JWMp9HX4hCGmLh9xz8BGOJwAolq6urzIZ7u2WyM3bj2Y%2BF5kVoqSiwriJjd1OcBsL00%2FYVgkgcCOfw8hj4IvhWt&X-Amz-Signature=01c82c2e9eb772b1edabab9bf66a4a5d9bab4e6fdb83fa7e3817d0db255c9b8d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+

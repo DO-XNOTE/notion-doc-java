@@ -1,0 +1,100 @@
+---
+title: 4-10 微内核经典案例剖析：ESB
+---
+
+# 4-10 微内核经典案例剖析：ESB
+
+我们再来看一个经典的这个微内核架构的应用，也是一种很经典的软件，叫  ESB   enterprise three SPAS。为什么需要这样一个东西？我们来看一下，就是微电河在这种 ESB 里面，它是怎么样一个世界思想的契合。首先来看，比如说为什么需要一个ESB？其实说简单也很简单的，就是在一个系统里面，或者在一家公司里面，你肯定有各种各样的service，对吧？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/dd46db2c-b992-4a17-8c92-6a92493a7d37/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q7C7AG7Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230609Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDjx6%2FqRX95toM1%2BoOW7CrmBDBbYVT0109VX3yTecHFdAIgUb81eNpq%2FF8Gp%2Bl2ULMurMVrLYx9dUhN%2Bu7O6ZfnkL0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFLeSaTyI6rdRCzC4yrcA7x1yiRko7OR50x%2FSQ%2Bill6bb1uhz5FrEKQAXoOk%2FoHJl0uFzfkxFVoDLagW%2BbWhbPaQr%2FGiJlPL6ru5FSt3klbEUlj2QX7rLGEaNUwBR8EAJUIh5o1vPQ0EstdM4N9RmptaEcE%2FWVFacJt01nkfwBZDUi0iA%2BB6MX%2BzT6QTiWKiiYw%2BLWqijRaoDbPVXixRvpP0AYaG9E5C%2B7mw0YPKrqx2IAWTQPSVdb9NkzJGsRJxjuQg%2FiOll2Hzw2F8fqje7eATUnTcUubxIrjSqbm2KrU113O9tCu23trOxI2XJvR23f80r4DveAlEANhaEqkIMlHA0P7Vf1jdGBgz91TPD8K6ct59qRF89PDK2f4QT8mCcX09Yw453jCPQJQPJiycYldnrobCMeh58D4cZ%2FXTBvbIYO1I2F6m5li1w%2Fps%2FpsQdcFQO0jjsPP42Zmx7re0uOmJDK9WP3%2B6Qcy4%2BMGIsB8gfrMXgwYM5RRtVndvNj%2BN1RptvD9TxMOWLFgznz%2BvZC4MCuXOzfBjOhwfJoNFUy%2FP9nB%2ByWzQwjbzh5bXTRKPRLd5PgzGdVjEJujCg%2Bk4k%2BSUijzoGlVoujoQkjqP812nqTfLT5A9k1AJfBST5b%2BdDQAo9Gw55RqwAS%2FkMNW5%2F9IGOqUBK5ZkDbTb2Jno8EfBa8DoCjhlJIVV0huIKjZHuXSHbFq%2FGYDI8yG9sj3qPQUnkQ3wpLQHC1qa30B%2F4kKgDAJH1azFv4l9qDgy%2FDRFC74mm2AsYgPviCKG17Dngaa%2BEO8ZZCKwQFKqYJvC7oRM731FShzNtJo5eaxP76EWAAN%2Ff8KLaH6hqF0dHtJwHz4UpPv9rT4dk5xzlzraOkW2KTLsiVBPqxzR&X-Amz-Signature=5f1ab949f9359ca745077596efc0b86eeb2780cb4c94be423990f47b21f14109&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那 Swiss 之间它互相串在一起来形成一些新的功能，那这个时候如果说你原始的设计当中本来就是很复杂的，这个调用量一长，然后周唯一的关系确实也挺复杂的，说我要把它组在一起形成一个新的功能，那这个时候他们之间要通信起来就很复杂，就不再是一个点对点那个通信了，那可能到时候所有的点击人都有通信。那就是什么？一个非常复杂的新型结构，这显然在很多情况下不是特别合理，也不是特别好管理，开发起来也挺困难的。那这样子就当成了ESB。 ESB 的工作原理就相对来说是不太一样的，你看而应用它不跟别的应用打交道，它只跟 ESB 打交道。
+
+
+同时你可以把这种方案的东西都往上接，只要它需要，这就是 enterprise service bus，我们来具体看一下这个 yes b 它到底是怎么跟这个威力和架构这个思想契合在一起的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/a477942b-da0e-41d9-b29c-9f936c28b955/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q7C7AG7Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230609Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDjx6%2FqRX95toM1%2BoOW7CrmBDBbYVT0109VX3yTecHFdAIgUb81eNpq%2FF8Gp%2Bl2ULMurMVrLYx9dUhN%2Bu7O6ZfnkL0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFLeSaTyI6rdRCzC4yrcA7x1yiRko7OR50x%2FSQ%2Bill6bb1uhz5FrEKQAXoOk%2FoHJl0uFzfkxFVoDLagW%2BbWhbPaQr%2FGiJlPL6ru5FSt3klbEUlj2QX7rLGEaNUwBR8EAJUIh5o1vPQ0EstdM4N9RmptaEcE%2FWVFacJt01nkfwBZDUi0iA%2BB6MX%2BzT6QTiWKiiYw%2BLWqijRaoDbPVXixRvpP0AYaG9E5C%2B7mw0YPKrqx2IAWTQPSVdb9NkzJGsRJxjuQg%2FiOll2Hzw2F8fqje7eATUnTcUubxIrjSqbm2KrU113O9tCu23trOxI2XJvR23f80r4DveAlEANhaEqkIMlHA0P7Vf1jdGBgz91TPD8K6ct59qRF89PDK2f4QT8mCcX09Yw453jCPQJQPJiycYldnrobCMeh58D4cZ%2FXTBvbIYO1I2F6m5li1w%2Fps%2FpsQdcFQO0jjsPP42Zmx7re0uOmJDK9WP3%2B6Qcy4%2BMGIsB8gfrMXgwYM5RRtVndvNj%2BN1RptvD9TxMOWLFgznz%2BvZC4MCuXOzfBjOhwfJoNFUy%2FP9nB%2ByWzQwjbzh5bXTRKPRLd5PgzGdVjEJujCg%2Bk4k%2BSUijzoGlVoujoQkjqP812nqTfLT5A9k1AJfBST5b%2BdDQAo9Gw55RqwAS%2FkMNW5%2F9IGOqUBK5ZkDbTb2Jno8EfBa8DoCjhlJIVV0huIKjZHuXSHbFq%2FGYDI8yG9sj3qPQUnkQ3wpLQHC1qa30B%2F4kKgDAJH1azFv4l9qDgy%2FDRFC74mm2AsYgPviCKG17Dngaa%2BEO8ZZCKwQFKqYJvC7oRM731FShzNtJo5eaxP76EWAAN%2Ff8KLaH6hqF0dHtJwHz4UpPv9rT4dk5xzlzraOkW2KTLsiVBPqxzR&X-Amz-Signature=5ace042d5647c9f3eef3a156152226219a67b7d582edd20bf224fb4cf5babff7&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那首先来讲ESB，它是可以借助什么东西都能借助进去，以此来拓展了这个系统功能，这是很典型的，对吧？这是我们插件系统和插拔系统的架构的一个典型的案例，就是你可以丰富和扩展其他的功能，这点我相信已经毋庸置疑了。如果说你不能通过插件来扩展你的功能，或者增加这个系统的这个多样性，那证明你这个设计就有点奇怪了，肯定是不对的，我们就不说，那我们再来看一下 ESB 前面讲到的什么消息，路由协议转化这些东西，或者说我寻找目标服务这些东西是它的核心功能。你说这个服务的功能具体是什么？它关心吗？它不关心，它的核职者不是这个。还有甚至你可以通过 ESB 去访问数据库，它把底层的一些资源全部都去封装起来，提供了一些接口给你，你再去访问它都可以，对吧？那你说我现在有了四五个 service 要调用，那你就通过 ESB 去调，而不要直接去调这些service，这样子去把核心的功能。
+
+
+ESB 的核心功能前面讲到的就是学习转化什么之类的，然后你具体的 service 是一种插件形式接入到这些 speed 里面的，这样就是一个典型的 video 和架构，有核心插件可以丰富我们系统的多样性和功能。在这个地方就是说你通过各种各样的系统内部的应用，或者公司里面的应用丰富了这个整个生态，这一点就是完美的契合了我们微粒和架构应用之间，至少说它是不会有明显的依赖关系的，否则就成了我们之前画的那种新型结构，对吧？所以说在这个地方跟微联合架构也是蛮契合的，就是说我前面也探讨过我们已经到底与不允许插件之间有依赖，我个人推荐是不要有，但是这个也是看情况的，不是一蹴而论的。
+
+
+在这个地方人家实际的 ESB 的操作当中，就我只是说在 ESB 的这个情况下，是基本上你可能是不会愿意让自己的应用之间有依赖关系的，因为这种做法绝对是不推荐的，在这个 ESB 这个情况下，为什么这么讲？因为你最初 ESB 要解决的问题就是你要把新型结构变成一个总线结构，那你如果说你这个总线结构出现了之后还有依赖，这就是完全违背了支出的这个 ESB 的设计初衷，对不对？所以说在这个地方我们可以明确地说， ESB 的系统里面，你最好是不要让这个应用也把 service 指标直接有银行联合依赖，这样肯定是不推崇的。
+
+
+在这个地方大家就可以想一想一下应用或者服务这个 ESP 系统的这样一个插件，通过它来丰富系统的功能，那在核心里面就是前面讲到的这种消息的这个发送路由的转化寻址类似于这种，那就是 ESB 的核心功能，并且把这些东西串在一起才是能够完整的系统，所以这一点又跟我们的 AI 架构前面讲的所有东西都是契合的，对不对？所以这个大家可以感知一下，是不是最重要的还是得分离出一个核心系统和一个插件系统，然后才能把一些这个模式应用上去，希望大家好好体会一下这种。
+就前面讲述这个过程当中，我们对这个核心和它现在这种区分及怎么把这二者结合在一起，这一点大家好好的揣摩一下，回忆一下你之前有没有用过这种线结构的东西，它是不是符合了我们的 video 和架构的几个要素？我们再来看一个，跟这个 ESB 性质有点相似，但其实是完全不同的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f3d04099-82e1-4941-a98e-d842199b4f8d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q7C7AG7Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230609Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDjx6%2FqRX95toM1%2BoOW7CrmBDBbYVT0109VX3yTecHFdAIgUb81eNpq%2FF8Gp%2Bl2ULMurMVrLYx9dUhN%2Bu7O6ZfnkL0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFLeSaTyI6rdRCzC4yrcA7x1yiRko7OR50x%2FSQ%2Bill6bb1uhz5FrEKQAXoOk%2FoHJl0uFzfkxFVoDLagW%2BbWhbPaQr%2FGiJlPL6ru5FSt3klbEUlj2QX7rLGEaNUwBR8EAJUIh5o1vPQ0EstdM4N9RmptaEcE%2FWVFacJt01nkfwBZDUi0iA%2BB6MX%2BzT6QTiWKiiYw%2BLWqijRaoDbPVXixRvpP0AYaG9E5C%2B7mw0YPKrqx2IAWTQPSVdb9NkzJGsRJxjuQg%2FiOll2Hzw2F8fqje7eATUnTcUubxIrjSqbm2KrU113O9tCu23trOxI2XJvR23f80r4DveAlEANhaEqkIMlHA0P7Vf1jdGBgz91TPD8K6ct59qRF89PDK2f4QT8mCcX09Yw453jCPQJQPJiycYldnrobCMeh58D4cZ%2FXTBvbIYO1I2F6m5li1w%2Fps%2FpsQdcFQO0jjsPP42Zmx7re0uOmJDK9WP3%2B6Qcy4%2BMGIsB8gfrMXgwYM5RRtVndvNj%2BN1RptvD9TxMOWLFgznz%2BvZC4MCuXOzfBjOhwfJoNFUy%2FP9nB%2ByWzQwjbzh5bXTRKPRLd5PgzGdVjEJujCg%2Bk4k%2BSUijzoGlVoujoQkjqP812nqTfLT5A9k1AJfBST5b%2BdDQAo9Gw55RqwAS%2FkMNW5%2F9IGOqUBK5ZkDbTb2Jno8EfBa8DoCjhlJIVV0huIKjZHuXSHbFq%2FGYDI8yG9sj3qPQUnkQ3wpLQHC1qa30B%2F4kKgDAJH1azFv4l9qDgy%2FDRFC74mm2AsYgPviCKG17Dngaa%2BEO8ZZCKwQFKqYJvC7oRM731FShzNtJo5eaxP76EWAAN%2Ff8KLaH6hqF0dHtJwHz4UpPv9rT4dk5xzlzraOkW2KTLsiVBPqxzR&X-Amz-Signature=9bb5011a120b2161b5f7b1d1ac9d64304e7523d7501f0d1e121951266e280205&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+这么一个经典应用 BPM 其实解决断一般来讲还是应该是属于enterprise，就是说企业应用内部之间的一些问题，也就在互联网场景下，它有没有可能有，但是绝对不是特别占主流。当然这个只是随口的一个讨论，就是因为互联网的流量在 BPM 这种 antables 在我的撑起来肯定是不一样。
+
+
+为什么要讲这个东西？还是说我们主要是通过他这种思想来掌握这种架构，并不是说你一定要按照这个软件或者是东西直接应用，那不是这个意思，我们讲这种经典应用都是希望通过分析经典应用它是怎么做出来的，它是设计思路来学习对我们的理论联系实际，把我们背后的真正的架构思想给学到，不是让你直冲冲就说我在这个场景我就用这个东西，不是这样子，有可能你用的话你跑不起来或者流量就撑不住了，这点大家千万不要误会，我一直是这个风格。
+
+
+我们理论演绎实际看的是本质，我们架构是最重要的原因是通过现象看本质，因为架构是最基础、最 stable 的东西，如果说你不能通过现象看到本质的话，那这个就很危险了，为什么？我们来看一下BPM， BPM 它是什么样一个东西？叫 Beans process management，简单来讲的话，其实就是相当于说你在你的公司，或者是你在一个系统里面有很多很多的这个服务，那有很大的业务流程，如何把这些服务、这些业务流程能够结合在一起？就是 BP 你要做的事情，那他要做一个什么事情？相当于说那假定这一个理想的状况下面，我们一个系统或者一个公司里面，它这若干服务，通过把若干服务企业逻辑编排或者什么样，我们得到一个新的服务，新的业务功能，这就是 BQ 们所要做的事情。那你举个简单例子。
+
+
+好，你原来有一件事情，对吧？它是 a 功能，现在有一个 b 功能，还有个 c 功能。后来有一天有一个很厉害的，他就把a、b、 c 串在一起，达到一个不同的效果，又成了一个新的服务，这样子累积这个服务就越来越多了，功能就越来越多了，这就是最初的人理想要的状况，这就是 BPM 设计的初衷。
+
+
+那我们再来看一下这个 BPM 和我们这个 v 列和架构之间，它的这个关联点相似性大概在哪里？这个价格是不是和我们的微的这个微列和架构是非常接近？首先就前面讲的 b 片，它组合不同的子流程，形成新的流程或者系统的功能，这些 BP 我们支出想要做到这件事情，这个核心的理论或者理念就是如此。
+
+
+那完了之后这个 BPM 就是它的核心，就是把这些不同的子流程或子服务组合在一起，这就是它的核心功能或者它的系统核心。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/0a2d9268-ac51-445a-8cae-133b6b292d1e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q7C7AG7Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230609Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDjx6%2FqRX95toM1%2BoOW7CrmBDBbYVT0109VX3yTecHFdAIgUb81eNpq%2FF8Gp%2Bl2ULMurMVrLYx9dUhN%2Bu7O6ZfnkL0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFLeSaTyI6rdRCzC4yrcA7x1yiRko7OR50x%2FSQ%2Bill6bb1uhz5FrEKQAXoOk%2FoHJl0uFzfkxFVoDLagW%2BbWhbPaQr%2FGiJlPL6ru5FSt3klbEUlj2QX7rLGEaNUwBR8EAJUIh5o1vPQ0EstdM4N9RmptaEcE%2FWVFacJt01nkfwBZDUi0iA%2BB6MX%2BzT6QTiWKiiYw%2BLWqijRaoDbPVXixRvpP0AYaG9E5C%2B7mw0YPKrqx2IAWTQPSVdb9NkzJGsRJxjuQg%2FiOll2Hzw2F8fqje7eATUnTcUubxIrjSqbm2KrU113O9tCu23trOxI2XJvR23f80r4DveAlEANhaEqkIMlHA0P7Vf1jdGBgz91TPD8K6ct59qRF89PDK2f4QT8mCcX09Yw453jCPQJQPJiycYldnrobCMeh58D4cZ%2FXTBvbIYO1I2F6m5li1w%2Fps%2FpsQdcFQO0jjsPP42Zmx7re0uOmJDK9WP3%2B6Qcy4%2BMGIsB8gfrMXgwYM5RRtVndvNj%2BN1RptvD9TxMOWLFgznz%2BvZC4MCuXOzfBjOhwfJoNFUy%2FP9nB%2ByWzQwjbzh5bXTRKPRLd5PgzGdVjEJujCg%2Bk4k%2BSUijzoGlVoujoQkjqP812nqTfLT5A9k1AJfBST5b%2BdDQAo9Gw55RqwAS%2FkMNW5%2F9IGOqUBK5ZkDbTb2Jno8EfBa8DoCjhlJIVV0huIKjZHuXSHbFq%2FGYDI8yG9sj3qPQUnkQ3wpLQHC1qa30B%2F4kKgDAJH1azFv4l9qDgy%2FDRFC74mm2AsYgPviCKG17Dngaa%2BEO8ZZCKwQFKqYJvC7oRM731FShzNtJo5eaxP76EWAAN%2Ff8KLaH6hqF0dHtJwHz4UpPv9rT4dk5xzlzraOkW2KTLsiVBPqxzR&X-Amz-Signature=362701544cca0970c0475563e3cd60d5cff1b0cb04b759c2c929c67da83fd1cd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+在这个地方，那完了所有的子流程或者我们有的这种服务都是它的插件，然后这个插件不同的插件之间也是没有任何依赖的。那你看我们是不是首先定了一个分层结构，这个分层是把系统的核心功能和我们插件过的认可明确地定义出来，而且自然人的 BP 们肯定是有套接入规范的，你得告诉他你是什么代表，什么含义，你需要什么样的参数，而是这种注册信息那是肯定要有的，那就是一样的了，就是跟我们前面讲的什么注册、调用、连通性这些都是一模一样的。你看它是不是具备了我们这个微粒和 bug 模式的几个要素。
+
+
+首先是有核心，有插件，同时你肯定要接入到一个 BPM 里面，你把你的 service 肯定要进行注册的。这个地方我虽然没有写，但是这是很明显的一件事情，对吧？你注册完之后告诉他你的 Endpoint 在哪里的入参 response 是什么职责，什么公认是endograph，他后面当有新的功能或者新的流程想要形成的时候，它就会参考说有哪些功能组合在一起形成一个新的功能，这就是 BP 作用。但你看 video 和架构是不是完全吻合了？前面讲的什么核心的是就是注册或者说组合运行，这就是它核心的功能。对于 Web 的这个插件，那就是各种各的乙醇的这个服务，所以这个服务系数不重，重要是你只要符合规范，你可以接入进去查找这个系统，这样子就是一个非常典型的物业和架构的一个应用。
+
+
+下面再来看一个著名的人叫Nginx， Nginx 设计之初大家都知道它就通过这种 module 的和自身的内核的强劲 high performance 和scalabit，我们命运天下，那我们今天迭代先不聊，我们重点聊一下就是它的这个modules，它的作用是什么？这就是一个典型的可查法架构，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7df767b8-2005-4acf-ad8b-af42ae740157/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q7C7AG7Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230609Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDjx6%2FqRX95toM1%2BoOW7CrmBDBbYVT0109VX3yTecHFdAIgUb81eNpq%2FF8Gp%2Bl2ULMurMVrLYx9dUhN%2Bu7O6ZfnkL0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFLeSaTyI6rdRCzC4yrcA7x1yiRko7OR50x%2FSQ%2Bill6bb1uhz5FrEKQAXoOk%2FoHJl0uFzfkxFVoDLagW%2BbWhbPaQr%2FGiJlPL6ru5FSt3klbEUlj2QX7rLGEaNUwBR8EAJUIh5o1vPQ0EstdM4N9RmptaEcE%2FWVFacJt01nkfwBZDUi0iA%2BB6MX%2BzT6QTiWKiiYw%2BLWqijRaoDbPVXixRvpP0AYaG9E5C%2B7mw0YPKrqx2IAWTQPSVdb9NkzJGsRJxjuQg%2FiOll2Hzw2F8fqje7eATUnTcUubxIrjSqbm2KrU113O9tCu23trOxI2XJvR23f80r4DveAlEANhaEqkIMlHA0P7Vf1jdGBgz91TPD8K6ct59qRF89PDK2f4QT8mCcX09Yw453jCPQJQPJiycYldnrobCMeh58D4cZ%2FXTBvbIYO1I2F6m5li1w%2Fps%2FpsQdcFQO0jjsPP42Zmx7re0uOmJDK9WP3%2B6Qcy4%2BMGIsB8gfrMXgwYM5RRtVndvNj%2BN1RptvD9TxMOWLFgznz%2BvZC4MCuXOzfBjOhwfJoNFUy%2FP9nB%2ByWzQwjbzh5bXTRKPRLd5PgzGdVjEJujCg%2Bk4k%2BSUijzoGlVoujoQkjqP812nqTfLT5A9k1AJfBST5b%2BdDQAo9Gw55RqwAS%2FkMNW5%2F9IGOqUBK5ZkDbTb2Jno8EfBa8DoCjhlJIVV0huIKjZHuXSHbFq%2FGYDI8yG9sj3qPQUnkQ3wpLQHC1qa30B%2F4kKgDAJH1azFv4l9qDgy%2FDRFC74mm2AsYgPviCKG17Dngaa%2BEO8ZZCKwQFKqYJvC7oRM731FShzNtJo5eaxP76EWAAN%2Ff8KLaH6hqF0dHtJwHz4UpPv9rT4dk5xzlzraOkW2KTLsiVBPqxzR&X-Amz-Signature=c4a282b993cf7b04a6598c9e3ddedd609c40a6597a21fc25d2821f55fc4e8bf3&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+所以这个 Nginx 来讲的话，它的 module 是什么？这是一个个的插件，非常简易的一个定义，你的核心是什么？毫无疑问可能就是做这种 HDP 服务，对不对？但是 HDP 服务里面其实千千万别的需求，根据不同的公司号用的场景，你肯定有各种各样的要求，怎么能满足他的要求呢？你说由这个 NGX 这个开发小组一个人全部搞定，不是说绝对不可能，那相当来说这个也是 missing impossible 了，对吧？那所以说他们在设计之初就想到了这个 model 的这样一个概念，就是说我开放这种 model 的这个功能给别的开发者，让你们也有饭吃，哎，让你们也能根据自身的这个需求来进行一些定制和开发。
+
+
+那首先来讲的话 NGX 它就是通过这种 model 的形式来为 Nginx 进建新的功能，而且甚至是非常丰富的功能，核心团队做核心的开发，那 model 那就是各个公司或者是这个任何自由的开发者都可以提交的，所以这点是不是非常和我们前面定义的这个唯利和价格的组织升级非常契合，对吧？那这个点就是说我们看到的就核心系统这个维护人员和这个差异的维护人员或者开发人员，他可以完全是两拨的，不在同一家公司，甚至遍布于全球都是可以的。所以这一点就是微服的价格的，或者说可查拔架构的一个好处，就是你不需要限制，是说它必须得是怎么样，你只要符合规范，把它加进去，那就成为它的一个可用的功能就好了。
+
+
+就是我们前面讲到的就是 NGX 本身是它核心， onboarded 就是它 plug in 了，这个是很容易理解的模块和这个插件其实是非常贴近的这样一个词，基本上你想通过这种 model 的扩展，是不是就是把这个 plugin 插进去，你不要了就把它删掉，就这么简单。
+
+
+那其实对这种 Nginx 的这个 modules 的支持，它对于开源的这个Nginx，你要加载这些模块，其实你做不到动态加载，你必须在编译器的时候就指定你要哪些模块，可能有些是对官方支持的模块，有可能是第三方的模块，你在编译的时候你就把这些东西编译进去，否则的话你后面是加载不起来的。
+
+
+但是我们这里写的这个 NG x 的plus，它是可以动态添加或者是 true 的，因为它是个商用的这样一个东西，这个当然都不重要，重要的就是说你看它是可以，第一做到核心的这个系统和我们这个module，或者说我们的插件是分离设计，分开读的实现开发的。第二就是他们各自独自的升级，互相都不影响。那兼容性当然是有一个列表，这个前面也讲过，就是你的核心系统的这个版本号，还有兼容性这些都是需要通过的。还有就是说我们的 model 是可以动态的被夹杂起来还是静态的，必须在编译期去制定。这个当然倒不重要，反正就是说这个 model 那是可以起，可以停，可以讲，可以删的，对吧？这完美的符合了我们对微电和架构的定义。
+
+
+其实这个更确实的说，不叫微电和架构，或者叫可查拔，这样一个架构可能更贴切一些，但这个反正中心思想都是一模一样的，就是把内核跟插件进行分离，内核是稳定的这样一个升级，而插件丰富了整个系统或者整个生态各种各样的功能，以 Java 去选来讲，这个 sovereign 是无可回避的，而且也是大家都新手的一个武器。
+
+
+甚至可以说现在如果说你是在哎互联网公司最终开发的话，基本上 servant 就是你必知必会，基本上这个没什么好讲的，有些人可能会说，我才不用servant。那当然了，现在有很多更方便原先进的框架出现，但是它的底层实现都是servert。后面大家和我一起来看一下这个问题。
+
+
+我们先讲一下 servert 本身的话，我们提出它也是一种 win 和架构，但你是不是觉得有点怪？当然其实这个地方更去的时候应该是不是它是属于一种可查法架构。我们先来看一下 Server 的本身是怎么样子一个情况，对吧？ serverty 它本身实现了这样核心功能， serverty 自身是实现了一些你的主要的业务逻辑在这个地方，那完了之后还有filter，有listening，针对不同的情况来实现你的额外的这个功能。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/1fae2c61-8c3f-4be1-a8a1-8c400a3bbd3b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466Q7C7AG7Q%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230609Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDjx6%2FqRX95toM1%2BoOW7CrmBDBbYVT0109VX3yTecHFdAIgUb81eNpq%2FF8Gp%2Bl2ULMurMVrLYx9dUhN%2Bu7O6ZfnkL0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFLeSaTyI6rdRCzC4yrcA7x1yiRko7OR50x%2FSQ%2Bill6bb1uhz5FrEKQAXoOk%2FoHJl0uFzfkxFVoDLagW%2BbWhbPaQr%2FGiJlPL6ru5FSt3klbEUlj2QX7rLGEaNUwBR8EAJUIh5o1vPQ0EstdM4N9RmptaEcE%2FWVFacJt01nkfwBZDUi0iA%2BB6MX%2BzT6QTiWKiiYw%2BLWqijRaoDbPVXixRvpP0AYaG9E5C%2B7mw0YPKrqx2IAWTQPSVdb9NkzJGsRJxjuQg%2FiOll2Hzw2F8fqje7eATUnTcUubxIrjSqbm2KrU113O9tCu23trOxI2XJvR23f80r4DveAlEANhaEqkIMlHA0P7Vf1jdGBgz91TPD8K6ct59qRF89PDK2f4QT8mCcX09Yw453jCPQJQPJiycYldnrobCMeh58D4cZ%2FXTBvbIYO1I2F6m5li1w%2Fps%2FpsQdcFQO0jjsPP42Zmx7re0uOmJDK9WP3%2B6Qcy4%2BMGIsB8gfrMXgwYM5RRtVndvNj%2BN1RptvD9TxMOWLFgznz%2BvZC4MCuXOzfBjOhwfJoNFUy%2FP9nB%2ByWzQwjbzh5bXTRKPRLd5PgzGdVjEJujCg%2Bk4k%2BSUijzoGlVoujoQkjqP812nqTfLT5A9k1AJfBST5b%2BdDQAo9Gw55RqwAS%2FkMNW5%2F9IGOqUBK5ZkDbTb2Jno8EfBa8DoCjhlJIVV0huIKjZHuXSHbFq%2FGYDI8yG9sj3qPQUnkQ3wpLQHC1qa30B%2F4kKgDAJH1azFv4l9qDgy%2FDRFC74mm2AsYgPviCKG17Dngaa%2BEO8ZZCKwQFKqYJvC7oRM731FShzNtJo5eaxP76EWAAN%2Ff8KLaH6hqF0dHtJwHz4UpPv9rT4dk5xzlzraOkW2KTLsiVBPqxzR&X-Amz-Signature=4fb2bcbecc03d1c893e686ed5ff92dc1434834fed20c8f40a628f61b3e1f9d4b&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+首先讲一下这个listener， listen 是这个地方我们可以认为它是可以插入的这样一个插件，但其实可能从另外一个角度来看，它更像一种 event driven 的这样一个东西。这个时候我们就不细分说是不是能够这么来分成两种属性来讲这个事情。然后我们重点是看的是说这种扩展性，这种功能，对吧？这种可插度的这样一个功能才是我们这个地方要关注的点，不管你是通过 filter 的形式还是通过这个 listen 的形式？当然更重点的看上去好像是 theater 更贴切一点点，因为第一 theater 是处于这个 request 之前，那就 response 要返还给用户之前， request 要到达 Server 之前，它都会进行一个 filter 上的一个处理操作。比如说举个简单内查了这个功能， service 的功能是做一件事情，这个事情之前我发现有些功能我要做，如果放到 service 里面就有点尴尬，这是一个点。 RNN 可能就是说如何把它抽象出来，共通来复用这个东西感觉更好。
+
+
+什么意思？就是说比如说现在我们打个日志，所有的形式进来，我们都要打一个日志，我们假定没有别的功能，就刚刚说做的事，那你说你在每个 service 里面做一下这个是不是很讨厌？这个时候如果说你用个 filter 拦截在 request 之前，任何一个 request 进来之前就打一个log，那是不是就不一样了？而且第一它是可以定义的，这才是必须要注册的，我们不能架构，或者说这个可查法架构是不是非常接近的？核心就是我们的 Certainty 实现业务功能，对外你要提供其他的附加功能，也可以通过 filter 来实现。
+
+
+产妙不知道大家知不知道这个 Scrum VC 里面不管是Charles，它都是基于这个 listener officer 来实现的，而它基础功能都是基于 service 来一个实现。这一点大家可以回去看一下这个 spring 的代码， spring 在启动时候最原始的时候我不输现在这个先进一点的这个 spring 步调的这种东西，它的方式是不太一样的。对于最初的这个 spring VC 或者最早的 spring 相关的功能，你都要定义一个Xmail，对吧？就装载这个 Xmail 到系统里面，把这个 bin factory 启动起来，加成为真正的一个 spring container。它如果是跟 Web 相结合，就是 spring v c 那种东西的话，必须是打包原来的话 spring 的这个东西，把它提起来成一个container，这 content 又是运行在一个 application container 里面来的。 skin container 怎么起来的？就是你有个 Web 的XML， Web 的 Exmail 里面你注册了 spring 的相关的这个 listener 或者一些 filter 什么之类的，让它齐全。
+
+
+spring 自身也提供了一些 filter 实现一些 y 的功能，比较后面比较著名的那个 spring security 这种东西，它其实都是一种 filter 这样一种原理实现，对不对？同时如果你回归了主题，就是这些东西都是核心系统或者系统核心功能之外的一些可插入的一些点，为了插入点的实现来完成这样一个东西，对吧？这样子就是前面定义的，包括说你要实现这个功能，你要有这个注册信息，在这个 service 或者 spring c 里面，你定义的时候中我要有一个某filter，你首先要定义这个 filter 叫什么名字，它在哪里？什么情况下触发，这其实都跟我们之前讲的这个 where 和架构模式，或者这个插画架构是非常接近的，甚至跟这个地方我个人觉得可能在 filter 这个情况下，更确切的是不是讲一下这个 Plug in 这个 channel 架构更贴切一点，因为这个你并不强调的是你的核心功能解决我们业务功能 settlement 来实现的，这一点并不是我们的重点。我们强调的是可查拔的 filter 或者 listen 这一点大家可以回去研读一下这个 spring 或 spring v seed 相关的一些代码。
+
+
+如果大家对 trust 有兴趣的就可以了解一下trust，它是一种经典的这个夹了早期的这种 MV seed 一种实现，它强调的是 MVC Controller 这种东西成为我们的私人体的一些控制器，什么之类的，它怎么实现的？一样也是基于这种 submarty 的这个 filter 实现了很多功能，大家有兴趣可以去找一下 trust 这个东西，来看一下 spring VC 这个东西其实现在 spring boot 里面很多的，只要你使用 Web 相关的功能， spring VC 自动去在里面，但在源代码大家还是可以去学习一下的。所以你了解这个 spring 也把strateball，还是我们今天讲的这个不一样的架构，我是理解都有好处，推荐大家去研究一下。
+

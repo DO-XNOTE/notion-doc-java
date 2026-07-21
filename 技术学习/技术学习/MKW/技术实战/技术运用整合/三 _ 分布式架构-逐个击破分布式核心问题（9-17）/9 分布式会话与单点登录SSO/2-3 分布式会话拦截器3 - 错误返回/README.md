@@ -1,0 +1,80 @@
+---
+title: 2-3 分布式会话拦截器3 - 错误返回
+---
+
+# 2-3 分布式会话拦截器3 - 错误返回
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7cf54714-fc7d-45d3-8bfb-6d2d5588ce68/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663UCREBGR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225109Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCzMVK3zA9953t18sRqlJLfil%2FtjbzzwpG%2F1%2FF46ixjFwIgaUIS1l%2F5wz7JyAfnmlhX6iU9PsLlRp5IV7UbrKVBE50qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFhr2%2FhwaMyk6tJzECrcAzxiq4%2Bq3frTNVYQZb5Wp86HjFSgT5uukriKPTrovZzwWkLouDkR6RfrRhgcNfOYueYRdVZ9mBAr2ixZnJz2QqznZj1a4OcL9C28XxwpsUQGYeCykd%2BamoWgSGI%2BNeEEipp4slY9ddsyvz0gXYugvpPAfAfxsbA59SOT44dIoJxKfiJMeWb%2FVbYJFPBnG6nRp2vea%2FKxZxux4s4quIzHuyIdZIqk8DqBYOidaaYuGQ2Ucm79ARd7B913LMbBxR0HvKY6FJ1L%2BaOAqNhtThRyjXLvf3paVNOfDhCdONokMdtNSohsPV%2FEh%2B7oYp%2Fq%2BhLrfBQj%2Flbvez%2B714JFTpseLMVs5EZUQG%2BGYuZHnooGIwJ9niWMVYGGO6icLpZzvs7i6AH5RF9v%2BAEJtdlDPE3QWSbRR91M33IHCuVim8pX1PCOFy5%2BnKJKoC%2B%2BrCgipjP1ap69c6VqKImJwritRPd0L6Np1Cw44KrvP5Rbov%2ByN8F17r1MHXdxFrDXMCtA4GsiKKlmHHpgwNttWeXsKb%2BP%2Fb7mPOWYSVIvpofGgvvPPpnwssNpjbdiuRHDl8qnP2K%2BbWDNjicHjaPYL7juheagkS5BD9%2B0VvuOFuTM89U%2Bi0ZDtwlibl561qC8WskSMKG4%2F9IGOqUB9Ga5OFAQ2vF%2B5gtlZObZfj0FyAJP6D61lHh9K8sY1xbkdEMKC%2FF%2FtELTcW0HC1PsR3h0w%2BYQDqOs%2FWXVodoWpz9J7Eye320e3HRllytHImrFoJK3o7%2Ft5HROOv5O1yQsC6SOrYW0zNK9Sp6mHL8MLdSVBSqvzACM9ADAAQQ18%2BSmUtdHOEc810yquyjnftDCZ2Ih0PtpK8PBc2qRMzwvt%2FcjVTYu&X-Amz-Signature=f879658f9236b8e7c2a944ce1bb642e31ea405f0e58d532703fe534f2dac33ea&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/546b97b1-0c37-4fb8-9965-ef76e99940e2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663UCREBGR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225109Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCzMVK3zA9953t18sRqlJLfil%2FtjbzzwpG%2F1%2FF46ixjFwIgaUIS1l%2F5wz7JyAfnmlhX6iU9PsLlRp5IV7UbrKVBE50qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFhr2%2FhwaMyk6tJzECrcAzxiq4%2Bq3frTNVYQZb5Wp86HjFSgT5uukriKPTrovZzwWkLouDkR6RfrRhgcNfOYueYRdVZ9mBAr2ixZnJz2QqznZj1a4OcL9C28XxwpsUQGYeCykd%2BamoWgSGI%2BNeEEipp4slY9ddsyvz0gXYugvpPAfAfxsbA59SOT44dIoJxKfiJMeWb%2FVbYJFPBnG6nRp2vea%2FKxZxux4s4quIzHuyIdZIqk8DqBYOidaaYuGQ2Ucm79ARd7B913LMbBxR0HvKY6FJ1L%2BaOAqNhtThRyjXLvf3paVNOfDhCdONokMdtNSohsPV%2FEh%2B7oYp%2Fq%2BhLrfBQj%2Flbvez%2B714JFTpseLMVs5EZUQG%2BGYuZHnooGIwJ9niWMVYGGO6icLpZzvs7i6AH5RF9v%2BAEJtdlDPE3QWSbRR91M33IHCuVim8pX1PCOFy5%2BnKJKoC%2B%2BrCgipjP1ap69c6VqKImJwritRPd0L6Np1Cw44KrvP5Rbov%2ByN8F17r1MHXdxFrDXMCtA4GsiKKlmHHpgwNttWeXsKb%2BP%2Fb7mPOWYSVIvpofGgvvPPpnwssNpjbdiuRHDl8qnP2K%2BbWDNjicHjaPYL7juheagkS5BD9%2B0VvuOFuTM89U%2Bi0ZDtwlibl561qC8WskSMKG4%2F9IGOqUB9Ga5OFAQ2vF%2B5gtlZObZfj0FyAJP6D61lHh9K8sY1xbkdEMKC%2FF%2FtELTcW0HC1PsR3h0w%2BYQDqOs%2FWXVodoWpz9J7Eye320e3HRllytHImrFoJK3o7%2Ft5HROOv5O1yQsC6SOrYW0zNK9Sp6mHL8MLdSVBSqvzACM9ADAAQQ18%2BSmUtdHOEc810yquyjnftDCZ2Ih0PtpK8PBc2qRMzwvt%2FcjVTYu&X-Amz-Signature=f81df13dc862e256da651630d75a9734ccb904881a0974c04febc91fbe1d22fe&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+上一节我们是实现了这个拦截器的配置，这个拦截的内容是可以去进来了，接下来的话我们就应该要去根据这个拦截器，我们应该要去实现一下这个拦截的整个业务，那么拦截的业务的话，我们是需要去根据用户的信息去做一个对应的拦截，对于用户的信息来讲的话，其实我们是写在了这个 passport Ctrl 里面去对吧。
+
+
+我们来继续来看一下，我们在进行一个设置的时候，就是我们是有一个 Redis operate 点 set 有一个 user token，然后冒号 user ID，其实我们只需要去查询一下，我们到 Redis 里面去搜一下，去 get 一下，看一下这个用户的 ID 能不能去根据这个用户的 ID 去拿到对应的一个token。
+
+
+如果说你能够把这个 token 拿到，并且这个 token 和前端用户传过来的 token 是匹配的，是一致的，就代表当前的操作就是当前这个会话的发起人，也就是这个用户发起的请求，那么我们是可以去让他认证通过的，否则我们就直接拒绝就可以了。这个其实就是最基本的一个拦截的原则，拦截的一个机制。
+
+
+OK，随后我们就可以到这里面去写一下，我们先可以把这个先拷贝一下，贴到咱们的 intercept 这里边来，随后在这里面我们也是需要去使用到咱们的一个 Redis further，所以你也应该要把它给注进来。好，OK，随后我们就可以去做一个使用，那么在这个部位我们要去拿到用户的 ID 以及是他的 token 的话，那么我们应该要怎么去拿？那么其实这个的话也是和我们的一个前端做的一个沟通，你们要去做一个约定，你们要约定是以怎样的形式传入怎样的内容。
+
+
+那么我们可以来看一下咱们的一个前端，在前端里面我就随便先找一个 user info，以这个为例，在这里面我们来搜一下，比方说在这里有一个保存用户信息，在这个部位往下面搜，在这里可以看到我们发起了一个 post 请求，这是它的一个 u r l。
+
+
+这是一个用户的一个信息，随后在这里会发现有一个headers，那么在这里我们做了一个参数的一个传递，其中一个是 header user ID，那么这个其实就是用户注册时候的一个用户ID。此外还有一个是 user token，这个其实就是我们在用户注册和登录过后，那么为它分配的一个token。OK，所以我们只需要从前端从 headers 里面去拿到去拿取就可以了。那么在这里我们是需要去注意就是说这两个信息，其实比方说 user ID，你是可以放在这个 user info 这个模里面，你是可以放到这个对象传递到咱们的后端，我们也是可以从这个里面去取的。
+
+
+但是由于我们的黑德斯这两个内容，这两个参数其实是提供给我们的一个拦截器去使用的，相当于是和我们的业务是有一定的隔离，所以我们一般来说可以把它放到黑德斯里面去做一个对应的一个验证，不要把它放到这个对象里面去做一个传递，这样子其实也是为了降低它的一个耦合度。
+
+
+OK，那么这样子做是比较好的一种方式。当然如果说你不想用这个head，你想把这个 user ID 和这个 token 直接放到这个 user info 里面去，那么也是可以的，这两种方式都行。在这里我们是以这个 header 为主来做对应的一个取值。好，随后我们就可以到咱们的一个后端，我们先把这个拷贝一下，在这里面我们就可以去做对应的一个获取的。
+
+
+首先我们先来 string 把这个 token 我们可以先去获取，那么这个 token 的话是从这个 request 里面去拿。OK，其实就是一个请求头，通过 request 点 get head，随后你只要把前端的这个 key 值给拿过来就行了，那么这是他的token。除了 token 以外，那么还有一个用户的ID，把这个拷贝一下贴过来，然后这个名字我们改一下叫 user ID，这个叫 user token。好。随后我们就可以来做一个对应的判断了。那么首先的话你肯定要判断这两个值必须要非空，如果这两个值有一个为空的话，那么肯定我是不能够让你去继续的，所以我们在这里是需要去做一个判断。
+Street, Utah, there is blank.
+
+
+判断一下 user ID 贴过来，我们再来一个，并且那么在这里其实应该是 is not，不能够为空。再来一个，那么是 user token，那么符合这个条件就可以继续我们的一个业务，否则来一个else。如果说不行的话，那么在这里我们肯定要去抛出一个对应的错误对吧。这个对应的错误的话，我们是直接可以来一个 return force 就可以了。随后在这边我日志就不打了，写一个SOT，我们在这边先写一个相应的一个信息，做一个后台的输出，我们就直接说请登录好，那么这是第一层的判断。
+
+
+随后在我们的第二层里面的话，在这个时候我们就应该要根据这个用户的 ID 去获得他的 token 了，所以在这个地方来定一下 string Uniql 来一个 token 等于通过 Redis 点get，那么在这里做一个拼接，冒号，再加上用户的ID。好，OK，那么这样子你就可以去拿到他的一个 token 了吧。
+
+
+那么要去拿他的 token 的话，那么肯定拿到以后我们也应该要去做一个判断，因为有可能用户如果说他的一个 cookie 里面的一个信息，这个 ID 被篡改掉了，比方说一开始是 1001 被篡改为 1002 的话，那么你要再去获取的话，这个 token 可能在 Redis 里面并没有。所以在这个地方你就应该要去做一个对应的判断，把这个复制一份拷贝一下，做一个判断。如果说在这里我们这样子在这个地方的话，如果说它是一个空的，那么如果说为空，那么很明显又出了一个错。
+
+
+
+return force 在这边我们可以写一下，我们直接就写这个请登录就可以了，因为它这个 token 信息令牌并没有，所以直接请登录就行了，否则来一个else，否则的话，那么接下来就进入我们的下一层判断。那么在这边我们要去做一个判断的话，我们应该要去把这个token，这是我们从 Redis 里面拿出来的一个token，你是需要和我们当前从 head 里面，头里面请求头里面拿到的这个token，你是需要去做一个对比的。如果说他们是不同的，是不一样的，就说明我们的一个用户，他的一个信息有可能是在异地登陆了，也有可能是你获取的内容是有问题，所以这个时候我是不能够让你去继续访问我的 control 的，我肯定要去做一层拦截，所以在这个地方我也是不能够让你去通过的。所以把这个错误消息给拿过来。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ccf146aa-76ef-4367-b977-7d22112e6040/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663UCREBGR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225109Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCzMVK3zA9953t18sRqlJLfil%2FtjbzzwpG%2F1%2FF46ixjFwIgaUIS1l%2F5wz7JyAfnmlhX6iU9PsLlRp5IV7UbrKVBE50qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFhr2%2FhwaMyk6tJzECrcAzxiq4%2Bq3frTNVYQZb5Wp86HjFSgT5uukriKPTrovZzwWkLouDkR6RfrRhgcNfOYueYRdVZ9mBAr2ixZnJz2QqznZj1a4OcL9C28XxwpsUQGYeCykd%2BamoWgSGI%2BNeEEipp4slY9ddsyvz0gXYugvpPAfAfxsbA59SOT44dIoJxKfiJMeWb%2FVbYJFPBnG6nRp2vea%2FKxZxux4s4quIzHuyIdZIqk8DqBYOidaaYuGQ2Ucm79ARd7B913LMbBxR0HvKY6FJ1L%2BaOAqNhtThRyjXLvf3paVNOfDhCdONokMdtNSohsPV%2FEh%2B7oYp%2Fq%2BhLrfBQj%2Flbvez%2B714JFTpseLMVs5EZUQG%2BGYuZHnooGIwJ9niWMVYGGO6icLpZzvs7i6AH5RF9v%2BAEJtdlDPE3QWSbRR91M33IHCuVim8pX1PCOFy5%2BnKJKoC%2B%2BrCgipjP1ap69c6VqKImJwritRPd0L6Np1Cw44KrvP5Rbov%2ByN8F17r1MHXdxFrDXMCtA4GsiKKlmHHpgwNttWeXsKb%2BP%2Fb7mPOWYSVIvpofGgvvPPpnwssNpjbdiuRHDl8qnP2K%2BbWDNjicHjaPYL7juheagkS5BD9%2B0VvuOFuTM89U%2Bi0ZDtwlibl561qC8WskSMKG4%2F9IGOqUB9Ga5OFAQ2vF%2B5gtlZObZfj0FyAJP6D61lHh9K8sY1xbkdEMKC%2FF%2FtELTcW0HC1PsR3h0w%2BYQDqOs%2FWXVodoWpz9J7Eye320e3HRllytHImrFoJK3o7%2Ft5HROOv5O1yQsC6SOrYW0zNK9Sp6mHL8MLdSVBSqvzACM9ADAAQQ18%2BSmUtdHOEc810yquyjnftDCZ2Ih0PtpK8PBc2qRMzwvt%2FcjVTYu&X-Amz-Signature=75d2f569d5dbb4a5a5c542a15729babf2ee49591e39bdde2c181dce5ed5a1b83&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+那么这里面的错误消息的话，那么我们就可以这样子去写，因为它的 token 是信息不一样了，所以我们可以直接提示说账号可能在异地登录，你可以这样子去做对应的一个判断。那么如果说这样子的话，那么其实用户得到这样的一个提示消息的话，那么他可能就会做一个重新的登录，那么这样子其实虽然可能会麻烦，但是其实对于用户来讲的话，我们也是保证了它的一个安全，就说提供了一种安全的拦截，安全的一个措施。好OK，那么这样子的话就是我们基本的一个拦截业务就已经是 OK 了。那么随后的话在这个最后你不要忘记，就是说全部通过以后，你是在这里是需要把它设置为 true 的，你不设置为 true 的话，那么相应的这个用户就说就一直会访问不了我们的后面，所以最后一步肯定是一个true。
+
+
+前面的判断的一个业务的话，都是针对于我们的一些错误，发生错误我们就做一个对应的提示，然后我们再做一个对应的一个相应的 return force，这样子就可以了。那么随后的话其实我们就可以来做一个对应的测试，那么这个测试的话如何去测？我们其实也是可以我们先直接重启一下服务器，因为我们是还没有讲到这个参数的，返回参数是可以以一个 GS 的形式给返回出去，那么现在我们只是以这种错误的一个消息打印在咱们的一个控制台，然后到我们的前端，我们到这里面比方说去刷新一下这个hello，刷新一下然后回过来。
+
+
+那么很明显现在我们的在海德斯里面，海德其实并没有任何的信息，所以它会返回说请登录，它会返回这样的一个内容，然后我们可以这样子，随后的话我们可以为它做一个配置，就是说我们其实在我们当前的一个很多的一些请求的路由里面，我们都是可以去做一层一层的拦截的，是写在这个部位。在这里的话我只是已经也是预先的给准备好了，所以关于这一段内容我就直接全部都拷贝过来，推到这个这里面看一下。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/101774c4-ade3-4af3-9fcf-f90ecd3f31c4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4663UCREBGR%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225109Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCzMVK3zA9953t18sRqlJLfil%2FtjbzzwpG%2F1%2FF46ixjFwIgaUIS1l%2F5wz7JyAfnmlhX6iU9PsLlRp5IV7UbrKVBE50qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDFhr2%2FhwaMyk6tJzECrcAzxiq4%2Bq3frTNVYQZb5Wp86HjFSgT5uukriKPTrovZzwWkLouDkR6RfrRhgcNfOYueYRdVZ9mBAr2ixZnJz2QqznZj1a4OcL9C28XxwpsUQGYeCykd%2BamoWgSGI%2BNeEEipp4slY9ddsyvz0gXYugvpPAfAfxsbA59SOT44dIoJxKfiJMeWb%2FVbYJFPBnG6nRp2vea%2FKxZxux4s4quIzHuyIdZIqk8DqBYOidaaYuGQ2Ucm79ARd7B913LMbBxR0HvKY6FJ1L%2BaOAqNhtThRyjXLvf3paVNOfDhCdONokMdtNSohsPV%2FEh%2B7oYp%2Fq%2BhLrfBQj%2Flbvez%2B714JFTpseLMVs5EZUQG%2BGYuZHnooGIwJ9niWMVYGGO6icLpZzvs7i6AH5RF9v%2BAEJtdlDPE3QWSbRR91M33IHCuVim8pX1PCOFy5%2BnKJKoC%2B%2BrCgipjP1ap69c6VqKImJwritRPd0L6Np1Cw44KrvP5Rbov%2ByN8F17r1MHXdxFrDXMCtA4GsiKKlmHHpgwNttWeXsKb%2BP%2Fb7mPOWYSVIvpofGgvvPPpnwssNpjbdiuRHDl8qnP2K%2BbWDNjicHjaPYL7juheagkS5BD9%2B0VvuOFuTM89U%2Bi0ZDtwlibl561qC8WskSMKG4%2F9IGOqUB9Ga5OFAQ2vF%2B5gtlZObZfj0FyAJP6D61lHh9K8sY1xbkdEMKC%2FF%2FtELTcW0HC1PsR3h0w%2BYQDqOs%2FWXVodoWpz9J7Eye320e3HRllytHImrFoJK3o7%2Ft5HROOv5O1yQsC6SOrYW0zNK9Sp6mHL8MLdSVBSqvzACM9ADAAQQ18%2BSmUtdHOEc810yquyjnftDCZ2Ih0PtpK8PBc2qRMzwvt%2FcjVTYu&X-Amz-Signature=df67dab88732e0edfdda014d51d685f9b580443ee38a447e5950fd06d4d76054&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+
+总共会涉及到这些，大家其实也是可以根据自己的一个情况，去把对应的一个请求的路由地址全部都给贴过来。贴过来了以后，那么有一个是需要去注意的，那么在这里面其实有些地方是一个斜杠星，斜杠星的话是代表当前这个路由下方其他的一些子路由全部都会被拦截，这点是需要去注意的。
+
+
+那么另外一个，如果说在我们当前的这个 orders 或者说是 Santa 里面有某一些我们是不需要去做拦截的话，比方说你可以再加上一个exclude，那么这个就是剔除，就是说当前这个路由是不会被我们的拦截器给拦截的，那么这个去注意一下就可以了。这边我就直接把这些给贴过来，总共这些我们是目前会涉及到的一些是要被拦截的一个路由。保存一下，然后我们再做一个重启。
+
+
+好，然后回到咱们的一个页面。回到页面了以后这边刷新，因为当前这个页面地址里面其实并没有包含用户的一个 header 中的一个 user ID 以及是token，所以它肯定是一个请登录这样的一个消息，肯定是会这样子。那么对于我们现在当前这个我们的一个用户中心，比方说我们可以来刷新一下，那么刷新多次以后，其实你也可以发现，这是我们的一个交互，和数据库的交互是正常可以进行的，是没有任何问题。那么也就是说咱们的一个拦截器，它其实是通过验证，通过了它的一个拦截的验证是可以去进行的，一个相应的放行，然后的话你可以再做这样的一个操作，比方说打开我们的这个cookie，你可以把这个 cookie clear 给清掉，然后清掉以后你再去做一个双印的话，那么其实它就会有相应的一个报错信息了。
+
+
+可以看一下我们的一个后端，很明显你的 cookie 信息一旦没有了，相应的其实在 header 里面，它的 header 里面你是获得不了相应的一个内容的，比如说这里它的 user ID 以及是这个 user token 肯定为空，所以这个时候的话一旦没有进入，所以它就会返回一个请登录，让你去做一个对应的登录了。
+
+
+OK，这个其实就是我们最基本的一个拦截业务的一个判断，然后的话你也可以做另外的一个测试。假设你有另外的一台电脑，你可以尝试着先登录一台，然后再由另外的一台去做一个对应的登录，然后你再回到第一台，你再重新的去做一些其他的业务的操作，那么他这个时候其实就会进入到这个业务，他就会说你的一个账号在异地登录了，被别人登录了。那么你是需要去做一个重登录才能够恢复你的访问。OK？
+
+
+

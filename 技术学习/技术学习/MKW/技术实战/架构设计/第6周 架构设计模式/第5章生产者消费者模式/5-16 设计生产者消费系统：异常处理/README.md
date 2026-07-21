@@ -1,0 +1,30 @@
+---
+title: 5-16 设计生产者消费系统：异常处理
+---
+
+# 5-16 设计生产者消费系统：异常处理
+
+生产者除了前面讲的几点，还有一些比较重要的点我们也要提一下。第一就是术语当年的这个独立性，那前面我们已经讲过了，最好是让它是独立的，如果说这个数据单元不能独立，就互相有依赖。首先这个现在的成本很高，最终运营结果也不一定是你想象的那个样子，而且对你的整个控制行为，从整体 overall 的角度来讲，它也是很困难的。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/5c5698c1-3278-4265-9eb9-56674f2e5641/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TQEQZNDZ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T230622Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQCxOfQ2mFOOO49oqOLqUDTTHWXGXtJxZMdjVtZ%2Bi5momwIgZrVV%2FYT0CZujceecoGgJ6OPIbhfrEPrwxlFifTDHno0qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDLkNZbvdtP6w4cN%2BGircA1%2BVGdwSeJ5bWZI5E%2Fv4gWDvXtmFzaLhqYiHPplOhUqVV02gDNRCl6j2ftZh9eqYsPLmjc6tAYnDRK7CiV1SMuayMId0uXb%2B6B5wlBz2huAja1vrxoB8xWovQ8KzF7jQt9h3qBpbxNhYsAiDqV%2BxkTWgemC7lcVsbcTiQJmIyQpHEUL43bfNSKCHcny1sfzGwwdnnKqX%2B1rgRa3orQEB0qYgxBj6KRPmX9%2F%2F%2Bhog17qrB1K5VvDcpsLEi8VABlNL%2FfX3610oaHJKy7qDVdJmzQLTOFXF0NCckcUSHPi7n0fxcP7WtD9DXS6Xj96ulcBtIAYelyZfr3fCt9FsmQULzSV9CVCaf2IzEB8d8psi%2BXYPsvBUwMKSGI89GftaNVjfUu1CbhrhGNppbnCQrzcueavN2hbnBnUzUA92qM0g5NSx2hua89Dw%2BOSAZzNk6QukxuV9djwazj4m2UOEjdb1QkOaTdGeiFC13JWHXxbTjP84xkJsVR%2FFPVmnQCSzIHN61cvz8H5xa54LOOjQe%2FcUCvukud9IeVxdQKCY%2BPPJQPcugfIc53O0kdFBf9lq%2BTcA%2FdnbTPOZNZUhrH8f56mZuk0VLL9DvHkAKkEH0slz%2F%2BNuLK%2F%2F%2Bf%2BCO6cR6zKrMO%2B6%2F9IGOqUBF%2BUg8MTPoP%2FbUM%2BbR4%2FwQj4429po%2F2Q16ry0ceeEeuRU4ipBMnNz6ikqTV8eVAiTmx%2FTgQKbn1VLucHYFdotonbjAK%2BIE5xFc27%2BElmJUWCYPprolGgGEVgRNw917DbEx69W66yxQ1wmcywguAqj0WeIur6raqZDJzEk7ndAa2LA4HudS0%2BZSb8IuIE9r6j%2Fojyjqz2OEl7VYQxaPQQSr2rII5VT&X-Amz-Signature=cebe08ecb351044a215ebdb85305eeee32101ab03713848c11983e8a564d39c9&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+所以说我不太推荐说，如果那两个数据成熟之间，比如会举个例子，你先发一条消息后发一条消息会对这个系统造成很大的影响，或者第二条消息必须等到第一条消息业务到达之后，我解读出全部的数据之后，我才能完成一个功能，这种都不是特别适合咱们这个生产消费的模式，你如果硬要套的话可能证明你哪里有问题。所以说数据单元你在这个设计的时候，你发送指尖，从生产者你保证它时间和空间的一个独立性。
+
+
+什么意思？就是实践先后顺序上面其实在乱序的，我先发哪条后发哪条，对整体系统不会造成特别大的影响，这是你要注意的一个事情。第二点就是空间，就是你存在的时候爱咋存咋存，只要最终我能够读到这个消息，这个存储就值得在那个容器里面存储了。就我发出去的时候我随便乱发，来你那边吃边蠢，我这个都能收的到，对整个结果不会有影响。所以这点组织现状强调一下时间和空间的双重独立，如果这两者你发现有一个条件不吻合的话，那就证明你要么是用错模式了，要么你就是实现出错了，这种请大家切记啊，这就是帮助你来判断说你这个模式用的时候用对了没有，这是第一，这是你生搬硬套上去的。
+
+
+这两点对于你整个系统设计模式的这个选择其实有很大影响的，如果你做不到这一点，那你就反思是不是用错了，切记这句话，如果你发现你的数据单元之间有很强的依赖性，就时间上的这个东西特别容易出问题的，一定要想想是不是有什么问题，这一点大家切记。接下来可能就是说你在设计这个生产者的时候，你要考虑这个传输过程当中你可能会出现这些错误，你怎么来处理？就是说白了你要一套异常处理的机制，诶，到底在发生问题的时候，你怎么来应对这种情况？你提供了哪些手段给你的开发者？或者你整个新的这个从系统原理层面来讲的话，你怎么来处理这些错误？因为不同的处理的手段会对你整个系统的这个最终的，比如说数据的一致性、成功率、sport，甚至你的高可用了，都会造成一大极大的影响。为什么这么说啊？
+
+
+是啊，整个系统就崩了还是怎么样？这个对整个系统这个设计的影响是非常大的，所以你怎么处理这些超时就会导致你后续的一系列的后果，如果说你要超时，那就直接丢弃，那就可能说导致的数据丢了，对吧？但是会超时之后我怎么处理这种错误？是不是可以重试一下？是不是有个 fareover 的机制？这些东西在设计这个生产角度上你都要想到，如果你做不到这一点的话，系统也是可以运行的，不像你前面讲那个你就跑不起来了。
+
+
+怎么没翻？你不序列化的这个数据可能就发不出去了，这个点你没有错误处理或者异常处理，你还是可以跑起来的，这个是没有问题的。但是整个系统这个怎么讲究？这个容错率，或者系统整体的这个成功性、可靠度？而且可都会下降。为什么这么讲？稍微比如网络抖动一下，你这个系统那消息就发不出去了，肯定是接受不了的，或者说你发一次的时候就纯粹的是技术细节，根本跟业务没关系那种，你发送一次失败了就买掉第二次，那这是不是有一点点问题？也许你再重试一次就好了。那如果说这个超时间其实没有那么长，你再给串一下，这是不是就好了？都有可能的，这个是非常见的一种做法。
+
+
+所以说如果说你在设计这个生成者的时候，你要对外发送消息或者传输数据或者搬运东西，那你不能说就这么算了，就跟你发个包裹，或者你寄快递的时候，他一次没有投递成功，他那就只投递一次，那肯定不是这样子，你可以自己去回忆一下你以前包裹有问题的时候人家会怎么告诉你？会告诉你我先把这个收回，我在第二天再次投递，你这个投递成功为止，或者它到一个上限。比如说我最多投递 5 次，我就不再投递，因为这里有个成本的考量的问题。咱们系统里面也是一样，本身有超时了，我试一下不成功，我再试一下，成功还OK，你说我试个 500 次都不成功，那这是浪费资源。第一第二导致整个系统处理任务的能力下降，这肯定是得不偿失的。
+
+
+所以说你肯定要有这种超时错误或者从事的这个机制，但是你要把握这个度，再过的话可能也就失去了原本的初衷，因为我们做这种意见处理都是保证性的，可靠性，然后稳定性。那如果说你自己说难听点，你要是搞个死循环的抑制重试，那如果有一个错误的这种不就废了嘛？他去一直在重试，那还有什么意义？这一点你要是懂得取舍，但是一定要有这种错误或者异常处理的这个机制存在，否则你这个 producer 是非常脆弱的，动不动稍微有点小毛病它就不能抹克，这个肯定不能接受的，对不对？所以这点你一定要有，但是你做的怎么样？或者选择性的灵活度在哪里？这个其实我倒个人觉得没有统一的标准，但是你一定要提供这种机制在整个生产系统里面。
+

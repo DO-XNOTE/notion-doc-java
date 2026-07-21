@@ -1,0 +1,119 @@
+---
+title: 1-15 【架构思考】如何实现集群访问的安全性、可用性、完整性
+---
+
+# 1-15 【架构思考】如何实现集群访问的安全性、可用性、完整性
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/b108515e-135e-48f5-9f87-14e1b01b0442/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662LZRBBDL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225941Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEhMcL%2FzUNoY3ZY6FxgBghP2Us0YNUBLoCKyZl5k7M6nAiEAhKR5N%2FzPMGu8dS8INC%2BPuOlXNpMCbWBAH6SDmpkz4t8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDG2HlF33mCP3k0tY9CrcA18toZj6gI5Cnr71W5ArXYUOA%2B5vNZGdWnk0tFymrU%2BfC%2BtCspLfxX%2FVarOgRIjAsSxJ1xPptcCOorIS2bT3VB57yZBEnpfB06zjv0qYf5Ep09tz685YDx%2F%2BTfNh4VNeLAWd1APz%2BvHXFZFrtb60wLAmqZQoxuRFa6LHToegyIMB%2FtZu5pHgvJxbsfkbov4bpo5Egs%2FVYb%2BlT5lfIfVTiykrBkZTXKZkeOi22tZejPU0573Ie%2F274Dmerap5XuH74AxVZ86BByBCiAXLLziV%2FC3nyar%2Bo4PcEZ3kIYfYW6V1KASbZKUFBw4g9WvEiOgXIaqVMwFyVpZ4bPzSdUjOMAKqFddVDAkrYOi6ZE1sGdOmXNC8tqrnd3ylLxqmi2%2FoOojuN99vXnMVyPnI9If6VSqLXu0M0yNTZ2rNhx1evBCS1M75VMhi1aDedXWPDvq2JdshLvm1X5MPP4WRW9DJAUtMrJejagKdOGf0%2Faue82xntjsai8ue1NKfI6cVZ0eRkDCSsTZYW8hyE0HMdrR3oYoZU27a%2FJYNzU7APNKblDE6GAlO6lG0kDVSTiWxaoP2Vzl2ACjg7OutFC4Oaob8ClSxCrVC30H%2F2uXNi4MRGt5jmwcbxqzWm%2F8LX7N%2FMJq6%2F9IGOqUB9yxU7JpM2UBVEJNjgCpgF15B6PxOJvuXUwzDeXE%2BikwNTvd0Y4ghP3%2FFh8x3CtHRLFb1SOCtjW%2F%2FP4iv1Pg%2F2bt3L6ySh1lac4A%2ByQp%2FyDRnj9PwA4DAhge6VVAhBnE3ZZF8dNKZCuYEflMTevhgQMlXqRiZPoBEoakRR1uDLD9FC8P35DFvgLY2dMfb5q7vtQcCxMUR5DVR4yxmTYryvf4NXHpN&X-Amz-Signature=40dc5a46c9d5d2027085dff3ac35f37debc624d36343e0b9cacdbab7f7ddc0ea&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/985f8d40-f262-4550-b2be-538823aac68d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662LZRBBDL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225941Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEhMcL%2FzUNoY3ZY6FxgBghP2Us0YNUBLoCKyZl5k7M6nAiEAhKR5N%2FzPMGu8dS8INC%2BPuOlXNpMCbWBAH6SDmpkz4t8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDG2HlF33mCP3k0tY9CrcA18toZj6gI5Cnr71W5ArXYUOA%2B5vNZGdWnk0tFymrU%2BfC%2BtCspLfxX%2FVarOgRIjAsSxJ1xPptcCOorIS2bT3VB57yZBEnpfB06zjv0qYf5Ep09tz685YDx%2F%2BTfNh4VNeLAWd1APz%2BvHXFZFrtb60wLAmqZQoxuRFa6LHToegyIMB%2FtZu5pHgvJxbsfkbov4bpo5Egs%2FVYb%2BlT5lfIfVTiykrBkZTXKZkeOi22tZejPU0573Ie%2F274Dmerap5XuH74AxVZ86BByBCiAXLLziV%2FC3nyar%2Bo4PcEZ3kIYfYW6V1KASbZKUFBw4g9WvEiOgXIaqVMwFyVpZ4bPzSdUjOMAKqFddVDAkrYOi6ZE1sGdOmXNC8tqrnd3ylLxqmi2%2FoOojuN99vXnMVyPnI9If6VSqLXu0M0yNTZ2rNhx1evBCS1M75VMhi1aDedXWPDvq2JdshLvm1X5MPP4WRW9DJAUtMrJejagKdOGf0%2Faue82xntjsai8ue1NKfI6cVZ0eRkDCSsTZYW8hyE0HMdrR3oYoZU27a%2FJYNzU7APNKblDE6GAlO6lG0kDVSTiWxaoP2Vzl2ACjg7OutFC4Oaob8ClSxCrVC30H%2F2uXNi4MRGt5jmwcbxqzWm%2F8LX7N%2FMJq6%2F9IGOqUB9yxU7JpM2UBVEJNjgCpgF15B6PxOJvuXUwzDeXE%2BikwNTvd0Y4ghP3%2FFh8x3CtHRLFb1SOCtjW%2F%2FP4iv1Pg%2F2bt3L6ySh1lac4A%2ByQp%2FyDRnj9PwA4DAhge6VVAhBnE3ZZF8dNKZCuYEflMTevhgQMlXqRiZPoBEoakRR1uDLD9FC8P35DFvgLY2dMfb5q7vtQcCxMUR5DVR4yxmTYryvf4NXHpN&X-Amz-Signature=4f27c4b78152ce024da55be964c50adf29980d806018dcca01277685a544d4dd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8bac3b83-a9f2-4571-9924-a392241b5457/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662LZRBBDL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225941Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEhMcL%2FzUNoY3ZY6FxgBghP2Us0YNUBLoCKyZl5k7M6nAiEAhKR5N%2FzPMGu8dS8INC%2BPuOlXNpMCbWBAH6SDmpkz4t8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDG2HlF33mCP3k0tY9CrcA18toZj6gI5Cnr71W5ArXYUOA%2B5vNZGdWnk0tFymrU%2BfC%2BtCspLfxX%2FVarOgRIjAsSxJ1xPptcCOorIS2bT3VB57yZBEnpfB06zjv0qYf5Ep09tz685YDx%2F%2BTfNh4VNeLAWd1APz%2BvHXFZFrtb60wLAmqZQoxuRFa6LHToegyIMB%2FtZu5pHgvJxbsfkbov4bpo5Egs%2FVYb%2BlT5lfIfVTiykrBkZTXKZkeOi22tZejPU0573Ie%2F274Dmerap5XuH74AxVZ86BByBCiAXLLziV%2FC3nyar%2Bo4PcEZ3kIYfYW6V1KASbZKUFBw4g9WvEiOgXIaqVMwFyVpZ4bPzSdUjOMAKqFddVDAkrYOi6ZE1sGdOmXNC8tqrnd3ylLxqmi2%2FoOojuN99vXnMVyPnI9If6VSqLXu0M0yNTZ2rNhx1evBCS1M75VMhi1aDedXWPDvq2JdshLvm1X5MPP4WRW9DJAUtMrJejagKdOGf0%2Faue82xntjsai8ue1NKfI6cVZ0eRkDCSsTZYW8hyE0HMdrR3oYoZU27a%2FJYNzU7APNKblDE6GAlO6lG0kDVSTiWxaoP2Vzl2ACjg7OutFC4Oaob8ClSxCrVC30H%2F2uXNi4MRGt5jmwcbxqzWm%2F8LX7N%2FMJq6%2F9IGOqUB9yxU7JpM2UBVEJNjgCpgF15B6PxOJvuXUwzDeXE%2BikwNTvd0Y4ghP3%2FFh8x3CtHRLFb1SOCtjW%2F%2FP4iv1Pg%2F2bt3L6ySh1lac4A%2ByQp%2FyDRnj9PwA4DAhge6VVAhBnE3ZZF8dNKZCuYEflMTevhgQMlXqRiZPoBEoakRR1uDLD9FC8P35DFvgLY2dMfb5q7vtQcCxMUR5DVR4yxmTYryvf4NXHpN&X-Amz-Signature=a56f7d7aa4ed6a8148526c0b7177cdb23677fcdc509bf9138cd993650e0afb35&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+面章节我们介绍了 RBA C 介绍了 service count 和普通的 user account 那同时也从 authentication 和 authorization 认知和授权两个角度，重点给大家介绍了一下我们 kubernetes 的一套认证机制。那这里我们希望拔高一下，从架构师的角度重新去思考一下如何在我们的这个 kubernetes 这样的一套应用的容器化的集群里面来实现真正的安全。
+
+
+那首先对我们要看一下什么是安全的定义。通常在我们业界有很多的这种就是认证机构，比如像 ISP 比较知名的，还比如像 crssp 这种考试，安全架构师考试，它里面都会提到一个概念叫什么安全从三个方面来定义，一个是什么 confidentiability 机密性。另外一个 integrity 完整性，还最后一个是 availability 可用性。
+
+
+那之所以从这三个方面来说来论证安全是因为什么？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/ca74d1a5-9353-4de6-aa7d-c2a80080ec07/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662LZRBBDL%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225941Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIEhMcL%2FzUNoY3ZY6FxgBghP2Us0YNUBLoCKyZl5k7M6nAiEAhKR5N%2FzPMGu8dS8INC%2BPuOlXNpMCbWBAH6SDmpkz4t8qiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDG2HlF33mCP3k0tY9CrcA18toZj6gI5Cnr71W5ArXYUOA%2B5vNZGdWnk0tFymrU%2BfC%2BtCspLfxX%2FVarOgRIjAsSxJ1xPptcCOorIS2bT3VB57yZBEnpfB06zjv0qYf5Ep09tz685YDx%2F%2BTfNh4VNeLAWd1APz%2BvHXFZFrtb60wLAmqZQoxuRFa6LHToegyIMB%2FtZu5pHgvJxbsfkbov4bpo5Egs%2FVYb%2BlT5lfIfVTiykrBkZTXKZkeOi22tZejPU0573Ie%2F274Dmerap5XuH74AxVZ86BByBCiAXLLziV%2FC3nyar%2Bo4PcEZ3kIYfYW6V1KASbZKUFBw4g9WvEiOgXIaqVMwFyVpZ4bPzSdUjOMAKqFddVDAkrYOi6ZE1sGdOmXNC8tqrnd3ylLxqmi2%2FoOojuN99vXnMVyPnI9If6VSqLXu0M0yNTZ2rNhx1evBCS1M75VMhi1aDedXWPDvq2JdshLvm1X5MPP4WRW9DJAUtMrJejagKdOGf0%2Faue82xntjsai8ue1NKfI6cVZ0eRkDCSsTZYW8hyE0HMdrR3oYoZU27a%2FJYNzU7APNKblDE6GAlO6lG0kDVSTiWxaoP2Vzl2ACjg7OutFC4Oaob8ClSxCrVC30H%2F2uXNi4MRGt5jmwcbxqzWm%2F8LX7N%2FMJq6%2F9IGOqUB9yxU7JpM2UBVEJNjgCpgF15B6PxOJvuXUwzDeXE%2BikwNTvd0Y4ghP3%2FFh8x3CtHRLFb1SOCtjW%2F%2FP4iv1Pg%2F2bt3L6ySh1lac4A%2ByQp%2FyDRnj9PwA4DAhge6VVAhBnE3ZZF8dNKZCuYEflMTevhgQMlXqRiZPoBEoakRR1uDLD9FC8P35DFvgLY2dMfb5q7vtQcCxMUR5DVR4yxmTYryvf4NXHpN&X-Amz-Signature=fb64a9ad613d3bb8adf30bbf0290e04a45d851461e7796e55489d926a56add43&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+通常我们能想到的是什么？安全是信息，不要泄露给不应该获取信息的人。那这其实就是机密性的核心点，就是我们要把一个信息的暴露保留在什么合理的范围内，尽量不要去从那个就是我们内部的这种核心欲向外面的什么非核心欲或者是外人去告知，这是机密性。那另外一点是完整性也是非常非常重要的。在安全领域来看，就是当我的信息在沟通的时候，如果我被别人随意的篡改，同时别人来冒充，我来冒领我身份，然后做一些这个违规的事情的时候，你没法证明谁是谁。
+
+
+这种时候其实什么是因为数据完整性导致信息的什么不准确不稳定不可监控或者说不可否认性，就没有失去它的不可否认性，就这也是机密或者说是信息安全里面很重要的一个内容。除了 confidential ability 以外的一个 integrity 那光这两点够不够其实还不够。当我们对这个系统进行大量 dedos 攻击，导致他信息没有泄露，数据仍然完整，但是完全不可服务，这个网站就 down 掉了。这个时候你可以很方便在同样这个 DNS 的这种情况下，去申请一个其他的网站来冒领你的网站对不对？你数据还是完整的信息还是什么机密，但是什么你的业务不可达了，而它可达的是一些茂林的网站。那这种时候其实是？什么被受到挑战，可用性被受到挑战。这个可用不光是指什么，不光是指后台我们系统级别的高可用，其实还指什么？还是指网络上面我们的什么业务是不是可达？就这三个层次我们就是什么？仔细来看一下，在我们这个 ISP 就是安全的，整个这个架构师的领域里面，我们重点的三个层次是怎么样互相交叠的？那其实刚刚已经聊到过了是吧。
+
+
+机密性这是什么？我们用红色的圆圈显示的最核心的安全第一大要素。如果你的一个信息，但失去机密性，也就失去了什么你所有要保护的什么数据的安全的目标。那吊炸要素就是什么？就是完整性。而红和蓝中间交叠的那一部分是什么？既要保证机密性，也要保证完整性。
+
+
+那其实我们还有一些这个很多的框架，有些这个就是用户的这种授权框架，他会强调什么？他会强调说我们从高级用户到低级用户之间是什么？是高级用户可以访问低级用户的数据，但低级用户不能访问高级用户的数据。那我们这种原则或规则就是什么？是以机密行为首要条件。那比如像我们军方很多的这种就是核心的这种，我们的这个业务系统里面都会强调以机密性我最高要求。
+
+
+那但是还有一些这个比如我们的商业应用，它不是强调机密性，而强调什么完整性，它要求什么要求？就是说当我们的这个低级应用的数据被修改的时候，不能去什么不能去改变高级应用的这样的数据的这个使用对不对？就是当我们外围的一些应用，比如说我们对外暴露的这个 API 改变的时候，数据库不会被改变，只有数据库改变的时候，你对外的 API 结果才会改变。
+
+
+所以这样一种就是什么底层就低级应用不会去影响高级应用这种特性的就是完整性在很多商业应用领域里面的要求。那如果是你这是一个很核心的很保密的商业应用，它同时也要保持什么商业的一个特性，就数据是非常非常支撑的，完整可靠，不会被篡改的。那这个时候就是中间红蓝交叠的部分，颜色块去红蓝交叠应该是黄吧，比如那个黄颜色，蓝色块去所表现应该就是什么我们要求达到的那种，就是既有高的 comfortability 又有很强的 integrity 那第三元素怎么样进行配合呢？红蓝可能还是下颜色，我们再看一下。
+
+
+那第三元素是怎么实现的呢？第三元素其实是黄颜色那个可用性。可用性就是刚刚已经聊到了我们要求什么，我们要求这个服务最终是可达的同时它的整个过程当中所有的其他的模块出现单点故障的时候，也不影响服务的可达性。那这个时候可用性越跟机密性有一个交点。那这种场景出现在哪里呢？也出现在比较要求等级高的，比如说安全的这种服务。
+假设我们有一个什么无人战机要派出去实行，一个是比较特殊的是吧一个攻击任务，这个时候无人战机不要被别人发现是吧，它从雷达上不要被别人发现。同时什么同时我们对无人战机那个控制信令不能被别人发现，这就是有机密性。同时这个信令页要能发送到无人战机，否则无人战机什么就乱轰炸是吧，有可能把自己领土里面的这个建筑都轰炸掉。
+
+
+所以这就是一个信号系统里面要求机密性、可用性达到最高的这样一个典型案例。那有没有蓝色跟黄色交叠部分的案例也是有的，就是有很多的商业系统是要求什么完整性和可用性达到最高。比如我们的一个什么互联网的那种应用，它是对外提供一些是目录结构，比如像是什么 58 同城这种就是什么手上，有一个什么二手的东西，我希望这个挂出去是吧，我可以通过闲鱼，通过 58 或者通过很多交流平台。
+
+
+所以说这信息你要看到我的名字，也要看到我挂的东西，这个信息是对所有人暴露的。如果你拿爬龙去爬这些信息，其实其没有什么机密性，科研是吧，它本来就是一个对外暴露，希望很多人看到同时会有人真正来买我这个东西就机密性并没那么重要，但是完整性非常重要。
+
+
+我原来本来想卖的是一个是个便当，你把我改成一个坦克，那有可能我就违反了一些国内的军事机构的要求，不能随便在网上卖坦克对不对？但是这是完整性要求上，我们不能随便被别人篡改。那可用性要求是什么？我希望我在卖便当这个信息，不要被别人给阻拦掉，像我永远是吧，我就是挂出去以后一周两周都卖不掉。然后我再去查这个网站发现什么，我挂的这个信息被别人拦掉了或者 dedos 攻击，把这系统弄脏了，或者是我这条信息的可达性被别人拦掉了，导致我卖不出去。所以这是一个完整性可用性的一个焦点，中间的焦点模块。那最最核心的教练模块是什么？其实是这个中间类似于三角形这个教练模块既有机密性又有完整性又有可用性。
+
+
+那我们来看一下我们 kubernetes 里面是怎么来实现这个最最核心的三块交叠的，既要保密又要保证数据是不被篡改的，同时又要能保证业务可达的是怎么来实现的呢？好，那我们库国内体的实际方法其实很简单，它是用什么？用好几套不同的原理来分别实现机密性、完整性，还有可用性。那最后形成整个业务生态圈，我们的什么 kubernetes 所有的应用里面可以达到了三元素完整结合。
+
+
+那我们先看第一个元素机密性。机密性的一大特点是什么？是要求什么？我知道你的身份，然后我才知道我是不是能对你暴露，就是核心层中间层的外部层，我首先知道你是哪一层的。那怎么知道呢？其实前一天已经聊到过一些方法，就是如果你才知道你的密码，那通过你知道的密码我可以来认证是不是你对不对，但这样不安全。因为什么你知道有可能你被别人也知道。当你告知我的时候，有人在中间进行串听对吧，窃听，他可以知道你的密码，所以这个不安全。那怎么样进一步你拥有什么就相对比较好一些。比如你拥有一个钥匙，当别人看到你的钥匙时候，他没法把你的钥匙完整的很快的复刻出来，就你拥有什么会比你知道什么更安全。那再进一步就是你是什么？比如我是这样一个人，我的本身有一个特质，我的虹膜的指纹，这是本身身体上或者说是本身系统上所特有的。那这种你是什么呢？会更加安全？那有没有更更安全的方法呢？那就是什么？多因素认证叫 to factor authenti 开始多因素认证就是要求你既提供一个你知道什么，也提供一个你拥有什么比较经典的案例是什么？有经典案例，比如我们去登录一个比如像携程这种网站，当你输入你用户名密码的时候，他会要求你可能有点不太正常，我要求你什么再提供一个你的生日什么信息，你的额外信息，这就是用两个你知道什么来实现验证。那但是当你登录银行系统的时候，它会更进一步要求你提供两个不同的元素。
+这两个元素分别，一个是你知道什么，一个是你拥有什么你要拥有一个银行的密码卡的对应表。同时你也要知道我的银行的登录的密码又是信令表的这个对应表。另外一个是密码双则结合起来，最后输入一串什么又会出来一串根据你知道的密码，根据你的对应的卡片表对应出来的实际的一个 token 值，然后来验证你的身份。
+
+
+那我们 kubernetes 里面怎么实现呢？就前面那个 authentic 那张，大家仔细看，大家还记得吗？ basic authentic 是什么？是知道什么 token 呢？就是你拥有什么？而如果是一个系统，既要求 basic authentic 又要求 token 它就是双指的结合。是两元素认证，可以通过这种单元素的认证和双元素混合认证，可以实现 kubernetes 里面应用和 API 权限的机密性的掌控。
+
+
+当你知道我们的这个授权的用户特征以后，那下一步其实就是什么？就是最核心的我们的这个授权授权。这里重点要强调一点，授权有好几种方法。那我们最常见的授权方法其实是自主访问控制。自主访问控制是什么意思呢？很简单一个意思就是什么 SC L 的这个文件授权表，比如你 demo 里那个通常你会对这个某个目录进行授权对吧？我可以怎么样，我的同组的人怎么样？可读可写，其他人可读可写。就每个人都可以对自己的你看离那个系统的特定的文件和目录进行独一的授权。
+对不对？这种就是自主访问控制，我来一个文件或者一个目录的所有主来进行访问控制。那比它高级是什么？高级就是自主访问控最长是什么？是商业应用领域或者说商业系统领域强制访问控制最常见是吧？是军事化领域，或者说是一些高级的安全认证部门，那他要强制访问控制。
+
+
+比如我们以这个军方以前就是美国军方用的那些什么大型机为例，大型机里面专门有一个叫授权主，叫什么叫 rakf 的这种授权组，他授权组的里面的所有的用户不能执行任何操作，就不能修改文件，不能做任何应用的事情，他就是用来什么，他就是用来管理其他的成员的这个权限。
+
+
+它有一套专门的系统，这个子系统也是独立的，就类似于我们 quota 集群里面 name space 的概念，它有一套独立的 name space 的这个子系统来管理其他所有用户的权限，那他是集中管理的，但他的管理权限的人是不能对应用做任何操作，他只能干一件事，就是管理不同用户的所有权限。
+这不像我们系统里面 root 是吧，root你既能管理权限又能操作系统能在强制好像控制里这是违规的。那这种就是一种授权的机制，就是通常强制会比自主的更高级。但在强制和自主之间有没有更加灵活的方式呢？就是角色控制访问方式，角色控制界限强制控制的强制访问的什么？集中化就是我通常在一个集中化，比如 L DAP 或者 adad 是 Windows 里面用到这种集中化的这种角色控制系统。 L App 是我们说 Linux 或者是 UNIX 平台里面角色控制系统的一个集中化体现它在一个集中的这个服务器上面或者服务器集群里面设置你的用户名、你的密码、你的这个可访问用方式，你的这个角色你能做哪些事情？那同时他也通过什么，他也通过角色跟更多的资源对接，不需要你每个用户去对接某个资源是吧。
+
+
+不要强制访问控制，每个用户都要设置好对接哪些资源非常繁琐，它简化了强制访问控制的繁琐，但是保留了强制访问空的集中化的特点。那同时它又有点像自主访问控制什么，它就是能够很方便让你这个用户去加入一个组。那加入这个组以后，它就拥有了组里面对资源那个什么集中的这种控制能力，这就是授权我们大部分的这个 kubernetes 的生产集群，现在都采用这种角色访问控制。当然你也可以通过一些艾藏来靠向强制访问控制靠拢，或者你直接使用一些什么类似于 Linux 的用户的账号管理，去关闭 ibsc 来实现什么来基于自主访问控制的一种授权方式。
+
+
+在我们通常都推荐就是说授权用角色访问控制，身份验证，用 token 这种第二种拥有什么样的方式？那如果你还是感觉不安全，你还可以两个人元素共用。好，那有收入验证，有了访问控制，有了授权是不是就够了呢？犀利性还有一个很关键的特点，这也是我们外面很多的应用系统有什么有 3a 有 4A 多的那个A ，有的叫 oddity 有的叫 accountment 那其实本质都是这样，就是问责，当我做一件事情的时候，我必须把它记录下来，这时候我才可以去看我当时授权的那个人是不是违规了，因为你授权给她，你相信这一个组里面的人都不会违规对不对？但是不排除这个组里面某个人违规了以后，我要抓到这个人，从而执行什么相应的方法，恢复相关的数据，或者对这个人进行相关的什么惩罚。所以问责是很关键的。我们在问责，系统里面实现了两级问责。
+
+
+第一集问题就是日志，我们直接用 coupe control log 对吧，可以看到很多的日志，这个日志里面会有不同的角色，用户做具体行为，依靠哪 IP 做什么事情？这是一个日志。那除了日志以外，我们其实还有一个什么单独的这种就是 API 叫 auditing 的 API 就是 API server 里面如果你去查询所有 API 你可以查到有个 auditing 的 API 那同时在 audit API 底下，我们可以支持一种 kind 的羊毛，叫什么叫 audit 对这种羊毛我们可以设计一些审计规则。那同时我们会把什么相关这些所有审计出来的内容作为一个 event 记录在那里可以长期保留。比如说我们 log 短期保留成 3 个月，我们的 audit 的内容 event 确实可以长期保留 10 年来实现相关的问责。所以机密性通过授权通过我们的这个认证，通过这个问责来实现。
+
+
+什么？数据非常安全，在可控的范围内进行暴露。好。那完整性又是什么呢？完整性主要的体现方法在我们库布内提斯里面也从三层来体现。首先模块完整性，我们的牙毛文件你描述的什么？是一个增量吗？就是我跟之前有什么变化的内容吗？不是你描述是个最终状态。比如我羊毛文件一开始我写了既有 deployment 又有 service 是吧，还有我们的后台的这个存储的方式，比如 pvscv 那写完以后我们放到一个大羊毛里面。但下次我改的时候，我去修改几个内容的时候，我误删了两，比如我把这个 class IP 这种类型的 service 给误删了，这时候你在 apply 的时候你会发现什么？它不仅会把你的变更的一些内容 apply 掉，同时会把你误删的那些内容真正的删除掉。所以你的任何增删改查都会直接体现在我们整个库内集群的最终状态。也就是说你的羊毛文件就是它最终状态的一个整体描述，你描述什么它就执行什么，它就会最终变成什么。通过这种完整性，上避免了用户在整个这个我们的状态生命周期管理里面增加一些。删除以后中间有一些这个物理解说。可能我已经增加过什么。然后这次我就不用再增加导致一部分状态的缺失。不管你以前增加过什么，你的羊毛文件要能体现你最终对这些相关的涉及到了 service 的一个完整的状态。好，那就是我们的这个模块完备性，模块完备性。
+描述完以后，我们再聊出一个就是指令完整性指令完整性。就是说我们当用 API server 去发送指令的时候，如果我的指令出现了一些问题，出现了一些参数的缺失，什么？它会进行一些补全，但是一些必须有的参数你是不能缺失的。当你缺失的时候，API server 会通过语法完整性的这个校验来告知你说你出现 error 或者 warning 它提示你让你进行修改，从而重新处罚，一直到什么能够正确执行。指令上就相当于信令层，我们也有完整性。
+
+
+模块层的完整性。刚刚再强调一遍，如果你就是你有多个 service 的或者你多个什么 deployment 你删除一个是吧，他只是不部署刚刚可能说的有点小小的错误。但是你如果在我们的 service 里面删除几行你的配置信息，他不会保留原来的配置信息，他就会认为用你的当前信息加上 default 来构成。比如说 service 里面，我把我的什么 pot 的一些详情信息给删除了，或者我更换了某些这个内容，它会引更换内容以及它一些 default 内容进行完整补全，而不会去完全参照你上次的内容。对 apply apply 的不是一个变化量，而是一个什么最终量。就再强调一下。
+
+
+好，模块完整性指定完整性讲完以后了，还有最后一个内容。什么是数据完整性？所谓数据完整性，就是说比如说我们以这个 empty drr 这种存储方式为例，当你 empty DIR 对吧，这个数据是吧，保留在那里的时候，我人工的去删除一个两个我们的什么删除完几个我们的 container 删除完几个 container 以后，你会发现是吧，我的 POD 里面只要还留有最后一个 container 这个时候， empty DIR 所对应的那个什么目录结构不会消失的，所以它的数据是保存着的。
+
+
+当我们把整个 POD 都删除的时候，我们服务器里面那个目录其实就又已经消失，上面所有数据都不见了。当你再重新建出我们的这个新的 POD 的时候，他认为它是两不同的 POD 它不需要共享你原来的数据，这个数据是不保留的。但是如果你选其他的方式，这是 POD 级别是吧，但是大部分的应用其实选的什么是另外的方式？比如你选的是 host pass 的方式，这个 host 就会对应服务器的一个长期保留的目录，它的数据。什么是长期保留的它的数据，而且是完整的被保护住的。当你新的 POD 起来的时候，它会重新去读你当时保存的数据。
+
+
+那同样的，如果我们选择 service pride 选择 pvcv PVC 的时候，我们通过后台数据存储层，比如你是选的是 self 是吧或者是什么 AWS 的这个网络访问方式对吧，然后后台数据存储层的完整的数据保护来实现什么整个应用数据的完整性。那同时通过库布内提斯跟他调度的时候，采用了不同的这个存储模式来告知库莱特斯什么在我们删除炮的时候不要去删除它数据，保存它数据的完整性。那这就是不同的这个不同的级别，以不同的形式来进行数据保留，来实现我们什么整个数据层次的完整性。
+那刚刚聊上模块，就是我们的这个相当于是整个架构的 component 之间是可以用完整的。而对不同的 component 进行沟通的时候，我们 API 的这个信令也是完整的，而后台的数据也可以按照你指定的要求保持它的完整性。那这样我们整个这个应用相当于就是比较有这种 integrate 最后我们再聊一聊。
+
+
+可用性，可用性其实也是我们库克内斯集群的一大亮点。那在之前我们搭建环境当中，其实没有把可用性发挥到这个巅峰造极。原因是什么？原因是因为我们其实没有一个外部的 load balance 所以我们也没有什么建多个 master node 所以我们只建了一个 master node 是吧，所有的我们的 cop control 命令其实就是在这个 master 上直接运行真正的我们生产系统。什么样是我们可以让用户在自己的笔记本或者任何的台式机上面去装那些库簿 control holiday client 然后这个命令会发给一个实际在云端的一个 load balance load balance 会把它的指令发给后台的这个集群 master node 在这集群 master node node 里面它的每个功能模块之间呢还会有相互互的关系。比如说 ETCD 这里面三个 must not ETCD 其实形成了一个什么形成一个内部集群，同时 API server 采用了那种就是无状态的负载均衡的方式，让 ropping 的方式去承载外面的业务。
+
+
+而里面的 schedule 的其实也是一样，也是形成一个内部集群，真正它的 schedule 每一个这个真正的我们的这个容器的压力压到哪一个 node 是统一决定的，不会是同时大家由分歧进行决定。
+同样道理，后面的 polo master 跟 ctrl 的 manager 也会有一个采用类似于集群的方式，形成一整套完整的控制平台。所以 master 是可以形成什么互关联，形成一个大的 master 集群的。就我们在后面的这个时间当中会进一步去聊怎么样实现什么多节点的、多炮的和多业务的支持。而且在这个支持过程中实现真正的高可用这一块是在我们的环境当中也其实已经实现，就是我们有这两个 node train 4 和 train 5 对吧，这两个 node 其实在这图里面是 4 个 node 那没有关系，其实不管两个 4 还是 20 个 200 个，其实你都可以实现什么很多很多个 node 那在这个 node 里面也有好几层，比如你有 DNS 层是吧，有我们的 service 层也可以，有我们的什么更多的这种不同的 POD 在布置的各个 node 上来实现一个实际的数据流。进来以后它的高可用通过跨多个不同的 node 节点的很多个 POD service 的 run robin 的方式来实现 traffic 流的所有的这种数据流的什么数据流的高可用。
+
+
+同时我们所有的 node 之间采用一种布对吧？不管你是针织布还是什么我们的这个法兰绒布对吧，或者是印花布等等各种各样这种胶质的网状胶质的网络形成方式，实现之间什么互通心跳的沟通互通有误，同时跟我们的 master 节点能进行沟通及时的报备状态。
+
+
+当我节点死亡以后，我其他节点会发现他死亡或及时报备状态，从而把这个节点重置了什么 active 的状态移除 copolitans 里面用 get know 你会发现有些状态死亡，有些节点死亡或者故障以后，它会形成什么 inactive 或移除状态。那这个时候及时的什么，把它从所有的 traffic 负载的接收节点当中拿出，从而保持我们说整个集群的健康活力和高可用。你这样可用性是通过冗余通过健康检查，通过我们负载均衡的过程当中的全链路无单点，通过我们的信令发送过程当中和指令控制当中的集群化管理、集群化配置存储来实现整个 coupon 类似集群的高可用。
+
+
+好，我们再回过头来，我们从三元素角再重新审视一下我们怎么样实现我们中间那个铁三角，机密又完整又可用的呢？通过用户的认证授权审计对吧实现机密通过我们的这个 API 层、我们的 component 管理层以及我们的数据库或者说数据内层的完整性来实现整体的完整性。
+
+
+那最后，通过我们的负载均衡，我们的多 master 的和大量的 node 节点来实现我们真正把 connect 应用集群的高可用、好安全这个角度我们已经介绍完了下一个章节，开始我们会进入什么监控的内容，我们既有图文的 MD 也有我们的视频的方式，再详细讲讲不同领域不同的层次的监控。好，谢谢
+
+

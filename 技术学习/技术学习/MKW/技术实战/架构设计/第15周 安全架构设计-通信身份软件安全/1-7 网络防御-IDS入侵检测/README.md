@@ -1,0 +1,73 @@
+---
+title: 1-7 网络防御-IDS入侵检测
+---
+
+# 1-7 网络防御-IDS入侵检测
+
+加急需求到落地的桥梁，构建 it 新蓝图。我是张飞扬。好，上一节我们聊了聊 Wolf 应用的安全防火枪，
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/f32cee49-16e2-4a0c-ba16-b592700932b1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VZOYSX6W%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231030Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDwxVgK7PPQH%2BTl68FXqrqYYSgnQcyiQr%2BGuOFDfKIYEQIgc5goSlo2zqkNVYVM9RW893hPpUOI8f167tl71gSNpMoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAO36PCRh%2Fu2qQnT6CrcA2vL7Y0mChYj5%2FJKBqUazkDhtdei%2FtsY5Wf8txNl5ZPgeooX65jRVbFY62g%2BC9QC8KJlc4kxg7DI1zD%2B6nhw%2F0I8L%2Br0KPyQRYRulWXQNDz%2FOyJdQHPWs6Bz2bc6piJvLOWNxzDpp1R%2FTSnUfoevB0DUVqFsmDEXMIHt9HQRXGSDmI9fAH8%2Ffbkg3YBK2QPpWwAbV%2BcO7EQSiyZ%2B9OPW%2BKPZiDlTtKUesQBhqp2Y7YXx9o3IoRghjOBOGDMyq1kM9%2Bf4tU%2FhrJYPHKoa43vXg9k3859Qyduh6RwdJkEwlDzettJR2SvbGuy%2BNfx8vFO%2Bu0l1YX%2Bha25Yklow6MVa5RP57PbneR3I9syVoCwsd%2FzGJTswA8pra33W310clSJK8tQf%2Fn4EYv%2BxUIT9EI2aYzsaj4N%2BPSK2KPiVczQRCh4razhPG3iGo0g4P%2F4A%2FDJeiHINuK6vhiN2zPFcUStbGDZngkkxLSeJE0raCtKdu74eNKh1y%2FCEs7G49FiZ%2FRH%2B%2BkagR%2FuIDoT4ZJDTrhNYX6IItJJc0CoAT07SNSSIg4BPKFHKnhsBmNgF2pZ%2FBFqPgSEZxqSdj557f25mbykVHJ26R2AzacwGMtKvfy4Ui%2FEGBt6cwXKQfoXCLupdMJa7%2F9IGOqUBunpllABoOJYAgcjYkXV%2BcH532DmkgAN2dIB15jt%2F6eSkpdRY2Nv9IvtMFcIBJny70Lzss7WXOEh08a5WwdzWQQ%2BakzvzQr60p38Q%2FBrpkyY0wZ1GLR%2BCprFys4Dwng8CwXkAQ1l5oA16Cs6ZN4MTFbhNzzpnqvylaIjTaTpymxnLqsn4Ym8LvgyA86f3vvhfjYu9mIVCoCPximoxQOQpQ85DKEHT&X-Amz-Signature=3bce943e0bb6161c00cd1a2d6d2fc7853ffb98b6630ceede541efddf3a56a1e0&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那这一节我们来聊一聊另外一个很产品 IDS IPS 入侵检测和入侵防御。那之前不管是网络防火墙还是 w 应用防火墙都有一个什么特点啊？重点是进行访问的控制，那除了访问控制以外，大家回想一下在物理安全里面另外一大类什么叫入侵检测那一样的，在网络上除了防火墙这种访问控制以外，还有IDS、 IPS 这种入侵检测和防御系统。
+
+
+i d s 其实是什么？是 intrusion detection system 入侵检测系统的英文名称的首字母缩写。那同样的 IPS 就是 intuition protection system 入侵防御系统的缩写。好，让我们来看一看这两个系统到底是如何运行的。
+
+
+那首先讲一讲最常见的IDS，其实是有两种经典的部署方式。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/d169259d-9f88-484b-bb2a-018efbb18aa2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VZOYSX6W%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231030Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDwxVgK7PPQH%2BTl68FXqrqYYSgnQcyiQr%2BGuOFDfKIYEQIgc5goSlo2zqkNVYVM9RW893hPpUOI8f167tl71gSNpMoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAO36PCRh%2Fu2qQnT6CrcA2vL7Y0mChYj5%2FJKBqUazkDhtdei%2FtsY5Wf8txNl5ZPgeooX65jRVbFY62g%2BC9QC8KJlc4kxg7DI1zD%2B6nhw%2F0I8L%2Br0KPyQRYRulWXQNDz%2FOyJdQHPWs6Bz2bc6piJvLOWNxzDpp1R%2FTSnUfoevB0DUVqFsmDEXMIHt9HQRXGSDmI9fAH8%2Ffbkg3YBK2QPpWwAbV%2BcO7EQSiyZ%2B9OPW%2BKPZiDlTtKUesQBhqp2Y7YXx9o3IoRghjOBOGDMyq1kM9%2Bf4tU%2FhrJYPHKoa43vXg9k3859Qyduh6RwdJkEwlDzettJR2SvbGuy%2BNfx8vFO%2Bu0l1YX%2Bha25Yklow6MVa5RP57PbneR3I9syVoCwsd%2FzGJTswA8pra33W310clSJK8tQf%2Fn4EYv%2BxUIT9EI2aYzsaj4N%2BPSK2KPiVczQRCh4razhPG3iGo0g4P%2F4A%2FDJeiHINuK6vhiN2zPFcUStbGDZngkkxLSeJE0raCtKdu74eNKh1y%2FCEs7G49FiZ%2FRH%2B%2BkagR%2FuIDoT4ZJDTrhNYX6IItJJc0CoAT07SNSSIg4BPKFHKnhsBmNgF2pZ%2FBFqPgSEZxqSdj557f25mbykVHJ26R2AzacwGMtKvfy4Ui%2FEGBt6cwXKQfoXCLupdMJa7%2F9IGOqUBunpllABoOJYAgcjYkXV%2BcH532DmkgAN2dIB15jt%2F6eSkpdRY2Nv9IvtMFcIBJny70Lzss7WXOEh08a5WwdzWQQ%2BakzvzQr60p38Q%2FBrpkyY0wZ1GLR%2BCprFys4Dwng8CwXkAQ1l5oA16Cs6ZN4MTFbhNzzpnqvylaIjTaTpymxnLqsn4Ym8LvgyA86f3vvhfjYu9mIVCoCPximoxQOQpQ85DKEHT&X-Amz-Signature=f3ba1b405d638fe704086e3d4dd221ef265f3aef823d195da1a7b1b46a93312e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+一种方式是什么？是要保护网络的安全，防止网络当中有未授权的使用和黑客的一种渗透和攻击。那这个时候当黑客尝试去访问我们网络的时候，会发现什么网络中有一个小设备一直尝试在抓包，在侦听，那这个设备它自己的网卡会设置成混杂模式，也就是所有局域网中的广播包他都会收一份，然后判断一下。嗯，这个包看上去行为不端，很有可能是黑客行为，就把它记录下来，也不做什么处理，只是记录追踪，方便后面人为的进行干预，或者方便后面审计、安全审核，以及什么对实际的黑客行为进行追溯，最后进行追责。
+
+
+那这是网络型的 IDS 的部署方式，那除了网络型以外，还有一种类型也很经典，就是什么我们其实很关心的就是我们自己的数据库复制我们核心的 Java 服务器，比如像支付系统、交易系统这些最关键的 Java 应用服务器，我们要保护好，你怎么保护呢？我们要防止黑客直接对服务器进行攻击，一种方法就是把 IDS 作为一个软件设备，怎么样部署在我们的应用服务器上？部署在我们的数据库服务器上。
+
+
+那这个时候所有的用户行为，所有的应用行为都会被这个 IDS 给监测下来，那同时它会有一些特殊的方法来侦测出它，这是一个黑客行为，从而把这部分内容进行长期的持久化保存，最后用于审计，用于安全考核等等。好，这是两种方式，那第一种是防御着整个网络中间的什么黑客渗透，那第二种是对核心的业务系统进行安全的防御。好，我们讲完两种基本部署模式，但是到底什么才是原理使得 IDS 能够很方便的运行呢？那我们要聊一聊 IDS 的几个主流原理，
+
+
+那第一个原理也是最常见的原理就是特征型，所谓特征型就是什么？
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/105e9763-2e9d-43f4-ad1f-e701ed760097/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VZOYSX6W%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231030Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDwxVgK7PPQH%2BTl68FXqrqYYSgnQcyiQr%2BGuOFDfKIYEQIgc5goSlo2zqkNVYVM9RW893hPpUOI8f167tl71gSNpMoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAO36PCRh%2Fu2qQnT6CrcA2vL7Y0mChYj5%2FJKBqUazkDhtdei%2FtsY5Wf8txNl5ZPgeooX65jRVbFY62g%2BC9QC8KJlc4kxg7DI1zD%2B6nhw%2F0I8L%2Br0KPyQRYRulWXQNDz%2FOyJdQHPWs6Bz2bc6piJvLOWNxzDpp1R%2FTSnUfoevB0DUVqFsmDEXMIHt9HQRXGSDmI9fAH8%2Ffbkg3YBK2QPpWwAbV%2BcO7EQSiyZ%2B9OPW%2BKPZiDlTtKUesQBhqp2Y7YXx9o3IoRghjOBOGDMyq1kM9%2Bf4tU%2FhrJYPHKoa43vXg9k3859Qyduh6RwdJkEwlDzettJR2SvbGuy%2BNfx8vFO%2Bu0l1YX%2Bha25Yklow6MVa5RP57PbneR3I9syVoCwsd%2FzGJTswA8pra33W310clSJK8tQf%2Fn4EYv%2BxUIT9EI2aYzsaj4N%2BPSK2KPiVczQRCh4razhPG3iGo0g4P%2F4A%2FDJeiHINuK6vhiN2zPFcUStbGDZngkkxLSeJE0raCtKdu74eNKh1y%2FCEs7G49FiZ%2FRH%2B%2BkagR%2FuIDoT4ZJDTrhNYX6IItJJc0CoAT07SNSSIg4BPKFHKnhsBmNgF2pZ%2FBFqPgSEZxqSdj557f25mbykVHJ26R2AzacwGMtKvfy4Ui%2FEGBt6cwXKQfoXCLupdMJa7%2F9IGOqUBunpllABoOJYAgcjYkXV%2BcH532DmkgAN2dIB15jt%2F6eSkpdRY2Nv9IvtMFcIBJny70Lzss7WXOEh08a5WwdzWQQ%2BakzvzQr60p38Q%2FBrpkyY0wZ1GLR%2BCprFys4Dwng8CwXkAQ1l5oA16Cs6ZN4MTFbhNzzpnqvylaIjTaTpymxnLqsn4Ym8LvgyA86f3vvhfjYu9mIVCoCPximoxQOQpQ85DKEHT&X-Amz-Signature=b2d28ce1b16a7ce1b7820f96fac2b2d2e8d060fd97e24a3e83808fcbf54b7383&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+我们跟类似于防火墙或者类似于杀毒软件一样，所有的黑客行为其实都是有一个标准模式的。
+
+
+我们把这个黑客的标准行为这个模式记录成一个签名字，一个特征，然后当所有的新的用户或者所有的客户对我们进行访问的时候，我们把他的这些特征也进行编码，一旦发现这个编码的值跟我们什么原来在数据库里面记录的黑客行为的值很匹配，那这个时候我们就把它记录下来。
+
+
+这个用户很有可能是潜在的黑客，这个行为可能就是一个黑客的攻击行为，这就是模式匹配，那除了模式匹配这种简单的匹配以外，我们还可以提供一种叫状态匹配。何为状态匹配啊？通常一个用户登录一个互联网怎么样？他会是不是先登录，然后挑选一些商品加入到购物车，最后进行支付交易？那如果这次我发现这个用户很奇怪，这个 IP 地址是会尝试用一个用户登录，登录完了以后会发很多的包，然后就退出了，也没有什么浏览记录，也没有进行购物车，也没有进行交易，然后他又换一个用户登录，发了很多包。
+
+
+那么怎么样？我们揣测这个用户根据他的这个历史情况，也根据他当前的状态。我怀疑这就是一个黑客行为，他尝试什么不同的用户登录，然后对我们的系统进行渗透，看一看是不是它恰好采用了一个高级权限用户，然后它的渗透数据能够产生一些特殊的返回。那这个时候它就会利用这个用户持久的对我们进行长期的攻击，最终从而去获取到一些什么不合理的数据的内部数据。
+
+
+那这就是特征性看的是什么？一种是看的是简单的模式，一种是看的是一段时间之内这个同一个 IP 地址、同一个用户账号的行为。好，除了这种比较什么比较方便的特征匹配以外，其实我们的 IDS 都会有些高级功能，这些高级功能的主要目标就是防止一个问题叫灵日攻击。所谓灵日攻击就是什么？不管是操作系统中间件还是各种各样的应用软件，其实都有bug，当所有的开发商发现 bug 以后，他们就会在官网上公布一下我发现了什么，什么bug，然后我提出了一个补丁，但是这个补丁我们各个企业不会当天就打，通常是一周打一次或者一个月打一次。那这个时候就存在了好几天的安全隐患。那同样的道理，我们的 its 检测系统，它的模式匹配和状态匹配数据库其实不是每天都在更新的。
+
+
+所以一些新型的问题，新型的黑客攻击的手段它并不能够侦测，那这个时候如何去防御此类用户的攻击？如何去侦测此类用户的攻击呢？我们就选用第二种方式叫异常性。通常任何黑客攻击都会有一些特殊指出，比如说我前我们前面说到的这种用户不断登录、不断什么发包的行为，这种行为就很异常，所以统计异常很容易统计出大部分用户大部分 IP 地址的行为和当前用户当前某 IP 地址的行为进行匹配，从而发现其中的异常，那这能有效的防止零日攻击。
+
+
+那除此以外，协议攻击也是一个很有出很出彩的一个套路，比如说通传黑客在实际访问之前会有大量的 RCMP 包，类似于 PIN trace root，它有大量的ICMP，当 ICMP 发完一阵以后，它能大概感知出你的网络中间的防火墙的策略，之后它就会变成一些UDP，然后这个 UDP 的端口一直在变化。
+它其实是在尝试看看你对 UDP 的这个组织如何，然后你的开放端口情况如何？经常有些防火墙开得很夸张，比如说我们 t c p 用的 80 和443，但它开放端口的时候，它开成任何协议的 80 和43，这样 UDP TCP 的 8043 都打开了，这个时候黑客可以利用这种漏洞进行大量的 UDP 包的冲击，去冲击你，去破坏你的系统，或者甚至于去尝试触发一些什么渗透攻击的能力，那这些都是协议的异常。
+
+
+通过协议的异常我们能够判断可能是被黑客攻击了，或者是黑客可能尝试对我们进行一些侦测行为，那除此以外，流量异常也非常明显。就是当黑客尝试对我们进行各种各样渗透测试的时候，它不会慢慢等待，通常会在短时内有一段的大流量来进行各种各样的侦测，或者是一些攻击，把这些流量的异常找出来，对于那些高峰点进行详细分析，这也是 IDS 的一个基本能力。好，那除此以外，有没有更高级的入侵检测工具啊？有，当前很火的那些 IDS 的设备都支持专家系统，所谓专家系统就是 if else 或者叫 if then。首先设定一个规则，假设用户登录，然后立马进行发包，发包完了立马退出，这就是这种情况下就是判断出来了，一旦碰到这种情况，我们就认为什么可能是一个黑客行为，这就是一个简单的判断。那除此以外，我们可以设置很复杂的判断，然后有很多的白名单、黑名单、排他情况等等，组合成一套综合判断，最后确定是一个黑客行为。
+
+
+那人工智能怎么样？人工智能结合了一部分的用户的判断行为统计分析，通过各种各样的输入，最后形成一个很复杂的模型，这个模型你很难描述为什么是这样。但是一旦模型成功以后，对于后面如果有黑客进行攻击或者是大量的统计行为，它都能够以一个相对智能、相对精准的形式来预测到底是不是一个黑客行为，还是一个普通用户行为。
+
+
+那通过这种专家系统，通过这种人工智能，我们很方便的制定一些规则，实现一些类似于规则引擎，实现一些类似于 machine learning 等等的高级的 IDS 的实现和控制。好，那聊完了IDS，那其实呢？大部分时候我们大家知道什么 IDS 是要追踪处有黑客尝试渗透，尝试攻击我们。但是如果要更进一步，我们不光要追踪，还要进行采取行动，那就应该采用 IPS 入侵了什么防御和保护的系统，那到底 i d s 和 i p s 核心的不同在哪里呢？我们看这样一张图， 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/bdf46ef2-8b8c-4662-ab1e-c11dd49acf2c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VZOYSX6W%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T231030Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDwxVgK7PPQH%2BTl68FXqrqYYSgnQcyiQr%2BGuOFDfKIYEQIgc5goSlo2zqkNVYVM9RW893hPpUOI8f167tl71gSNpMoqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDAO36PCRh%2Fu2qQnT6CrcA2vL7Y0mChYj5%2FJKBqUazkDhtdei%2FtsY5Wf8txNl5ZPgeooX65jRVbFY62g%2BC9QC8KJlc4kxg7DI1zD%2B6nhw%2F0I8L%2Br0KPyQRYRulWXQNDz%2FOyJdQHPWs6Bz2bc6piJvLOWNxzDpp1R%2FTSnUfoevB0DUVqFsmDEXMIHt9HQRXGSDmI9fAH8%2Ffbkg3YBK2QPpWwAbV%2BcO7EQSiyZ%2B9OPW%2BKPZiDlTtKUesQBhqp2Y7YXx9o3IoRghjOBOGDMyq1kM9%2Bf4tU%2FhrJYPHKoa43vXg9k3859Qyduh6RwdJkEwlDzettJR2SvbGuy%2BNfx8vFO%2Bu0l1YX%2Bha25Yklow6MVa5RP57PbneR3I9syVoCwsd%2FzGJTswA8pra33W310clSJK8tQf%2Fn4EYv%2BxUIT9EI2aYzsaj4N%2BPSK2KPiVczQRCh4razhPG3iGo0g4P%2F4A%2FDJeiHINuK6vhiN2zPFcUStbGDZngkkxLSeJE0raCtKdu74eNKh1y%2FCEs7G49FiZ%2FRH%2B%2BkagR%2FuIDoT4ZJDTrhNYX6IItJJc0CoAT07SNSSIg4BPKFHKnhsBmNgF2pZ%2FBFqPgSEZxqSdj557f25mbykVHJ26R2AzacwGMtKvfy4Ui%2FEGBt6cwXKQfoXCLupdMJa7%2F9IGOqUBunpllABoOJYAgcjYkXV%2BcH532DmkgAN2dIB15jt%2F6eSkpdRY2Nv9IvtMFcIBJny70Lzss7WXOEh08a5WwdzWQQ%2BakzvzQr60p38Q%2FBrpkyY0wZ1GLR%2BCprFys4Dwng8CwXkAQ1l5oA16Cs6ZN4MTFbhNzzpnqvylaIjTaTpymxnLqsn4Ym8LvgyA86f3vvhfjYu9mIVCoCPximoxQOQpQ85DKEHT&X-Amz-Signature=59c7c3c494f1dedcff38aa86839d4b2693fe93173d2abd097a682c4d1a0c50fe&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+IDS 就是喷到黑客。
+
+
+我拿你也没啥办法，我只能怎么样寄一个warning，发一个警告，那现在一些高级的 IDS 有可能还会去匹配一些数据库的情况，匹配一些常用的数据包的这个变种，以及进行什么电话告警、钉钉告警、邮件告警，有很多虚头巴脑很花哨的套路，在本质上它只是什么，很被动的进行一些告知，同时有些追责的能力。那 IPS 就不然了，它不光有些入侵检测，甚至于还有一部分访问控制的能力。它怎么访问控制呢？当黑客尝试攻击我们服务器的时候，他会告知一下。什么告知啊？嗯，你没有经过授权 401 或者403，我禁止你访问我，或者我欺骗你，其实我有内容，但我不让你看。我告诉你 404 你的内容找不到，这都是对黑客进行了一些什么？一些这个反馈，通过这些反馈告知一个黑客一个信号，你不能再攻击我，或者你不能拿到任何信息了，因为什么我屏蔽了你，我不让你进行一步对我进行破坏，但这种告知其实是一种提示，所以高级的 IPS 不是这样做。它怎么样？它另外一个方法，它不是返回 401403 和404，它返回200，但是它把你的数据流引到一个叫密罐系统，是吧？如何去引诱熊啊？进行什么进行活动？然后捕猎熊最好的方法就是放一罐蜂蜜，那一样的道理，如何去诱惑黑客来进行攻击，但是不攻击我的生产系统，而攻击这个虚假系统，那就是也放一个蜜罐，所以蜜罐系统也是在数据中心里面一个很奇葩的设备，这个设备里面有很多bug，一堆问题，所以黑客很容易攻击进来，然后越权升级，然后操控里面的数据库，操控系统破坏它，但是怎么破坏其实都是假的，这是一个蜜罐，就是这引诱你，然后把你的套路都记下来。
+
+
+然后把这些套路什么加到我的 IDS 和 IPS 的什么特征状态，人工智能专家系统里面，从而进一步防御类似的攻击。但是有一点要强调，蜜罐系统做的不好，可能什么？可能引诱很多互联网的无知少年变成了黑客，所以是违法行为。那到底什么是有法？什么是合法？什么是违法呢？通常我们的安全架构是要跟什么法务进行沟通的？尤其是一旦你在系统里面采用了密关系统，你的这个密关系统的引诱性如果太高的话，可能触发一些法律的底线。所以大家谨慎采用密关系统。好，聊完了IDS，聊完了IPS，其实基本上把入侵检测和防御已经讲清楚了。下一节我们再聊一个网络安全的防御技术， VPN 安全的隧道技术，大家敬请期待。
+

@@ -1,0 +1,33 @@
+---
+title: 8-1 Elasticsearch整合项目 - 初始化web环境
+---
+
+# 8-1 Elasticsearch整合项目 - 初始化web环境
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/671b584e-6795-4e17-b404-9d0c07fb5ca0/SCR-20240806-hdef.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UFRGX6UI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225212Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDEv46y4PAMMoz%2F16vX8qstcrQVd79Vzss53qDQl3EPigIgeMPtNOpLVX2BqOOOoRXZsr3jw8DYUzBRS3MUdZ6G7AAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGx1mhC%2BrMTzUSJNFyrcA9%2F3urL5%2FHhukUQjmRc9q%2B4Djs8UnNjzGw6LB2b060lUBvkgPbIQnudG5FNVKuh0LGBX6XbaCf4U7XkC%2B5MgYrufJ3UXIAjrUvPeCMLoRYG1WrMuo37Pi3klL2a6q0hxw3kbShRlZDs0IM6FreZUipxABEJW0C%2Bjs%2BzsgtVG3NtJoSHl21MybFre6c82OW4Nkdwx987CoYRZd6GUDDvVB6BtOiaoLQ5SdiLVmk3zsCIwP%2BNHCF5mn8NJQ8G%2B1LUrmbknfXBPesO7O8iVv1f9yQ%2BEiVXpic63Y1phOkAjMWQzeHsMthsfZv58BpdSmezt6ojSzs6BEemSgSLeBLbD51t05TfPc0n%2FMZVNY3O1L%2F4xNGgG9Rh2lT5ki0PqiCf5I7KXTGGCQzkoydGUK1vONE6OVZHUtLpiSLQKH%2FZopyjqW6Rle95n8EWnKg%2Fm4MtP34Ygqq8uRhlsYgW4qkXP3lu%2FTqTgEbJnElRlaI1IW67hYL9nbseXGj6ugder2w2lJsrbRKiiP1FdhS2t82QNTUAV%2B3VimRtRyPOimMY1VWBCRkyTuKw9HbxrtbAWsWvDKjBEPtH7vAFpDWnG87oikF31FMiAybzeO1AXGEhLW41sBZo7x6WIR8mAt2EjMOi5%2F9IGOqUBhzuP4gVzJpqSna8sB5AShkF%2FZSu4R4TPg0tPa9CZkokqrADi%2FjAeqBrbXPMkBwSt0QHyRsG89rRO7dwEvoIAGESJc521lCx7WKYGNcIiAqfawB%2B3vNaHkjhGnVnFOHLS%2BBsIPqPkXaBr02QmqjYgYs0thsCn%2FP9HSX6VwFDd5CezrRWCVSvcAK2fUEOXuQ8aV9OJBc4%2BY5Jg530Mj7RIrp5qsOd7&X-Amz-Signature=243d5c0995c83dae965d3f25747e640c62ec58b418ad83649a380064d147d583&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/8217d112-d22e-4b7d-b567-b9772692738e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466UFRGX6UI%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225212Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDEv46y4PAMMoz%2F16vX8qstcrQVd79Vzss53qDQl3EPigIgeMPtNOpLVX2BqOOOoRXZsr3jw8DYUzBRS3MUdZ6G7AAqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDGx1mhC%2BrMTzUSJNFyrcA9%2F3urL5%2FHhukUQjmRc9q%2B4Djs8UnNjzGw6LB2b060lUBvkgPbIQnudG5FNVKuh0LGBX6XbaCf4U7XkC%2B5MgYrufJ3UXIAjrUvPeCMLoRYG1WrMuo37Pi3klL2a6q0hxw3kbShRlZDs0IM6FreZUipxABEJW0C%2Bjs%2BzsgtVG3NtJoSHl21MybFre6c82OW4Nkdwx987CoYRZd6GUDDvVB6BtOiaoLQ5SdiLVmk3zsCIwP%2BNHCF5mn8NJQ8G%2B1LUrmbknfXBPesO7O8iVv1f9yQ%2BEiVXpic63Y1phOkAjMWQzeHsMthsfZv58BpdSmezt6ojSzs6BEemSgSLeBLbD51t05TfPc0n%2FMZVNY3O1L%2F4xNGgG9Rh2lT5ki0PqiCf5I7KXTGGCQzkoydGUK1vONE6OVZHUtLpiSLQKH%2FZopyjqW6Rle95n8EWnKg%2Fm4MtP34Ygqq8uRhlsYgW4qkXP3lu%2FTqTgEbJnElRlaI1IW67hYL9nbseXGj6ugder2w2lJsrbRKiiP1FdhS2t82QNTUAV%2B3VimRtRyPOimMY1VWBCRkyTuKw9HbxrtbAWsWvDKjBEPtH7vAFpDWnG87oikF31FMiAybzeO1AXGEhLW41sBZo7x6WIR8mAt2EjMOi5%2F9IGOqUBhzuP4gVzJpqSna8sB5AShkF%2FZSu4R4TPg0tPa9CZkokqrADi%2FjAeqBrbXPMkBwSt0QHyRsG89rRO7dwEvoIAGESJc521lCx7WKYGNcIiAqfawB%2B3vNaHkjhGnVnFOHLS%2BBsIPqPkXaBr02QmqjYgYs0thsCn%2FP9HSX6VwFDd5CezrRWCVSvcAK2fUEOXuQ8aV9OJBc4%2BY5Jg530Mj7RIrp5qsOd7&X-Amz-Signature=13ee79b0d53c8654b269da33c01f65adb46734ddc8137a295a4c7afc1af719b5&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+那么前两节课我们是做了一个 love stash 和咱们数据库的一个同步，那么数据全部都已经是进来了。那么接下来的话其实我们就可以去把这个 ES 整合到咱们的一个 web 环境中，那么这样子的话我们就可以来实现咱们商品数据的一个检索。
+
+
+那么我们先这样子，我们先打开咱们的开发工具，我们先把我们当前这个项目现在是一个 search 这个项目。那么它其实并没有一个 web 环境，我们先把它的一个基础的 web 环境去做一个构建。那么首先一个我们先来到咱们的 YAML 文件，在这里面我们先去配置一个端口号，因为端口号它默认的是 8080 对吧，它会和我们的前端会分出。所以在这个地方我们去做一个修改，server点有一个 pot 我们改成 8033 寻这个，然后把这个放到顶部。那么这是我们初始的一个端口号，那么随后我们还要去构建咱们的一个狠戳了。那么在这里面我们这样子，我们去把这个拷贝一下，我们拷贝一个 hello control 了，这是我们曾经所使用的，然后贴到这个位置来去创建一个新的 package 然后直接就把它给粘贴过来。这个名字我们改一下改成 items 也 OK 那么在这里面就已经是有了。
+
+
+那么在这里面我们有些不需要的内容，我们先去做一下精简。像这个 API ignore 这些我们没必要，我们直接可以删掉这个也不需要我们保留这个 hello 然后下面这个拿掉。那么往往我们在创建一个新的 web 工程，我们都会一般我个人会推荐这样子去做，保证你的 web 环境是正确的。 hello elasty search 那么这个就是作为我们测试的一个 ctrl 了来看一下，随后我们就可以直接去运行。
+
+
+运行的话我们先来看一下咱们的 pom 文件。那么 pom 文件在这个里面的话目前没有依赖其他的一些内容，我们去做一个依赖，把我们的 common 给依赖进来，我们去找一个贴过来，把这个改掉改成 common 把我们这个包给依赖过来。我们 search 的话对于其他的一项 podoservice map 这几层我们不需要去依赖，所以我们直接把咱们的一个 common 缀成给直接依赖过来，那么就行了。好，然后我们就可以去运行一下做一个 install 那么 install 全局的话现在其实我们有 test 对吧，像这些 test 的话我们其实是可以去忽略的，那么也可以去跳过去进行一个安装。那么可以这样子，我们可以右键我们选择到这个 install 以后去右键可瑞泽去创建一个新的 install 那么在这里面你可以去构建一下你自己个人的一些相应的命令就可以了。
+
+
+那么其中在这里会有一个 command line ，把这里去做一个修改 install 杠 D 然后 maven.test.skip 等于 true 那么这个其实就是代表在我们去进行安装的时候，我们可以去跳过咱们的 tests 好，然后直接点击 OK 那么在这里这个位置就会新增加一个 install OK 吧，当然还可以去做一个重命名，我把这里重新的命名一下 install 杠 skipper tests 那么当然如果说不去这样子写，直接把这个在 unit 里面的一些代码去注释，那么也行双击一下，然后我们就可以去观察它的一个 install 那么这样子的话 install 是成功的。随后我们就可以来去运行一下，看一下我们这个 hello 能不能够被我们访问到，直接右键去 run 跑一下。
+
+
+那么当我们启动的时候其实会发生一些相应的错误，来看一下，我们先看一下在这里有一个错误，这个是 log4j2 。那么这个东西的话其实是缺少了 log for J core 这样的一个价包，我们是可以去把它给添加一下，我们在还是在我们当前这个 pom 文件里面，在这个下方，在这里我就直接手敲了，我拷贝一份，然后它的 group_id 在这里它是属于阿帕奇的，所以应该是 org 阿帕奇在这个包然后点有一个 logo in 这个。
+
+
+logo for J 然后他的这个 ID 的话改一下这个就是 log for J 有一个课，那么在这里的话它还会有一个相应的版本号，版本号的话我在这里的话直接可以 out 加斜杠的话它是可以出来的。使用这个版本两点一点一使用这个，然后直接导入，那么这样子这个包就会导入到咱们的项目里面来，随后我们再去运行一下我们这样子再把以前我们有一个包有一个配置文件叫做 love for practice ，我把这个也拷贝过来配到 resource 这个里面。好，然后在这里面其实可以去改一下，在这个地方夫迪杠 API 我们改一下改成 search 然后我们再来运行一下。
+
+
+好，那么这样子的话我们可以看到咱们目前这个项目就已经是可以启动起来了，然后这里面也没有一些额外的错误信息。那么目前咱们是在 8033 这个端口号之下，我们可以来测试访问一下咱们这个狠车了。输一下 local host 冒号，8033斜杠 hello 回车，我们资源拼错了 local host 那么这样子 hello elastie search 这个文字就已经是显示的。那么这样子咱们这个当前我们 search 这个项目的一个 web 环境就已经是构建 OK 了吧。
+

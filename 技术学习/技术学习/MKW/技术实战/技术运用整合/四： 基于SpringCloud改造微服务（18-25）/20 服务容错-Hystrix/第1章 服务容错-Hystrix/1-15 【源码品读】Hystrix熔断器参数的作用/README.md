@@ -1,0 +1,62 @@
+---
+title: 1-15 【源码品读】Hystrix熔断器参数的作用 
+---
+
+# 1-15 【源码品读】Hystrix熔断器参数的作用 
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/457e36f2-9ea8-453f-bddf-3ade5a0058d9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V4GRZPSJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225644Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDtMEtv2dDTb2AMm31BDSIhZBzmmpnCB%2B5rZ4optn1mcwIgF%2FE2e4zy8ovj%2FWzdO%2BzXHiIUBbhoUhpzmLwE4Sa9AukqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA99WkEX1E%2FBNxMnUircA80QDKzgE89Zd8JsWjpDHXzfvCmsaXImGeKzFAm%2FsVjrOjkKz3%2BEmp5ZcNUsi7dLyKIiW2rleJVpdsWimOGncWTLOTa0EHQmkBaztx%2BgnsBhVj5BruMhnrc537fbzzdq1kqHMo0dQILylHLXdU1cB8pSnVenkX%2FwJRZycfs4wtQ%2FbCMAL76qWxqeHUYLPGfxnDl7t3LKWEjq67qsIQtDiT7Z2l5Dji40uuQO6G30IsShtIvCR8E1sXr8di4UCG8y4dYFdk59ugYtjwDN2XPRoy1EkHgXeV8lXllhqwS4DLwJzfCEGYmCqTSNoPhOje22TY5AMSEbX39eJxWD1ZWFC5mYgo3qN1%2F01fh2nd11xGQAJcSAzjlU2i7jIEuOkRmzjqX2vtqn1XmvjLUdEyfbZH1LaBDnTkZHe24INgPGZ%2Bn2proe6yPIb%2BeX7RVR7D%2BWjGynbD6OSSy81fpY1Cmm9oGP0bcy33rjBGY9SeMnmaodUJb8PMs4iLl46wzx1d%2F9v%2FGKpODBKMB1M%2BM0BlwJlMkPomhlnCQdlIcL%2B%2BckarKDhA8qI3aXnGRi8zUTGCyUXB9hFAVkeC5PVmiF2BPBR9b9B3or1BKMEwOrXjewYoL3q9O3R2r4i2e68ClaMLG6%2F9IGOqUBBa0joTvLPXjry19m8I03jyXLGq6Yxxd86VFcbj37LcabDb2yQNOTHRA%2BXhTO7hX6YumbcRK59Q8Im6iIShOPjCJtQHFM%2Bx1hLUpiaXN%2Fb06qGLqObZRB%2FrNZms3Dnq3HaYNfu3zbMEIgtA5nLykdpVOjv2BB59g2j3ONjXu%2BHXHTpmdvFXVEq2WTv9ZbST6c0vgj4tEdyAwmYlkemLNQH01V%2BWuu&X-Amz-Signature=0e69fa74696c2abdb14756d6828f111d19b353c196b4be6b689f71be4d902e64&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/7b01fec4-6fe9-43ec-adcb-420c155e937e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V4GRZPSJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225644Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDtMEtv2dDTb2AMm31BDSIhZBzmmpnCB%2B5rZ4optn1mcwIgF%2FE2e4zy8ovj%2FWzdO%2BzXHiIUBbhoUhpzmLwE4Sa9AukqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA99WkEX1E%2FBNxMnUircA80QDKzgE89Zd8JsWjpDHXzfvCmsaXImGeKzFAm%2FsVjrOjkKz3%2BEmp5ZcNUsi7dLyKIiW2rleJVpdsWimOGncWTLOTa0EHQmkBaztx%2BgnsBhVj5BruMhnrc537fbzzdq1kqHMo0dQILylHLXdU1cB8pSnVenkX%2FwJRZycfs4wtQ%2FbCMAL76qWxqeHUYLPGfxnDl7t3LKWEjq67qsIQtDiT7Z2l5Dji40uuQO6G30IsShtIvCR8E1sXr8di4UCG8y4dYFdk59ugYtjwDN2XPRoy1EkHgXeV8lXllhqwS4DLwJzfCEGYmCqTSNoPhOje22TY5AMSEbX39eJxWD1ZWFC5mYgo3qN1%2F01fh2nd11xGQAJcSAzjlU2i7jIEuOkRmzjqX2vtqn1XmvjLUdEyfbZH1LaBDnTkZHe24INgPGZ%2Bn2proe6yPIb%2BeX7RVR7D%2BWjGynbD6OSSy81fpY1Cmm9oGP0bcy33rjBGY9SeMnmaodUJb8PMs4iLl46wzx1d%2F9v%2FGKpODBKMB1M%2BM0BlwJlMkPomhlnCQdlIcL%2B%2BckarKDhA8qI3aXnGRi8zUTGCyUXB9hFAVkeC5PVmiF2BPBR9b9B3or1BKMEwOrXjewYoL3q9O3R2r4i2e68ClaMLG6%2F9IGOqUBBa0joTvLPXjry19m8I03jyXLGq6Yxxd86VFcbj37LcabDb2yQNOTHRA%2BXhTO7hX6YumbcRK59Q8Im6iIShOPjCJtQHFM%2Bx1hLUpiaXN%2Fb06qGLqObZRB%2FrNZms3Dnq3HaYNfu3zbMEIgtA5nLykdpVOjv2BB59g2j3ONjXu%2BHXHTpmdvFXVEq2WTv9ZbST6c0vgj4tEdyAwmYlkemLNQH01V%2BWuu&X-Amz-Signature=cd804fc436d0473fe48facba14fd6072d9acee3cdf530a6c502a86e3b99b5dfd&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/c12ae1a6-3b4c-4d66-81f2-d04cf2c3cdae/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V4GRZPSJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225644Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDtMEtv2dDTb2AMm31BDSIhZBzmmpnCB%2B5rZ4optn1mcwIgF%2FE2e4zy8ovj%2FWzdO%2BzXHiIUBbhoUhpzmLwE4Sa9AukqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA99WkEX1E%2FBNxMnUircA80QDKzgE89Zd8JsWjpDHXzfvCmsaXImGeKzFAm%2FsVjrOjkKz3%2BEmp5ZcNUsi7dLyKIiW2rleJVpdsWimOGncWTLOTa0EHQmkBaztx%2BgnsBhVj5BruMhnrc537fbzzdq1kqHMo0dQILylHLXdU1cB8pSnVenkX%2FwJRZycfs4wtQ%2FbCMAL76qWxqeHUYLPGfxnDl7t3LKWEjq67qsIQtDiT7Z2l5Dji40uuQO6G30IsShtIvCR8E1sXr8di4UCG8y4dYFdk59ugYtjwDN2XPRoy1EkHgXeV8lXllhqwS4DLwJzfCEGYmCqTSNoPhOje22TY5AMSEbX39eJxWD1ZWFC5mYgo3qN1%2F01fh2nd11xGQAJcSAzjlU2i7jIEuOkRmzjqX2vtqn1XmvjLUdEyfbZH1LaBDnTkZHe24INgPGZ%2Bn2proe6yPIb%2BeX7RVR7D%2BWjGynbD6OSSy81fpY1Cmm9oGP0bcy33rjBGY9SeMnmaodUJb8PMs4iLl46wzx1d%2F9v%2FGKpODBKMB1M%2BM0BlwJlMkPomhlnCQdlIcL%2B%2BckarKDhA8qI3aXnGRi8zUTGCyUXB9hFAVkeC5PVmiF2BPBR9b9B3or1BKMEwOrXjewYoL3q9O3R2r4i2e68ClaMLG6%2F9IGOqUBBa0joTvLPXjry19m8I03jyXLGq6Yxxd86VFcbj37LcabDb2yQNOTHRA%2BXhTO7hX6YumbcRK59Q8Im6iIShOPjCJtQHFM%2Bx1hLUpiaXN%2Fb06qGLqObZRB%2FrNZms3Dnq3HaYNfu3zbMEIgtA5nLykdpVOjv2BB59g2j3ONjXu%2BHXHTpmdvFXVEq2WTv9ZbST6c0vgj4tEdyAwmYlkemLNQH01V%2BWuu&X-Amz-Signature=36041ab133e7ef460428b2059998b59536ed986d9f2ce05c221babc83359e7b8&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+各位同学们，大家好，前面带大家去看了非常非常烧脑的 high streaks 源码，那我们已经把前面主线任务做完了，所以这一次去挑选其中一个很重要的支线任务，那就是熔断器。我们来看一看熔断器的参数是如何在整个降级易熔断流程中起作用的。那这一节主要分为以下几个部分。第一块我带大家去看一下段路判断的逻辑，有的时候我们叫它熔断，有的时候叫它断路，还有的时候会叫它短路。其实意思都是一样的了，它都是只在一定条件下切断这个访问的通路。接下来的一部分，我来带大家看一下断路器的开启和关闭状态，它是如何触发这个判定的。最后一部分我们要去了解一下 health open 也就是半开状态下的同步控制。这个支线任务相比前面纷繁复杂的主线任务就轻松多了。那同学们准备好的话，我们转战 intelligi 走起。
+
+[image](https://prod-files-secure.s3.us-west-2.amazonaws.com/28cd6f37-bc4c-49e6-8d26-8dc351a825af/31588b6c-0469-4cdd-8661-65e3fcf0135e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466V4GRZPSJ%2F20260721%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260721T225644Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDtMEtv2dDTb2AMm31BDSIhZBzmmpnCB%2B5rZ4optn1mcwIgF%2FE2e4zy8ovj%2FWzdO%2BzXHiIUBbhoUhpzmLwE4Sa9AukqiAQIxv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDA99WkEX1E%2FBNxMnUircA80QDKzgE89Zd8JsWjpDHXzfvCmsaXImGeKzFAm%2FsVjrOjkKz3%2BEmp5ZcNUsi7dLyKIiW2rleJVpdsWimOGncWTLOTa0EHQmkBaztx%2BgnsBhVj5BruMhnrc537fbzzdq1kqHMo0dQILylHLXdU1cB8pSnVenkX%2FwJRZycfs4wtQ%2FbCMAL76qWxqeHUYLPGfxnDl7t3LKWEjq67qsIQtDiT7Z2l5Dji40uuQO6G30IsShtIvCR8E1sXr8di4UCG8y4dYFdk59ugYtjwDN2XPRoy1EkHgXeV8lXllhqwS4DLwJzfCEGYmCqTSNoPhOje22TY5AMSEbX39eJxWD1ZWFC5mYgo3qN1%2F01fh2nd11xGQAJcSAzjlU2i7jIEuOkRmzjqX2vtqn1XmvjLUdEyfbZH1LaBDnTkZHe24INgPGZ%2Bn2proe6yPIb%2BeX7RVR7D%2BWjGynbD6OSSy81fpY1Cmm9oGP0bcy33rjBGY9SeMnmaodUJb8PMs4iLl46wzx1d%2F9v%2FGKpODBKMB1M%2BM0BlwJlMkPomhlnCQdlIcL%2B%2BckarKDhA8qI3aXnGRi8zUTGCyUXB9hFAVkeC5PVmiF2BPBR9b9B3or1BKMEwOrXjewYoL3q9O3R2r4i2e68ClaMLG6%2F9IGOqUBBa0joTvLPXjry19m8I03jyXLGq6Yxxd86VFcbj37LcabDb2yQNOTHRA%2BXhTO7hX6YumbcRK59Q8Im6iIShOPjCJtQHFM%2Bx1hLUpiaXN%2Fb06qGLqObZRB%2FrNZms3Dnq3HaYNfu3zbMEIgtA5nLykdpVOjv2BB59g2j3ONjXu%2BHXHTpmdvFXVEq2WTv9ZbST6c0vgj4tEdyAwmYlkemLNQH01V%2BWuu&X-Amz-Signature=46113da1e02c0ae19d5e198ce222db22e723487a52cfd9fc2a14bb18c70b192e&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject)
+
+每天 coding1 小时，健康工作 50 年。那我们从前面的主线任务跳到这个支线，这个支线是在哪接取的？咱任务的 NPC 是 abstract command 这个类的 523 行。大家看到这一行有一个 circuit breaker ，也就是断路熔断。同学们可否还记得这个前因后果，这个支线任务的入口是从哪来的？那我这里带大家稍微回顾。
+
+
+那么一下我们的故事要回到 high strikes command 这里。在这个 Q 方法中，有一个 too observable 就是我前面那一张代码阅读环节说的非常不起眼，但是特别重要的这个方法。好。点进去以后，各种回调函数八仙过海。真是在这些回调函数中有一个有故事的女同学是谁 apply high strikes semitics 在这个方法里，最后一个 return 这就是我们接任务的起点了。
+
+
+点进这个 NPC 我们回到了 circuit breaker all of request 那么这个任务如果我们通过了会怎么样？通过了就可以继续调用下面的方法。如果没有通过怎么办？那我只能对你这个用户来访请求说 IM sorry ，你从哪来就回哪去，点进去看看。 all of request 都 all of 什么内容啊？这里面有两个实线，同学们觉得应该是哪一个，明显是第一个呗，我们走进去好嘞。
+
+
+好，这里就到了我们熔断器的起点了，怎么形容眼前这番景象呢？用小学老师教的修辞手法，就是首先映入眼帘的是两个属性，其中一个和熔断开关有关，另一个还和熔断开关有关。那第一个属性大家是不是似曾相识呢？你看它的名字 circuit breaker falls open 是不是我们前面配置的强制开启的状态？那如果这个条件为 true 也就是说我不管你的服务有多健康，我这强制开启了熔断开关，你的所有 request 都要走到这个降级流程里，那么它还能允许后面的请求访问。不能了，所以这里 return 一个 false 那接下来往下看。
+
+
+这一个跟上面的 false open 是对着干的，它是 false closed 那么一旦你在属性文件中指定了 false closed 等于 true 那么纵使你这个服务千错万错，千不该万不该再怎么错，我都把它继续放行。所以这两个属性咱轻易不配置它太极端了。
+
+
+那么我们往下走，看到这两个条件，its open 和 all of single test 前者和我们的熔断器的判断有关，后者和我们的 health open 判断有关。我们挨个进去看一下，点击 is open 走进去。那这一个条件是谁？ circuit open 它是一个布尔值的变量，是一个 atomic 布尔值那么它如果处于开启状态，说明当前的熔断开关被开了，那这里就直接返回到 true 忘了说了，这个 is open 是指谁？ open 是指当前的这个断路开关是不是 open 好，那我们接着往下看。
+
+
+这个第 188 行 188 这个身长 1 米 88 的这个汉字，他做了件什么事啊？她从 Matrix 里面拿到了 health countshealth counts 是什么？是你所有调用请求的一个计数。比如你总共调用了多少次？这里面有多少次失败了？然后失败的比例 percentage 是多少？拿到这个数字以后，咱下面有用了，当它的总调用量小于某个值的时候，返回 false 小于什么值？咱们看这个值的名称叫 circuit breaker request volume threshold 这个值是不是咱们前面配置的 request 数量的阈值我们配置的 5 对不对？如果你当前的调用量小于5，我压根儿不给你计较，就是你这个请求全错了，我也不给你走熔断逻辑，当你大于 5 的时候，我再给你怎么样秋后算账。所以这个 if 条件如果你的总数量小于了这个阈值，那么 return false 就是说熔断开关处于关闭的状态。
+
+
+好，那么再往下走这里又要比较谁啦，又要比较 health 的 get error percentage 咱还记得前面又配过一个和熔断开关有关系的属性，叫 circuit breaker error threshold percentage 它是指当你的请求错误的比例小于这个指定的阈值的时候，那么它同样返回 false 也就是熔断器没有打开。
+
+
+OK 咱这里注意一下，这个 error percentage 它是一个 int 型的，我们点进去看一下。你看这个 error percentage 咱总以为应该是一个 double 或者 big decimal 类型的实际不是它是一个整数型这个统计也相对粗线条了。那你如果这一关没挺过去，你的失败率高于了这个阈值，怎么办呢？走到这个 else 的逻辑里面了，在这里面，我们先使用一个 CAS 操作，如果你当前的熔断器的开关是 false 也就是关闭状态，那么这里怎么样呢？把它给打开，并且设置一个参数，指定你最近的一次。
+
+
+你看 latest tested time 你最近的一次打开熔断器的开关的时间是多少？ OK 设置完这两个以后，返回一个 true 那咱看下面为什么还有一个 else 呢？这个 else 实际上是指如果当前熔断器已经处于开启状态了，那这上面的 case 操作是不是就不会生效了，那么它就导入到了这个 else 的流程里面，依然返回去。
+
+
+好，那我总结一下，从这个接口进来， is open 是判断当前的熔断开关是否开启的状态。在这里面，我们的请求将要过五关斩六将。首先看你当前接收到的服务请求数量是否大于阈值。如果大于阈值的话，再往下走，判断你的错误几率是否也大于阈值。当这两个条件都满足的时候，比如说你的请求数量大于我们配置的阈值5，同时你的错误率大于了50%，也是我们配置的一个数字。那么它将返回一个 true 并且在这个过程中将断路器的开关置为开启状态。
+
+
+好，我们这个支线剧情已经做完了一半，同学们是不是感觉如沐春风非常简单。那么返回到上一层，做另外一半的支线任务。好，我们回到了上一层，刚才我们看了 is open 断路器的开关状态。那么接下来咱看一个和 help open 有关的，也就是我们前面配置的 sleep window 它的函数就在这一层的下面，我们点进去看一下。
+
+
+这里整个流程都围绕着一个参数展开，这个参数是什么？也就是熔断器开启时候的 time step 那接下来这个判断逻辑就有点长了，它有这么几个条件。
+
+
+第一个条件，你的熔断器当时要处于开启状态，如果你处于开启状态，那么他接着判断当前的系统时间是不是大于上一次进入熔断流程的时间，再加上一个时间。这个加上的时间是谁呢？就是我们在外面配置的 sleep window 这个属性表示在熔断状态开启以后的多少毫秒后，我可以进入 health open 状态。那我们把这个配置的 slip window 的窗口加上上一次进入熔断的时间，和当前系统时间比较，如果系统时间在后，那么接着怎么样接着就放行一个请求。但是在放行请求 return true 之前，我们这里还要做一个操作，就是把当前的我们设置好的 last tested time 替换成谁呢？替换成系统时间好，如果替换成功了，那么返回一个 true 所以说从这里来看，实际上半开状态并不是一个特定的 status 它是需要你根据当前的系统时间以及我们配置中的 sleep window 进行一个计算得出来的。
+那讲到这，这个支线剧情就快结束了，我们回顾一下整篇的内容。在整个支线剧情里，我们首先判断了两个条件是不是强制开启和关闭。在这两个属性以外，我们将根据项目中配置的熔断属性来决定是否开启熔断开关。并且如果在熔断开关开启的状态下，我们还要根据项目中配置的 sleep window 来决定是否放行一个请求去发生真实的访问。那这就是整个支线剧情的内容了。同学们问完成一个支线有没有奖励？当然有了奖励，就是我们下三章将开启一个红片巨制，通过上中下三篇跟大家讲解如何去规划主链路。在这之中。
+
+
+我将分享大量的阿里系的业务场景经验，以及阿里系应用在部署方面。是如何考虑这个容灾和高可用的。 OK 那我们这一节就到这里结束了。同学们，我们下一节再见。
+
+
