@@ -142,13 +142,13 @@ def export_page(page_id, title, filepath, visited=None):
 def export_tree(node, parent_dir, visited=None):
     if visited is None: visited = set()
     if node["id"] in visited: return
-    visited.add(node["id"])
+    # 不能在此 visited.add(node["id"])：export_page 内部会自行 add，提前加会让其首行 return，导致文件永不写入
     safe = sanitize(node["title"])
     node_dir = os.path.join(parent_dir, safe)
     print(f"  {safe}", flush=True)
     export_page(node["id"], node["title"], os.path.join(node_dir, "README.md"), visited)
     for child in node.get("children", []):
-        export_tree(child, parent_dir, visited)
+        export_tree(child, node_dir, visited)
 
 def count_pages(node):
     return 1 + sum(count_pages(ch) for ch in node.get("children", []))
