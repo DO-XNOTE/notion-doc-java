@@ -28,5 +28,6 @@ jobs:
             echo "没有变更，跳过提交"
           else
             git commit -m "sync: notion docs update"
+            git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }}
           fi
