@@ -13,20 +13,40 @@ _BLOCK_CACHE = {}  # block_id -> list[block]
 
 def api_get(path, params=None):
     global API_COUNT
-    now = time.time()
-    # sliding window: max 3 req/s
-    while RATE_LIMITER and now - RATE_LIMITER[0] >= 1.0:
-        RATE_LIMITER.popleft()
-    if len(RATE_LIMITER) >= 3:
-        t = 1.0 - (now - RATE_LIMITER[0])
-        if t > 0: time.sleep(t)
+    for attempt in range(4):
         now = time.time()
         while RATE_LIMITER and now - RATE_LIMITER[0] >= 1.0:
             RATE_LIMITER.popleft()
-    RATE_LIMITER.append(time.time())
-    API_COUNT += 1
-    r = requests.get(f"https://api.notion.com/v1/{path}", headers=HEADERS, params=params, timeout=30)
-    return r.json() if r.status_code == 200 else None
+        if len(RATE_LIMITER) >= 3:
+            t = 1.0 - (now - RATE_LIMITER[0])
+            if t > 0: time.sleep(t)
+            now = time.time()
+            while RATE_LIMITER and now - RATE_LIMITER[0] >= 1.0:
+                RATE_LIMITER.popleft()
+        RATE_LIMITER.append(time.time())
+        API_COUNT += 1
+        try:
+            r = requests.get(f"https://api.notion.com/v1/{path}", headers=HEADERS, params=params, timeout=30)
+        except requests.RequestException as e:
+            if attempt == 3:
+                print(f"  ! 网络错误放弃 {path}: {e}", flush=True)
+                return None
+            time.sleep(2 ** attempt)
+            continue
+        if r.status_code == 200:
+            return r.json()
+        if r.status_code == 429:
+            time.sleep(float(r.headers.get("Retry-After", 1)))
+            continue
+        if 500 <= r.status_code < 600:
+            if attempt == 3:
+                print(f"  ! {r.status_code} 服务端错误放弃 {path}", flush=True)
+                return None
+            time.sleep(2 ** attempt)
+            continue
+        print(f"  ! {r.status_code} {path}: {r.text[:200]}", flush=True)
+        return None
+    return None
 
 def get_children(block_id):
     if block_id in _BLOCK_CACHE:
